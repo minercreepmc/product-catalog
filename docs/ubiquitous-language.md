@@ -1,0 +1,15 @@
+- Product
+- Category
+- Brand
+- SKU (Stock Keeping Unit)
+- Product description
+- Product image
+- Price
+- Discount
+- Availability
+- Rating
+- Review
+- Product attribute
+- Product variant
+- Filter
+- Sorting

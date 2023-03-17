@@ -2,6 +2,8 @@
 
 Welcome to the documentation for the Product Catalog service.
 
+Based on the [Bounded Context Canvas](https://github.com/ddd-crew/bounded-context-canvas), we have identified the core domain of our product catalog service.
+
 ## Table of Contents
 
 - [Purpose](#purpose)
@@ -56,3 +58,5 @@ The [verification-metrics.md](./verification-metrics.md) file outlines the verif
 ## Open Questions
 
 The [open-questions.md](./open-questions.md) file lists the open questions and concerns that need to be addressed in the development of this service, including questions related to technical feasibility, user needs, and business requirements.
+
+##

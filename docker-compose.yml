@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  product-catalog:
+    container_name: product-catalog
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - postgres
+      - rabbitmq
+    links:
+      - postgres
+      - rabbitmq
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - 3000:3000
+
+  postgres:
+    container_name: product-catalog-database
+    image: postgres:15.1-alpine
+    restart: always
+    env_file:
+      - .env
+      #- ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 8000:5432
+
+  rabbitmq:
+    container_name: product-catalog-message-broker
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    volumes:
+      - ./data/messages:/var/lib/rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    env_file:
+      - ./rabbitmq.env
+
+  adminer:
+    container_name: product-catalog-adminer
+    image: adminer
+    restart: always
+    ports:
+      - '8900:8080'

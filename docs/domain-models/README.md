@@ -36,6 +36,32 @@ The Category aggregate represents a hierarchical grouping of products. Categorie
 - **CategoryDescription**: A brief description of the category.
 - **CategoryPath**: A list of category IDs representing the hierarchical path of the category.
 
+### Reviewer
+
+The Reviewer aggregate is responsible for reviewing and approving or rejecting products before they are published in the catalog. This process ensures the quality and appropriateness of the items listed.
+
+#### Entities
+
+- **Reviewer** (Aggregate Root): Represents a single reviewer who can approve or reject products in the catalog. Contains the reviewer's attributes and references to other associated entities and value objects.
+
+#### Value Objects
+
+- **ReviewerId**: A unique identifier for a reviewer.
+- **ReviewerName**: The name of the reviewer.
+- **ReviewerEmail**: The email address of the reviewer.
+
+## Domain Services
+
+### Product Approval Process
+
+This domain service manages the product approval process. It works with the Product and Reviewer aggregates to handle the submission, approval, and rejection of products in the catalog.
+
+#### Methods
+
+- **submitProductForApproval(product: Product, reviewer: Reviewer)**: Submit a product for approval by a reviewer.
+- **approveProduct(product: Product, reviewer: Reviewer)**: Approve a submitted product.
+- **rejectProduct(product: Product, reviewer: Reviewer, reason: string)**: Reject a submitted product, providing a reason for the rejection.
+
 ## Common Value Objects
 
 ### Money
@@ -52,10 +78,11 @@ A value object representing the dimensions of a product, such as length, width, 
 - **Length**: The length of the product.
 - **Width**: The width of the product.
 - **Height**: The height of the product.
+- **Unit**: The dimension unit of the product.
 
 ### Weight
 
 A value object representing the weight of a product.
 
-- **Value**: The numerical value of the weight.
+- **Amount**: The numerical amount value of the weight.
 - **Unit**: The unit of measurement for the weight (e.g., grams, kilograms, pounds).

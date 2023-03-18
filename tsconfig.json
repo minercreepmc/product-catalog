@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "ES6",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -16,6 +17,37 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "paths": {
+      "@product-domain": [
+        "./src/core/product/domain"
+      ],
+      "@product-domain/*": [
+        "./src/core/product/domain/*"
+      ],
+      "@category-domain": [
+        "./src/core/category/domain"
+      ],
+      "@category-domain/*": [
+        "./src/core/category/domain/*"
+      ],
+      "@common-domain": [
+        "./src/core/common/domain"
+      ],
+      "@common-domain/*": [
+        "./src/core/common/domain/*"
+      ]
+    }
+  },
+  "include": [
+    "./src/**/*",
+    "./tests/**/*",
+    "./jest.config.ts",
+    "./tsconfig.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

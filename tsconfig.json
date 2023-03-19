@@ -32,6 +32,12 @@
       "@category-domain/*": [
         "./src/core/category/domain/*"
       ],
+      "@reviewer-domain": [
+        "./src/core/reviewer/domain"
+      ],
+      "@reviewer-domain/*": [
+        "./src/core/reviewer/domain/*"
+      ],
       "@common-domain": [
         "./src/core/common/domain"
       ],

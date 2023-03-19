@@ -21,6 +21,12 @@ The Product aggregate is the central component of the Product Catalog. It repres
 - **ProductImage**: A URL pointing to the product's image.
 - **ProductAttributes**: A collection of key-value pairs representing additional product attributes (e.g., color, size, weight).
 
+#### Methods
+
+- **submitForApproval(reviewerId: ReviewerId)**: Submit the product for approval by a reviewer.
+- **approve(reviewerId: ReviewerId)**: Mark the product as approved by a reviewer.
+- **reject(reviewerId: ReviewerId, reason: string)**: Mark the product as rejected by a reviewer and provide a reason for the rejection.
+
 ### Category
 
 The Category aggregate represents a hierarchical grouping of products. Categories allow users to browse products based on their classifications.
@@ -58,9 +64,9 @@ This domain service manages the product approval process. It works with the Prod
 
 #### Methods
 
-- **submitProductForApproval(product: Product, reviewer: Reviewer)**: Submit a product for approval by a reviewer.
-- **approveProduct(product: Product, reviewer: Reviewer)**: Approve a submitted product.
-- **rejectProduct(product: Product, reviewer: Reviewer, reason: string)**: Reject a submitted product, providing a reason for the rejection.
+- **submitProductForApproval(productId: ProductId, reviewerId: ReviewerId)**: Submit a product for approval by a reviewer.
+- **approveProduct(productId: ProductId, reviewerId: ReviewerId)**: Approve a submitted product.
+- **rejectProduct(productId: ProductId, reviewerId: ReviewerId, reason: string)**: Reject a submitted product, providing a reason for the rejection.
 
 ## Common Value Objects
 

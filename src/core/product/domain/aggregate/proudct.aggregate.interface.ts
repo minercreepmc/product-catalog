@@ -4,7 +4,7 @@ import {
   ProductImageValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
-} from './value-objects';
+} from '@product-domain/value-objects';
 
 export interface ProductAggregateDetails {
   name: ProductNameValueObject;

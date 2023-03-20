@@ -1,2 +1,2 @@
 export * from './product.aggregate';
-export * from './proudct.aggregate.interface';
+export * from './product.aggregate.interface';

@@ -20,6 +20,7 @@ The Product aggregate is the central component of the Product Catalog. It repres
 - **ProductPrice**: The price of the product.
 - **ProductImage**: A URL pointing to the product's image.
 - **ProductAttributes**: A collection of key-value pairs representing additional product attributes (e.g., color, size, weight).
+- **ProductStatus**: The current status of the product.
 
 #### Methods
 

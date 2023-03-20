@@ -1,7 +1,9 @@
-import { UUID } from 'common-base-classes';
+import { ID } from 'common-base-classes';
+import { v4 as uuidv4 } from 'uuid';
 
-export class ReviewerIdValueObject extends UUID {
+export class ReviewerIdValueObject extends ID {
   constructor(value?: string) {
-    super(value);
+    const id: string = value ? value : uuidv4();
+    super(id);
   }
 }

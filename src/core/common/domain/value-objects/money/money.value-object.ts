@@ -1,4 +1,8 @@
-import { AbstractValueObject } from 'common-base-classes';
+import {
+  AbstractValueObject,
+  ValidationException,
+  ValidationResponse,
+} from 'common-base-classes';
 import { MoneyAmountValueObject } from './money-amount.value-object';
 import { MoneyCurrencyValueObject } from './money-currency.value-object';
 
@@ -17,10 +21,32 @@ export class MoneyValueObject extends AbstractValueObject<MoneyValueObjectDetail
     super(details);
   }
 
-  create(options: CreateMoneyValueObjectOptions): MoneyValueObject {
+  static create(options: CreateMoneyValueObjectOptions) {
     return new MoneyValueObject({
       amount: new MoneyAmountValueObject(options.amount),
       currency: new MoneyCurrencyValueObject(options.currency),
     });
+  }
+
+  static validate(options: CreateMoneyValueObjectOptions): ValidationResponse {
+    const { currency, amount } = options;
+    const exceptions: ValidationException[] = [];
+
+    const amountRes = MoneyAmountValueObject.validate(amount);
+
+    if (!amountRes.isValid) {
+      exceptions.push(...amountRes.exceptions);
+    }
+
+    const currenctyRes = MoneyCurrencyValueObject.validate(currency);
+    if (!currenctyRes.isValid) {
+      exceptions.push(...currenctyRes.exceptions);
+    }
+
+    if (exceptions.length > 0) {
+      return ValidationResponse.fail(exceptions);
+    } else {
+      return ValidationResponse.success();
+    }
   }
 }

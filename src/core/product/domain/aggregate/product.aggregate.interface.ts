@@ -11,10 +11,10 @@ import { TextValueObject } from 'common-base-classes';
 
 export interface ProductAggregateDetails {
   name: ProductNameValueObject;
-  description: ProductDescriptionValueObject;
+  description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
-  image: ProductImageValueObject;
-  attributes: ProductAttributesValueObject;
+  image?: ProductImageValueObject;
+  attributes?: ProductAttributesValueObject;
   status: ProductStatusValueObject;
   submittedBy?: ReviewerIdValueObject;
   approvedBy?: ReviewerIdValueObject;

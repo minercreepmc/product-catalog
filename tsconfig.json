@@ -20,11 +20,29 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
     "paths": {
+      "@config": [
+        "./config"
+      ],
+      "@config/*": [
+        "./config/*"
+      ],
       "@product-domain": [
         "./src/core/product/domain"
       ],
       "@product-domain/*": [
         "./src/core/product/domain/*"
+      ],
+      "@product-use-case": [
+        "./src/core/product/use-case"
+      ],
+      "@product-use-case/*": [
+        "./src/core/product/use-case/*"
+      ],
+      "@product-infrastructure": [
+        "./src/core/product/infrastructures"
+      ],
+      "@product-infrastructure/*": [
+        "./src/core/product/infrastructures/*"
       ],
       "@category-domain": [
         "./src/core/category/domain"
@@ -49,6 +67,7 @@
   "include": [
     "./src/**/*",
     "./tests/**/*",
+    "./config/**/*",
     "./jest.config.ts",
     "./tsconfig.json"
   ],

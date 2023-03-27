@@ -13,6 +13,17 @@ export interface ProductAttributesDetails {
   variations: ProductVariation[];
 }
 
+export interface ProductAttributesOptions {
+  variations?: {
+    size?: string;
+    weight?: {
+      amount: number;
+      unit: string;
+    };
+    color?: string;
+  }[];
+}
+
 export interface ProductVariationOptions {
   size?: string;
   weight?: {
@@ -22,23 +33,26 @@ export interface ProductVariationOptions {
   color?: string;
 }
 
-export class ProductAttributesValueObject extends AbstractValueObject<ProductAttributesDetails> {
-  constructor(details: ProductAttributesDetails) {
-    super(details);
+export class ProductAttributesValueObject extends AbstractValueObject<
+  Partial<ProductAttributesDetails>
+> {
+  constructor(details?: ProductAttributesDetails) {
+    super(
+      details
+        ? details
+        : {
+            variations: [],
+          },
+    );
   }
 
   get variations() {
     return this.details.variations;
   }
 
-  static createSingle(options: ProductVariationOptions) {
+  addVariation(options: ProductVariationOptions) {
     const { size, color, weight } = options;
-    const variations: ProductVariation[] = [];
     const variation: ProductVariation = {};
-    variations.push(variation);
-    const productAttributesDetails: ProductAttributesDetails = {
-      variations,
-    };
 
     if (size) {
       const sizeVo = new SizeValueObject(size);
@@ -55,10 +69,10 @@ export class ProductAttributesValueObject extends AbstractValueObject<ProductAtt
       });
       variation.weight = weightVo;
     }
-    return new ProductAttributesValueObject(productAttributesDetails);
+    this.variations.push(variation);
   }
 
-  static createMultiple(variations: ProductVariationOptions[]) {
+  addVariations(variations: ProductVariationOptions[]) {
     const variationsDomain = variations.map((varitation) => {
       const { size, color, weight } = varitation;
       const variationDomain: ProductVariation = {};
@@ -79,10 +93,19 @@ export class ProductAttributesValueObject extends AbstractValueObject<ProductAtt
       }
       return variationDomain;
     });
-    const attributeDetails: ProductAttributesDetails = {
-      variations: variationsDomain,
-    };
+    this.details.variations.push(...variationsDomain);
+  }
 
-    return new ProductAttributesValueObject(attributeDetails);
+  static create(
+    options: ProductAttributesOptions,
+  ): ProductAttributesValueObject {
+    const { variations } = options;
+    const productAttributes = new ProductAttributesValueObject();
+
+    if (variations) {
+      productAttributes.addVariations(options.variations);
+    }
+
+    return productAttributes;
   }
 }

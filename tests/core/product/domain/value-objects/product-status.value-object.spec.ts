@@ -37,6 +37,7 @@ describe('ProductStatusValueObject', () => {
   it('should have all product statuses in ProductStatusArray', () => {
     expect(ProductStatusArray).toEqual(
       expect.arrayContaining([
+        ProductStatus.INITIAL,
         ProductStatus.DRAFT,
         ProductStatus.PENDING_APPROVAL,
         ProductStatus.APPROVED,

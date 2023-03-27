@@ -1,4 +1,8 @@
 import {
+  ProductCreatedDomainEvent,
+  ProductUpdatedDomainEvent,
+} from '@product-domain/domain-events';
+import {
   ProductIdValueObject,
   ProductStatus,
   ProductStatusValueObject,
@@ -20,6 +24,7 @@ export class ProductAggregate extends AbstractAggregateRoot<
 > {
   constructor(id?: ProductIdValueObject) {
     super({ id: id ? id : new ProductIdValueObject(), details: {} });
+    this.setStatus(ProductStatus.INITIAL);
   }
 
   getStatus(): string {
@@ -63,6 +68,11 @@ export class ProductAggregate extends AbstractAggregateRoot<
   }
 
   createProduct(options: CreateProductAggregateOptions) {
+    if (this.getStatus() === ProductStatus.DRAFT) {
+      throw new InvalidOperationException(
+        'Cannot create a product that was created',
+      );
+    }
     this.details.name = options.name;
     this.details.price = options.price;
 
@@ -77,7 +87,15 @@ export class ProductAggregate extends AbstractAggregateRoot<
       this.details.attributes = options.attributes;
     }
 
-    this.details.status = ProductStatusValueObject.draft();
+    this.setStatus(ProductStatus.DRAFT);
+
+    return new ProductCreatedDomainEvent({
+      productId: this.id,
+      details: {
+        name: this.details.name,
+        price: this.details.price,
+      },
+    });
   }
 
   updateProduct(options: UpdateProductAggregateOptions) {
@@ -96,6 +114,14 @@ export class ProductAggregate extends AbstractAggregateRoot<
     if (options.attributes) {
       this.details.attributes = options.attributes;
     }
+
+    return new ProductUpdatedDomainEvent({
+      productId: this.id,
+      details: {
+        name: this.details.name,
+        price: this.details.price,
+      },
+    });
   }
 
   submitForApproval(reviewerId: ReviewerIdValueObject) {

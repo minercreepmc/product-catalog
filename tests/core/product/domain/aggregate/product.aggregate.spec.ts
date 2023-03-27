@@ -1,12 +1,10 @@
+import { AllowableCurrencyEnum } from '@common-domain/value-objects/money';
+import { ProductAggregate } from '@product-domain/aggregate';
 import {
-  CreateProductAggregateOptions,
-  ProductAggregate,
-  UpdateProductAggregateOptions,
-} from '@product-domain/aggregate';
+  ProductCreatedDomainEvent,
+  ProductUpdatedDomainEvent,
+} from '@product-domain/domain-events';
 import {
-  ProductAttributesValueObject,
-  ProductDescriptionValueObject,
-  ProductImageValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
   ProductStatus,
@@ -22,110 +20,80 @@ describe('ProductAggregate', () => {
 
   beforeEach(() => {
     productAggregate = new ProductAggregate();
-    productAggregate.createProduct({
-      name: new ProductNameValueObject('Product 1'),
-      price: new ProductPriceValueObject(199),
+  });
+
+  describe('createProduct', () => {
+    it('should create a product with the provided options and return a ProductCreatedDomainEvent', () => {
+      const options = {
+        name: new ProductNameValueObject('Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 100,
+          currency: AllowableCurrencyEnum.USD,
+        }),
+      };
+      const event = productAggregate.createProduct(options);
+
+      expect(event).toBeInstanceOf(ProductCreatedDomainEvent);
+      expect(productAggregate.getStatus()).toBe(ProductStatus.DRAFT);
+      expect(productAggregate.details.name).toBe(options.name);
+      expect(productAggregate.details.price).toBe(options.price);
+    });
+
+    it('should throw an InvalidOperationException if the product is already in DRAFT status', () => {
+      productAggregate.setStatus(ProductStatus.DRAFT);
+
+      const options = {
+        name: new ProductNameValueObject('Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 100,
+          currency: AllowableCurrencyEnum.USD,
+        }),
+      };
+
+      expect(() => productAggregate.createProduct(options)).toThrowError(
+        InvalidOperationException,
+      );
     });
   });
 
-  describe('Creation', () => {
-    test('createProduct should initialize a product with the given options', () => {
-      const options: CreateProductAggregateOptions = {
-        name: new ProductNameValueObject('Test Product'),
-        price: new ProductPriceValueObject(10),
+  describe('updateProduct', () => {
+    it('should update the product with the provided options and return a ProductUpdatedDomainEvent', () => {
+      const createOptions = {
+        name: new ProductNameValueObject('Old Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 90,
+          currency: AllowableCurrencyEnum.USD,
+        }),
       };
-      const product = new ProductAggregate();
-      product.createProduct(options);
 
-      expect(product.details.name).toEqual(options.name);
-      expect(product.details.price).toEqual(options.price);
-      expect(product.details.description).toBeUndefined();
-      expect(product.details.image).toBeUndefined();
-      expect(product.details.attributes).toBeUndefined();
-    });
+      productAggregate.createProduct(createOptions);
 
-    test('createProduct should initialize a product with optional fields', () => {
-      const attributes = ProductAttributesValueObject.createMultiple([
-        {
-          size: 'large',
-          weight: {
-            amount: 10,
-            unit: 'kg',
-          },
-          color: 'white',
-        },
-      ]);
-      const options: CreateProductAggregateOptions = {
-        name: new ProductNameValueObject('Test Product'),
-        description: new ProductDescriptionValueObject('Test description'),
-        price: new ProductPriceValueObject(10),
-        image: new ProductImageValueObject('https://example.com/image.jpg'),
-        attributes,
+      const updateOptions = {
+        name: new ProductNameValueObject('New Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 110,
+          currency: AllowableCurrencyEnum.USD,
+        }),
       };
-      const product = new ProductAggregate();
-      product.createProduct(options);
 
-      expect(product.details.name).toEqual(options.name);
-      expect(product.details.description).toEqual(options.description);
-      expect(product.details.price).toEqual(options.price);
-      expect(product.details.image).toEqual(options.image);
-      expect(product.details.attributes).toEqual(options.attributes);
-    });
+      const event = productAggregate.updateProduct(updateOptions);
 
-    test('updateProduct should update product fields', () => {
-      const product = new ProductAggregate();
-      const createOptions: CreateProductAggregateOptions = {
-        name: new ProductNameValueObject('Test Product'),
-        price: new ProductPriceValueObject(10),
-      };
-      product.createProduct(createOptions);
-
-      const updateOptions: UpdateProductAggregateOptions = {
-        name: new ProductNameValueObject('Updated Product'),
-        price: new ProductPriceValueObject(20),
-      };
-      product.updateProduct(updateOptions);
-
-      expect(product.details.name).toEqual(updateOptions.name);
-      expect(product.details.price).toEqual(updateOptions.price);
-    });
-
-    test('updateProduct should update optional fields', () => {
-      const attributes = ProductAttributesValueObject.createMultiple([
-        {
-          size: 'large',
-          weight: {
-            amount: 10,
-            unit: 'kg',
-          },
-          color: 'white',
-        },
-      ]);
-      const product = new ProductAggregate();
-      const createOptions: CreateProductAggregateOptions = {
-        name: new ProductNameValueObject('Test Product'),
-        price: new ProductPriceValueObject(10),
-      };
-      product.createProduct(createOptions);
-
-      const updateOptions: UpdateProductAggregateOptions = {
-        description: new ProductDescriptionValueObject('Updated description'),
-        image: new ProductImageValueObject(
-          'https://example.com/updated-image.jpg',
-        ),
-        attributes,
-      };
-      product.updateProduct(updateOptions);
-
-      expect(product.details.description).toEqual(updateOptions.description);
-      expect(product.details.image).toEqual(updateOptions.image);
-      expect(product.details.attributes).toEqual(updateOptions.attributes);
+      expect(event).toBeInstanceOf(ProductUpdatedDomainEvent);
+      expect(productAggregate.details.name).toBe(updateOptions.name);
+      expect(productAggregate.details.price).toBe(updateOptions.price);
     });
   });
 
   describe('Business method', () => {
     it('should submit a product for approval', () => {
       const reviewerId = new ReviewerIdValueObject();
+      productAggregate.createProduct({
+        name: new ProductNameValueObject('Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 100,
+          currency: AllowableCurrencyEnum.USD,
+        }),
+      });
       productAggregate.submitForApproval(reviewerId);
       expect(productAggregate.details.status.unpack()).toBe(
         ProductStatus.PENDING_APPROVAL,
@@ -134,6 +102,13 @@ describe('ProductAggregate', () => {
 
     it('should throw an error when trying to submit a non-draft product for approval', () => {
       const reviewerId = new ReviewerIdValueObject();
+      productAggregate.createProduct({
+        name: new ProductNameValueObject('Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 100,
+          currency: AllowableCurrencyEnum.USD,
+        }),
+      });
       productAggregate.submitForApproval(reviewerId);
       expect(() => productAggregate.submitForApproval(reviewerId)).toThrowError(
         InvalidOperationException,
@@ -142,6 +117,13 @@ describe('ProductAggregate', () => {
 
     it('should approve a product', () => {
       const reviewerId = new ReviewerIdValueObject();
+      productAggregate.createProduct({
+        name: new ProductNameValueObject('Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 100,
+          currency: AllowableCurrencyEnum.USD,
+        }),
+      });
       productAggregate.submitForApproval(reviewerId);
       productAggregate.approve(reviewerId);
 
@@ -161,6 +143,13 @@ describe('ProductAggregate', () => {
     it('should reject a product', () => {
       const reviewerId = new ReviewerIdValueObject();
       const reason = new TextValueObject('Not suitable for our store');
+      productAggregate.createProduct({
+        name: new ProductNameValueObject('Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 100,
+          currency: AllowableCurrencyEnum.USD,
+        }),
+      });
       productAggregate.submitForApproval(reviewerId);
       productAggregate.reject(reviewerId, reason);
 

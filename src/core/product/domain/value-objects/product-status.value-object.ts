@@ -5,6 +5,7 @@ import {
 } from 'common-base-classes';
 
 export enum ProductStatus {
+  INITIAL = 'initial',
   DRAFT = 'draft',
   PENDING_APPROVAL = 'pending_approval',
   APPROVED = 'approved',
@@ -16,7 +17,7 @@ export const ProductStatusArray = Object.keys(ProductStatus).map(
 );
 
 export class ProductStatusValueObject extends TextValueObject {
-  constructor(value: ProductStatus) {
+  constructor(value: string) {
     super(value, ProductStatusValueObject.OPTIONS);
   }
 

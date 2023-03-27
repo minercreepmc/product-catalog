@@ -1,13 +1,21 @@
-import { MoneyCurrencyValueObject } from '@common-domain/value-objects/money';
+import {
+  AllowableCurrencyEnum,
+  MoneyCurrencyValueObject,
+} from '@common-domain/value-objects/money';
 
 describe('MoneyCurrencyValueObject', () => {
   it('should create a MoneyCurrencyValueObject when a valid currency is provided', () => {
-    const currency = new MoneyCurrencyValueObject('USD');
+    const currency = MoneyCurrencyValueObject.usd();
     expect(currency).toBeInstanceOf(MoneyCurrencyValueObject);
   });
 
   it('should throw an error when an invalid currency is provided', () => {
-    expect(() => new MoneyCurrencyValueObject('INVALID')).toThrow();
+    expect(
+      () =>
+        new MoneyCurrencyValueObject(
+          'INVALID' as unknown as AllowableCurrencyEnum,
+        ),
+    ).toThrow();
   });
 
   it('should return a ValidationResponse when validating a valid currency', () => {

@@ -1,3 +1,4 @@
+- **Product Management**: Oversee and optimize the entire product lifecycle, from product creation and updates to approval processes, category management, pricing strategies, and more, ensuring a well-curated catalog for customers.
 - **Product approval process**: Define a process to review and approve products before they are published in the catalog, ensuring the quality and appropriateness of the items listed.
 - **Category and subcategory management**: Establish rules for creating, updating, and organizing product categories and subcategories to maintain a well-structured catalog.
 - **Attribute and variant management**: Determine the approach to manage product attributes and variants, including how to handle custom attributes and options for different product types.

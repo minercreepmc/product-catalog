@@ -65,49 +65,49 @@ export class ProductTypeOrmMapper extends AbstractTypeOrmMapper<
     let rejectedBy: ReviewerIdValueObject | undefined;
     let rejectionReason: TextValueObject | undefined;
 
-    if (name) {
+    if (ormModel.name) {
       name = new ProductNameValueObject(ormModel?.name);
     }
 
-    if (price) {
+    if (ormModel.price) {
       price = ProductPriceValueObject.create(ormModel?.price);
     }
 
-    if (description) {
+    if (ormModel.description) {
       description = new ProductDescriptionValueObject(ormModel?.description);
     }
 
-    if (image) {
+    if (ormModel.image) {
       image = new ProductImageValueObject(ormModel?.image);
     }
 
-    if (attributes) {
+    if (ormModel.attributes) {
       attributes = ProductAttributesValueObject.create(ormModel?.attributes);
     }
 
-    if (status) {
+    if (ormModel.status) {
       status = new ProductStatusValueObject(ormModel?.status);
     }
 
-    if (submittedBy) {
+    if (ormModel.submittedBy) {
       submittedBy = new ReviewerIdValueObject(ormModel?.submittedBy);
     }
 
-    if (approvedBy) {
+    if (ormModel.approvedBy) {
       approvedBy = new ReviewerIdValueObject(ormModel?.approvedBy);
     }
 
-    if (rejectedBy) {
+    if (ormModel.rejectedBy) {
       rejectedBy = new ReviewerIdValueObject(ormModel?.rejectedBy);
     }
 
-    if (rejectionReason) {
+    if (ormModel.rejectionReason) {
       rejectionReason = new TextValueObject(ormModel?.rejectionReason);
     }
 
     return {
-      name: new ProductNameValueObject(ormModel?.name),
-      price: ProductPriceValueObject.create(ormModel?.price),
+      name,
+      price,
       description,
       image,
       attributes,

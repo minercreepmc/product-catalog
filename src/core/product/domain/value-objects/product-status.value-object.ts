@@ -35,6 +35,10 @@ export class ProductStatusValueObject extends TextValueObject {
     return super.validate(value, this.OPTIONS);
   }
 
+  static initial(): ProductStatusValueObject {
+    return new ProductStatusValueObject(ProductStatus.INITIAL);
+  }
+
   static pending(): ProductStatusValueObject {
     return new ProductStatusValueObject(ProductStatus.PENDING_APPROVAL);
   }

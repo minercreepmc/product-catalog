@@ -141,7 +141,10 @@ describe('ProductManagementDomainService', () => {
         }),
       };
 
-      await service.updateProduct(productId, updateOptions);
+      await service.updateProduct({
+        id: productId,
+        payload: updateOptions,
+      });
 
       expect(mockProductRepository.findOneById).toHaveBeenCalledTimes(1);
       expect(mockProductRepository.findOneById).toHaveBeenCalledWith(productId);
@@ -166,7 +169,10 @@ describe('ProductManagementDomainService', () => {
       };
 
       await expect(
-        service.updateProduct(productId, options),
+        service.updateProduct({
+          id: productId,
+          payload: options,
+        }),
       ).rejects.toThrowError(new ProductDomainException.IsNotExist());
 
       expect(mockProductRepository.findOneById).toHaveBeenCalledTimes(1);

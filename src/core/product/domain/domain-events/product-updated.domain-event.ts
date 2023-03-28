@@ -5,7 +5,6 @@ import {
   ProductPriceValueObject,
 } from '@product-domain/value-objects';
 import { DomainEvent } from 'common-base-classes';
-import { ProductCreatedDomainEvent } from './product-created.domain-event';
 
 export interface ProductUpdatedDomainEventDetails {
   name: ProductNameValueObject;

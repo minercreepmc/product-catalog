@@ -10,6 +10,7 @@ import {
 import { ReviewerIdValueObject } from '@reviewer-domain/value-objects';
 import {
   AbstractAggregateRoot,
+  EntityOptions,
   InvalidOperationException,
   TextValueObject,
 } from 'common-base-classes';
@@ -19,12 +20,21 @@ import {
   UpdateProductAggregateOptions,
 } from './product.aggregate.interface';
 
+type OptionalEntityOptions<T> = Partial<EntityOptions<T>>;
+
 export class ProductAggregate extends AbstractAggregateRoot<
   Partial<ProductAggregateDetails>
 > {
-  constructor(id?: ProductIdValueObject) {
-    super({ id: id ? id : new ProductIdValueObject(), details: {} });
-    this.setStatus(ProductStatus.INITIAL);
+  constructor(options: OptionalEntityOptions<ProductAggregateDetails> = {}) {
+    const defaultId = new ProductIdValueObject();
+    const defaultDetails = {};
+    const { id = defaultId, details = defaultDetails } = options ?? {};
+
+    super({ id, details });
+
+    const defaultStatus = ProductStatusValueObject.initial();
+    const providedStatus = options?.details?.status;
+    this.status = providedStatus ?? defaultStatus;
   }
 
   getStatus(): string {
@@ -33,6 +43,10 @@ export class ProductAggregate extends AbstractAggregateRoot<
 
   setStatus(newStatus: ProductStatus): void {
     this.details.status = new ProductStatusValueObject(newStatus);
+  }
+
+  set status(newStatus: ProductStatusValueObject) {
+    this.details.status = newStatus;
   }
 
   get submittedBy(): ReviewerIdValueObject {

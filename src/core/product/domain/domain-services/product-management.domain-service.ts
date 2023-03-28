@@ -19,7 +19,10 @@ import {
 } from '@product-domain/value-objects';
 
 export type CreateProductDomainServiceOptions = CreateProductAggregateOptions;
-export type UpdateProductDomainServiceOptions = UpdateProductAggregateOptions;
+export type UpdateProductDomainServiceOptions = {
+  id: ProductIdValueObject;
+  payload: UpdateProductAggregateOptions;
+};
 
 @Injectable()
 export class ProductManagementDomainService {
@@ -46,16 +49,18 @@ export class ProductManagementDomainService {
   }
 
   async updateProduct(
-    productId: ProductIdValueObject,
     options: UpdateProductDomainServiceOptions,
   ): Promise<ProductUpdatedDomainEvent> {
-    const product = await this.productRepository.findOneById(productId);
+    const product = await this.productRepository.findOneById(options.id);
 
     if (!product) {
       throw new ProductDomainException.IsNotExist();
     }
 
-    const productUpdatedEvent = product.updateProduct(options);
+    const productUpdatedEvent = product.updateProduct(options.payload);
+    console.log('wtf');
+    console.log(product);
+    console.log(product.id);
     await this.productRepository.save(product);
     return productUpdatedEvent;
   }

@@ -61,6 +61,12 @@
       ],
       "@common-domain/*": [
         "./src/core/common/domain/*"
+      ],
+      "@common-use-case": [
+        "./src/core/common/use-case"
+      ],
+      "@common-use-case/*": [
+        "./src/core/common/use-case/*"
       ]
     }
   },

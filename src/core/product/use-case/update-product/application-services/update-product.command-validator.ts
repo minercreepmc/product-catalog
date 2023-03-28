@@ -1,15 +1,21 @@
-import { ProductNameValueObject } from '@product-domain/value-objects';
-import { ValidationException } from 'common-base-classes';
+import { Injectable } from '@nestjs/common';
+import { ProductCommandValidator } from '@product-use-case/application-services';
+import { ValidationException, ValidationResponse } from 'common-base-classes';
 import { UpdateProductCommand } from '../dtos';
 
-export class UpdateProductCommandValidator {
+@Injectable()
+export class UpdateProductCommandValidator extends ProductCommandValidator {
   exceptions: ValidationException[] = [];
-
-  validate(command: UpdateProductCommand) {
+  validate(command: UpdateProductCommand): ValidationResponse {
     const { name, price } = command;
-  }
 
-  private validateName(name: string) {
-    const { isvalid, } = ProductNameValueObject.validate(name);
+    this.clearExceptions();
+    if (typeof name !== 'undefined' && name !== null) {
+      this.validateName(name);
+    }
+    if (typeof price !== 'undefined' && price !== null) {
+      this.validatePrice(price);
+    }
+    return this.getValidationResponse();
   }
 }

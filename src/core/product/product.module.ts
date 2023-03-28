@@ -16,7 +16,16 @@ import {
   CreateProductCommandValidator,
   CreateProductMapper,
 } from '@product-use-case/create-product/application-services';
-import { CreateProductHttpController } from './interface-adapters/controllers/http';
+import { UpdateProductHandler } from '@product-use-case/update-product';
+import {
+  UpdateProductBusinessValidator,
+  UpdateProductCommandValidator,
+  UpdateProductMapper,
+} from '@product-use-case/update-product/application-services';
+import {
+  CreateProductHttpController,
+  UpdateProductHttpController,
+} from './interface-adapters/controllers/http';
 
 // Domain
 const domainServices: Provider[] = [
@@ -40,12 +49,20 @@ const createProductUseCase: Provider[] = [
   CreateProductBusinessValidator,
 ];
 
-const useCases: Provider[] = [...createProductUseCase];
+const updateProductUseCase: Provider[] = [
+  UpdateProductHandler,
+  UpdateProductCommandValidator,
+  UpdateProductMapper,
+  UpdateProductBusinessValidator,
+];
+
+const useCases: Provider[] = [...createProductUseCase, ...updateProductUseCase];
 
 // Interface Adapters
 const createProductController = [CreateProductHttpController];
+const updateProductController = [UpdateProductHttpController];
 
-const controllers = [...createProductController];
+const controllers = [...createProductController, ...updateProductController];
 
 // Vendor
 const vendors = [CqrsModule, TypeOrmModule.forFeature([ProductTypeOrmModel])];

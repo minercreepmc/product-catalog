@@ -9,7 +9,21 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+export class UpdateProductPriceCommand {
+  @IsNumber()
+  @IsNotEmpty()
+  amount: number;
+
+  @IsString()
+  @IsNotEmpty()
+  currency: string;
+}
+
 export class UpdateProductCommand {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -20,14 +34,10 @@ export class UpdateProductCommand {
   @ValidateNested()
   @Type(() => UpdateProductPriceCommand)
   price: UpdateProductPriceCommand;
-}
 
-export class UpdateProductPriceCommand {
-  @IsNumber()
-  @IsNotEmpty()
-  amount: number;
-
-  @IsString()
-  @IsNotEmpty()
-  currency: string;
+  constructor(options: UpdateProductCommand) {
+    this.id = options.id;
+    this.name = options.name;
+    this.price = options.price;
+  }
 }

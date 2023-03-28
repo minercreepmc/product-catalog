@@ -20,4 +20,13 @@ export default {
     '!src/**/*.d.ts',
     '!src/**/*.d.mts',
   ],
+  reporters: [
+    'default',
+    [
+      './node_modules/jest-html-reporter',
+      {
+        pageTitle: 'Test Report',
+      },
+    ],
+  ],
 };

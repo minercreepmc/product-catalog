@@ -3,6 +3,15 @@ import { Column, Entity } from 'typeorm';
 
 @Entity('product')
 export class ProductTypeOrmModel extends AbstractTypeOrmModel {
+  constructor(options?: ProductTypeOrmModel) {
+    super(options);
+    this.name = options?.name;
+    this.description = options?.description;
+    this.price = options?.price;
+    this.image = options?.image;
+    this.attributes = options?.attributes;
+    this.status = options?.status;
+  }
   @Column()
   name: string;
 

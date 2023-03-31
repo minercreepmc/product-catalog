@@ -1,18 +1,16 @@
+import { BusinessValidatorBase } from '@common-use-case/business-validator.base';
 import { ProductDomainException } from '@product-domain/domain-exceptions';
 import { ProductManagementDomainService } from '@product-domain/domain-services';
 import { ProductNameValueObject } from '@product-domain/value-objects';
 import { ValidationResponse } from 'common-base-classes';
 
-export abstract class ProductUseCaseBusinessValidator {
-  abstract exceptions: Error[];
+export abstract class ProductBusinessValidator extends BusinessValidatorBase {
   abstract validate(domainOptions: any): Promise<ValidationResponse>;
 
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
-  ) {}
-
-  protected clearExceptions() {
-    this.exceptions = [];
+  ) {
+    super();
   }
 
   protected async validateNameMustNotExist(
@@ -34,14 +32,6 @@ export abstract class ProductUseCaseBusinessValidator {
     );
     if (!productExists) {
       this.exceptions.push(new ProductDomainException.IsNotExist());
-    }
-  }
-
-  protected getValidationResponse(): ValidationResponse {
-    if (this.exceptions.length > 0) {
-      return ValidationResponse.fail(this.exceptions);
-    } else {
-      return ValidationResponse.success();
     }
   }
 }

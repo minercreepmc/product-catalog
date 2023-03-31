@@ -18,7 +18,6 @@
   },
   "ignorePatterns": [
     "**/node_modules/**",
-    "e2e/",
     "**/dist/**",
     "./data/",
     "./postgres-data/"

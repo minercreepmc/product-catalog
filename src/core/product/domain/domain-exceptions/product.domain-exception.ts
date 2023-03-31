@@ -13,4 +13,14 @@ export namespace ProductDomainException {
     readonly message = 'Product is exist';
     readonly code = ProductDomainExceptionCode.ProductIsExist;
   }
+
+  export class PriceIsNotValid extends ProductValidationException {
+    readonly message = 'Product price is not valid';
+    readonly code = ProductDomainExceptionCode.PriceIsNotValid;
+  }
+
+  export class NameIsNotValid extends ProductValidationException {
+    readonly message = 'Product name is not valid';
+    readonly code = ProductDomainExceptionCode.NameIsNotValid;
+  }
 }

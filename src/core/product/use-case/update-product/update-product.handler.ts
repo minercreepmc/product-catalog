@@ -1,4 +1,3 @@
-import { CommonCommandHandler } from '@common-use-case';
 import { CommandHandler } from '@nestjs/cqrs';
 import { ProductManagementDomainService } from '@product-domain/domain-services';
 import { ValidationResponse } from 'common-base-classes';
@@ -15,9 +14,7 @@ import {
 } from './dtos';
 
 @CommandHandler(UpdateProductCommand)
-export class UpdateProductHandler
-  implements CommonCommandHandler<UpdateProductCommand, UpdateProductResult>
-{
+export class UpdateProductHandler {
   constructor(
     private readonly commandValidator: UpdateProductCommandValidator,
     private readonly businessValidator: UpdateProductBusinessValidator,

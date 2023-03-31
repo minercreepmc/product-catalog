@@ -2682,10 +2682,10 @@ commander@^2.20.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
-common-base-classes@0.21.4:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/common-base-classes/-/common-base-classes-0.21.4.tgz#3f7a9bdb9056ad0ab6c20e1520757f190a0b8d6a"
-  integrity sha512-b07OOPHujkNm1FgPFFV3BM9Kwo49Fvi/lJnk6gomw9niVgnv4hvNchSJadsUhmyP41x57C+cughM0oBo3vI9+w==
+common-base-classes@0.21.10:
+  version "0.21.10"
+  resolved "https://registry.yarnpkg.com/common-base-classes/-/common-base-classes-0.21.10.tgz#3f901e96f21fe81b7022decd69cd61f8563081f8"
+  integrity sha512-eBCj9m/mUyIseJFaFid6r6QhnlvLqeYKLMIBxEYtqINdgtnvNbxW/ZVQgz9x0ehVufE5R71Fgj+J2n2hZYxdFA==
   dependencies:
     ts-common-exceptions "^3.0.0"
     uuid "^9.0.0"
@@ -4708,13 +4708,13 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nest-typeorm-common-classes@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/nest-typeorm-common-classes/-/nest-typeorm-common-classes-0.0.9.tgz#42aead88f6d971efddff9aea5a6f0ec1c819d0b7"
-  integrity sha512-xr0e3ktlh6bkxFgxSoksj3BAH8LBBcP6f16sUid+JgeLGmh2x8vQZ6L2A1GGAtTTnlxtWVSfBZt0IMZhRMioxA==
+nest-typeorm-common-classes@0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/nest-typeorm-common-classes/-/nest-typeorm-common-classes-0.0.15.tgz#21c9d8c6a03f72ea2ff3826cd5064d57b8e3c7b6"
+  integrity sha512-v1Kyzm4iQ7MyJ4NQxafnNS3pvNWLOh/SVvk/GASYf0HWI6NQaAB8EBepDIQQrSshp0Eaj3kDytwWeqUdKhe8xA==
   dependencies:
     "@nestjs/typeorm" "^9.0.1"
-    common-base-classes "0.21.4"
+    common-base-classes "0.21.10"
     tslib "~2.4"
     typeorm "^0.3.12"
 

@@ -1,6 +1,6 @@
 import {
   AbstractValueObject,
-  ValidationException,
+  ValidationExceptionBase,
   ValidationResponse,
 } from 'common-base-classes';
 import { MoneyAmountValueObject } from './money-amount.value-object';
@@ -30,7 +30,7 @@ export class MoneyValueObject extends AbstractValueObject<MoneyValueObjectDetail
 
   static validate(options: CreateMoneyValueObjectOptions): ValidationResponse {
     const { currency, amount } = options;
-    const exceptions: ValidationException[] = [];
+    const exceptions: ValidationExceptionBase[] = [];
 
     const amountRes = MoneyAmountValueObject.validate(amount);
 

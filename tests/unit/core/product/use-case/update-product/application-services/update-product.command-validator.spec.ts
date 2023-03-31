@@ -1,9 +1,11 @@
+import { ProductDomainException } from '@product-domain/domain-exceptions';
 import { UpdateProductCommandValidator } from '@product-use-case/update-product/application-services';
 import { UpdateProductCommand } from '@product-use-case/update-product/dtos';
 import {
   ArgumentContainsEmptyStringException,
   ArgumentContainsNegativeException,
-  ValidationException,
+  ArgumentTooLongException,
+  StringExceptionCodes,
   ValidationResponse,
 } from 'common-base-classes';
 
@@ -15,7 +17,7 @@ describe('UpdateProductCommandValidator', () => {
   });
 
   it('should have an empty array of exceptions when initialized', () => {
-    expect(updateProductCommandValidator.exceptions).toEqual([]);
+    expect(updateProductCommandValidator.exceptions).toEqual(new Map());
   });
 
   describe('validate', () => {
@@ -31,7 +33,7 @@ describe('UpdateProductCommandValidator', () => {
       const response: ValidationResponse =
         updateProductCommandValidator.validate(updateProductCommand);
       expect(response.isValid).toBe(true);
-      expect(updateProductCommandValidator.exceptions).toEqual([]);
+      expect(updateProductCommandValidator.exceptions).toEqual(new Map());
     });
 
     it('should add an exception if the name is not valid', () => {
@@ -47,7 +49,7 @@ describe('UpdateProductCommandValidator', () => {
         updateProductCommandValidator.validate(updateProductCommand);
       expect(response.isValid).toBe(false);
       expect(response.exceptions).toEqual(
-        expect.arrayContaining([new ArgumentContainsEmptyStringException()]),
+        expect.arrayContaining([new ProductDomainException.NameIsNotValid()]),
       );
     });
 
@@ -63,32 +65,37 @@ describe('UpdateProductCommandValidator', () => {
       const response: ValidationResponse =
         updateProductCommandValidator.validate(updateProductCommand);
       expect(response.isValid).toBe(false);
-      expect(updateProductCommandValidator.exceptions).toEqual(
-        expect.arrayContaining([new ArgumentContainsNegativeException()]),
+      expect(
+        Array.from(updateProductCommandValidator.exceptions.values()),
+      ).toEqual(
+        expect.arrayContaining([new ProductDomainException.PriceIsNotValid()]),
       );
     });
   });
 
   describe('clearExceptions', () => {
     it('should clear the exceptions array', () => {
-      updateProductCommandValidator.exceptions = [
-        new ValidationException('Test Exception'),
-      ];
+      updateProductCommandValidator.exceptions.set(
+        StringExceptionCodes.tooLong,
+        new ArgumentTooLongException(),
+      );
       (updateProductCommandValidator as any).clearExceptions();
-      expect(updateProductCommandValidator.exceptions).toEqual([]);
+      expect(updateProductCommandValidator.exceptions).toEqual(new Map());
     });
   });
 
   describe('validateName', () => {
     it('should not add any exceptions if the name is valid', () => {
       (updateProductCommandValidator as any).validateName('Test Product Name');
-      expect(updateProductCommandValidator.exceptions).toEqual([]);
+      expect(updateProductCommandValidator.exceptions).toEqual(new Map());
     });
 
     it('should add an exception if the name is not valid', () => {
       (updateProductCommandValidator as any).validateName('');
-      expect(updateProductCommandValidator.exceptions).toEqual(
-        expect.arrayContaining([new ArgumentContainsEmptyStringException()]),
+      expect(
+        Array.from(updateProductCommandValidator.exceptions.values()),
+      ).toEqual(
+        expect.arrayContaining([new ProductDomainException.NameIsNotValid()]),
       );
     });
   });

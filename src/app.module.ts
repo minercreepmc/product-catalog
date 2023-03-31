@@ -1,7 +1,6 @@
-import { typeOrmConfig } from '@config/typeorm';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from './core/common/infrastructure/database';
 import { ProductModule } from './core/product';
 
 @Module({
@@ -9,7 +8,7 @@ import { ProductModule } from './core/product';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(typeOrmConfig),
+    DatabaseModule,
     ProductModule,
   ],
 })

@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ProductManagementDomainService } from '@product-domain/domain-services';
-import { ProductUseCaseBusinessValidator } from '@product-use-case/application-services';
-import { ValidationException, ValidationResponse } from 'common-base-classes';
+import { ProductBusinessValidator } from '@product-use-case/application-services';
+import { ValidationResponse } from 'common-base-classes';
 import { UpdateProductDomainOptions } from '../dtos';
 
 @Injectable()
-export class UpdateProductBusinessValidator extends ProductUseCaseBusinessValidator {
+export class UpdateProductBusinessValidator extends ProductBusinessValidator {
   constructor(productManagementService: ProductManagementDomainService) {
     super(productManagementService);
   }
-
-  exceptions: ValidationException[] = [];
   async validate(
     domainOptions: UpdateProductDomainOptions,
   ): Promise<ValidationResponse> {

@@ -26,8 +26,12 @@ export class CreateProductHttpResponse {
     readonly amount: number;
     readonly currency: string;
   };
-  constructor(options: CreateProductHttpResponse) {
+
+  readonly message: string;
+
+  constructor(options: Omit<CreateProductHttpResponse, 'message'>) {
     this.name = options.name;
     this.price = options.price;
+    this.message = 'Product created successfully';
   }
 }

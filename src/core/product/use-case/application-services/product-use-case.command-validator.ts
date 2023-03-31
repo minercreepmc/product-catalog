@@ -1,43 +1,50 @@
+import {
+  CommandValidatorBase,
+  TranslateExceptionToUserFriendlyMessageOptions,
+} from '@common-use-case';
 import { ICommand } from '@nestjs/cqrs';
+import { ProductDomainException } from '@product-domain/domain-exceptions';
+import { ProductNameValueObject } from '@product-domain/value-objects';
 import {
   CreateProductPriceValueObjectOptions,
-  ProductNameValueObject,
   ProductPriceValueObject,
 } from '@product-domain/value-objects';
-import { ValidationResponse } from 'common-base-classes';
+import {
+  ValidationExceptionBase,
+  ValidationResponse,
+} from 'common-base-classes';
 
-export abstract class ProductCommandValidator {
-  abstract exceptions: Error[];
+export abstract class ProductCommandValidator extends CommandValidatorBase {
   abstract validate(command: ICommand): ValidationResponse;
 
-  protected clearExceptions() {
-    this.exceptions = [];
+  protected translateExceptionToUserFriendlyMessage(
+    options: TranslateExceptionToUserFriendlyMessageOptions,
+  ): ValidationExceptionBase {
+    const { context, exception } = options;
+    if (context === ProductNameValueObject.name) {
+      return new ProductDomainException.NameIsNotValid();
+    } else if (context === ProductPriceValueObject.name) {
+      return new ProductDomainException.PriceIsNotValid();
+    }
+
+    return exception;
   }
 
   protected validateName(name: string): void {
-    const res = ProductNameValueObject.validate(name);
+    const response = ProductNameValueObject.validate(name);
 
-    this.handlerValidationResponse(res);
+    this.handlerValidationResponse({
+      response,
+      context: ProductNameValueObject.name,
+    });
   }
 
   protected validatePrice(price: CreateProductPriceValueObjectOptions): void {
-    const res = ProductPriceValueObject.validate(price);
+    const response = ProductPriceValueObject.validate(price);
 
-    this.handlerValidationResponse(res);
-  }
-
-  protected handlerValidationResponse(response: ValidationResponse): void {
-    const { isValid, exceptions } = response;
-    if (!isValid) {
-      this.exceptions.push(...exceptions);
-    }
-  }
-
-  protected getValidationResponse(): ValidationResponse {
-    if (this.exceptions.length > 0) {
-      return ValidationResponse.fail(this.exceptions);
-    } else {
-      return ValidationResponse.success();
-    }
+    this.handlerValidationResponse({
+      response,
+      context: ProductPriceValueObject.name,
+    });
   }
 }

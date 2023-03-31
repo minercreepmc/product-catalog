@@ -67,6 +67,18 @@
       ],
       "@common-use-case/*": [
         "./src/core/common/use-case/*"
+      ],
+      "@src": [
+        "./src"
+      ],
+      "@src/*": [
+        "./src/*"
+      ],
+      "@utils": [
+        "./utils"
+      ],
+      "@utils/*": [
+        "./utils/*"
       ]
     }
   },

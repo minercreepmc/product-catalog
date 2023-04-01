@@ -31,8 +31,12 @@ export class ProductManagementDomainService {
     private readonly productRepository: ProductRepositoryPort,
   ) {}
 
-  async isProductExist(name: ProductNameValueObject): Promise<boolean> {
+  async isProductNameExist(name: ProductNameValueObject): Promise<boolean> {
     return Boolean(await this.productRepository.findOneByName(name));
+  }
+
+  async isProductIdExist(id: ProductIdValueObject): Promise<boolean> {
+    return Boolean(await this.productRepository.findOneById(id));
   }
 
   async createProduct(
@@ -58,9 +62,6 @@ export class ProductManagementDomainService {
     }
 
     const productUpdatedEvent = product.updateProduct(options.payload);
-    console.log('wtf');
-    console.log(product);
-    console.log(product.id);
     await this.productRepository.save(product);
     return productUpdatedEvent;
   }

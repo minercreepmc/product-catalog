@@ -14,7 +14,7 @@ import {
 @Injectable()
 export class UpdateProductMapper {
   toDomain(command: UpdateProductCommand): UpdateProductDomainOptions {
-    const { id, name, price } = command;
+    const { name, price } = command;
     let nameValueObject: ProductNameValueObject;
     let priceValueObject: ProductPriceValueObject;
     if (price) {
@@ -26,7 +26,7 @@ export class UpdateProductMapper {
     }
 
     return {
-      id: new ProductIdValueObject(id),
+      id: new ProductIdValueObject(command.id),
       payload: {
         name: nameValueObject,
         price: priceValueObject,
@@ -36,6 +36,7 @@ export class UpdateProductMapper {
 
   toResponseDto(event: ProductUpdatedDomainEvent): UpdateProductResponseDto {
     return {
+      id: event.productId.unpack(),
       name: event.details.name.unpack(),
       price: event.details.price.unpack(),
     };

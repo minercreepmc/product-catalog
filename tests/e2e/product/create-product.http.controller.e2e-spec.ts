@@ -1,7 +1,7 @@
-import { checkResponseForCode } from '@utils';
+import { checkResponseForCode } from '@utils/functions';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductDomainExceptionCode } from '@product-domain/domain-exceptions';
+import { ProductDomainExceptionCodes } from '@product-domain/domain-exceptions';
 import { AppModule } from '@src/app.module';
 import { CreateProductHttpRequestDto } from '@src/core/product/interface-adapters/controllers/http';
 import * as request from 'supertest';
@@ -32,7 +32,7 @@ describe('CreateProductHttpController (e2e)', () => {
   });
 
   describe(`${productsUrl} (POST)`, () => {
-    it('should create a product and return the new product object', () => {
+    it('should create a product and return the new product information', () => {
       return request(app.getHttpServer())
         .post(productsUrl)
         .set('Accept', 'application/json')
@@ -63,7 +63,7 @@ describe('CreateProductHttpController (e2e)', () => {
           const productIsExist = checkResponseForCode({
             response,
             statusCode: HttpStatus.CONFLICT,
-            codes: [ProductDomainExceptionCode.ProductIsExist],
+            codes: [ProductDomainExceptionCodes.ProductIsExist],
           });
 
           expect(productIsExist).toBeTruthy();
@@ -89,8 +89,8 @@ describe('CreateProductHttpController (e2e)', () => {
             response,
             statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
             codes: [
-              ProductDomainExceptionCode.PriceIsNotValid,
-              ProductDomainExceptionCode.NameIsNotValid,
+              ProductDomainExceptionCodes.PriceIsNotValid,
+              ProductDomainExceptionCodes.NameIsNotValid,
             ],
           });
 

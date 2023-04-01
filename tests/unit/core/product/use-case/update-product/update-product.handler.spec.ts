@@ -1,5 +1,4 @@
 import { ProductUpdatedDomainEvent } from '@product-domain/domain-events';
-import { ProductDomainException } from '@product-domain/domain-exceptions';
 import { ProductManagementDomainService } from '@product-domain/domain-services';
 import {
   ProductNameValueObject,
@@ -13,16 +12,11 @@ import {
 } from '@product-use-case/update-product/application-services';
 import {
   UpdateProductCommand,
+  UpdateProductDomainOptions,
   UpdateProductResponseDto,
 } from '@product-use-case/update-product/dtos';
-import {
-  ArgumentContainsEmptyStringException,
-  ArgumentContainsNegativeException,
-  ID,
-  ValidationResponse,
-} from 'common-base-classes';
+import { ID } from 'common-base-classes';
 import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended';
-import { Err } from 'oxide.ts';
 
 describe('UpdateProductHandler', () => {
   let updateProductHandler: UpdateProductHandler;
@@ -65,7 +59,7 @@ describe('UpdateProductHandler', () => {
         }),
       },
     });
-    const domainOptions = {
+    const domainOptions: UpdateProductDomainOptions = {
       id: new ID('123'),
       payload: {
         name: new ProductNameValueObject('test'),
@@ -89,6 +83,7 @@ describe('UpdateProductHandler', () => {
     productManagementService.updateProduct.mockResolvedValue(productUpdated);
     mapper.toResponseDto.mockReturnValue(
       new UpdateProductResponseDto({
+        id: '123',
         name: 'test',
         price: {
           amount: 10,
@@ -107,48 +102,5 @@ describe('UpdateProductHandler', () => {
     );
     expect(mapper.toResponseDto).toHaveBeenCalledWith(productUpdated);
     expect(result.isOk()).toBe(true);
-  });
-
-  it('should throw a validation error if command validation fails', () => {
-    const command = new UpdateProductCommand({
-      id: '123',
-      name: '',
-      price: {
-        amount: -1,
-        currency: 'USD',
-      },
-    });
-    const validationResult: ValidationResponse = ValidationResponse.fail([
-      new ArgumentContainsEmptyStringException(),
-      new ArgumentContainsNegativeException(),
-    ]);
-
-    commandValidator.validate.mockReturnValue(validationResult);
-
-    expect(updateProductHandler.validateCommand(command)).toStrictEqual(
-      Err(validationResult),
-    );
-  });
-
-  it('should throw a validation error if business validation fails', async () => {
-    const domainOptions = {
-      id: new ID('123'),
-      payload: {
-        name: new ProductNameValueObject('test'),
-        price: ProductPriceValueObject.create({
-          amount: 10,
-          currency: 'USD',
-        }),
-      },
-    };
-    const validationResult: ValidationResponse = ValidationResponse.fail([
-      new ProductDomainException.IsExist(),
-    ]);
-
-    businessValidator.validate.mockResolvedValue(validationResult);
-
-    expect(
-      await updateProductHandler.validateBusinessOptions(domainOptions),
-    ).toStrictEqual(Err(validationResult));
   });
 });

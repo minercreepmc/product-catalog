@@ -6,10 +6,16 @@ import { UpdateProductCommand } from '../dtos';
 @Injectable()
 export class UpdateProductCommandValidator extends ProductCommandValidator {
   validate(command: UpdateProductCommand): ValidationResponse {
-    const { name, price } = command;
+    const { id, name, price } = command;
+
     this.clearExceptions();
-    this.validateName(name);
-    this.validatePrice(price);
+    this.validateProductId(id);
+    if (name !== undefined) {
+      this.validateName(name);
+    }
+    if (price !== undefined) {
+      this.validatePrice(price);
+    }
     return this.getValidationResponse();
   }
 }

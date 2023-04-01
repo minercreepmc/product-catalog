@@ -4,7 +4,10 @@ import {
 } from '@common-use-case';
 import { ICommand } from '@nestjs/cqrs';
 import { ProductDomainException } from '@product-domain/domain-exceptions';
-import { ProductNameValueObject } from '@product-domain/value-objects';
+import {
+  ProductIdValueObject,
+  ProductNameValueObject,
+} from '@product-domain/value-objects';
 import {
   CreateProductPriceValueObjectOptions,
   ProductPriceValueObject,
@@ -21,13 +24,27 @@ export abstract class ProductCommandValidator extends CommandValidatorBase {
     options: TranslateExceptionToUserFriendlyMessageOptions,
   ): ValidationExceptionBase {
     const { context, exception } = options;
+    if (context === ProductIdValueObject.name) {
+      return new ProductDomainException.IdIsNotValid();
+    }
+
     if (context === ProductNameValueObject.name) {
       return new ProductDomainException.NameIsNotValid();
-    } else if (context === ProductPriceValueObject.name) {
+    }
+
+    if (context === ProductPriceValueObject.name) {
       return new ProductDomainException.PriceIsNotValid();
     }
 
     return exception;
+  }
+
+  protected validateProductId(id: string): void {
+    const response = ProductIdValueObject.validate(id);
+    this.handlerValidationResponse({
+      response,
+      context: ProductIdValueObject.name,
+    });
   }
 
   protected validateName(name: string): void {

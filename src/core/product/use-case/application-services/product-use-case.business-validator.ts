@@ -1,7 +1,10 @@
 import { BusinessValidatorBase } from '@common-use-case/business-validator.base';
 import { ProductDomainException } from '@product-domain/domain-exceptions';
 import { ProductManagementDomainService } from '@product-domain/domain-services';
-import { ProductNameValueObject } from '@product-domain/value-objects';
+import {
+  ProductIdValueObject,
+  ProductNameValueObject,
+} from '@product-domain/value-objects';
 import { ValidationResponse } from 'common-base-classes';
 
 export abstract class ProductBusinessValidator extends BusinessValidatorBase {
@@ -16,22 +19,20 @@ export abstract class ProductBusinessValidator extends BusinessValidatorBase {
   protected async validateNameMustNotExist(
     name: ProductNameValueObject,
   ): Promise<void> {
-    const productExists = await this.productManagementService.isProductExist(
-      name,
-    );
+    const productExists =
+      await this.productManagementService.isProductNameExist(name);
     if (productExists) {
       this.exceptions.push(new ProductDomainException.IsExist());
     }
   }
 
-  protected async validateNameMustExist(
-    name: ProductNameValueObject,
-  ): Promise<void> {
-    const productExists = await this.productManagementService.isProductExist(
-      name,
+  protected async validateIdMustExist(id: ProductIdValueObject): Promise<void> {
+    const productExists = await this.productManagementService.isProductIdExist(
+      id,
     );
     if (!productExists) {
       this.exceptions.push(new ProductDomainException.IsNotExist());
     }
   }
+
 }

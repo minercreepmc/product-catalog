@@ -5,7 +5,10 @@ import {
   UpdateProductAggregateOptions,
 } from '@product-domain/aggregate';
 import { ProductDomainException } from '@product-domain/domain-exceptions';
-import { ProductManagementDomainService } from '@product-domain/domain-services';
+import {
+  ProductManagementDomainService,
+  UpdateProductDomainServiceOptions,
+} from '@product-domain/domain-services';
 import { ProductRepositoryPort } from '@product-domain/interfaces';
 import {
   ProductIdValueObject,
@@ -41,7 +44,7 @@ describe('ProductManagementDomainService', () => {
 
       mockProductRepository.findOneByName.mockResolvedValue(existingProduct);
 
-      const result = await service.isProductExist(options.name);
+      const result = await service.isProductNameExist(options.name);
 
       expect(result).toBe(true);
       expect(mockProductRepository.findOneByName).toHaveBeenCalledTimes(1);
@@ -61,7 +64,7 @@ describe('ProductManagementDomainService', () => {
 
       mockProductRepository.findOneByName.mockResolvedValue(null);
 
-      const result = await service.isProductExist(options.name);
+      const result = await service.isProductNameExist(options.name);
 
       expect(result).toBe(false);
       expect(mockProductRepository.findOneByName).toHaveBeenCalledTimes(1);
@@ -119,11 +122,12 @@ describe('ProductManagementDomainService', () => {
 
   describe('updateProduct', () => {
     it('should update a product and save it', async () => {
-      const productId = new ProductIdValueObject('123');
-
       const existingProduct = new ProductAggregate();
+      const productId = new ProductIdValueObject('123');
+      const oldProductName = new ProductNameValueObject('Old Product');
+      const newProductName = new ProductNameValueObject('New Product');
       const createOptions: CreateProductAggregateOptions = {
-        name: new ProductNameValueObject('Old Product'),
+        name: oldProductName,
         price: ProductPriceValueObject.create({
           amount: 50,
           currency: AllowableCurrencyEnum.USD,
@@ -133,47 +137,50 @@ describe('ProductManagementDomainService', () => {
 
       mockProductRepository.findOneById.mockResolvedValue(existingProduct);
 
-      const updateOptions: UpdateProductAggregateOptions = {
-        name: new ProductNameValueObject('Old Product'),
-        price: ProductPriceValueObject.create({
-          amount: 50,
-          currency: AllowableCurrencyEnum.USD,
-        }),
+      const updateOptions: UpdateProductDomainServiceOptions = {
+        id: productId,
+        payload: {
+          name: newProductName,
+          price: ProductPriceValueObject.create({
+            amount: 50,
+            currency: AllowableCurrencyEnum.USD,
+          }),
+        },
       };
 
-      await service.updateProduct({
-        id: productId,
-        payload: updateOptions,
-      });
+      await service.updateProduct(updateOptions);
 
       expect(mockProductRepository.findOneById).toHaveBeenCalledTimes(1);
       expect(mockProductRepository.findOneById).toHaveBeenCalledWith(productId);
 
-      expect(existingProduct.details.name).toEqual(createOptions.name);
-      expect(existingProduct.details.price).toEqual(createOptions.price);
+      expect(existingProduct.details.name).toEqual(updateOptions.payload.name);
+      expect(existingProduct.details.price).toEqual(
+        updateOptions.payload.price,
+      );
 
       expect(mockProductRepository.save).toHaveBeenCalledTimes(1);
       expect(mockProductRepository.save).toHaveBeenCalledWith(existingProduct);
     });
 
     it('should throw an exception when updating a non-existent product', async () => {
-      const productId = new ProductIdValueObject('123');
       mockProductRepository.findOneById.mockResolvedValue(null);
 
-      const options: UpdateProductAggregateOptions = {
-        name: new ProductNameValueObject('Old Product'),
-        price: ProductPriceValueObject.create({
-          amount: 50,
-          currency: AllowableCurrencyEnum.USD,
-        }),
+      const productName = new ProductNameValueObject('Old Product');
+      const productId = new ProductIdValueObject('123');
+      const options: UpdateProductDomainServiceOptions = {
+        id: productId,
+        payload: {
+          name: productName,
+          price: ProductPriceValueObject.create({
+            amount: 50,
+            currency: AllowableCurrencyEnum.USD,
+          }),
+        },
       };
 
-      await expect(
-        service.updateProduct({
-          id: productId,
-          payload: options,
-        }),
-      ).rejects.toThrowError(new ProductDomainException.IsNotExist());
+      await expect(service.updateProduct(options)).rejects.toThrowError(
+        new ProductDomainException.IsNotExist(),
+      );
 
       expect(mockProductRepository.findOneById).toHaveBeenCalledTimes(1);
       expect(mockProductRepository.findOneById).toHaveBeenCalledWith(productId);

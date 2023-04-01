@@ -28,7 +28,7 @@ describe('CreateProductBusinessValidator', () => {
       });
       const domainOptions: CreateProductDomainOptions = { name, price };
 
-      productManagementService.isProductExist.mockResolvedValue(false);
+      productManagementService.isProductNameExist.mockResolvedValue(false);
 
       const validationResult = await validator.validate(domainOptions);
 
@@ -44,7 +44,7 @@ describe('CreateProductBusinessValidator', () => {
       });
       const domainOptions: CreateProductDomainOptions = { name, price };
 
-      productManagementService.isProductExist.mockResolvedValue(true);
+      productManagementService.isProductNameExist.mockResolvedValue(true);
 
       const validationResult = await validator.validate(domainOptions);
 

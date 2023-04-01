@@ -1,17 +1,16 @@
+import {
+  UseCaseBusinessValidationExceptions,
+  UseCaseCommandValidationExceptions,
+} from '@common-use-case';
 import { CommandHandler } from '@nestjs/cqrs';
 import { ProductManagementDomainService } from '@product-domain/domain-services';
-import { ValidationResponse } from 'common-base-classes';
 import { Err, Ok } from 'oxide.ts';
 import {
   UpdateProductBusinessValidator,
   UpdateProductCommandValidator,
 } from './application-services';
 import { UpdateProductMapper } from './application-services/update-product.mapper';
-import {
-  UpdateProductCommand,
-  UpdateProductDomainOptions,
-  UpdateProductResult,
-} from './dtos';
+import { UpdateProductCommand, UpdateProductResult } from './dtos';
 
 @CommandHandler(UpdateProductCommand)
 export class UpdateProductHandler {
@@ -22,34 +21,27 @@ export class UpdateProductHandler {
     private readonly productManagermentService: ProductManagementDomainService,
   ) {}
   async execute(command: UpdateProductCommand): Promise<UpdateProductResult> {
-    this.validateCommand(command);
+    const commandValidated = this.commandValidator.validate(command);
+    if (!commandValidated.isValid) {
+      return Err(
+        new UseCaseCommandValidationExceptions(commandValidated.exceptions),
+      );
+    }
     const domainOptions = this.mapper.toDomain(command);
-    await this.validateBusinessOptions(domainOptions);
+
+    const businessValidated = await this.businessValidator.validate(
+      domainOptions,
+    );
+    if (!businessValidated.isValid) {
+      return Err(
+        new UseCaseBusinessValidationExceptions(businessValidated.exceptions),
+      );
+    }
 
     const productUpdated = await this.productManagermentService.updateProduct(
       domainOptions,
     );
 
     return Ok(this.mapper.toResponseDto(productUpdated));
-  }
-
-  validateCommand(
-    command: UpdateProductCommand,
-  ): void | Err<ValidationResponse> {
-    const { isValid, exceptions } = this.commandValidator.validate(command);
-    if (!isValid) {
-      return Err(ValidationResponse.fail(exceptions));
-    }
-  }
-  async validateBusinessOptions(
-    options: UpdateProductDomainOptions,
-  ): Promise<void | Err<ValidationResponse>> {
-    const { isValid, exceptions } = await this.businessValidator.validate(
-      options,
-    );
-
-    if (!isValid) {
-      return Err(ValidationResponse.fail(exceptions));
-    }
   }
 }

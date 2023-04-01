@@ -29,16 +29,15 @@ export class MoneyValueObject extends AbstractValueObject<MoneyValueObjectDetail
   }
 
   static validate(options: CreateMoneyValueObjectOptions): ValidationResponse {
-    const { currency, amount } = options;
     const exceptions: ValidationExceptionBase[] = [];
 
-    const amountRes = MoneyAmountValueObject.validate(amount);
+    const amountRes = MoneyAmountValueObject.validate(options?.amount);
 
     if (!amountRes.isValid) {
       exceptions.push(...amountRes.exceptions);
     }
 
-    const currenctyRes = MoneyCurrencyValueObject.validate(currency);
+    const currenctyRes = MoneyCurrencyValueObject.validate(options?.currency);
     if (!currenctyRes.isValid) {
       exceptions.push(...currenctyRes.exceptions);
     }

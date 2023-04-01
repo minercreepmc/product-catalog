@@ -86,6 +86,7 @@
     "./src/**/*",
     "./tests/**/*",
     "./config/**/*",
+    "./utils/**/*",
     "./jest.config.ts",
     "./tsconfig.json"
   ],

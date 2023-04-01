@@ -1,11 +1,12 @@
 import { ProductDomainException } from '@product-domain/domain-exceptions';
 import { ProductManagementDomainService } from '@product-domain/domain-services';
 import {
+  ProductIdValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@product-domain/value-objects';
 import { UpdateProductBusinessValidator } from '@product-use-case/update-product/application-services';
-import { ID } from 'common-base-classes';
+import { UpdateProductDomainOptions } from '@product-use-case/update-product/dtos';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('UpdateProductBusinessValidator', () => {
@@ -20,8 +21,8 @@ describe('UpdateProductBusinessValidator', () => {
   describe('validate', () => {
     it('should validate successfully when name exists', async () => {
       // Arrange
-      const domainOptions = {
-        id: new ID('123'),
+      const domainOptions: UpdateProductDomainOptions = {
+        id: new ProductIdValueObject('123'),
         payload: {
           name: new ProductNameValueObject('Product 1'),
           price: ProductPriceValueObject.create({
@@ -31,7 +32,7 @@ describe('UpdateProductBusinessValidator', () => {
         },
       };
 
-      productService.isProductExist.mockResolvedValueOnce(true);
+      productService.isProductNameExist.mockResolvedValueOnce(true);
 
       // Act
       const result = await validator.validate(domainOptions);
@@ -43,8 +44,8 @@ describe('UpdateProductBusinessValidator', () => {
 
     it('should return validation exception when name does not exist', async () => {
       // Arrange
-      const domainOptions = {
-        id: new ID('123'),
+      const domainOptions: UpdateProductDomainOptions = {
+        id: new ProductIdValueObject('123'),
         payload: {
           name: new ProductNameValueObject('Product 1'),
           price: ProductPriceValueObject.create({
@@ -54,7 +55,7 @@ describe('UpdateProductBusinessValidator', () => {
         },
       };
 
-      productService.isProductExist.mockResolvedValueOnce(false);
+      productService.isProductNameExist.mockResolvedValueOnce(false);
 
       // Act
       const result = await validator.validate(domainOptions);

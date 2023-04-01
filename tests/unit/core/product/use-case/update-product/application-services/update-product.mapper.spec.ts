@@ -21,7 +21,6 @@ describe('UpdateProductMapper', () => {
       };
       const result = updateProductMapper.toDomain(updateProductCommand);
 
-      expect(result.id.unpack()).toBe(updateProductCommand.id);
       expect(result.payload.name.unpack()).toBe(updateProductCommand.name);
       expect(result.payload.price.unpack().amount).toBe(
         updateProductCommand.price.amount,

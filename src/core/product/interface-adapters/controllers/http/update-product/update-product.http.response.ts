@@ -6,7 +6,7 @@ export class UpdateProductHttpResponse implements UpdateProductResponseDto {
     description: 'The id of the product',
     example: '123',
   })
-  id: string;
+  productId: string;
 
   @ApiProperty({
     description: 'The name of the product',
@@ -23,8 +23,8 @@ export class UpdateProductHttpResponse implements UpdateProductResponseDto {
   })
   price: { amount: number; currency: string };
   constructor(options: UpdateProductResponseDto) {
-    const { id, name, price } = options;
-    this.id = id;
+    const { productId: id, name, price } = options;
+    this.productId = id;
     if (name) {
       this.name = name;
     }

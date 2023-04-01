@@ -42,7 +42,7 @@ describe('UpdateProductHandler', () => {
 
   it('should successfully update a product', async () => {
     const command = new UpdateProductCommand({
-      id: '123',
+      productId: '123',
       name: 'test',
       price: {
         amount: 10,
@@ -83,7 +83,7 @@ describe('UpdateProductHandler', () => {
     productManagementService.updateProduct.mockResolvedValue(productUpdated);
     mapper.toResponseDto.mockReturnValue(
       new UpdateProductResponseDto({
-        id: '123',
+        productId: '123',
         name: 'test',
         price: {
           amount: 10,

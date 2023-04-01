@@ -32,7 +32,7 @@ describe('UpdateProductBusinessValidator', () => {
         },
       };
 
-      productService.isProductNameExist.mockResolvedValueOnce(true);
+      productService.isProductIdExist.mockResolvedValueOnce(true);
 
       // Act
       const result = await validator.validate(domainOptions);

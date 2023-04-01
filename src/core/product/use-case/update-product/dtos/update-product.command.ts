@@ -4,12 +4,12 @@ export class UpdateProductPriceCommand {
 }
 
 export class UpdateProductCommand {
-  id: string;
+  productId: string;
   name: string;
   price: UpdateProductPriceCommand;
 
   constructor(options: UpdateProductCommand) {
-    this.id = options.id;
+    this.productId = options.productId;
     this.name = options.name;
     this.price = options.price;
   }

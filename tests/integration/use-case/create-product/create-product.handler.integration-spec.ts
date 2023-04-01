@@ -28,6 +28,7 @@ describe('CreateProductHandler', () => {
     amount: number;
     currency: string;
   };
+  let testId: string;
 
   beforeEach(() => {
     commandValidator = mock<CreateProductCommandValidator>();
@@ -46,6 +47,7 @@ describe('CreateProductHandler', () => {
       amount: 100,
       currency: 'USD',
     };
+    testId = '123';
   });
 
   it('should execute with valid command and return the expected result', async () => {
@@ -68,6 +70,7 @@ describe('CreateProductHandler', () => {
     });
 
     const responseDto = new CreateProductResponseDto({
+      productId: testId,
       name: testName,
       price: testPrice,
     });

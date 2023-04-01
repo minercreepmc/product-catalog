@@ -26,4 +26,8 @@ export class ProductCreatedDomainEvent extends DomainEvent<ProductCreatedDomainE
       entityId: productId,
     });
   }
+
+  get productId() {
+    return this.entityId;
+  }
 }

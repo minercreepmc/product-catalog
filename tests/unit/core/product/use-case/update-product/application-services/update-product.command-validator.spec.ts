@@ -21,7 +21,7 @@ describe('UpdateProductCommandValidator', () => {
   describe('validate', () => {
     it('should not add any exceptions if the command is valid', () => {
       const updateProductCommand: UpdateProductCommand = {
-        id: '123',
+        productId: '123',
         name: 'Test Product Name',
         price: {
           amount: 10.99,
@@ -36,7 +36,7 @@ describe('UpdateProductCommandValidator', () => {
 
     it('should add an exception if the name is not valid', () => {
       const updateProductCommand = new UpdateProductCommand({
-        id: '123',
+        productId: '123',
         name: '',
         price: {
           amount: 10.99,
@@ -53,7 +53,7 @@ describe('UpdateProductCommandValidator', () => {
 
     it('should add an exception if the price is not valid', () => {
       const updateProductCommand: UpdateProductCommand = {
-        id: '123',
+        productId: '123',
         name: 'Test Product Name',
         price: {
           amount: -10.99,
@@ -72,7 +72,7 @@ describe('UpdateProductCommandValidator', () => {
 
     it('should add an exception if null is provided', () => {
       const updateProductCommand: UpdateProductCommand = {
-        id: '123',
+        productId: '123',
         name: null,
         price: null,
       };
@@ -91,7 +91,7 @@ describe('UpdateProductCommandValidator', () => {
 
     it('should ignore the undefined since it mean not provided', () => {
       const updateProductCommand: UpdateProductCommand = {
-        id: '123',
+        productId: '123',
         name: undefined,
         price: {
           amount: 11.99,

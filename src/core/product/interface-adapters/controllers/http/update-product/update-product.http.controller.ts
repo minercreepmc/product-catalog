@@ -24,13 +24,13 @@ import { UpdateProductHttpResponse } from './update-product.http.response';
 export class UpdateProductHttpController {
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Put(':id')
+  @Put(':productId')
   async execute(
-    @Param('id') id: string,
+    @Param('productId') productId: string,
     @Body() dto: UpdateProductHttpRequest,
   ) {
     const command = new UpdateProductCommand({
-      id,
+      productId,
       ...dto,
     });
 

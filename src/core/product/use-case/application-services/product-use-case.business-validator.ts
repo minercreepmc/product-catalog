@@ -34,5 +34,4 @@ export abstract class ProductBusinessValidator extends BusinessValidatorBase {
       this.exceptions.push(new ProductDomainException.IsNotExist());
     }
   }
-
 }

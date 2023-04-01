@@ -27,7 +27,6 @@ describe('UpdateProductHttpController (e2e)', () => {
       currency: 'USD',
     },
   };
-  const productId = '1';
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -43,14 +42,31 @@ describe('UpdateProductHttpController (e2e)', () => {
   });
 
   describe(`${productsUrl} (PUT)`, () => {
-    it('should update a product and return the new product information', () => {
-      //
+    it('should update a product and return the new product information', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/products')
+        .set('Accept', 'application/json')
+        .send(createProductRequest);
+
+      const productId = createResponse.body.productId;
+
+      // Attempt to create the product again
+      const updateResponse = await request(app.getHttpServer())
+        .put(`/products/${productId}`)
+        .set('Accept', 'application/json')
+        .send(updateProductRequest)
+        .expect(HttpStatus.OK);
+
+      const { name, price } = updateResponse.body;
+      expect(name).toEqual(updateProductRequest.name);
+      expect(price).toEqual(updateProductRequest.price);
     });
 
     it('should not update a product if it not exists', async () => {
       // Attempt to create the product again
+      const productIdDidNotExist = '123';
       return request(app.getHttpServer())
-        .put(`/products/${productId}`)
+        .put(`/products/${productIdDidNotExist}`)
         .set('Accept', 'application/json')
         .send(updateProductRequest)
         .expect((response: request.Response) => {
@@ -66,7 +82,32 @@ describe('UpdateProductHttpController (e2e)', () => {
     });
 
     it('should not update a product if the request format is not valid', async () => {
-      //
+      // Attempt to create the product again
+      const productIdDidNotExist = '123';
+      const invalidUpdateProductRequest: UpdateProductHttpRequest = {
+        name: '',
+        price: {
+          amount: -123,
+          currency: 'USD',
+        },
+      };
+      return request(app.getHttpServer())
+        .put(`/products/${productIdDidNotExist}`)
+        .set('Accept', 'application/json')
+        .send(invalidUpdateProductRequest)
+        .expect((response: request.Response) => {
+          const productIsNotExist = checkResponseForCode({
+            response,
+            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            codes: [
+              ProductDomainExceptionCodes.NameIsNotValid,
+              ProductDomainExceptionCodes.PriceIsNotValid,
+            ],
+          });
+
+          expect(productIsNotExist).toBeTruthy();
+        })
+        .expect(HttpStatus.UNPROCESSABLE_ENTITY);
     });
   });
 

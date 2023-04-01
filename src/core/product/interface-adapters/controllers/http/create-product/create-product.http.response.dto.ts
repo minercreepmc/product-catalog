@@ -2,6 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductHttpResponse {
   @ApiProperty({
+    description: 'The id of the product',
+    example: '123',
+  })
+  readonly productId: string;
+
+  @ApiProperty({
     description: 'The name of the product',
     example: 'Sample Product',
   })
@@ -30,6 +36,7 @@ export class CreateProductHttpResponse {
   readonly message: string;
 
   constructor(options: Omit<CreateProductHttpResponse, 'message'>) {
+    this.productId = options.productId;
     this.name = options.name;
     this.price = options.price;
     this.message = 'Product created successfully';

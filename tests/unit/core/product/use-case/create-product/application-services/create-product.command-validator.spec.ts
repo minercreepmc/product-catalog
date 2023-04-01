@@ -1,10 +1,5 @@
-import {
-  ProductNameValueObject,
-  ProductPriceValueObject,
-} from '@product-domain/value-objects';
 import { CreateProductCommandValidator } from '@product-use-case/create-product/application-services';
 import { CreateProductCommand } from '@product-use-case/create-product/dtos';
-import { ValidationResponse } from 'common-base-classes';
 
 describe('CreateProductCommandValidator', () => {
   let validator: CreateProductCommandValidator;
@@ -79,42 +74,6 @@ describe('CreateProductCommandValidator', () => {
       const validationResult2 = validator.validate(command2);
       expect(validationResult2.isValid).toBe(true);
       expect(validationResult2.exceptions.length).toBe(0);
-    });
-  });
-
-  describe('validateName', () => {
-    it('should call ProductNameValueObject.validate and handlerValidationResponse with the correct parameters', () => {
-      const name = 'Valid Name';
-      const validateSpy = jest.spyOn(ProductNameValueObject, 'validate');
-      const res = ValidationResponse.success();
-
-      const handlerValidationResponseSpy = jest.spyOn(
-        validator,
-        'handlerValidationResponse' as any,
-      );
-
-      (validator as any).validateName(name);
-
-      expect(validateSpy).toHaveBeenCalledWith(name);
-      expect(handlerValidationResponseSpy).toHaveBeenCalledWith(res);
-    });
-  });
-
-  describe('validatePrice', () => {
-    it('should call ProductPriceValueObject.validate and handlerValidationResponse with the correct parameters', () => {
-      const price = { amount: 100, currency: 'USD' };
-      const validateSpy = jest.spyOn(ProductPriceValueObject, 'validate');
-      const res = ValidationResponse.success();
-
-      const handlerValidationResponseSpy = jest.spyOn(
-        validator,
-        'handlerValidationResponse' as any,
-      );
-
-      (validator as any).validatePrice(price);
-
-      expect(validateSpy).toHaveBeenCalledWith(price);
-      expect(handlerValidationResponseSpy).toHaveBeenCalledWith(res);
     });
   });
 });

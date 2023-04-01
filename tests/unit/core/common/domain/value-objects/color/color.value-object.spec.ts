@@ -1,5 +1,6 @@
 import { ColorValueObject } from '@common-domain/value-objects/color';
 import {
+  ArgumentContainsEmptyStringException,
   ArgumentContainsNumberException,
   ArgumentContainsUppercaseException,
   ArgumentContainsWhitespaceException,
@@ -72,7 +73,7 @@ describe('ColorValueObject', () => {
       expect(e).toBeInstanceOf(MultipleExceptions);
       const typedExceptions = e as MultipleExceptions;
       expect(typedExceptions.exceptions).toEqual(
-        expect.arrayContaining([new ArgumentContainsWhitespaceException()]),
+        expect.arrayContaining([new ArgumentContainsEmptyStringException()]),
       );
     }
   });

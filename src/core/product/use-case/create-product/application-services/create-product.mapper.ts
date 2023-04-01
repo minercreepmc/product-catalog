@@ -25,6 +25,7 @@ export class CreateProductMapper {
   toResponseDto(event: ProductCreatedDomainEvent): CreateProductResponseDto {
     const { name, price } = event.details;
     return new CreateProductResponseDto({
+      productId: event.productId.unpack(),
       name: name.unpack(),
       price: price.unpack(),
     });

@@ -1,5 +1,5 @@
 export class UpdateProductResponseDto {
-  id: string;
+  productId: string;
   name?: string;
   price?: {
     amount: number;
@@ -7,7 +7,7 @@ export class UpdateProductResponseDto {
   };
 
   constructor(dto: UpdateProductResponseDto) {
-    this.id = dto.id;
+    this.productId = dto.productId;
     if (dto.name) {
       this.name = dto.name;
     }

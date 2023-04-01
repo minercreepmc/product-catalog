@@ -4,6 +4,7 @@ import {
   ProductPriceValueObject,
 } from '@product-domain/value-objects';
 import { UpdateProductMapper } from '@product-use-case/update-product/application-services';
+import { UpdateProductCommand } from '@product-use-case/update-product/dtos';
 import { ID } from 'common-base-classes';
 
 describe('UpdateProductMapper', () => {
@@ -11,14 +12,14 @@ describe('UpdateProductMapper', () => {
 
   describe('toDomain', () => {
     it('should return UpdateProductDomainOptions object', () => {
-      const updateProductCommand = {
-        id: '12345',
+      const updateProductCommand = new UpdateProductCommand({
+        productId: '12345',
         name: 'Test Product Name',
         price: {
           amount: 10.99,
           currency: 'USD',
         },
-      };
+      });
       const result = updateProductMapper.toDomain(updateProductCommand);
 
       expect(result.payload.name.unpack()).toBe(updateProductCommand.name);

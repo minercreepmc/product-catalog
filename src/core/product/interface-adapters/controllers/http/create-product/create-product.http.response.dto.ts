@@ -33,12 +33,26 @@ export class CreateProductHttpResponse {
     readonly currency: string;
   };
 
+  @ApiProperty({
+    description: 'The description of the product',
+    example: 'Sample description',
+  })
+  readonly description: string;
+
+  @ApiProperty({
+    description: 'The image of the product',
+    example: 'https://example.com/image.png',
+  })
+  readonly image: string;
+
   readonly message: string;
 
   constructor(options: Omit<CreateProductHttpResponse, 'message'>) {
     this.productId = options.productId;
     this.name = options.name;
     this.price = options.price;
+    this.description = options.description;
+    this.image = options.image;
     this.message = 'Product created successfully';
   }
 }

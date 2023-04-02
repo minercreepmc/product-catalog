@@ -27,6 +27,8 @@ describe('UpdateProductCommandValidator', () => {
           amount: 10.99,
           currency: 'USD',
         },
+        description: 'Test Product Description',
+        image: 'https://example.com/image.png',
       };
       const response: ValidationResponse =
         updateProductCommandValidator.validate(updateProductCommand);
@@ -42,6 +44,8 @@ describe('UpdateProductCommandValidator', () => {
           amount: 10.99,
           currency: 'USD',
         },
+        description: '',
+        image: 'not valid',
       });
       const response: ValidationResponse =
         updateProductCommandValidator.validate(updateProductCommand);

@@ -26,4 +26,16 @@ export class CreateProductHttpRequestDto {
     amount: number;
     currency: string;
   };
+
+  @ApiProperty({
+    description: 'The description of the product',
+    example: 'Sample description',
+  })
+  description?: string;
+
+  @ApiProperty({
+    description: 'The image of the product',
+    example: 'https://example.com/image.png',
+  })
+  image?: string;
 }

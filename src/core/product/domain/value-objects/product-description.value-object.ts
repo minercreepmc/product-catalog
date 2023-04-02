@@ -1,3 +1,4 @@
+import { replaceExceptionCode } from '@utils/functions';
 import {
   TextValueObject,
   TextValueObjectOptions,
@@ -15,7 +16,15 @@ export class ProductDescriptionValueObject extends TextValueObject {
     allowSymbols: true,
   };
   static validate(value: string): ValidationResponse {
-    return super.validate(value, ProductDescriptionValueObject.OPTIONS);
+    const response = super.validate(
+      value,
+      ProductDescriptionValueObject.OPTIONS,
+    );
+    return replaceExceptionCode({
+      response,
+      superClass: 'TEXT',
+      targetClass: 'PRODUCT.DESCRIPTION',
+    });
   }
 
   constructor(value: string) {

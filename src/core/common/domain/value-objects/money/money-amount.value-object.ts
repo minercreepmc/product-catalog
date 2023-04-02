@@ -1,3 +1,4 @@
+import { replaceExceptionCode } from '@utils/functions';
 import {
   NumericValueObject,
   NumericValueObjectOptions,
@@ -20,6 +21,11 @@ export class MoneyAmountValueObject extends NumericValueObject<MoneyAmountValueO
   };
 
   static validate(value: number): ValidationResponse {
-    return super.validate(value, MoneyAmountValueObject.OPTIONS);
+    const response = super.validate(value, MoneyAmountValueObject.OPTIONS);
+    return replaceExceptionCode({
+      response,
+      superClass: 'NUMBER',
+      targetClass: 'MONEY.AMOUNT',
+    });
   }
 }

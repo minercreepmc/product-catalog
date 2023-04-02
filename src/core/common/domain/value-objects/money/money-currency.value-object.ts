@@ -1,3 +1,4 @@
+import { replaceExceptionCode } from '@utils/functions';
 import {
   TextValueObject,
   TextValueObjectOptions,
@@ -32,6 +33,11 @@ export class MoneyCurrencyValueObject extends TextValueObject {
   }
 
   static validate(value: string): ValidationResponse {
-    return super.validate(value, MoneyCurrencyValueObject.OPTIONS);
+    const response = super.validate(value, MoneyCurrencyValueObject.OPTIONS);
+    return replaceExceptionCode({
+      response,
+      superClass: 'TEXT',
+      targetClass: 'MONEY.CURRENCY',
+    });
   }
 }

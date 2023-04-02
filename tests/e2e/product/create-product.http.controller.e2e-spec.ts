@@ -5,6 +5,7 @@ import { ProductDomainExceptionCodes } from '@product-domain/domain-exceptions';
 import { AppModule } from '@src/app.module';
 import { CreateProductHttpRequestDto } from '@src/core/product/interface-adapters/controllers/http';
 import * as request from 'supertest';
+import { CreateProductResponseDto } from '@product-use-case/create-product/dtos';
 
 describe('CreateProductHttpController (e2e)', () => {
   let app: INestApplication;
@@ -16,6 +17,8 @@ describe('CreateProductHttpController (e2e)', () => {
       amount: 25.99,
       currency: 'USD',
     },
+    description: 'Sample description',
+    image: 'https://example.com/image.png',
   };
 
   beforeAll(async () => {
@@ -38,11 +41,13 @@ describe('CreateProductHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         .send(createProductRequest)
         .expect((response: request.Response) => {
-          const { name, price } = response.body;
+          const { name, price, description, image } =
+            response.body as CreateProductResponseDto;
 
           expect(name).toEqual(createProductRequest.name);
-          //expect(description).toEqual(mockProduct.description);
           expect(price).toEqual(createProductRequest.price);
+          expect(description).toEqual(createProductRequest.description);
+          expect(image).toEqual(createProductRequest.image);
         })
         .expect(HttpStatus.CREATED);
     });
@@ -78,6 +83,8 @@ describe('CreateProductHttpController (e2e)', () => {
           amount: -25.99,
           currency: 'USD',
         },
+        description: '',
+        image: 'wtf',
       };
 
       return request(app.getHttpServer())
@@ -91,6 +98,8 @@ describe('CreateProductHttpController (e2e)', () => {
             codes: [
               ProductDomainExceptionCodes.PriceIsNotValid,
               ProductDomainExceptionCodes.NameIsNotValid,
+              ProductDomainExceptionCodes.DescriptionIsNotValid,
+              ProductDomainExceptionCodes.ImageIsNotValid,
             ],
           });
 

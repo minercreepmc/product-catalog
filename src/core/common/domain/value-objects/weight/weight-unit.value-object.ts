@@ -1,3 +1,4 @@
+import { replaceExceptionCode } from '@utils/functions';
 import {
   TextValueObject,
   TextValueObjectOptions,
@@ -23,6 +24,11 @@ export class WeightUnitValueObject extends TextValueObject {
   };
 
   static validate(value: string): ValidationResponse {
-    return super.validate(value, WeightUnitValueObject.OPTIONS);
+    const response = super.validate(value, WeightUnitValueObject.OPTIONS);
+    return replaceExceptionCode({
+      response,
+      superClass: 'STRING',
+      targetClass: 'WEIGHT.UNIT',
+    });
   }
 }

@@ -19,6 +19,8 @@ describe('UpdateProductMapper', () => {
           amount: 10.99,
           currency: 'USD',
         },
+        description: 'Test Product Description',
+        image: 'https://example.com/image.png',
       });
       const result = updateProductMapper.toDomain(updateProductCommand);
 
@@ -29,6 +31,23 @@ describe('UpdateProductMapper', () => {
       expect(result.payload.price.unpack().currency).toBe(
         updateProductCommand.price.currency,
       );
+      expect(result.payload.description.unpack()).toBe(
+        updateProductCommand.description,
+      );
+
+      expect(result.payload.image.unpack()).toBe(updateProductCommand.image);
+    });
+
+    it('should should update without all properties', () => {
+      const updateProductCommand = new UpdateProductCommand({
+        productId: '12345',
+        name: 'Test Product Name',
+        image: 'https://example.com/image.png',
+      });
+      const result = updateProductMapper.toDomain(updateProductCommand);
+
+      expect(result.payload.name.unpack()).toBe(updateProductCommand.name);
+      expect(result.payload.image.unpack()).toBe(updateProductCommand.image);
     });
   });
 

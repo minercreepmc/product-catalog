@@ -19,6 +19,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
+    "types": [
+      "jest",
+      "jest-extended"
+    ],
     "paths": {
       "@config": [
         "./config"

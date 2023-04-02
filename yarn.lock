@@ -2682,10 +2682,10 @@ commander@^2.20.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
-common-base-classes@0.21.11:
-  version "0.21.11"
-  resolved "https://registry.yarnpkg.com/common-base-classes/-/common-base-classes-0.21.11.tgz#1ec8c0bae34fa278678c57c172c01294406f1d84"
-  integrity sha512-x0zyxAER/M08Fo943XOPtkEVcFJcoUDrRa0+BkUnhkPNeklZGqNwFiN/cymJpkxzB0z4jAcJDc6QLH+zrPJn7g==
+common-base-classes@0.21.14:
+  version "0.21.14"
+  resolved "https://registry.yarnpkg.com/common-base-classes/-/common-base-classes-0.21.14.tgz#c3c99f2f25c1b0543a0c19c26e299f508e92edc3"
+  integrity sha512-L91YwbUe+AXGwkHt1Qy+NtWhx+vFLHk2zBTkDQr+U3gQQjNIFEZK23Dr927kWl4mTdp38sWvEj969JLakbuTpQ==
   dependencies:
     ts-common-exceptions "^3.0.0"
     uuid "^9.0.0"
@@ -2870,6 +2870,11 @@ diff-sequences@^28.1.1:
   version "28.1.1"
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-28.1.1.tgz#9989dc731266dc2903457a70e996f3a041913ac6"
   integrity sha512-FU0iFaH/E23a+a718l8Qa/19bF9p06kgE0KipMOMadwa3SjnaElKzPaUC0vnibs6/B/9ni97s61mcejk8W1fQw==
+
+diff-sequences@^29.4.3:
+  version "29.4.3"
+  resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-29.4.3.tgz#9314bc1fabe09267ffeca9cbafc457d8499a13f2"
+  integrity sha512-ofrBgwpPhCD85kMKtE9RYFFq6OC1A89oW2vvgWZNCwxrUpRUILopY7lsYyMDSjc8g6U6aiO0Qubg6r4Wgt5ZnA==
 
 diff@^4.0.1, diff@^4.0.2:
   version "4.0.2"
@@ -3969,6 +3974,16 @@ jest-diff@^28.1.3:
     jest-get-type "^28.0.2"
     pretty-format "^28.1.3"
 
+jest-diff@^29.0.0:
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-29.5.0.tgz#e0d83a58eb5451dcc1fa61b1c3ee4e8f5a290d63"
+  integrity sha512-LtxijLLZBduXnHSniy0WMdaHjmQnt3g5sa16W4p0HqukYTTsyTW3GD1q41TyGl5YFXj/5B2U6dlh5FM1LIMgxw==
+  dependencies:
+    chalk "^4.0.0"
+    diff-sequences "^29.4.3"
+    jest-get-type "^29.4.3"
+    pretty-format "^29.5.0"
+
 jest-docblock@^28.1.1:
   version "28.1.1"
   resolved "https://registry.yarnpkg.com/jest-docblock/-/jest-docblock-28.1.1.tgz#6f515c3bf841516d82ecd57a62eed9204c2f42a8"
@@ -3999,10 +4014,23 @@ jest-environment-node@^28.1.3:
     jest-mock "^28.1.3"
     jest-util "^28.1.3"
 
+jest-extended@^3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/jest-extended/-/jest-extended-3.2.4.tgz#4ee93c9e495f983ceb911170613ce305f3533b94"
+  integrity sha512-lSEYhSmvXZG/7YXI7KO3LpiUiQ90gi5giwCJNDMMsX5a+/NZhdbQF2G4ALOBN+KcXVT3H6FPVPohAuMXooaLTQ==
+  dependencies:
+    jest-diff "^29.0.0"
+    jest-get-type "^29.0.0"
+
 jest-get-type@^28.0.2:
   version "28.0.2"
   resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-28.0.2.tgz#34622e628e4fdcd793d46db8a242227901fcf203"
   integrity sha512-ioj2w9/DxSYHfOm5lJKCdcAmPJzQXmbM/Url3rhlghrPvT3tt+7a/+oXc9azkKmLvoiXjtV83bEWqi+vs5nlPA==
+
+jest-get-type@^29.0.0, jest-get-type@^29.4.3:
+  version "29.4.3"
+  resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-29.4.3.tgz#1ab7a5207c995161100b5187159ca82dd48b3dd5"
+  integrity sha512-J5Xez4nRRMjk8emnTpWrlkyb9pfRQQanDrvWHhsR1+VUfbwxi30eVcZFlcdGInRibU4G5LwHXpI7IRHU0CY+gg==
 
 jest-haste-map@^28.1.3:
   version "28.1.3"
@@ -4708,13 +4736,13 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nest-typeorm-common-classes@0.0.16:
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/nest-typeorm-common-classes/-/nest-typeorm-common-classes-0.0.16.tgz#12afaf4c3ec98731514c41981ef575f24faf23c5"
-  integrity sha512-PzH3mL5eXmxlEzQVxTMgyPplL/Zq4vEVYYGsXWqJBbjS9N5W9pYZnc+sMGprxCzUExF0e+6HAQomPgw37NYwiA==
+nest-typeorm-common-classes@0.0.20:
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/nest-typeorm-common-classes/-/nest-typeorm-common-classes-0.0.20.tgz#7493cf81e924376cc6513348844270f7ef0c0e42"
+  integrity sha512-wGo4mIj0Gt7vBta5s1UeG36aAh7AkHGhdjBsd3JzFnvM/VDdB2taPeYumVz06mdLrxXAkMT40b/NwA22i3ZJwg==
   dependencies:
     "@nestjs/typeorm" "^9.0.1"
-    common-base-classes "0.21.11"
+    common-base-classes "0.21.14"
     tslib "~2.4"
     typeorm "^0.3.12"
 

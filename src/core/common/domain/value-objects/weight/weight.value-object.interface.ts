@@ -13,7 +13,7 @@ export enum WeightUnit {
   Grams = 'g',
 }
 
-export interface WeightValueObjectOptions {
+export interface CreateWeightValueObjectOptions {
   amount: number;
   unit: string;
 }

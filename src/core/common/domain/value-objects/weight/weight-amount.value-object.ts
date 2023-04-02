@@ -1,3 +1,4 @@
+import { replaceExceptionCode } from '@utils/functions';
 import {
   NumericValueObject,
   NumericValueObjectOptions,
@@ -20,6 +21,11 @@ export class WeightAmountValueObject extends NumericValueObject<WeightAmountValu
   };
 
   static validate(value: number): ValidationResponse {
-    return super.validate(value, WeightAmountValueObject.OPTIONS);
+    const response = super.validate(value, WeightAmountValueObject.OPTIONS);
+    return replaceExceptionCode({
+      response,
+      superClass: 'NUMBER',
+      targetClass: 'WEIGHT.AMOUNT',
+    });
   }
 }

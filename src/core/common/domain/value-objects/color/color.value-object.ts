@@ -1,3 +1,4 @@
+import { replaceExceptionCode } from '@utils/functions';
 import {
   TextValueObject,
   TextValueObjectOptions,
@@ -23,6 +24,11 @@ export class ColorValueObject extends TextValueObject {
   };
 
   static validate(value: string): ValidationResponse {
-    return super.validate(value, ColorValueObject.OPTIONS);
+    const response = super.validate(value, ColorValueObject.OPTIONS);
+    return replaceExceptionCode({
+      response,
+      superClass: 'TEXT',
+      targetClass: 'COLOR',
+    });
   }
 }

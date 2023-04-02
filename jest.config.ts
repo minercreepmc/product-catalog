@@ -2,6 +2,7 @@ import { pathsToModuleNameMapper } from 'ts-jest';
 import { compilerOptions } from './tsconfig.json';
 
 export default {
+  setupFilesAfterEnv: ['jest-extended/all'],
   testEnvironment: 'node',
   preset: 'ts-jest/presets/default-esm',
   transform: {

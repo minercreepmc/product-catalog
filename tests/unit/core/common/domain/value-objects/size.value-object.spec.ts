@@ -1,4 +1,8 @@
 import { SizeValueObject } from '@common-domain/value-objects';
+import {
+  ArgumentContainsEmptyStringException,
+  ArgumentTooLongException,
+} from 'common-base-classes';
 
 describe('SizeValueObject', () => {
   it('should create a valid SizeValueObject', () => {
@@ -25,13 +29,17 @@ describe('SizeValueObject', () => {
 
   it('should return false when validating an empty string', () => {
     const invalidSizeValue = '';
-    const { isValid } = SizeValueObject.validate(invalidSizeValue);
+    const { isValid, exceptions } = SizeValueObject.validate(invalidSizeValue);
     expect(isValid).toBe(false);
+    expect(exceptions).toIncludeAllMembers([
+      new ArgumentContainsEmptyStringException(),
+    ]);
   });
 
   it('should return false when validating a string longer than 50 characters', () => {
     const invalidSizeValue = 'a'.repeat(51);
-    const { isValid } = SizeValueObject.validate(invalidSizeValue);
+    const { isValid, exceptions } = SizeValueObject.validate(invalidSizeValue);
     expect(isValid).toBe(false);
+    expect(exceptions).toIncludeAllMembers([new ArgumentTooLongException()]);
   });
 });

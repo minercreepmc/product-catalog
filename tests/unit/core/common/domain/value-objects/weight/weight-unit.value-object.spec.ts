@@ -2,6 +2,7 @@ import {
   allowedWeightUnits,
   WeightUnitValueObject,
 } from '@common-domain/value-objects/weight';
+import { ArgumentDoestNotIncludeInAllowedValues } from 'common-base-classes';
 
 describe('WeightUnitValueObject', () => {
   it('should create a valid WeightUnitValueObject for each allowed unit', () => {
@@ -24,7 +25,10 @@ describe('WeightUnitValueObject', () => {
 
   it('should return false for invalid units when calling validate', () => {
     const invalidUnit = 'INVALID_UNIT';
-    const { isValid } = WeightUnitValueObject.validate(invalidUnit);
+    const { isValid, exceptions } = WeightUnitValueObject.validate(invalidUnit);
     expect(isValid).toBe(false);
+    expect(exceptions).toIncludeAllMembers([
+      new ArgumentDoestNotIncludeInAllowedValues(),
+    ]);
   });
 });

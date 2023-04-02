@@ -1,5 +1,10 @@
+import { ProductDomainException } from '@product-domain/domain-exceptions';
 import { CreateProductCommandValidator } from '@product-use-case/create-product/application-services';
 import { CreateProductCommand } from '@product-use-case/create-product/dtos';
+import {
+  ArgumentContainsEmptyStringException,
+  ArgumentContainsNegativeException,
+} from 'common-base-classes';
 
 describe('CreateProductCommandValidator', () => {
   let validator: CreateProductCommandValidator;
@@ -16,6 +21,8 @@ describe('CreateProductCommandValidator', () => {
           amount: 100,
           currency: 'USD',
         },
+        description: 'Valid Description',
+        image: 'https://example.com/image.png',
       });
       const validationResult = validator.validate(command);
       expect(validationResult.isValid).toBe(true);
@@ -28,27 +35,17 @@ describe('CreateProductCommandValidator', () => {
           amount: -1,
           currency: 'USD',
         },
+        description: '',
+        image: 'wtf',
       });
       const validationResult = validator.validate(command);
       expect(validationResult.isValid).toBe(false);
-    });
-
-    it('should call validateName and validatePrice methods with the correct parameters', () => {
-      const command = new CreateProductCommand({
-        name: 'Valid Name',
-        price: {
-          amount: 100,
-          currency: 'USD',
-        },
-      });
-
-      const validateNameSpy = jest.spyOn(validator, 'validateName' as any);
-      const validatePriceSpy = jest.spyOn(validator, 'validatePrice' as any);
-
-      validator.validate(command);
-
-      expect(validateNameSpy).toHaveBeenCalledWith(command.name);
-      expect(validatePriceSpy).toHaveBeenCalledWith(command.price);
+      expect(validationResult.exceptions).toIncludeAllMembers([
+        new ProductDomainException.NameIsNotValid(),
+        new ProductDomainException.PriceIsNotValid(),
+        new ProductDomainException.DescriptionIsNotValid(),
+        new ProductDomainException.ImageIsNotValid(),
+      ]);
     });
 
     it('should clear exceptions after multiple calls to validate', () => {

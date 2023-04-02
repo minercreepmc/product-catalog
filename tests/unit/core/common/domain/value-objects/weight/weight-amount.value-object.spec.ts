@@ -15,27 +15,27 @@ describe('WeightAmountValueObject', () => {
     const weight = 0.009;
     const { isValid, exceptions } = WeightAmountValueObject.validate(weight);
     expect(isValid).toBe(false);
-    expect(exceptions).toEqual(
-      expect.arrayContaining([new ArgumentOutofBoundsException()]),
-    );
+    expect(exceptions).toIncludeAllMembers([
+      new ArgumentOutofBoundsException(),
+    ]);
   });
 
   it('should throw an error when the input is greater than the maximum allowed value', () => {
     const weight = Number.MAX_SAFE_INTEGER + 1;
     const { isValid, exceptions } = WeightAmountValueObject.validate(weight);
     expect(isValid).toBe(false);
-    expect(exceptions).toEqual(
-      expect.arrayContaining([new ArgumentOutofBoundsException()]),
-    );
+    expect(exceptions).toIncludeAllMembers([
+      new ArgumentOutofBoundsException(),
+    ]);
   });
 
   it('should throw an error when the input is negative', () => {
     const weight = -10;
     const { isValid, exceptions } = WeightAmountValueObject.validate(weight);
     expect(isValid).toBe(false);
-    expect(exceptions).toEqual(
-      expect.arrayContaining([new ArgumentContainsNegativeException()]),
-    );
+    expect(exceptions).toIncludeAllMembers([
+      new ArgumentContainsNegativeException(),
+    ]);
   });
 
   it('should return true when the input is an integer', () => {

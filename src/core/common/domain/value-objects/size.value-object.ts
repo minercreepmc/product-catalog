@@ -1,3 +1,4 @@
+import { replaceExceptionCode } from '@utils/functions';
 import { TextValueObject, TextValueObjectOptions } from 'common-base-classes';
 
 export class SizeValueObject extends TextValueObject {
@@ -17,6 +18,11 @@ export class SizeValueObject extends TextValueObject {
   };
 
   static validate(value: string) {
-    return super.validate(value, SizeValueObject.OPTIONS);
+    const response = super.validate(value, SizeValueObject.OPTIONS);
+    return replaceExceptionCode({
+      response,
+      superClass: 'TEXT',
+      targetClass: 'SIZE',
+    });
   }
 }

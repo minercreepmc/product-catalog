@@ -28,4 +28,19 @@ export namespace ProductDomainException {
     readonly message = 'Product name is not valid';
     readonly code = ProductDomainExceptionCodes.NameIsNotValid;
   }
+
+  export class DescriptionIsNotValid extends ProductValidationException {
+    readonly message = 'Product description is not valid';
+    readonly code = ProductDomainExceptionCodes.DescriptionIsNotValid;
+  }
+
+  export class ImageIsNotValid extends ProductValidationException {
+    readonly message = 'Product image is not valid';
+    readonly code = ProductDomainExceptionCodes.ImageIsNotValid;
+  }
+
+  export class AtributeIsNotValid extends ProductValidationException {
+    readonly message = 'Product attribute is not valid';
+    readonly code = ProductDomainExceptionCodes.AtributeIsNotValid;
+  }
 }

@@ -5,6 +5,7 @@ import { AppModule } from '@src/app.module';
 import {
   CreateProductHttpRequestDto,
   UpdateProductHttpRequest,
+  UpdateProductHttpResponse,
 } from '@src/core/product/interface-adapters/controllers/http';
 import { checkResponseForCode } from '@utils/functions';
 import * as request from 'supertest';
@@ -26,6 +27,8 @@ describe('UpdateProductHttpController (e2e)', () => {
       amount: 29.99,
       currency: 'USD',
     },
+    description: 'Sample description',
+    image: 'https://example.com/image.png',
   };
 
   beforeAll(async () => {
@@ -57,9 +60,12 @@ describe('UpdateProductHttpController (e2e)', () => {
         .send(updateProductRequest)
         .expect(HttpStatus.OK);
 
-      const { name, price } = updateResponse.body;
+      const { name, price, description, image } =
+        updateResponse.body as UpdateProductHttpResponse;
       expect(name).toEqual(updateProductRequest.name);
       expect(price).toEqual(updateProductRequest.price);
+      expect(description).toEqual(updateProductRequest.description);
+      expect(image).toEqual(updateProductRequest.image);
     });
 
     it('should not update a product if it not exists', async () => {
@@ -90,6 +96,8 @@ describe('UpdateProductHttpController (e2e)', () => {
           amount: -123,
           currency: 'USD',
         },
+        description: '',
+        image: '',
       };
       return request(app.getHttpServer())
         .put(`/products/${productIdDidNotExist}`)
@@ -102,6 +110,8 @@ describe('UpdateProductHttpController (e2e)', () => {
             codes: [
               ProductDomainExceptionCodes.NameIsNotValid,
               ProductDomainExceptionCodes.PriceIsNotValid,
+              ProductDomainExceptionCodes.DescriptionIsNotValid,
+              ProductDomainExceptionCodes.ImageIsNotValid,
             ],
           });
 

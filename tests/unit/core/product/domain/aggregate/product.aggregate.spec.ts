@@ -1,10 +1,15 @@
 import { AllowableCurrencyEnum } from '@common-domain/value-objects/money';
-import { ProductAggregate } from '@product-domain/aggregate';
+import {
+  CreateProductAggregateOptions,
+  ProductAggregate,
+} from '@product-domain/aggregate';
 import {
   ProductCreatedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@product-domain/domain-events';
 import {
+  ProductDescriptionValueObject,
+  ProductImageValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
   ProductStatus,
@@ -24,7 +29,27 @@ describe('ProductAggregate', () => {
 
   describe('createProduct', () => {
     it('should create a product with the provided options and return a ProductCreatedDomainEvent', () => {
-      const options = {
+      const options: CreateProductAggregateOptions = {
+        name: new ProductNameValueObject('Test Product'),
+        price: ProductPriceValueObject.create({
+          amount: 100,
+          currency: AllowableCurrencyEnum.USD,
+        }),
+        description: new ProductDescriptionValueObject('Test Description'),
+        image: new ProductImageValueObject('https://example.com/image.png'),
+      };
+      const event = productAggregate.createProduct(options);
+
+      expect(event).toBeInstanceOf(ProductCreatedDomainEvent);
+      expect(productAggregate.getStatus()).toBe(ProductStatus.DRAFT);
+      expect(productAggregate.details.name).toBe(options.name);
+      expect(productAggregate.details.price).toBe(options.price);
+      expect(productAggregate.details.description).toBe(options.description);
+      expect(productAggregate.details.image).toBe(options.image);
+    });
+
+    it('should create a product with required properties and ignore the optional properties', () => {
+      const options: CreateProductAggregateOptions = {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,

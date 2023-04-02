@@ -1,6 +1,8 @@
 import { ProductAggregate } from '@product-domain/aggregate';
 import {
+  ProductDescriptionValueObject,
   ProductIdValueObject,
+  ProductImageValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@product-domain/value-objects';
@@ -9,6 +11,8 @@ import { DomainEvent } from 'common-base-classes';
 export interface ProductCreatedDomainEventDetails {
   name: ProductNameValueObject;
   price: ProductPriceValueObject;
+  description?: ProductDescriptionValueObject;
+  image?: ProductImageValueObject;
 }
 
 export interface ProductCreatedDomainEventOptions {

@@ -108,6 +108,8 @@ export class ProductAggregate extends AbstractAggregateRoot<
       details: {
         name: this.details.name,
         price: this.details.price,
+        description: this.details.description,
+        image: this.details.image,
       },
     });
   }
@@ -134,6 +136,8 @@ export class ProductAggregate extends AbstractAggregateRoot<
       details: {
         name: this.details.name,
         price: this.details.price,
+        description: this.details.description,
+        image: this.details.image,
       },
     });
   }

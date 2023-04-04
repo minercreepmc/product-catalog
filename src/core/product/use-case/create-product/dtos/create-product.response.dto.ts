@@ -5,8 +5,8 @@ export class CreateProductResponseDto {
     amount: number;
     currency: string;
   };
-  readonly image: string;
-  readonly description: string;
+  readonly image?: string;
+  readonly description?: string;
   constructor(options: CreateProductResponseDto) {
     this.productId = options.productId;
     this.name = options.name;

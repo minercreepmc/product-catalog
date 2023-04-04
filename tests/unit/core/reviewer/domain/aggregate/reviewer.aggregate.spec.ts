@@ -1,4 +1,6 @@
 import { ReviewerAggregate } from '@reviewer-domain/aggregate';
+import { ReviewerCreatedDomainEvent } from '@reviewer-domain/domain-events';
+import { ReviewerUpdatedDomainEvent } from '@reviewer-domain/domain-events/reviewer-updated.domain-event';
 import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
@@ -25,9 +27,10 @@ describe('ReviewerAggregate', () => {
       name: new ReviewerNameValueObject('John Doe'),
       email: new ReviewerEmailValueObject('john.doe@example.com'),
     };
-    reviewerAggregate.createReviewer(options);
+    const reviewerCreated = reviewerAggregate.createReviewer(options);
     expect(reviewerAggregate.details.name).toEqual(options.name);
     expect(reviewerAggregate.details.email).toEqual(options.email);
+    expect(reviewerCreated).toBeInstanceOf(ReviewerCreatedDomainEvent);
   });
 
   it('should update a reviewer with the provided options', () => {
@@ -40,8 +43,9 @@ describe('ReviewerAggregate', () => {
       name: new ReviewerNameValueObject('Jane Doe'),
     };
     reviewerAggregate.createReviewer(initialOptions);
-    reviewerAggregate.updateReviewer(updateOptions);
+    const reviewerUpdated = reviewerAggregate.updateReviewer(updateOptions);
     expect(reviewerAggregate.details.name).toEqual(updateOptions.name);
     expect(reviewerAggregate.details.email).toEqual(initialOptions.email);
+    expect(reviewerUpdated).toBeInstanceOf(ReviewerUpdatedDomainEvent);
   });
 });

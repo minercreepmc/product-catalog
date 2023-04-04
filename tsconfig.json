@@ -60,6 +60,18 @@
       "@reviewer-domain/*": [
         "./src/core/reviewer/domain/*"
       ],
+      "@reviewer-use-case": [
+        "./src/core/reviewer/domain"
+      ],
+      "@reviewer-use-case/*": [
+        "./src/core/reviewer/use-case/*"
+      ],
+      "@reviewer-infrastructure": [
+        "./src/core/reviewer/infrastructures"
+      ],
+      "@reviewer-infrastructure/*": [
+        "./src/core/reviewer/infrastructures/*"
+      ],
       "@common-domain": [
         "./src/core/common/domain"
       ],

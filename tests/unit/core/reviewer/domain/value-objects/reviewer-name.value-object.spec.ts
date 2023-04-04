@@ -14,6 +14,14 @@ describe('ReviewerNameValueObject', () => {
     expect(productName.unpack()).toEqual(value);
   });
 
+  it('should create a valid ReviewerNameValueObject with symbols and numbers on it', () => {
+    const value = 'peter-123';
+    const productName = new ReviewerNameValueObject(value);
+    expect(productName).toBeInstanceOf(ReviewerNameValueObject);
+    expect(productName).toBeInstanceOf(TextValueObject);
+    expect(productName.unpack()).toEqual(value);
+  });
+
   it('should throw an error when creating a ReviewerNameValueObject with a value that is too short', () => {
     const value = 'A';
     try {

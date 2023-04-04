@@ -1,4 +1,4 @@
-import { ReviewerEmailValueObject } from '@reviewer-domain/value-objects/reviewer-email.value-object';
+import { ReviewerEmailValueObject } from '@reviewer-domain/value-objects/reviewer-email';
 
 describe('ReviewerEmailValueObject', () => {
   describe('constructor', () => {

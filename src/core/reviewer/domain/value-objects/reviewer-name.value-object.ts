@@ -6,15 +6,15 @@ import {
 
 export class ReviewerNameValueObject extends TextValueObject {
   constructor(value: string) {
-    super(value);
+    super(value, ReviewerNameValueObject.OPTIONS);
   }
 
   static readonly OPTIONS: TextValueObjectOptions = {
     minLength: 2,
     maxLength: 20,
     allowEmpty: false,
-    allowNumber: false,
-    allowSymbols: false,
+    allowNumber: true,
+    allowSymbols: true,
     allowLowercase: true,
     allowUppercase: true,
     allowWhitespace: true,

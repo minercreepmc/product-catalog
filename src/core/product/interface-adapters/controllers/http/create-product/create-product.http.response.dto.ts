@@ -37,13 +37,13 @@ export class CreateProductHttpResponse {
     description: 'The description of the product',
     example: 'Sample description',
   })
-  readonly description: string;
+  readonly description?: string;
 
   @ApiProperty({
     description: 'The image of the product',
     example: 'https://example.com/image.png',
   })
-  readonly image: string;
+  readonly image?: string;
 
   readonly message: string;
 

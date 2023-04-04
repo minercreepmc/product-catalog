@@ -3,6 +3,7 @@ import {
   TextValueObjectOptions,
   ValidationResponse,
 } from 'common-base-classes';
+import { emailRegex } from './email-regex';
 
 export class ReviewerEmailValueObject extends TextValueObject {
   constructor(value: string) {
@@ -17,8 +18,7 @@ export class ReviewerEmailValueObject extends TextValueObject {
     allowLowercase: true,
     allowNumber: true,
     allowSymbols: true,
-    regex:
-      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*(?:\.[a-zA-Z]{2,})$/,
+    regex: emailRegex,
   };
 
   static validate(value: string): ValidationResponse {

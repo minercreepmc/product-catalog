@@ -10,7 +10,9 @@ import {
 describe('ReviewerAggregate', () => {
   it('should create a ReviewerAggregate with a given id', () => {
     const reviewerIdValueObject = new ReviewerIdValueObject();
-    const reviewerAggregate = new ReviewerAggregate(reviewerIdValueObject);
+    const reviewerAggregate = new ReviewerAggregate({
+      id: reviewerIdValueObject,
+    });
     expect(reviewerAggregate).toBeInstanceOf(ReviewerAggregate);
     expect(reviewerAggregate.id).toEqual(reviewerIdValueObject);
   });

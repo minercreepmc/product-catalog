@@ -1,20 +1,20 @@
-import { ProductCreatedDomainEvent } from '@product-domain/domain-events';
-import { ProductManagementDomainService } from '@product-domain/domain-services';
-import {
-  ProductIdValueObject,
-  ProductNameValueObject,
-  ProductPriceValueObject,
-} from '@product-domain/value-objects';
-import { CreateProductHandler } from '@product-use-case/create-product';
+import { ProductCreatedDomainEvent } from '@domain-events/product';
+import { ProductManagementDomainService } from '@domain-services';
+import { CreateProductHandler } from '@use-cases/create-product';
 import {
   CreateProductBusinessValidator,
   CreateProductCommandValidator,
   CreateProductMapper,
-} from '@product-use-case/create-product/application-services';
+} from '@use-cases/create-product/application-services';
 import {
   CreateProductCommand,
   CreateProductResponseDto,
-} from '@product-use-case/create-product/dtos';
+} from '@use-cases/create-product/dtos';
+import {
+  ProductIdValueObject,
+  ProductNameValueObject,
+  ProductPriceValueObject,
+} from '@value-objects/product';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('CreateProductHandler', () => {

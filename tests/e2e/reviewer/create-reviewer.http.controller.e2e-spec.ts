@@ -1,11 +1,11 @@
+import { ReviewerDomainExceptionCodes } from '@domain-exceptions/reviewer';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReviewerDomainExceptionCodes } from '@reviewer-domain/domain-exceptions';
 import { AppModule } from '@src/app.module';
 import {
   CreateReviewerHttpRequest,
   CreateReviewerHttpResponse,
-} from '@src/core/reviewer/interface-adapters/controllers/http/create-reviewer';
+} from '@src/interface-adapters/controllers/http';
 import { checkResponseForCode } from '@utils/functions';
 import * as request from 'supertest';
 

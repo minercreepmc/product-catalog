@@ -1,11 +1,11 @@
 import { checkResponseForCode } from '@utils/functions';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductDomainExceptionCodes } from '@product-domain/domain-exceptions';
 import { AppModule } from '@src/app.module';
-import { CreateProductHttpRequestDto } from '@src/core/product/interface-adapters/controllers/http';
 import * as request from 'supertest';
-import { CreateProductResponseDto } from '@product-use-case/create-product/dtos';
+import { CreateProductHttpRequestDto } from '@src/interface-adapters/controllers/http';
+import { CreateProductResponseDto } from '@use-cases/create-product/dtos';
+import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
 
 describe('CreateProductHttpController (e2e)', () => {
   let app: INestApplication;

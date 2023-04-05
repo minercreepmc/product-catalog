@@ -30,59 +30,59 @@
       "@config/*": [
         "./config/*"
       ],
-      "@product-domain": [
-        "./src/core/product/domain"
+      "@aggregates": [
+        "./src/domain/aggregates"
       ],
-      "@product-domain/*": [
-        "./src/core/product/domain/*"
+      "@aggregates/*": [
+        "./src/domain/aggregates/*"
       ],
-      "@product-use-case": [
-        "./src/core/product/use-case"
+      "@value-objects": [
+        "./src/domain/value-objects"
       ],
-      "@product-use-case/*": [
-        "./src/core/product/use-case/*"
+      "@value-objects/*": [
+        "./src/domain/value-objects/*"
       ],
-      "@product-infrastructure": [
-        "./src/core/product/infrastructures"
+      "@domain-events": [
+        "./src/domain/domain-events"
       ],
-      "@product-infrastructure/*": [
-        "./src/core/product/infrastructures/*"
+      "@domain-events/*": [
+        "./src/domain/domain-events/*"
       ],
-      "@category-domain": [
-        "./src/core/category/domain"
+      "@domain-services": [
+        "./src/domain/domain-services"
       ],
-      "@category-domain/*": [
-        "./src/core/category/domain/*"
+      "@domain-services/*": [
+        "./src/domain/domain-services/*"
       ],
-      "@reviewer-domain": [
-        "./src/core/reviewer/domain"
+      "@domain-exceptions": [
+        "./src/domain/domain-exceptions"
       ],
-      "@reviewer-domain/*": [
-        "./src/core/reviewer/domain/*"
+      "@domain-exceptions/*": [
+        "./src/domain/domain-exceptions/*"
       ],
-      "@reviewer-use-case": [
-        "./src/core/reviewer/domain"
+      "@domain-interfaces": [
+        "./src/domain/interfaces"
       ],
-      "@reviewer-use-case/*": [
-        "./src/core/reviewer/use-case/*"
+      "@domain-interfaces/*": [
+        "./src/domain/interfaces/*"
       ],
-      "@reviewer-infrastructure": [
-        "./src/core/reviewer/infrastructures"
+      "@use-cases": [
+        "./src/use-cases"
       ],
-      "@reviewer-infrastructure/*": [
-        "./src/core/reviewer/infrastructures/*"
+      "@use-cases/*": [
+        "./src/use-cases/*"
       ],
-      "@common-domain": [
-        "./src/core/common/domain"
+      "@database": [
+        "./src/infrastructures/database"
       ],
-      "@common-domain/*": [
-        "./src/core/common/domain/*"
+      "@database/*": [
+        "./src/infrastructures/database/*"
       ],
-      "@common-use-case": [
-        "./src/core/common/use-case"
+      "@migrations": [
+        "./src/infrastructures/migrations"
       ],
-      "@common-use-case/*": [
-        "./src/core/common/use-case/*"
+      "@migrations/*": [
+        "./src/infrastructures/migrations/*"
       ],
       "@src": [
         "./src"

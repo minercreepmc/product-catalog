@@ -1,8 +1,10 @@
+import { ProductTypeOrmModel } from '@database/repositories/typeorm/product';
+import { ReviewerTypeOrmModel } from '@database/repositories/typeorm/reviewer';
+import {
+  CreateProductMigration1679747919850,
+  CreateReviewerMigration1680595085820,
+} from '@migrations';
 import { ConfigService } from '@nestjs/config';
-import { ProductTypeOrmModel } from '@product-infrastructure/database/repositories/typeorm/product';
-import { CreateProductMigration1679747919850 } from '@product-infrastructure/migrations';
-import { ReviewerTypeOrmModel } from '@reviewer-infrastructure/database/repositories/typeorm';
-import { CreateReviewerMigration1680595085820 } from '@reviewer-infrastructure/migrations/1680595085820-CreateReviewerMigration';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 const configService = new ConfigService();

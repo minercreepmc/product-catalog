@@ -1,12 +1,12 @@
+import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductDomainExceptionCodes } from '@product-domain/domain-exceptions';
 import { AppModule } from '@src/app.module';
 import {
   CreateProductHttpRequestDto,
   UpdateProductHttpRequest,
   UpdateProductHttpResponse,
-} from '@src/core/product/interface-adapters/controllers/http';
+} from '@src/interface-adapters/controllers/http';
 import { checkResponseForCode } from '@utils/functions';
 import * as request from 'supertest';
 

@@ -1,4 +1,4 @@
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { UpdateProductCommandValidator } from '@use-cases/update-product/application-services';
 import { UpdateProductCommand } from '@use-cases/update-product/dtos';
 import {
@@ -51,7 +51,7 @@ describe('UpdateProductCommandValidator', () => {
         updateProductCommandValidator.validate(updateProductCommand);
       expect(response.isValid).toBe(false);
       expect(response.exceptions).toEqual(
-        expect.arrayContaining([new ProductDomainException.NameIsNotValid()]),
+        expect.arrayContaining([new ProductDomainExceptions.NameDoesNotValid()]),
       );
     });
 
@@ -70,7 +70,7 @@ describe('UpdateProductCommandValidator', () => {
       expect(
         Array.from(updateProductCommandValidator.exceptions.values()),
       ).toEqual(
-        expect.arrayContaining([new ProductDomainException.PriceIsNotValid()]),
+        expect.arrayContaining([new ProductDomainExceptions.PriceDoesNotValid()]),
       );
     });
 
@@ -87,8 +87,8 @@ describe('UpdateProductCommandValidator', () => {
         Array.from(updateProductCommandValidator.exceptions.values()),
       ).toEqual(
         expect.arrayContaining([
-          new ProductDomainException.PriceIsNotValid(),
-          new ProductDomainException.NameIsNotValid(),
+          new ProductDomainExceptions.PriceDoesNotValid(),
+          new ProductDomainExceptions.NameDoesNotValid(),
         ]),
       );
     });
@@ -131,7 +131,7 @@ describe('UpdateProductCommandValidator', () => {
       expect(
         Array.from(updateProductCommandValidator.exceptions.values()),
       ).toEqual(
-        expect.arrayContaining([new ProductDomainException.NameIsNotValid()]),
+        expect.arrayContaining([new ProductDomainExceptions.NameDoesNotValid()]),
       );
     });
   });

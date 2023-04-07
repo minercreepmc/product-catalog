@@ -8,6 +8,7 @@ import {
 import { Err, Ok } from 'oxide.ts';
 import {
   CreateProductBusinessValidator,
+  CreateProductCommandValidator,
   CreateProductMapper,
 } from './application-services';
 import { CreateProductCommand, CreateProductResult } from './dtos';
@@ -17,7 +18,7 @@ export class CreateProductHandler
   implements ICommandHandler<CreateProductCommand, CreateProductResult>
 {
   constructor(
-    private readonly commandValidator: ProductCommandValidator,
+    private readonly commandValidator: CreateProductCommandValidator,
     private readonly businessValidator: CreateProductBusinessValidator,
     private readonly mapper: CreateProductMapper,
     private readonly productManagementService: ProductManagementDomainService,

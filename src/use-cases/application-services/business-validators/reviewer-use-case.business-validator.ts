@@ -16,7 +16,7 @@ export abstract class ReviewerBusinessValidator extends BusinessValidatorBase {
       email,
     );
     if (reviewer) {
-      this.exceptions.push(new ReviewerDomainExceptions.IsExist());
+      this.exceptions.push(new ReviewerDomainExceptions.DoesExist());
     }
   }
 }

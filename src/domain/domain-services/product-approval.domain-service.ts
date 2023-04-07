@@ -1,6 +1,11 @@
+import { ProductSubmittedDomainEvent } from '@domain-events/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import {
   productRepositoryDiToken,
   ProductRepositoryPort,
+  reviewerRepositoryDiToken,
+  ReviewerRepositoryPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import { ProductIdValueObject } from '@value-objects/product';
@@ -10,20 +15,38 @@ import {
   TextValueObject,
 } from 'common-base-classes';
 
+export interface SubmitForApprovalDomainServiceOptions {
+  productId: ProductIdValueObject;
+  reviewerId: ReviewerIdValueObject;
+}
+
 @Injectable()
 export class ProductApprovalDomainService {
   constructor(
     @Inject(productRepositoryDiToken)
     private readonly productRepository: ProductRepositoryPort,
+    @Inject(reviewerRepositoryDiToken)
+    private readonly reviewerRepository: ReviewerRepositoryPort,
   ) {}
 
   async submitForApproval(
-    productId: ProductIdValueObject,
-    reviewerId: ReviewerIdValueObject,
-  ) {
+    options: SubmitForApprovalDomainServiceOptions,
+  ): Promise<ProductSubmittedDomainEvent> {
+    const { productId, reviewerId } = options;
     const product = await this.productRepository.findOneById(productId);
-    product.submitForApproval(reviewerId);
+    if (!product) {
+      throw new ProductDomainExceptions.DoesNotExist();
+    }
+
+    const reviewer = await this.reviewerRepository.findOneById(reviewerId);
+    if (!reviewer) {
+      throw new ReviewerDomainExceptions.DoesNotExist();
+    }
+
+    const productSubmitted = product.submitForApproval(reviewerId);
     await this.productRepository.save(product);
+
+    return productSubmitted;
   }
 
   async approveProduct(

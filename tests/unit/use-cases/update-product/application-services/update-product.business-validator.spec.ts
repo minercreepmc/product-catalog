@@ -1,4 +1,4 @@
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductManagementDomainService } from '@domain-services';
 import { UpdateProductBusinessValidator } from '@use-cases/update-product/application-services';
 import { UpdateProductDomainOptions } from '@use-cases/update-product/dtos';
@@ -32,7 +32,7 @@ describe('UpdateProductBusinessValidator', () => {
         },
       };
 
-      productService.isProductIdExist.mockResolvedValueOnce(true);
+      productService.isProductExistById.mockResolvedValueOnce(true);
 
       // Act
       const result = await validator.validate(domainOptions);
@@ -55,7 +55,7 @@ describe('UpdateProductBusinessValidator', () => {
         },
       };
 
-      productService.isProductNameExist.mockResolvedValueOnce(false);
+      productService.isProductExistByName.mockResolvedValueOnce(false);
 
       // Act
       const result = await validator.validate(domainOptions);
@@ -63,7 +63,7 @@ describe('UpdateProductBusinessValidator', () => {
       // Assert
       expect(result.isValid).toBe(false);
       expect(result.exceptions).toEqual(
-        expect.arrayContaining([new ProductDomainException.IsNotExist()]),
+        expect.arrayContaining([new ProductDomainExceptions.DoesNotExist()]),
       );
     });
   });

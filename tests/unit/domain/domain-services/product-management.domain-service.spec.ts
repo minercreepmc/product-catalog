@@ -2,7 +2,7 @@ import {
   CreateProductAggregateOptions,
   ProductAggregate,
 } from '@aggregates/product';
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductRepositoryPort } from '@domain-interfaces';
 import {
   ProductManagementDomainService,
@@ -43,7 +43,7 @@ describe('ProductManagementDomainService', () => {
 
       mockProductRepository.findOneByName.mockResolvedValue(existingProduct);
 
-      const result = await service.isProductNameExist(options.name);
+      const result = await service.isProductExistByName(options.name);
 
       expect(result).toBe(true);
       expect(mockProductRepository.findOneByName).toHaveBeenCalledTimes(1);
@@ -63,7 +63,7 @@ describe('ProductManagementDomainService', () => {
 
       mockProductRepository.findOneByName.mockResolvedValue(null);
 
-      const result = await service.isProductNameExist(options.name);
+      const result = await service.isProductExistByName(options.name);
 
       expect(result).toBe(false);
       expect(mockProductRepository.findOneByName).toHaveBeenCalledTimes(1);
@@ -109,7 +109,7 @@ describe('ProductManagementDomainService', () => {
       mockProductRepository.findOneByName.mockResolvedValue(existingProduct);
 
       await expect(service.createProduct(options)).rejects.toThrowError(
-        new ProductDomainException.IsExist(),
+        new ProductDomainExceptions.DoesExist(),
       );
 
       expect(mockProductRepository.findOneByName).toHaveBeenCalledTimes(1);
@@ -178,7 +178,7 @@ describe('ProductManagementDomainService', () => {
       };
 
       await expect(service.updateProduct(options)).rejects.toThrowError(
-        new ProductDomainException.IsNotExist(),
+        new ProductDomainExceptions.DoesNotExist(),
       );
 
       expect(mockProductRepository.findOneById).toHaveBeenCalledTimes(1);

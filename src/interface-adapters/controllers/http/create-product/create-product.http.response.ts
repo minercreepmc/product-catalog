@@ -1,11 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateProductHttpRequestDto {
+export class CreateProductHttpResponse {
+  @ApiProperty({
+    description: 'The id of the product',
+    example: '123',
+  })
+  readonly productId: string;
   @ApiProperty({
     description: 'The name of the product',
     example: 'Sample Product',
   })
-  name: string;
+  readonly name: string;
   @ApiProperty({
     description: 'The price of the product',
     type: 'object',
@@ -22,20 +27,31 @@ export class CreateProductHttpRequestDto {
       },
     },
   })
-  price: {
-    amount: number;
-    currency: string;
+  readonly price: {
+    readonly amount: number;
+    readonly currency: string;
   };
 
   @ApiProperty({
     description: 'The description of the product',
     example: 'Sample description',
   })
-  description?: string;
+  readonly description?: string;
 
   @ApiProperty({
     description: 'The image of the product',
     example: 'https://example.com/image.png',
   })
-  image?: string;
+  readonly image?: string;
+
+  readonly message: string;
+
+  constructor(options: Omit<CreateProductHttpResponse, 'message'>) {
+    this.productId = options.productId;
+    this.name = options.name;
+    this.price = options.price;
+    this.description = options.description;
+    this.image = options.image;
+    this.message = 'Product created successfully';
+  }
 }

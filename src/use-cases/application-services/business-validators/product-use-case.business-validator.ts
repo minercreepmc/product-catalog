@@ -1,4 +1,4 @@
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductManagementDomainService } from '@domain-services';
 import { BusinessValidatorBase } from '@use-cases/common';
 import {
@@ -20,18 +20,18 @@ export abstract class ProductBusinessValidator extends BusinessValidatorBase {
     name: ProductNameValueObject,
   ): Promise<void> {
     const productExists =
-      await this.productManagementService.isProductNameExist(name);
+      await this.productManagementService.isProductExistByName(name);
     if (productExists) {
-      this.exceptions.push(new ProductDomainException.IsExist());
+      this.exceptions.push(new ProductDomainExceptions.DoesExist());
     }
   }
 
   protected async validateIdMustExist(id: ProductIdValueObject): Promise<void> {
-    const productExists = await this.productManagementService.isProductIdExist(
+    const productExists = await this.productManagementService.isProductExistById(
       id,
     );
     if (!productExists) {
-      this.exceptions.push(new ProductDomainException.IsNotExist());
+      this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
     }
   }
 }

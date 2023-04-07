@@ -1,9 +1,9 @@
 import {
-  Controller,
-  Post,
   Body,
   ConflictException,
-  InternalServerErrorException,
+  Controller,
+  HttpCode,
+  Post,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -12,26 +12,25 @@ import {
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 import {
-  CreateProductCommand,
-  CreateProductResponseDto,
-} from '@use-cases/create-product/dtos';
+  SubmitForApprovalCommand,
+  SubmitForApprovalResponseDto,
+} from '@use-cases/submit-for-approval/dtos';
 import { match } from 'oxide.ts';
-import { CreateProductHttpRequest } from './create-product.http.request';
-import { CreateProductHttpResponse } from './create-product.http.response';
+import { SubmitForApprovalHttpRequest } from './submit-for-approval.http.request';
+import { SubmitForApprovalHttpResponse } from './submit-for-approval.http.response';
 
 @Controller('products')
-export class CreateProductHttpController {
+export class SubmitForApprovalHttpController {
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Post()
-  async execute(@Body() dto: CreateProductHttpRequest) {
-    const command = new CreateProductCommand(dto);
-
+  @Post('submit-for-approval')
+  @HttpCode(200)
+  async execute(@Body() dto: SubmitForApprovalHttpRequest) {
+    const command = new SubmitForApprovalCommand(dto);
     const result = await this.commandBus.execute(command);
-
     return match(result, {
-      Ok: (response: CreateProductResponseDto) =>
-        new CreateProductHttpResponse(response),
+      Ok: (response: SubmitForApprovalResponseDto) =>
+        new SubmitForApprovalHttpResponse(response),
       Err: (exception: Error) => {
         if (exception instanceof UseCaseCommandValidationExceptions) {
           throw new UnprocessableEntityException(exception.exceptions);
@@ -39,8 +38,7 @@ export class CreateProductHttpController {
         if (exception instanceof UseCaseBusinessValidationExceptions) {
           throw new ConflictException(exception.exceptions);
         }
-
-        throw new InternalServerErrorException(exception);
+        throw exception;
       },
     });
   }

@@ -25,6 +25,7 @@ import { ProductCommandValidator } from '@use-cases/application-services/command
 import { CreateProductHandler } from '@use-cases/create-product';
 import {
   CreateProductBusinessValidator,
+  CreateProductCommandValidator,
   CreateProductMapper,
 } from '@use-cases/create-product/application-services';
 import { CreateReviewerHandler } from '@use-cases/create-reviewer';
@@ -33,9 +34,16 @@ import {
   CreateReviewerCommandValidator,
   CreateReviewerMapper,
 } from '@use-cases/create-reviewer/application-services';
+import {
+  SubmitForApprovalBusinessValidator,
+  SubmitForApprovalCommandValidator,
+  SubmitForApprovalMapper,
+} from '@use-cases/submit-for-approval/application-services';
+import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval/submit-for-approval.handler';
 import { UpdateProductHandler } from '@use-cases/update-product';
 import {
   UpdateProductBusinessValidator,
+  UpdateProductCommandValidator,
   UpdateProductMapper,
 } from '@use-cases/update-product/application-services';
 import {
@@ -43,6 +51,7 @@ import {
   CreateReviewerHttpController,
   UpdateProductHttpController,
 } from './interface-adapters/controllers/http';
+import { SubmitForApprovalHttpController } from './interface-adapters/controllers/http/submit-for-approval';
 
 // Domain
 const domainServices: Provider[] = [
@@ -63,19 +72,18 @@ const repositories: Provider[] = [
   },
 ];
 
-// Application services
-const applicationService: Provider[] = [ProductCommandValidator];
-
 // Use case
 const createProductUseCase: Provider[] = [
   CreateProductHandler,
   CreateProductMapper,
+  CreateProductCommandValidator,
   CreateProductBusinessValidator,
 ];
 
 const updateProductUseCase: Provider[] = [
   UpdateProductHandler,
   UpdateProductMapper,
+  UpdateProductCommandValidator,
   UpdateProductBusinessValidator,
 ];
 const createReviewerUseCase: Provider[] = [
@@ -84,22 +92,31 @@ const createReviewerUseCase: Provider[] = [
   CreateReviewerBusinessValidator,
   CreateReviewerMapper,
 ];
+const submitForApprovalUseCase: Provider[] = [
+  SubmitForApprovalHandler,
+  SubmitForApprovalCommandValidator,
+  SubmitForApprovalBusinessValidator,
+  SubmitForApprovalMapper,
+];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
   ...updateProductUseCase,
   ...createReviewerUseCase,
+  ...submitForApprovalUseCase,
 ];
 
 // Interface Adapters
 const createProductController = [CreateProductHttpController];
 const updateProductController = [UpdateProductHttpController];
 const createReviewerController = [CreateReviewerHttpController];
+const submitForApprovalController = [SubmitForApprovalHttpController];
 
 const controllers = [
   ...createProductController,
   ...updateProductController,
   ...createReviewerController,
+  ...submitForApprovalController,
 ];
 
 // Vendor
@@ -117,11 +134,6 @@ const vendors = [
     ...vendors,
   ],
   controllers,
-  providers: [
-    ...applicationService,
-    ...domainServices,
-    ...repositories,
-    ...useCases,
-  ],
+  providers: [...domainServices, ...repositories, ...useCases],
 })
 export class AppModule {}

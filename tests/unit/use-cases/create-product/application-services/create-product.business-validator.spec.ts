@@ -1,4 +1,4 @@
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductManagementDomainService } from '@domain-services';
 import { CreateProductBusinessValidator } from '@use-cases/create-product/application-services';
 import { CreateProductDomainOptions } from '@use-cases/create-product/dtos';
@@ -28,7 +28,7 @@ describe('CreateProductBusinessValidator', () => {
       });
       const domainOptions: CreateProductDomainOptions = { name, price };
 
-      productManagementService.isProductNameExist.mockResolvedValue(false);
+      productManagementService.isProductExistByName.mockResolvedValue(false);
 
       const validationResult = await validator.validate(domainOptions);
 
@@ -44,14 +44,14 @@ describe('CreateProductBusinessValidator', () => {
       });
       const domainOptions: CreateProductDomainOptions = { name, price };
 
-      productManagementService.isProductNameExist.mockResolvedValue(true);
+      productManagementService.isProductExistByName.mockResolvedValue(true);
 
       const validationResult = await validator.validate(domainOptions);
 
       expect(validationResult.isValid).toBe(false);
       expect(validationResult.exceptions.length).toBe(1);
       expect(validationResult.exceptions[0]).toBeInstanceOf(
-        ProductDomainException.IsExist,
+        ProductDomainExceptions.DoesExist,
       );
     });
   });

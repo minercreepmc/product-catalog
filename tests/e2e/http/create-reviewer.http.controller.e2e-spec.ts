@@ -63,7 +63,7 @@ describe('CreateReviewerHttpController (e2e)', () => {
           const emailIsExist = checkResponseForCode({
             response,
             statusCode: HttpStatus.CONFLICT,
-            codes: [ReviewerDomainExceptionCodes.IsExist],
+            codes: [ReviewerDomainExceptionCodes.DoesExist],
           });
 
           expect(emailIsExist).toBeTruthy();
@@ -86,8 +86,8 @@ describe('CreateReviewerHttpController (e2e)', () => {
             response,
             statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
             codes: [
-              ReviewerDomainExceptionCodes.NameIsNotValid,
-              ReviewerDomainExceptionCodes.EmailIsNotValid,
+              ReviewerDomainExceptionCodes.NameDoesNotValid,
+              ReviewerDomainExceptionCodes.EmailDoesNotValid,
             ],
           });
 

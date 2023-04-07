@@ -1,4 +1,4 @@
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { CreateProductCommandValidator } from '@use-cases/create-product/application-services';
 import { CreateProductCommand } from '@use-cases/create-product/dtos';
 
@@ -37,10 +37,10 @@ describe('CreateProductCommandValidator', () => {
       const validationResult = validator.validate(command);
       expect(validationResult.isValid).toBe(false);
       expect(validationResult.exceptions).toIncludeAllMembers([
-        new ProductDomainException.NameIsNotValid(),
-        new ProductDomainException.PriceIsNotValid(),
-        new ProductDomainException.DescriptionIsNotValid(),
-        new ProductDomainException.ImageIsNotValid(),
+        new ProductDomainExceptions.NameDoesNotValid(),
+        new ProductDomainExceptions.PriceDoesNotValid(),
+        new ProductDomainExceptions.DescriptionDoesNotValid(),
+        new ProductDomainExceptions.ImageDoesNotValid(),
       ]);
     });
 

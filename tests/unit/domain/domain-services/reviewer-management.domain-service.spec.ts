@@ -62,7 +62,7 @@ describe('ReviewerManagementDomainService', () => {
 
       await expect(
         reviewerManagementDomainService.createReviewer(options),
-      ).rejects.toThrow(ReviewerDomainExceptions.IsExist);
+      ).rejects.toThrow(ReviewerDomainExceptions.DoesExist);
       expect(reviewerRepository.findOneByEmail).toHaveBeenCalledWith(
         options.email,
       );

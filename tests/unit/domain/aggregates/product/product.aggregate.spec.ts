@@ -4,6 +4,7 @@ import {
 } from '@aggregates/product';
 import {
   ProductCreatedDomainEvent,
+  ProductSubmittedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
 import { AllowableCurrencyEnum } from '@value-objects/common/money';
@@ -13,6 +14,7 @@ import {
   ProductNameValueObject,
   ProductPriceValueObject,
   ProductStatus,
+  ProductStatusValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import {
@@ -110,17 +112,36 @@ describe('ProductAggregate', () => {
   });
 
   describe('Business method', () => {
-    it('should submit a product for approval', () => {
+    it('should submit a product for approval and return a domain event', () => {
+      // Arrange
       const reviewerId = new ReviewerIdValueObject();
-      productAggregate.createProduct({
+      const createProductOptions: CreateProductAggregateOptions = {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
           currency: AllowableCurrencyEnum.USD,
         }),
+      };
+      const productAggregate = new ProductAggregate();
+      productAggregate.createProduct(createProductOptions);
+
+      // Act
+      const actualEvent = productAggregate.submitForApproval(reviewerId);
+
+      const expectedEvent = new ProductSubmittedDomainEvent({
+        productId: productAggregate.id,
+        details: {
+          reviewerId: reviewerId,
+          productStatus: new ProductStatusValueObject(
+            ProductStatus.PENDING_APPROVAL,
+          ),
+        },
       });
-      productAggregate.submitForApproval(reviewerId);
-      expect(productAggregate.details.status.unpack()).toBe(
+
+      // Assert
+      expect(actualEvent.details).toEqual(expectedEvent.details);
+      expect(actualEvent.productId).toEqual(expectedEvent.productId);
+      expect(productAggregate.getStatus()).toEqual(
         ProductStatus.PENDING_APPROVAL,
       );
     });

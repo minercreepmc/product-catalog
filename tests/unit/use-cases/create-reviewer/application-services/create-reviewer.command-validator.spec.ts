@@ -29,8 +29,8 @@ describe('CreateReviewerCommandValidator', () => {
         email: 'invalid-email',
       });
       const expectedExceptions = [
-        new ReviewerDomainExceptions.NameIsNotValid(),
-        new ReviewerDomainExceptions.EmailIsNotValid(),
+        new ReviewerDomainExceptions.NameDoesNotValid(),
+        new ReviewerDomainExceptions.EmailDoesNotValid(),
       ];
 
       const response = createReviewerCommandValidator.validate(invalidCommand);

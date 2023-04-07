@@ -4,43 +4,43 @@ import { ProductDomainExceptionCodes } from './product.domain-exception-code';
 export abstract class ProductValidationException extends DomainExceptionBase {}
 export abstract class ProductBusinessException extends DomainExceptionBase {}
 
-export namespace ProductDomainException {
-  export class IsNotExist extends ProductBusinessException {
-    readonly message = 'Product is not exist';
-    readonly code = ProductDomainExceptionCodes.ProductIsNotExist;
+export namespace ProductDomainExceptions {
+  export class DoesNotExist extends ProductBusinessException {
+    readonly message = 'Product does not exist';
+    readonly code = ProductDomainExceptionCodes.DoesNotExist;
   }
-  export class IsExist extends ProductBusinessException {
-    readonly message = 'Product is exist';
-    readonly code = ProductDomainExceptionCodes.ProductIsExist;
-  }
-
-  export class IdIsNotValid extends ProductValidationException {
-    readonly message = 'Product id is not valid';
-    readonly code = ProductDomainExceptionCodes.IdIsNotValid;
+  export class DoesExist extends ProductBusinessException {
+    readonly message = 'Product does exist';
+    readonly code = ProductDomainExceptionCodes.DoesExist;
   }
 
-  export class PriceIsNotValid extends ProductValidationException {
-    readonly message = 'Product price is not valid';
-    readonly code = ProductDomainExceptionCodes.PriceIsNotValid;
+  export class IdDoesNotValid extends ProductValidationException {
+    readonly message = 'Product id does not valid';
+    readonly code = ProductDomainExceptionCodes.IdDoesNotValid;
   }
 
-  export class NameIsNotValid extends ProductValidationException {
-    readonly message = 'Product name is not valid';
-    readonly code = ProductDomainExceptionCodes.NameIsNotValid;
+  export class PriceDoesNotValid extends ProductValidationException {
+    readonly message = 'Product price does not valid';
+    readonly code = ProductDomainExceptionCodes.PriceDoesNotValid;
   }
 
-  export class DescriptionIsNotValid extends ProductValidationException {
-    readonly message = 'Product description is not valid';
-    readonly code = ProductDomainExceptionCodes.DescriptionIsNotValid;
+  export class NameDoesNotValid extends ProductValidationException {
+    readonly message = 'Product name does not valid';
+    readonly code = ProductDomainExceptionCodes.NameDoesNotValid;
   }
 
-  export class ImageIsNotValid extends ProductValidationException {
-    readonly message = 'Product image is not valid';
-    readonly code = ProductDomainExceptionCodes.ImageIsNotValid;
+  export class DescriptionDoesNotValid extends ProductValidationException {
+    readonly message = 'Product description does not valid';
+    readonly code = ProductDomainExceptionCodes.DescriptionDoesNotValid;
   }
 
-  export class AtributeIsNotValid extends ProductValidationException {
-    readonly message = 'Product attribute is not valid';
-    readonly code = ProductDomainExceptionCodes.AtributeIsNotValid;
+  export class ImageDoesNotValid extends ProductValidationException {
+    readonly message = 'Product image does not valid';
+    readonly code = ProductDomainExceptionCodes.ImageDoesNotValid;
+  }
+
+  export class AtributeDoesNotValid extends ProductValidationException {
+    readonly message = 'Product attribute does not valid';
+    readonly code = ProductDomainExceptionCodes.AtributeDoesNotValid;
   }
 }

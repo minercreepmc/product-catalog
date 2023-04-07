@@ -3,7 +3,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import {
-  CreateProductHttpRequestDto,
+  CreateProductHttpRequest,
   UpdateProductHttpRequest,
   UpdateProductHttpResponse,
 } from '@src/interface-adapters/controllers/http';
@@ -14,7 +14,7 @@ describe('UpdateProductHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `/products`;
 
-  const createProductRequest: CreateProductHttpRequestDto = {
+  const createProductRequest: CreateProductHttpRequest = {
     name: 'Sample Product',
     price: {
       amount: 25.99,
@@ -79,7 +79,7 @@ describe('UpdateProductHttpController (e2e)', () => {
           const productIsNotExist = checkResponseForCode({
             response,
             statusCode: HttpStatus.CONFLICT,
-            codes: [ProductDomainExceptionCodes.ProductIsNotExist],
+            codes: [ProductDomainExceptionCodes.DoesNotExist],
           });
 
           expect(productIsNotExist).toBeTruthy();
@@ -108,10 +108,10 @@ describe('UpdateProductHttpController (e2e)', () => {
             response,
             statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
             codes: [
-              ProductDomainExceptionCodes.NameIsNotValid,
-              ProductDomainExceptionCodes.PriceIsNotValid,
-              ProductDomainExceptionCodes.DescriptionIsNotValid,
-              ProductDomainExceptionCodes.ImageIsNotValid,
+              ProductDomainExceptionCodes.NameDoesNotValid,
+              ProductDomainExceptionCodes.PriceDoesNotValid,
+              ProductDomainExceptionCodes.DescriptionDoesNotValid,
+              ProductDomainExceptionCodes.ImageDoesNotValid,
             ],
           });
 

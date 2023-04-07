@@ -5,23 +5,28 @@ export abstract class ReviewerValidationException extends DomainExceptionBase {}
 export abstract class ReviewerBusinessException extends DomainExceptionBase {}
 
 export namespace ReviewerDomainExceptions {
-  export class IsNotExist extends ReviewerBusinessException {
+  export class DoesNotExist extends ReviewerBusinessException {
     readonly message = 'Reviewer does not exist';
-    readonly code = ReviewerDomainExceptionCodes.IsNotExist;
+    readonly code = ReviewerDomainExceptionCodes.DoesNotExist;
   }
 
-  export class IsExist extends ReviewerBusinessException {
+  export class DoesExist extends ReviewerBusinessException {
     readonly message = 'Reviewer already exists';
-    readonly code = ReviewerDomainExceptionCodes.IsExist;
+    readonly code = ReviewerDomainExceptionCodes.DoesExist;
   }
 
-  export class NameIsNotValid extends ReviewerValidationException {
-    readonly message = 'Reviewer name is not valid';
-    readonly code = ReviewerDomainExceptionCodes.NameIsNotValid;
+  export class IdDoesNotValid extends ReviewerValidationException {
+    readonly message = 'Reviewer id does not valid';
+    readonly code = ReviewerDomainExceptionCodes.IdDoesNotValid;
   }
 
-  export class EmailIsNotValid extends ReviewerValidationException {
-    readonly message = 'Reviewer email is not valid';
-    readonly code = ReviewerDomainExceptionCodes.EmailIsNotValid;
+  export class NameDoesNotValid extends ReviewerValidationException {
+    readonly message = 'Reviewer name does not valid';
+    readonly code = ReviewerDomainExceptionCodes.NameDoesNotValid;
+  }
+
+  export class EmailDoesNotValid extends ReviewerValidationException {
+    readonly message = 'Reviewer email does not valid';
+    readonly code = ReviewerDomainExceptionCodes.EmailDoesNotValid;
   }
 }

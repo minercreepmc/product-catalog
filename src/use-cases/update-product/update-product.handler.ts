@@ -6,14 +6,17 @@ import {
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 import { Err, Ok } from 'oxide.ts';
-import { UpdateProductBusinessValidator } from './application-services';
+import {
+  UpdateProductBusinessValidator,
+  UpdateProductCommandValidator,
+} from './application-services';
 import { UpdateProductMapper } from './application-services/update-product.mapper';
 import { UpdateProductCommand, UpdateProductResult } from './dtos';
 
 @CommandHandler(UpdateProductCommand)
 export class UpdateProductHandler {
   constructor(
-    private readonly commandValidator: ProductCommandValidator,
+    private readonly commandValidator: UpdateProductCommandValidator,
     private readonly businessValidator: UpdateProductBusinessValidator,
     private readonly mapper: UpdateProductMapper,
     private readonly productManagermentService: ProductManagementDomainService,

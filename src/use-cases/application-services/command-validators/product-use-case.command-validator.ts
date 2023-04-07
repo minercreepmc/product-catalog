@@ -1,4 +1,4 @@
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { Injectable } from '@nestjs/common';
 import {
   CommandValidatorBase,
@@ -59,21 +59,21 @@ export class ProductCommandValidator extends CommandValidatorBase {
 
     return this.getValidationResponse();
   }
-  protected translateExceptionToUserFriendlyMessage(
+  translateExceptionToUserFriendlyMessage(
     options: TranslateExceptionToUserFriendlyMessageOptions,
   ): ValidationExceptionBase {
     const { context, exception } = options;
     switch (context) {
       case ProductIdValueObject.name:
-        return new ProductDomainException.IdIsNotValid();
+        return new ProductDomainExceptions.IdDoesNotValid();
       case ProductNameValueObject.name:
-        return new ProductDomainException.NameIsNotValid();
+        return new ProductDomainExceptions.NameDoesNotValid();
       case ProductPriceValueObject.name:
-        return new ProductDomainException.PriceIsNotValid();
+        return new ProductDomainExceptions.PriceDoesNotValid();
       case ProductDescriptionValueObject.name:
-        return new ProductDomainException.DescriptionIsNotValid();
+        return new ProductDomainExceptions.DescriptionDoesNotValid();
       case ProductImageValueObject.name:
-        return new ProductDomainException.ImageIsNotValid();
+        return new ProductDomainExceptions.ImageDoesNotValid();
       default:
         return exception;
     }

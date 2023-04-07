@@ -29,8 +29,8 @@ export class ReviewerManagementDomainService {
     return this.reviewerRepository.findOneByEmail(email);
   }
 
-  async getReviewerById(id: ReviewerIdValueObject) {
-    return this.reviewerRepository.findOneById(id);
+  async isReviewerExistById(id: ReviewerIdValueObject) {
+    return Boolean(await this.reviewerRepository.findOneById(id));
   }
 
   async createReviewer(
@@ -40,7 +40,7 @@ export class ReviewerManagementDomainService {
     const exist = await this.reviewerRepository.findOneByEmail(email);
 
     if (exist) {
-      throw new ReviewerDomainExceptions.IsExist();
+      throw new ReviewerDomainExceptions.DoesExist();
     }
 
     const reviewer = new ReviewerAggregate();

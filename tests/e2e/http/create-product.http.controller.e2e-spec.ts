@@ -3,15 +3,14 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import * as request from 'supertest';
-import { CreateProductHttpRequestDto } from '@src/interface-adapters/controllers/http';
-import { CreateProductResponseDto } from '@use-cases/create-product/dtos';
+import { CreateProductHttpRequest } from '@src/interface-adapters/controllers/http';
 import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
 
 describe('CreateProductHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `/products`;
 
-  const createProductRequest: CreateProductHttpRequestDto = {
+  const createProductRequest: CreateProductHttpRequest = {
     name: 'Sample Product',
     price: {
       amount: 25.99,
@@ -42,7 +41,7 @@ describe('CreateProductHttpController (e2e)', () => {
         .send(createProductRequest)
         .expect((response: request.Response) => {
           const { name, price, description, image } =
-            response.body as CreateProductResponseDto;
+            response.body as CreateProductHttpRequest;
 
           expect(name).toEqual(createProductRequest.name);
           expect(price).toEqual(createProductRequest.price);
@@ -68,7 +67,7 @@ describe('CreateProductHttpController (e2e)', () => {
           const productIsExist = checkResponseForCode({
             response,
             statusCode: HttpStatus.CONFLICT,
-            codes: [ProductDomainExceptionCodes.ProductIsExist],
+            codes: [ProductDomainExceptionCodes.DoesExist],
           });
 
           expect(productIsExist).toBeTruthy();
@@ -77,7 +76,7 @@ describe('CreateProductHttpController (e2e)', () => {
     });
 
     it('should not create a product if the request format is not valid', async () => {
-      const invalidProductRequest: CreateProductHttpRequestDto = {
+      const invalidProductRequest: CreateProductHttpRequest = {
         name: '',
         price: {
           amount: -25.99,
@@ -96,10 +95,10 @@ describe('CreateProductHttpController (e2e)', () => {
             response,
             statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
             codes: [
-              ProductDomainExceptionCodes.PriceIsNotValid,
-              ProductDomainExceptionCodes.NameIsNotValid,
-              ProductDomainExceptionCodes.DescriptionIsNotValid,
-              ProductDomainExceptionCodes.ImageIsNotValid,
+              ProductDomainExceptionCodes.PriceDoesNotValid,
+              ProductDomainExceptionCodes.NameDoesNotValid,
+              ProductDomainExceptionCodes.DescriptionDoesNotValid,
+              ProductDomainExceptionCodes.ImageDoesNotValid,
             ],
           });
 

@@ -18,8 +18,8 @@ describe('CreateReviewerBusinessValidator', () => {
   };
   const reviewerEmailValueObject: ReviewerEmailValueObject =
     new ReviewerEmailValueObject('johndoe@example.com');
-  const reviewerDomainExceptionsIsExist: ReviewerDomainExceptions.IsExist =
-    new ReviewerDomainExceptions.IsExist();
+  const reviewerDomainExceptionsIsExist: ReviewerDomainExceptions.DoesExist =
+    new ReviewerDomainExceptions.DoesExist();
 
   beforeEach(() => {
     reviewerManagementDomainService = {

@@ -1,4 +1,5 @@
 import {
+  ProductSubmittedDomainEvent,
   ProductCreatedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
@@ -43,6 +44,10 @@ export class ProductAggregate extends AbstractAggregateRoot<
 
   setStatus(newStatus: ProductStatus): void {
     this.details.status = new ProductStatusValueObject(newStatus);
+  }
+
+  get status(): ProductStatusValueObject {
+    return this.details.status;
   }
 
   set status(newStatus: ProductStatusValueObject) {
@@ -150,6 +155,14 @@ export class ProductAggregate extends AbstractAggregateRoot<
     }
     this.setStatus(ProductStatus.PENDING_APPROVAL);
     this.submittedBy = reviewerId;
+
+    return new ProductSubmittedDomainEvent({
+      productId: this.id,
+      details: {
+        reviewerId: this.submittedBy,
+        productStatus: this.status,
+      },
+    });
   }
 
   isPendingApprovalBy(reviewerId: ReviewerIdValueObject): boolean {

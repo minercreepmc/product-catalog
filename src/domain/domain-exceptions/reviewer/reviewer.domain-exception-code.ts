@@ -1,6 +1,7 @@
 export enum ReviewerDomainExceptionCodes {
-  IsNotExist = 'REVIEWER.IS_NOT_EXIST',
-  IsExist = 'REVIEWER.IS_EXIST',
-  NameIsNotValid = 'REVIEWER.NAME_IS_NOT_VALID',
-  EmailIsNotValid = 'REVIEWER.EMAIL_IS_NOT_VALID',
+  DoesNotExist = 'REVIEWER.DOES_NOT_EXIST',
+  DoesExist = 'REVIEWER.DOES_EXIST',
+  IdDoesNotValid = 'REVIEWER.ID_DOES_NOT_VALID',
+  NameDoesNotValid = 'REVIEWER.NAME_DOES_NOT_VALID',
+  EmailDoesNotValid = 'REVIEWER.EMAIL_DOES_NOT_VALID',
 }

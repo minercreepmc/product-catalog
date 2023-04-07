@@ -7,7 +7,7 @@ import {
   ProductCreatedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
-import { ProductDomainException } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
   productRepositoryDiToken,
   ProductRepositoryPort,
@@ -31,11 +31,11 @@ export class ProductManagementDomainService {
     private readonly productRepository: ProductRepositoryPort,
   ) {}
 
-  async isProductNameExist(name: ProductNameValueObject): Promise<boolean> {
+  async isProductExistByName(name: ProductNameValueObject): Promise<boolean> {
     return Boolean(await this.productRepository.findOneByName(name));
   }
 
-  async isProductIdExist(id: ProductIdValueObject): Promise<boolean> {
+  async isProductExistById(id: ProductIdValueObject): Promise<boolean> {
     return Boolean(await this.productRepository.findOneById(id));
   }
 
@@ -44,7 +44,7 @@ export class ProductManagementDomainService {
   ): Promise<ProductCreatedDomainEvent> {
     let product = await this.productRepository.findOneByName(options.name);
     if (product) {
-      throw new ProductDomainException.IsExist();
+      throw new ProductDomainExceptions.DoesExist();
     }
     product = new ProductAggregate();
     const productCreatedEvent = product.createProduct(options);
@@ -58,7 +58,7 @@ export class ProductManagementDomainService {
     const product = await this.productRepository.findOneById(options.id);
 
     if (!product) {
-      throw new ProductDomainException.IsNotExist();
+      throw new ProductDomainExceptions.DoesNotExist();
     }
 
     const productUpdatedEvent = product.updateProduct(options.payload);

@@ -4,7 +4,7 @@ import {
   ProductCreatedDomainEventDetails,
   ProductCreatedDomainEventOptions,
 } from '@domain-events/product';
-import { AllowableCurrencyEnum } from '@value-objects/common/money';
+import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import {
   ProductIdValueObject,
   ProductNameValueObject,
@@ -17,7 +17,7 @@ describe('ProductCreatedDomainEvent', () => {
     const name = new ProductNameValueObject('Test Product');
     const price = ProductPriceValueObject.create({
       amount: 100,
-      currency: AllowableCurrencyEnum.USD,
+      currency: MoneyCurrencyEnum.USD,
     });
 
     const details: ProductCreatedDomainEventDetails = { name, price };

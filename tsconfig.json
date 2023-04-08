@@ -78,6 +78,12 @@
       "@database/*": [
         "./src/infrastructures/database/*"
       ],
+      "@controllers": [
+        "./src/interface-adapters/controllers"
+      ],
+      "@controllers/*": [
+        "./src/interface-adapters/controllers/*"
+      ],
       "@migrations": [
         "./src/infrastructures/migrations"
       ],

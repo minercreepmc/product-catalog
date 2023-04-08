@@ -5,12 +5,12 @@ import {
   ValidationResponse,
 } from 'common-base-classes';
 
-export enum AllowableCurrencyEnum {
+export enum MoneyCurrencyEnum {
   USD = 'USD',
 }
 
-export const AllowableCurrency = Object.keys(AllowableCurrencyEnum).map(
-  (key) => AllowableCurrencyEnum[key],
+export const AllowableCurrency = Object.keys(MoneyCurrencyEnum).map(
+  (key) => MoneyCurrencyEnum[key],
 );
 
 export class MoneyCurrencyValueObject extends TextValueObject {
@@ -29,7 +29,7 @@ export class MoneyCurrencyValueObject extends TextValueObject {
   };
 
   static usd(): MoneyCurrencyValueObject {
-    return new MoneyCurrencyValueObject(AllowableCurrencyEnum.USD);
+    return new MoneyCurrencyValueObject(MoneyCurrencyEnum.USD);
   }
 
   static validate(value: string): ValidationResponse {

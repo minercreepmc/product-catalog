@@ -6,7 +6,7 @@ import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
-  ReviewerRoleEnums,
+  ReviewerRoleEnum,
   ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 
@@ -43,7 +43,7 @@ describe('CreateReviewerBusinessValidator', () => {
         id: 1,
         name: 'John Doe',
         email: 'johndoe@example.com',
-        role: ReviewerRoleEnums.Regular,
+        role: ReviewerRoleEnum.Regular,
       });
 
       await createReviewerBusinessValidator.validateReviewerEmailMustNotExist(

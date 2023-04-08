@@ -44,7 +44,6 @@ export class SubmitForApprovalBusinessValidator extends BusinessValidatorBase {
     const exist = await this.reviewerManagementService.isReviewerExistById(
       reviewerId,
     );
-    console.log(exist);
     if (!exist) {
       this.exceptions.push(new ReviewerDomainExceptions.DoesNotExist());
     }

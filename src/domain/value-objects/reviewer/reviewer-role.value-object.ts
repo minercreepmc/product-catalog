@@ -4,12 +4,12 @@ import {
   ValidationResponse,
 } from 'common-base-classes';
 
-export enum ReviewerRoleEnums {
+export enum ReviewerRoleEnum {
   Regular = 'regular',
   Admin = 'admin',
 }
 
-export const reviewerRoles = Object.values(ReviewerRoleEnums);
+export const reviewerRoles = Object.values(ReviewerRoleEnum);
 
 export class ReviewerRoleValueObject extends TextValueObject {
   constructor(value: string) {
@@ -17,11 +17,11 @@ export class ReviewerRoleValueObject extends TextValueObject {
   }
 
   isAdmin(): boolean {
-    return this.unpack() === ReviewerRoleEnums.Admin;
+    return this.unpack() === ReviewerRoleEnum.Admin;
   }
 
   isRegular(): boolean {
-    return this.unpack() === ReviewerRoleEnums.Regular;
+    return this.unpack() === ReviewerRoleEnum.Regular;
   }
 
   static validate(value: string): ValidationResponse {
@@ -29,11 +29,11 @@ export class ReviewerRoleValueObject extends TextValueObject {
   }
 
   static createAdmin(): ReviewerRoleValueObject {
-    return new ReviewerRoleValueObject(ReviewerRoleEnums.Admin);
+    return new ReviewerRoleValueObject(ReviewerRoleEnum.Admin);
   }
 
   static createRegular(): ReviewerRoleValueObject {
-    return new ReviewerRoleValueObject(ReviewerRoleEnums.Regular);
+    return new ReviewerRoleValueObject(ReviewerRoleEnum.Regular);
   }
 
   private static readonly OPTIONS: TextValueObjectOptions = {

@@ -46,8 +46,6 @@ describe('CreateProductHttpController (e2e)', () => {
           const { name, price, description, image } =
             response.body as CreateProductHttpResponse;
 
-          console.log(response.body);
-
           expect(name).toEqual(createProductRequest.name);
           expect(price).toEqual(createProductRequest.price);
           expect(description).toEqual(createProductRequest.description);

@@ -1,12 +1,12 @@
 import {
-  ReviewerRoleEnums,
+  ReviewerRoleEnum,
   ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 import { ValidationResponse } from 'common-base-classes';
 
 describe('ReviewerRoleValueObject', () => {
   it('should create a reviewer role value object successfully if it is valid', () => {
-    const role = ReviewerRoleEnums.Admin;
+    const role = ReviewerRoleEnum.Admin;
     const reviewerRole = new ReviewerRoleValueObject(role);
     expect(reviewerRole.unpack()).toBe(role);
   });
@@ -17,7 +17,7 @@ describe('ReviewerRoleValueObject', () => {
   });
 
   it('should validate a valid value successfully', () => {
-    const role = ReviewerRoleEnums.Admin;
+    const role = ReviewerRoleEnum.Admin;
     const response: ValidationResponse = ReviewerRoleValueObject.validate(role);
     expect(response.isValid).toBe(true);
   });

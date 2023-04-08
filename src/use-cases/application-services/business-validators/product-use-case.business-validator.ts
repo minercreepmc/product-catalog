@@ -27,9 +27,8 @@ export abstract class ProductBusinessValidator extends BusinessValidatorBase {
   }
 
   protected async validateIdMustExist(id: ProductIdValueObject): Promise<void> {
-    const productExists = await this.productManagementService.isProductExistById(
-      id,
-    );
+    const productExists =
+      await this.productManagementService.isProductExistById(id);
     if (!productExists) {
       this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
     }

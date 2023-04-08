@@ -42,7 +42,7 @@ export class ApproveProductHttpController {
           throw new ConflictException(exception.exceptions);
         }
 
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(exception);
       },
     });
   }

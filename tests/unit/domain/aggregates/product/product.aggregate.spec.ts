@@ -8,7 +8,7 @@ import {
   ProductSubmittedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
-import { AllowableCurrencyEnum } from '@value-objects/common/money';
+import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import {
   ProductDescriptionValueObject,
   ProductImageValueObject,
@@ -36,7 +36,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
         description: new ProductDescriptionValueObject('Test Description'),
         image: new ProductImageValueObject('https://example.com/image.png'),
@@ -56,7 +56,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
       const event = productAggregate.createProduct(options);
@@ -74,7 +74,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
 
@@ -90,7 +90,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Old Test Product'),
         price: ProductPriceValueObject.create({
           amount: 90,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
 
@@ -100,7 +100,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('New Test Product'),
         price: ProductPriceValueObject.create({
           amount: 110,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
 
@@ -120,7 +120,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
       const productAggregate = new ProductAggregate();
@@ -153,7 +153,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       });
       productAggregate.submitForApproval(reviewerId);
@@ -168,7 +168,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       });
       productAggregate.submitForApproval(reviewerId);
@@ -195,7 +195,7 @@ describe('ProductAggregate', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       });
       productAggregate.submitForApproval(reviewerId);

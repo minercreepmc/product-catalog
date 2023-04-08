@@ -1,5 +1,5 @@
 import {
-  AllowableCurrencyEnum,
+  MoneyCurrencyEnum,
   MoneyAmountValueObject,
   MoneyCurrencyValueObject,
   MoneyValueObject,
@@ -9,7 +9,7 @@ describe('MoneyValueObject', () => {
   it('should create a MoneyValueObject when valid options are provided', () => {
     const moneyValueObject = new MoneyValueObject({
       amount: new MoneyAmountValueObject(100),
-      currency: new MoneyCurrencyValueObject(AllowableCurrencyEnum.USD),
+      currency: new MoneyCurrencyValueObject(MoneyCurrencyEnum.USD),
     });
 
     expect(moneyValueObject).toBeInstanceOf(MoneyValueObject);
@@ -18,7 +18,7 @@ describe('MoneyValueObject', () => {
   it('should create a MoneyValueObject using the create method', () => {
     const createdMoneyValueObject = MoneyValueObject.create({
       amount: 100,
-      currency: AllowableCurrencyEnum.USD,
+      currency: MoneyCurrencyEnum.USD,
     });
 
     expect(createdMoneyValueObject).toBeInstanceOf(MoneyValueObject);
@@ -28,7 +28,7 @@ describe('MoneyValueObject', () => {
     expect(() =>
       MoneyValueObject.create({
         amount: -1,
-        currency: AllowableCurrencyEnum.USD,
+        currency: MoneyCurrencyEnum.USD,
       }),
     ).toThrow();
   });
@@ -37,7 +37,7 @@ describe('MoneyValueObject', () => {
     expect(() =>
       MoneyValueObject.create({
         amount: 100,
-        currency: 'INVALID' as unknown as AllowableCurrencyEnum,
+        currency: 'INVALID' as unknown as MoneyCurrencyEnum,
       }),
     ).toThrow();
   });
@@ -46,7 +46,7 @@ describe('MoneyValueObject', () => {
     it('should validate a valid MoneyValueObject options', () => {
       const options = {
         amount: 100,
-        currency: AllowableCurrencyEnum.USD,
+        currency: MoneyCurrencyEnum.USD,
       };
 
       const validationRes = MoneyValueObject.validate(options);
@@ -58,7 +58,7 @@ describe('MoneyValueObject', () => {
     it('should not validate an invalid amount', () => {
       const options = {
         amount: -10,
-        currency: AllowableCurrencyEnum.USD,
+        currency: MoneyCurrencyEnum.USD,
       };
 
       const validationRes = MoneyValueObject.validate(options);
@@ -70,7 +70,7 @@ describe('MoneyValueObject', () => {
     it('should not validate an invalid currency', () => {
       const options = {
         amount: 100,
-        currency: 'XYZ' as unknown as AllowableCurrencyEnum,
+        currency: 'XYZ' as unknown as MoneyCurrencyEnum,
       };
 
       const validationRes = MoneyValueObject.validate(options);
@@ -82,7 +82,7 @@ describe('MoneyValueObject', () => {
     it('should not validate an invalid amount and currency', () => {
       const options = {
         amount: -10,
-        currency: 'XYZ' as unknown as AllowableCurrencyEnum,
+        currency: 'XYZ' as unknown as MoneyCurrencyEnum,
       };
 
       const validationRes = MoneyValueObject.validate(options);

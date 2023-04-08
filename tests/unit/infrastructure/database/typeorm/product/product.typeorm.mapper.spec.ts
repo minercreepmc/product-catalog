@@ -3,7 +3,7 @@ import {
   ProductTypeOrmMapper,
   ProductTypeOrmModel,
 } from '@database/repositories/typeorm/product';
-import { AllowableCurrencyEnum } from '@value-objects/common/money';
+import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import {
   ProductNameValueObject,
   ProductPriceValueObject,
@@ -160,7 +160,7 @@ describe('ProductTypeOrmMapper', () => {
         status: ProductStatusEnum.DRAFT,
         price: {
           amount: 10,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         },
         createdAt: currentDate,
         updatedAt: currentDate,

@@ -20,17 +20,21 @@ export class ApproveProductBusinessValidator extends BusinessValidatorBase {
     super();
   }
 
-  private productExist = true;
-  private reviewerExist = true;
+  private productExist: boolean;
+  private reviewerExist: boolean;
 
   async validate(
     domainOptions: ApproveProductDomainOptions,
   ): Promise<ValidationResponse> {
     const { productId, reviewerId } = domainOptions;
+
     this.clearExceptions();
+    this.productExist = true;
+    this.reviewerExist = true;
+
     await this.validateProductMustExistById(productId);
     await this.validateReviewerMustExistById(reviewerId);
-    if (this.reviewerExist) {
+    if (this.productExist && this.reviewerExist) {
       await this.validateReviewerMustBeAdmin(reviewerId);
     }
     return this.getValidationResponse();

@@ -8,7 +8,7 @@ import {
   ProductManagementDomainService,
   UpdateProductDomainServiceOptions,
 } from '@domain-services';
-import { AllowableCurrencyEnum } from '@value-objects/common/money';
+import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import {
   ProductIdValueObject,
   ProductNameValueObject,
@@ -36,7 +36,7 @@ describe('ProductManagementDomainService', () => {
         name: new ProductNameValueObject('Existing Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
       existingProduct.createProduct(options);
@@ -57,7 +57,7 @@ describe('ProductManagementDomainService', () => {
         name: new ProductNameValueObject('Non-existing Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
 
@@ -79,7 +79,7 @@ describe('ProductManagementDomainService', () => {
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
 
@@ -101,7 +101,7 @@ describe('ProductManagementDomainService', () => {
         name: new ProductNameValueObject('Existing Product'),
         price: ProductPriceValueObject.create({
           amount: 100,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
       existingProduct.createProduct(options);
@@ -129,7 +129,7 @@ describe('ProductManagementDomainService', () => {
         name: oldProductName,
         price: ProductPriceValueObject.create({
           amount: 50,
-          currency: AllowableCurrencyEnum.USD,
+          currency: MoneyCurrencyEnum.USD,
         }),
       };
       existingProduct.createProduct(createOptions);
@@ -142,7 +142,7 @@ describe('ProductManagementDomainService', () => {
           name: newProductName,
           price: ProductPriceValueObject.create({
             amount: 50,
-            currency: AllowableCurrencyEnum.USD,
+            currency: MoneyCurrencyEnum.USD,
           }),
         },
       };
@@ -172,7 +172,7 @@ describe('ProductManagementDomainService', () => {
           name: productName,
           price: ProductPriceValueObject.create({
             amount: 50,
-            currency: AllowableCurrencyEnum.USD,
+            currency: MoneyCurrencyEnum.USD,
           }),
         },
       };

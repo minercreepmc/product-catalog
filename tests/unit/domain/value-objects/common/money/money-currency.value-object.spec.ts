@@ -1,5 +1,5 @@
 import {
-  AllowableCurrencyEnum,
+  MoneyCurrencyEnum,
   MoneyCurrencyValueObject,
 } from '@value-objects/common/money';
 
@@ -13,7 +13,7 @@ describe('MoneyCurrencyValueObject', () => {
     expect(
       () =>
         new MoneyCurrencyValueObject(
-          'INVALID' as unknown as AllowableCurrencyEnum,
+          'INVALID' as unknown as MoneyCurrencyEnum,
         ),
     ).toThrow();
   });

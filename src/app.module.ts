@@ -22,6 +22,12 @@ import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductCommandValidator } from '@use-cases/application-services/command-validators';
+import { ApproveProductHandler } from '@use-cases/approve-product';
+import {
+  ApproveProductBusinessValidator,
+  ApproveProductCommandValidator,
+  ApproveProductMapper,
+} from '@use-cases/approve-product/application-services';
 import { CreateProductHandler } from '@use-cases/create-product';
 import {
   CreateProductBusinessValidator,
@@ -51,6 +57,7 @@ import {
   CreateReviewerHttpController,
   UpdateProductHttpController,
 } from './interface-adapters/controllers/http';
+import { ApproveProductHttpController } from './interface-adapters/controllers/http/approve-product';
 import { SubmitForApprovalHttpController } from './interface-adapters/controllers/http/submit-for-approval';
 
 // Domain
@@ -98,12 +105,19 @@ const submitForApprovalUseCase: Provider[] = [
   SubmitForApprovalBusinessValidator,
   SubmitForApprovalMapper,
 ];
+const approveProductUseCase: Provider[] = [
+  ApproveProductHandler,
+  ApproveProductCommandValidator,
+  ApproveProductBusinessValidator,
+  ApproveProductMapper,
+];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
   ...updateProductUseCase,
   ...createReviewerUseCase,
   ...submitForApprovalUseCase,
+  ...approveProductUseCase,
 ];
 
 // Interface Adapters
@@ -111,12 +125,14 @@ const createProductController = [CreateProductHttpController];
 const updateProductController = [UpdateProductHttpController];
 const createReviewerController = [CreateReviewerHttpController];
 const submitForApprovalController = [SubmitForApprovalHttpController];
+const approveProductController = [ApproveProductHttpController];
 
 const controllers = [
   ...createProductController,
   ...updateProductController,
   ...createReviewerController,
   ...submitForApprovalController,
+  ...approveProductController,
 ];
 
 // Vendor

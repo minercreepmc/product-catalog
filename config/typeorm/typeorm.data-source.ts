@@ -4,6 +4,7 @@ import {
   CreateProductMigration1679747919850,
   CreateReviewerMigration1680595085820,
 } from '@migrations';
+import { AddReviewerRole1680930138166 } from '@migrations/1680930138166-AddReviewerRole';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
@@ -19,6 +20,7 @@ export const typeOrmDataSourceOptions: DataSourceOptions = {
   migrations: [
     CreateProductMigration1679747919850,
     CreateReviewerMigration1680595085820,
+    AddReviewerRole1680930138166,
   ],
   //synchronize: true,
 };

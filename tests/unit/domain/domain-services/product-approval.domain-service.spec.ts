@@ -9,7 +9,6 @@ import {
 import { ProductApprovalDomainService } from '@domain-services';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import { TextValueObject } from 'common-base-classes';
 import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended';
 
 describe('ProductApprovalDomainService', () => {
@@ -80,82 +79,49 @@ describe('ProductApprovalDomainService', () => {
       const productId = new ProductIdValueObject('1');
       const reviewerId = new ReviewerIdValueObject('1');
       const product = {
-        isPendingApprovalBy: jest.fn().mockReturnValueOnce(true),
         approve: jest.fn(),
+      };
+      const reviewer = {
+        role: {
+          isAdmin: jest.fn().mockReturnValueOnce(true),
+        },
       };
       (productRepository.findOneById as jest.Mock).mockResolvedValueOnce(
         product,
       );
+      (reviewerRepository.findOneById as jest.Mock).mockResolvedValueOnce(
+        reviewer,
+      );
 
-      await productApprovalDomainService.approveProduct(productId, reviewerId);
+      await productApprovalDomainService.approveProduct({
+        productId,
+        reviewerId,
+      });
 
-      expect(product.isPendingApprovalBy).toHaveBeenCalledWith(reviewerId);
+      expect(reviewer.role.isAdmin).toHaveBeenCalled();
       expect(product.approve).toHaveBeenCalledWith(reviewerId);
       expect(productRepository.save).toHaveBeenCalledWith(product);
     });
 
-    it('should throw an error if the product is not pending approval by the reviewer', async () => {
+    it('should throw an error if the reviewer is not an admin', async () => {
       const productId = new ProductIdValueObject('1');
       const reviewerId = new ReviewerIdValueObject('1');
-      const product = {
-        isPendingApprovalBy: jest.fn().mockReturnValueOnce(false),
+      const product = {};
+      const reviewer = {
+        role: {
+          isAdmin: jest.fn().mockReturnValueOnce(false),
+        },
       };
       (productRepository.findOneById as jest.Mock).mockResolvedValueOnce(
         product,
+      );
+      (reviewerRepository.findOneById as jest.Mock).mockResolvedValueOnce(
+        reviewer,
       );
 
       await expect(
-        productApprovalDomainService.approveProduct(productId, reviewerId),
-      ).rejects.toThrow(
-        'This product is not pending approval by this reviewer',
-      );
-    });
-  });
-
-  describe('rejectProduct', () => {
-    it('should reject a product', async () => {
-      const productId = new ProductIdValueObject('1');
-      const reviewerId = new ReviewerIdValueObject('1');
-      const reason = new TextValueObject('reason');
-      const product = {
-        isPendingApprovalBy: jest.fn().mockReturnValueOnce(true),
-        reject: jest.fn(),
-      };
-      (productRepository.findOneById as jest.Mock).mockResolvedValueOnce(
-        product,
-      );
-
-      await productApprovalDomainService.rejectProduct(
-        productId,
-        reviewerId,
-        reason,
-      );
-
-      expect(product.isPendingApprovalBy).toHaveBeenCalledWith(reviewerId);
-      expect(product.reject).toHaveBeenCalledWith(reviewerId, reason);
-      expect(productRepository.save).toHaveBeenCalledWith(product);
-    });
-
-    it('should throw an error if the product is not pending approval by the reviewer', async () => {
-      const productId = new ProductIdValueObject('1');
-      const reviewerId = new ReviewerIdValueObject('1');
-      const reason = new TextValueObject('reason');
-      const product = {
-        isPendingApprovalBy: jest.fn().mockReturnValueOnce(false),
-      };
-      (productRepository.findOneById as jest.Mock).mockResolvedValueOnce(
-        product,
-      );
-
-      await expect(
-        productApprovalDomainService.rejectProduct(
-          productId,
-          reviewerId,
-          reason,
-        ),
-      ).rejects.toThrow(
-        'This product is not pending approval by this reviewer',
-      );
+        productApprovalDomainService.approveProduct({ productId, reviewerId }),
+      ).rejects.toThrow(ReviewerDomainExceptions.NotAuthorizedToApprove);
     });
   });
 });

@@ -2,10 +2,11 @@ import {
   ProductSubmittedDomainEvent,
   ProductCreatedDomainEvent,
   ProductUpdatedDomainEvent,
+  ProductApprovedDomainEvent,
 } from '@domain-events/product';
 import {
   ProductIdValueObject,
-  ProductStatus,
+  ProductStatusEnum,
   ProductStatusValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
@@ -42,7 +43,7 @@ export class ProductAggregate extends AbstractAggregateRoot<
     return this.details.status.unpack();
   }
 
-  setStatus(newStatus: ProductStatus): void {
+  setStatus(newStatus: ProductStatusEnum): void {
     this.details.status = new ProductStatusValueObject(newStatus);
   }
 
@@ -87,7 +88,7 @@ export class ProductAggregate extends AbstractAggregateRoot<
   }
 
   createProduct(options: CreateProductAggregateOptions) {
-    if (this.getStatus() === ProductStatus.DRAFT) {
+    if (this.getStatus() === ProductStatusEnum.DRAFT) {
       throw new InvalidOperationException(
         'Cannot create a product that was created',
       );
@@ -106,7 +107,7 @@ export class ProductAggregate extends AbstractAggregateRoot<
       this.details.attributes = options.attributes;
     }
 
-    this.setStatus(ProductStatus.DRAFT);
+    this.setStatus(ProductStatusEnum.DRAFT);
 
     return new ProductCreatedDomainEvent({
       productId: this.id,
@@ -148,12 +149,12 @@ export class ProductAggregate extends AbstractAggregateRoot<
   }
 
   submitForApproval(reviewerId: ReviewerIdValueObject) {
-    if (this.getStatus() !== ProductStatus.DRAFT) {
+    if (this.getStatus() !== ProductStatusEnum.DRAFT) {
       throw new InvalidOperationException(
         'Only draft products can be submitted for approval.',
       );
     }
-    this.setStatus(ProductStatus.PENDING_APPROVAL);
+    this.setStatus(ProductStatusEnum.PENDING_APPROVAL);
     this.submittedBy = reviewerId;
 
     return new ProductSubmittedDomainEvent({
@@ -165,30 +166,38 @@ export class ProductAggregate extends AbstractAggregateRoot<
     });
   }
 
-  isPendingApprovalBy(reviewerId: ReviewerIdValueObject): boolean {
+  isSubmittedApprovalBy(reviewerId: ReviewerIdValueObject): boolean {
     return (
-      this.getStatus() === ProductStatus.PENDING_APPROVAL &&
-      this.approvedBy === reviewerId
+      this.getStatus() === ProductStatusEnum.PENDING_APPROVAL &&
+      this.submittedBy === reviewerId
     );
   }
 
   approve(reviewerId: ReviewerIdValueObject) {
-    if (this.getStatus() !== ProductStatus.PENDING_APPROVAL) {
+    if (this.getStatus() !== ProductStatusEnum.PENDING_APPROVAL) {
       throw new InvalidOperationException(
         'Only products pending approval can be approved.',
       );
     }
-    this.setStatus(ProductStatus.APPROVED);
+    this.setStatus(ProductStatusEnum.APPROVED);
     this.approvedBy = reviewerId;
+
+    return new ProductApprovedDomainEvent({
+      productId: this.id,
+      details: {
+        reviewerId,
+        status: this.status,
+      },
+    });
   }
 
   reject(reviewerId: ReviewerIdValueObject, reason: TextValueObject) {
-    if (this.getStatus() !== ProductStatus.PENDING_APPROVAL) {
+    if (this.getStatus() !== ProductStatusEnum.PENDING_APPROVAL) {
       throw new InvalidOperationException(
         'Only products pending approval can be rejected.',
       );
     }
-    this.setStatus(ProductStatus.REJECTED);
+    this.setStatus(ProductStatusEnum.REJECTED);
     this.rejectedBy = reviewerId;
     this.rejectionReason = reason;
   }

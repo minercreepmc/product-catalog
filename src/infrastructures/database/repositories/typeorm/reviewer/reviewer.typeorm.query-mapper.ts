@@ -13,7 +13,7 @@ export class ReviewerTypeOrmQueryMapper extends AbstractQueryMapper<
 > {
   toQuery(params: ReviewerQueryParams): WhereClause<ReviewerTypeOrmModel> {
     const where: WhereClause<ReviewerTypeOrmModel> = {};
-    const { id, name, email, createdAt, updatedAt } = params;
+    const { id, name, email, createdAt, updatedAt, role } = params;
 
     if (id) {
       where.id = id.unpack();
@@ -21,6 +21,10 @@ export class ReviewerTypeOrmQueryMapper extends AbstractQueryMapper<
 
     if (name) {
       where.name = name.unpack();
+    }
+
+    if (role) {
+      where.role = role.unpack();
     }
 
     if (email) {

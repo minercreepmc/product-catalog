@@ -13,6 +13,7 @@ import { SubmitForApprovalHttpRequest } from '@src/interface-adapters/controller
 import { SubmitForApprovalResponseDto } from '@use-cases/submit-for-approval/dtos';
 import { checkResponseForCode } from '@utils/functions';
 import { AllowableCurrencyEnum } from '@value-objects/common/money';
+import { ReviewerRoleEnums } from '@value-objects/reviewer';
 import * as request from 'supertest';
 
 describe('SubmitForApprovalHttpController (e2e)', () => {
@@ -53,6 +54,7 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
       const createReviewerRequest: CreateReviewerHttpRequest = {
         name: 'Reviewer 1',
         email: 'reviewer1@example.com',
+        role: ReviewerRoleEnums.Regular,
       };
       const reviewerResponse = await request(app.getHttpServer())
         .post(reviewersUrl)

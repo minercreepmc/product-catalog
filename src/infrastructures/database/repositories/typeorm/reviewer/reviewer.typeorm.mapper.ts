@@ -5,6 +5,7 @@ import {
 import {
   ReviewerEmailValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 import {
   AbstractTypeOrmMapper,
@@ -20,10 +21,11 @@ export class ReviewerTypeOrmMapper extends AbstractTypeOrmMapper<
   protected toPersistanceDetails(
     entity: ReviewerAggregate,
   ): OrmModelDetails<ReviewerTypeOrmModel> {
-    const { name, email } = entity.details;
+    const { name, email, role } = entity.details;
     return {
       name: name?.unpack(),
       email: email?.unpack(),
+      role: role?.unpack(),
     };
   }
   protected toDomainDetails(
@@ -31,6 +33,7 @@ export class ReviewerTypeOrmMapper extends AbstractTypeOrmMapper<
   ): ReviewerAggregateDetails {
     let name: ReviewerNameValueObject | undefined;
     let email: ReviewerEmailValueObject | undefined;
+    let role: ReviewerRoleValueObject | undefined;
 
     if (ormModel.name) {
       name = new ReviewerNameValueObject(ormModel?.name);
@@ -40,9 +43,13 @@ export class ReviewerTypeOrmMapper extends AbstractTypeOrmMapper<
       email = new ReviewerEmailValueObject(ormModel?.email);
     }
 
+    if (ormModel.role) {
+      role = new ReviewerRoleValueObject(ormModel?.role);
+    }
     return {
       name,
       email,
+      role,
     };
   }
 }

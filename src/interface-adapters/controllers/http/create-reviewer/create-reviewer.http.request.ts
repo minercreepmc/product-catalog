@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateReviewerCommand } from '@use-cases/create-reviewer/dtos';
+import { reviewerRoles } from '@value-objects/reviewer';
 
-export class CreateReviewerHttpRequest {
+export class CreateReviewerHttpRequest implements CreateReviewerCommand {
   @ApiProperty({
     description: 'The name of the reviewer',
     example: 'John Doe',
@@ -12,4 +14,11 @@ export class CreateReviewerHttpRequest {
     example: '6ycjc@example.com',
   })
   readonly email: string;
+
+  @ApiProperty({
+    description: 'The role of the reviewer',
+    example: 'regular',
+    enum: reviewerRoles,
+  })
+  readonly role: string;
 }

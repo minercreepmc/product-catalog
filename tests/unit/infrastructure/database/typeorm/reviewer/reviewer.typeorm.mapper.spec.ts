@@ -6,16 +6,19 @@ import {
 import {
   ReviewerEmailValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 
 describe('ReviewerTypeOrmMapper', () => {
   let mapper: ReviewerTypeOrmMapper;
   const testName = 'John Doe';
   const testEmail = 'johndoe@example.com';
+  const testRole = 'regular';
   const testAggregate = new ReviewerAggregate({
     details: {
       name: new ReviewerNameValueObject(testName),
       email: new ReviewerEmailValueObject(testEmail),
+      role: new ReviewerRoleValueObject(testRole),
     },
   });
 
@@ -29,6 +32,7 @@ describe('ReviewerTypeOrmMapper', () => {
     expect(result).toEqual({
       name: testName,
       email: testEmail,
+      role: testRole,
     });
   });
 
@@ -37,6 +41,7 @@ describe('ReviewerTypeOrmMapper', () => {
       id: '1',
       name: testName,
       email: testEmail,
+      role: testRole,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -46,6 +51,7 @@ describe('ReviewerTypeOrmMapper', () => {
     expect(result).toEqual({
       name: new ReviewerNameValueObject(testName),
       email: new ReviewerEmailValueObject(testEmail),
+      role: new ReviewerRoleValueObject(testRole),
     });
   });
 
@@ -59,6 +65,7 @@ describe('ReviewerTypeOrmMapper', () => {
     expect(result).toEqual({
       name: undefined,
       email: undefined,
+      role: undefined,
     });
   });
 });

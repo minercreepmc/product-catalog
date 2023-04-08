@@ -33,6 +33,10 @@ export class ReviewerManagementDomainService {
     return Boolean(await this.reviewerRepository.findOneById(id));
   }
 
+  async getReviewerById(id: ReviewerIdValueObject) {
+    return this.reviewerRepository.findOneById(id);
+  }
+
   async createReviewer(
     options: CreateReviewerDomainServiceOptions,
   ): Promise<ReviewerCreatedDomainEvent> {

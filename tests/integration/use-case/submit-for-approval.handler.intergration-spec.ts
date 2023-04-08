@@ -9,7 +9,7 @@ import {
   SubmitForApprovalResponseDto,
 } from '@use-cases/submit-for-approval/dtos';
 import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval/submit-for-approval.handler';
-import { ProductIdValueObject, ProductStatus } from '@value-objects/product';
+import { ProductIdValueObject, ProductStatusEnum } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -55,7 +55,7 @@ describe('SubmitForApprovalHandler', () => {
         new SubmitForApprovalResponseDto({
           productId,
           reviewerId,
-          productStatus: ProductStatus.PENDING_APPROVAL,
+          productStatus: ProductStatusEnum.PENDING_APPROVAL,
         }),
       );
       businessValidator.validate.mockResolvedValue({
@@ -72,7 +72,7 @@ describe('SubmitForApprovalHandler', () => {
         new SubmitForApprovalResponseDto({
           reviewerId,
           productId,
-          productStatus: ProductStatus.PENDING_APPROVAL,
+          productStatus: ProductStatusEnum.PENDING_APPROVAL,
         }),
       );
     });

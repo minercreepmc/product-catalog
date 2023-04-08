@@ -6,6 +6,8 @@ import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleEnums,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 
 describe('CreateReviewerBusinessValidator', () => {
@@ -15,6 +17,7 @@ describe('CreateReviewerBusinessValidator', () => {
   const createReviewerDomainOptions: CreateReviewerDomainOptions = {
     name: new ReviewerNameValueObject('John Doe'),
     email: new ReviewerEmailValueObject('johndoe@example.com'),
+    role: ReviewerRoleValueObject.createRegular(),
   };
   const reviewerEmailValueObject: ReviewerEmailValueObject =
     new ReviewerEmailValueObject('johndoe@example.com');
@@ -40,6 +43,7 @@ describe('CreateReviewerBusinessValidator', () => {
         id: 1,
         name: 'John Doe',
         email: 'johndoe@example.com',
+        role: ReviewerRoleEnums.Regular,
       });
 
       await createReviewerBusinessValidator.validateReviewerEmailMustNotExist(

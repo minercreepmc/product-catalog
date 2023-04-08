@@ -20,6 +20,11 @@ export interface SubmitForApprovalDomainServiceOptions {
   reviewerId: ReviewerIdValueObject;
 }
 
+export interface ApproveProductDomainServiceOptions {
+  productId: ProductIdValueObject;
+  reviewerId: ReviewerIdValueObject;
+}
+
 @Injectable()
 export class ProductApprovalDomainService {
   constructor(
@@ -49,20 +54,28 @@ export class ProductApprovalDomainService {
     return productSubmitted;
   }
 
-  async approveProduct(
-    productId: ProductIdValueObject,
-    reviewerId: ReviewerIdValueObject,
-  ) {
+  async approveProduct(options: ApproveProductDomainServiceOptions) {
+    const { reviewerId, productId } = options;
     const product = await this.productRepository.findOneById(productId);
 
-    if (!product.isPendingApprovalBy(reviewerId)) {
-      throw new InvalidOperationException(
-        'This product is not pending approval by this reviewer',
-      );
+    if (!product) {
+      throw new ProductDomainExceptions.DoesNotExist();
     }
 
-    product.approve(reviewerId);
+    const reviewer = await this.reviewerRepository.findOneById(reviewerId);
+
+    if (!reviewer) {
+      throw new ReviewerDomainExceptions.DoesNotExist();
+    }
+
+    if (!reviewer.role.isAdmin()) {
+      throw new ReviewerDomainExceptions.NotAuthorizedToApprove();
+    }
+
+    const productApproved = product.approve(reviewerId);
     await this.productRepository.save(product);
+
+    return productApproved;
   }
 
   async rejectProduct(
@@ -72,7 +85,7 @@ export class ProductApprovalDomainService {
   ) {
     const product = await this.productRepository.findOneById(productId);
 
-    if (!product.isPendingApprovalBy(reviewerId)) {
+    if (!product.isSubmittedApprovalBy(reviewerId)) {
       throw new InvalidOperationException(
         'This product is not pending approval by this reviewer',
       );

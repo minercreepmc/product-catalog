@@ -4,7 +4,12 @@ import {
   ReviewerUpdatedDomainEventDetails,
 } from '@domain-events/reviewer/reviewer-updated.domain-event';
 import { OptionalEntityOptions } from '@utils/types';
-import { ReviewerIdValueObject } from '@value-objects/reviewer';
+import {
+  ReviewerEmailValueObject,
+  ReviewerIdValueObject,
+  ReviewerNameValueObject,
+  ReviewerRoleValueObject,
+} from '@value-objects/reviewer';
 import { AbstractAggregateRoot } from 'common-base-classes';
 import {
   CreateReviewerAggregateOptions,
@@ -23,16 +28,30 @@ export class ReviewerAggregate extends AbstractAggregateRoot<
     super({ id, details });
   }
 
+  get name(): ReviewerNameValueObject {
+    return this.details.name;
+  }
+
+  get email(): ReviewerEmailValueObject {
+    return this.details.email;
+  }
+
+  get role(): ReviewerRoleValueObject {
+    return this.details.role;
+  }
+
   createReviewer(
     options: CreateReviewerAggregateOptions,
   ): ReviewerCreatedDomainEvent {
     this.details.name = options.name;
     this.details.email = options.email;
+    this.details.role = options.role;
     return new ReviewerCreatedDomainEvent({
       reviewerId: this.id,
       details: {
         name: this.details.name,
         email: this.details.email,
+        role: this.details.role,
       },
     });
   }

@@ -7,6 +7,7 @@ import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 
 describe('ReviewerCreatedDomainEvent', () => {
@@ -14,6 +15,7 @@ describe('ReviewerCreatedDomainEvent', () => {
   const details = {
     name: new ReviewerNameValueObject('John Doe'),
     email: new ReviewerEmailValueObject('john.doe@example.com'),
+    role: ReviewerRoleValueObject.createAdmin(),
   };
   const options: ReviewerCreatedDomainEventOptions = { reviewerId, details };
 

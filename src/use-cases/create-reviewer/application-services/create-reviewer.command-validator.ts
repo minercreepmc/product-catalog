@@ -6,11 +6,12 @@ import { CreateReviewerCommand } from '../dtos';
 @Injectable()
 export class CreateReviewerCommandValidator extends ReviewerCommandValidator {
   validate(command: CreateReviewerCommand): ValidationResponse {
-    const { name, email } = command;
+    const { name, email, role } = command;
 
     this.clearExceptions();
     this.validateName(name);
     this.validateEmail(email);
+    this.validateRole(role);
     return this.getValidationResponse();
   }
 }

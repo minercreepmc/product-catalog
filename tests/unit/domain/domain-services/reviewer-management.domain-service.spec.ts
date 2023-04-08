@@ -9,6 +9,7 @@ import { ReviewerManagementDomainService } from '@domain-services';
 import {
   ReviewerEmailValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -18,6 +19,7 @@ describe('ReviewerManagementDomainService', () => {
   const options: CreateReviewerAggregateOptions = {
     name: new ReviewerNameValueObject('John Doe'),
     email: new ReviewerEmailValueObject('john.doe@example.com'),
+    role: ReviewerRoleValueObject.createAdmin(),
   };
 
   beforeEach(() => {

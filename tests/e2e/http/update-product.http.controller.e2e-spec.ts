@@ -15,14 +15,14 @@ describe('UpdateProductHttpController (e2e)', () => {
   const productsUrl = `/products`;
 
   const createProductRequest: CreateProductHttpRequest = {
-    name: 'Sample Product',
+    name: 'Wtf Product',
     price: {
       amount: 25.99,
       currency: 'USD',
     },
   };
   const updateProductRequest: UpdateProductHttpRequest = {
-    name: 'Sample Product',
+    name: 'Oke Product',
     price: {
       amount: 29.99,
       currency: 'USD',

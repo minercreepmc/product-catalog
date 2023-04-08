@@ -29,4 +29,14 @@ export namespace ReviewerDomainExceptions {
     readonly message = 'Reviewer email does not valid';
     readonly code = ReviewerDomainExceptionCodes.EmailDoesNotValid;
   }
+
+  export class RoleDoesNotValid extends ReviewerValidationException {
+    readonly message = 'Reviewer role does not valid';
+    readonly code = ReviewerDomainExceptionCodes.RoleDoesNotValid;
+  }
+
+  export class NotAuthorizedToApprove extends ReviewerValidationException {
+    readonly message = 'Reviewer not authorized to approve';
+    readonly code = ReviewerDomainExceptionCodes.NotAuthorizedToApprove;
+  }
 }

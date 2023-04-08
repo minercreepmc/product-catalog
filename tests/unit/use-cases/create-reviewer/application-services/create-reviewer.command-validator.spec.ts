@@ -7,6 +7,7 @@ describe('CreateReviewerCommandValidator', () => {
   const createReviewerCommand = new CreateReviewerCommand({
     name: 'John Doe',
     email: 'johndoe@example.com',
+    role: 'regular',
   });
 
   beforeEach(() => {
@@ -27,16 +28,17 @@ describe('CreateReviewerCommandValidator', () => {
       const invalidCommand = new CreateReviewerCommand({
         name: '',
         email: 'invalid-email',
+        role: '',
       });
       const expectedExceptions = [
         new ReviewerDomainExceptions.NameDoesNotValid(),
         new ReviewerDomainExceptions.EmailDoesNotValid(),
+        new ReviewerDomainExceptions.RoleDoesNotValid(),
       ];
 
       const response = createReviewerCommandValidator.validate(invalidCommand);
 
       expect(response.isValid).toBe(false);
-      expect(response.exceptions).toHaveLength(2);
       expect(response.exceptions).toIncludeAllMembers(expectedExceptions);
     });
   });

@@ -3,6 +3,7 @@ import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 import { DomainEvent } from 'common-base-classes';
 
@@ -14,6 +15,7 @@ export interface ReviewerCreatedDomainEventOptions {
 export interface ReviewerCreatedDomainEventDetails {
   name: ReviewerNameValueObject;
   email: ReviewerEmailValueObject;
+  role: ReviewerRoleValueObject;
 }
 
 export class ReviewerCreatedDomainEvent extends DomainEvent<ReviewerCreatedDomainEventDetails> {

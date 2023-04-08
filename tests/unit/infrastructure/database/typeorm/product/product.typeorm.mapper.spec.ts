@@ -7,7 +7,7 @@ import { AllowableCurrencyEnum } from '@value-objects/common/money';
 import {
   ProductNameValueObject,
   ProductPriceValueObject,
-  ProductStatus,
+  ProductStatusEnum,
   ProductStatusValueObject,
 } from '@value-objects/product';
 import { DateVO, ID } from 'common-base-classes';
@@ -59,7 +59,7 @@ describe('ProductTypeOrmMapper', () => {
         description: undefined,
         image: undefined,
         attributes: undefined,
-        status: ProductStatus.DRAFT,
+        status: ProductStatusEnum.DRAFT,
         submittedBy: undefined,
         approvedBy: undefined,
         rejectedBy: undefined,
@@ -80,7 +80,7 @@ describe('ProductTypeOrmMapper', () => {
           amount: 10,
           currency: 'USD',
         },
-        status: ProductStatus.DRAFT,
+        status: ProductStatusEnum.DRAFT,
         createdAt: currentDate,
         updatedAt: currentDate,
       });
@@ -141,7 +141,7 @@ describe('ProductTypeOrmMapper', () => {
           id: '123',
           name: 'Product 1',
           price: { amount: 10, currency: 'USD' },
-          status: ProductStatus.DRAFT,
+          status: ProductStatusEnum.DRAFT,
           createdAt: currentDate.unpack(),
           updatedAt: currentDate.unpack(),
         }),
@@ -157,7 +157,7 @@ describe('ProductTypeOrmMapper', () => {
       const ormModel = new ProductTypeOrmModel({
         id: '123',
         name: 'Product 1',
-        status: ProductStatus.DRAFT,
+        status: ProductStatusEnum.DRAFT,
         price: {
           amount: 10,
           currency: AllowableCurrencyEnum.USD,

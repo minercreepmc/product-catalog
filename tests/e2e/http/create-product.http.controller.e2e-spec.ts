@@ -3,7 +3,10 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import * as request from 'supertest';
-import { CreateProductHttpRequest } from '@src/interface-adapters/controllers/http';
+import {
+  CreateProductHttpRequest,
+  CreateProductHttpResponse,
+} from '@src/interface-adapters/controllers/http';
 import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
 
 describe('CreateProductHttpController (e2e)', () => {
@@ -41,7 +44,9 @@ describe('CreateProductHttpController (e2e)', () => {
         .send(createProductRequest)
         .expect((response: request.Response) => {
           const { name, price, description, image } =
-            response.body as CreateProductHttpRequest;
+            response.body as CreateProductHttpResponse;
+
+          console.log(response.body);
 
           expect(name).toEqual(createProductRequest.name);
           expect(price).toEqual(createProductRequest.price);

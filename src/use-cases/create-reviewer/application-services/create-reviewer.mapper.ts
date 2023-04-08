@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import {
   ReviewerEmailValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 import {
   CreateReviewerCommand,
@@ -13,19 +14,21 @@ import {
 @Injectable()
 export class CreateReviewerMapper {
   toDomain(command: CreateReviewerCommand): CreateReviewerDomainOptions {
-    const { email, name } = command;
+    const { email, name, role } = command;
     return {
       email: new ReviewerEmailValueObject(email),
       name: new ReviewerNameValueObject(name),
+      role: new ReviewerRoleValueObject(role),
     };
   }
 
   toResponseDto(event: ReviewerCreatedDomainEvent): CreateReviewerResponseDto {
-    const { name, email } = event.details;
-    return {
-      reviewerId: event.reviewerId.unpack(),
+    const { name, email, role } = event.details;
+    return new CreateReviewerResponseDto({
+      role: role.unpack(),
       name: name.unpack(),
       email: email.unpack(),
-    };
+      reviewerId: event.reviewerId.unpack(),
+    });
   }
 }

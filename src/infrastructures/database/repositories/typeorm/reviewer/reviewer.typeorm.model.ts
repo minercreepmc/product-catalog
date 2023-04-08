@@ -7,10 +7,14 @@ export class ReviewerTypeOrmModel extends AbstractTypeOrmModel {
     super(options);
     this.name = options?.name;
     this.email = options?.email;
+    this.role = options?.role;
   }
   @Column()
   name: string;
 
   @Column()
   email: string;
+
+  @Column()
+  role: string;
 }

@@ -16,6 +16,7 @@ describe('CreateReviewerHttpController (e2e)', () => {
   const createReviewerRequest: CreateReviewerHttpRequest = {
     name: 'John Doe',
     email: '6ycjc@example.com',
+    role: 'regular',
   };
 
   beforeAll(async () => {
@@ -38,11 +39,12 @@ describe('CreateReviewerHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         .send(createReviewerRequest)
         .expect((response: request.Response) => {
-          const { name, email, reviewerId } =
+          const { name, email, reviewerId, role } =
             response.body as CreateReviewerHttpResponse;
 
           expect(name).toEqual(createReviewerRequest.name);
           expect(email).toEqual(createReviewerRequest.email);
+          expect(role).toEqual(createReviewerRequest.role);
           expect(reviewerId).toBeDefined();
         })
         .expect(HttpStatus.CREATED);
@@ -75,6 +77,7 @@ describe('CreateReviewerHttpController (e2e)', () => {
       const invalidProductRequest: CreateReviewerHttpRequest = {
         name: '',
         email: 'WTF@##@#@ple.com',
+        role: '',
       };
 
       return request(app.getHttpServer())
@@ -88,6 +91,7 @@ describe('CreateReviewerHttpController (e2e)', () => {
             codes: [
               ReviewerDomainExceptionCodes.NameDoesNotValid,
               ReviewerDomainExceptionCodes.EmailDoesNotValid,
+              ReviewerDomainExceptionCodes.RoleDoesNotValid,
             ],
           });
 

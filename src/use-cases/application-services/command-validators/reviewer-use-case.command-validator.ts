@@ -1,5 +1,4 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import { Injectable } from '@nestjs/common';
 import {
   CommandValidatorBase,
   TranslateExceptionToUserFriendlyMessageOptions,
@@ -8,6 +7,7 @@ import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
+  ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
 import {
   ValidationExceptionBase,
@@ -49,6 +49,9 @@ export class ReviewerCommandValidator extends CommandValidatorBase {
         return new ReviewerDomainExceptions.NameDoesNotValid();
       case ReviewerEmailValueObject.name:
         return new ReviewerDomainExceptions.EmailDoesNotValid();
+
+      case ReviewerRoleValueObject.name:
+        return new ReviewerDomainExceptions.RoleDoesNotValid();
       default:
         return exception;
     }
@@ -78,6 +81,15 @@ export class ReviewerCommandValidator extends CommandValidatorBase {
     this.handlerValidationResponse({
       response,
       context: ReviewerEmailValueObject.name,
+    });
+  }
+
+  protected validateRole(role: string) {
+    const response = ReviewerRoleValueObject.validate(role);
+
+    this.handlerValidationResponse({
+      response,
+      context: ReviewerRoleValueObject.name,
     });
   }
 }

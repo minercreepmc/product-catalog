@@ -3,6 +3,7 @@ import {
   ProductAggregate,
 } from '@aggregates/product';
 import {
+  ProductApprovedDomainEvent,
   ProductCreatedDomainEvent,
   ProductSubmittedDomainEvent,
   ProductUpdatedDomainEvent,
@@ -13,7 +14,7 @@ import {
   ProductImageValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
-  ProductStatus,
+  ProductStatusEnum,
   ProductStatusValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
@@ -43,7 +44,7 @@ describe('ProductAggregate', () => {
       const event = productAggregate.createProduct(options);
 
       expect(event).toBeInstanceOf(ProductCreatedDomainEvent);
-      expect(productAggregate.getStatus()).toBe(ProductStatus.DRAFT);
+      expect(productAggregate.getStatus()).toBe(ProductStatusEnum.DRAFT);
       expect(productAggregate.details.name).toBe(options.name);
       expect(productAggregate.details.price).toBe(options.price);
       expect(productAggregate.details.description).toBe(options.description);
@@ -61,13 +62,13 @@ describe('ProductAggregate', () => {
       const event = productAggregate.createProduct(options);
 
       expect(event).toBeInstanceOf(ProductCreatedDomainEvent);
-      expect(productAggregate.getStatus()).toBe(ProductStatus.DRAFT);
+      expect(productAggregate.getStatus()).toBe(ProductStatusEnum.DRAFT);
       expect(productAggregate.details.name).toBe(options.name);
       expect(productAggregate.details.price).toBe(options.price);
     });
 
     it('should throw an InvalidOperationException if the product is already in DRAFT status', () => {
-      productAggregate.setStatus(ProductStatus.DRAFT);
+      productAggregate.setStatus(ProductStatusEnum.DRAFT);
 
       const options = {
         name: new ProductNameValueObject('Test Product'),
@@ -133,7 +134,7 @@ describe('ProductAggregate', () => {
         details: {
           reviewerId: reviewerId,
           productStatus: new ProductStatusValueObject(
-            ProductStatus.PENDING_APPROVAL,
+            ProductStatusEnum.PENDING_APPROVAL,
           ),
         },
       });
@@ -142,7 +143,7 @@ describe('ProductAggregate', () => {
       expect(actualEvent.details).toEqual(expectedEvent.details);
       expect(actualEvent.productId).toEqual(expectedEvent.productId);
       expect(productAggregate.getStatus()).toEqual(
-        ProductStatus.PENDING_APPROVAL,
+        ProductStatusEnum.PENDING_APPROVAL,
       );
     });
 
@@ -171,10 +172,11 @@ describe('ProductAggregate', () => {
         }),
       });
       productAggregate.submitForApproval(reviewerId);
-      productAggregate.approve(reviewerId);
+      const productApproved = productAggregate.approve(reviewerId);
+      expect(productApproved).toBeInstanceOf(ProductApprovedDomainEvent);
 
       expect(productAggregate.details.status.unpack()).toBe(
-        ProductStatus.APPROVED,
+        ProductStatusEnum.APPROVED,
       );
       expect(productAggregate.details.approvedBy).toBe(reviewerId);
     });
@@ -200,7 +202,7 @@ describe('ProductAggregate', () => {
       productAggregate.reject(reviewerId, reason);
 
       expect(productAggregate.details.status.unpack()).toBe(
-        ProductStatus.REJECTED,
+        ProductStatusEnum.REJECTED,
       );
       expect(productAggregate.details.rejectedBy).toBe(reviewerId);
       expect(productAggregate.details.rejectionReason).toBe(reason);

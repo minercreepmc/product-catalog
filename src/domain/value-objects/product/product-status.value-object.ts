@@ -4,7 +4,7 @@ import {
   ValidationResponse,
 } from 'common-base-classes';
 
-export enum ProductStatus {
+export enum ProductStatusEnum {
   INITIAL = 'initial',
   DRAFT = 'draft',
   PENDING_APPROVAL = 'pending_approval',
@@ -12,8 +12,8 @@ export enum ProductStatus {
   REJECTED = 'rejected',
 }
 
-export const ProductStatusArray = Object.keys(ProductStatus).map(
-  (key) => ProductStatus[key],
+export const ProductStatusArray = Object.keys(ProductStatusEnum).map(
+  (key) => ProductStatusEnum[key],
 );
 
 export class ProductStatusValueObject extends TextValueObject {
@@ -36,22 +36,22 @@ export class ProductStatusValueObject extends TextValueObject {
   }
 
   static initial(): ProductStatusValueObject {
-    return new ProductStatusValueObject(ProductStatus.INITIAL);
+    return new ProductStatusValueObject(ProductStatusEnum.INITIAL);
   }
 
   static pending(): ProductStatusValueObject {
-    return new ProductStatusValueObject(ProductStatus.PENDING_APPROVAL);
+    return new ProductStatusValueObject(ProductStatusEnum.PENDING_APPROVAL);
   }
 
   static approved(): ProductStatusValueObject {
-    return new ProductStatusValueObject(ProductStatus.APPROVED);
+    return new ProductStatusValueObject(ProductStatusEnum.APPROVED);
   }
 
   static rejected(): ProductStatusValueObject {
-    return new ProductStatusValueObject(ProductStatus.REJECTED);
+    return new ProductStatusValueObject(ProductStatusEnum.REJECTED);
   }
 
   static draft(): ProductStatusValueObject {
-    return new ProductStatusValueObject(ProductStatus.DRAFT);
+    return new ProductStatusValueObject(ProductStatusEnum.DRAFT);
   }
 }

@@ -6,7 +6,7 @@ import {
 } from '@use-cases/submit-for-approval/dtos';
 import {
   ProductIdValueObject,
-  ProductStatus,
+  ProductStatusEnum,
   ProductStatusValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
@@ -43,7 +43,7 @@ describe('SubmitForApprovalMapper', () => {
         details: {
           reviewerId: new ReviewerIdValueObject('abc123'),
           productStatus: new ProductStatusValueObject(
-            ProductStatus.PENDING_APPROVAL,
+            ProductStatusEnum.PENDING_APPROVAL,
           ),
         },
       });
@@ -51,7 +51,7 @@ describe('SubmitForApprovalMapper', () => {
       const expectedResponseDto = new SubmitForApprovalResponseDto({
         reviewerId: 'abc123',
         productId: '123',
-        productStatus: ProductStatus.PENDING_APPROVAL,
+        productStatus: ProductStatusEnum.PENDING_APPROVAL,
       });
 
       const responseDto = mapper.toResponseDto(event);

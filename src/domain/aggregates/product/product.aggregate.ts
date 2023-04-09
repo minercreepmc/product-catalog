@@ -34,7 +34,7 @@ export class ProductAggregate extends AbstractAggregateRoot<
 
     super({ id, details });
 
-    const defaultStatus = ProductStatusValueObject.initial();
+    const defaultStatus = ProductStatusValueObject.createInitial();
     const providedStatus = options?.details?.status;
     this.status = providedStatus ?? defaultStatus;
   }

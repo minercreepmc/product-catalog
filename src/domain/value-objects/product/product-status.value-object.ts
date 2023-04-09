@@ -31,27 +31,47 @@ export class ProductStatusValueObject extends TextValueObject {
     allowWhitespace: false,
   };
 
+  isInitial(): boolean {
+    return this.unpack() === ProductStatusEnum.INITIAL;
+  }
+
+  isDraft(): boolean {
+    return this.unpack() === ProductStatusEnum.DRAFT;
+  }
+
+  isPendingApproval(): boolean {
+    return this.unpack() === ProductStatusEnum.PENDING_APPROVAL;
+  }
+
+  isApproved(): boolean {
+    return this.unpack() === ProductStatusEnum.APPROVED;
+  }
+
+  isRejected(): boolean {
+    return this.unpack() === ProductStatusEnum.REJECTED;
+  }
+
   static validate(value: string): ValidationResponse {
     return super.validate(value, this.OPTIONS);
   }
 
-  static initial(): ProductStatusValueObject {
+  static createInitial(): ProductStatusValueObject {
     return new ProductStatusValueObject(ProductStatusEnum.INITIAL);
   }
 
-  static pending(): ProductStatusValueObject {
+  static createPending(): ProductStatusValueObject {
     return new ProductStatusValueObject(ProductStatusEnum.PENDING_APPROVAL);
   }
 
-  static approved(): ProductStatusValueObject {
+  static createApproved(): ProductStatusValueObject {
     return new ProductStatusValueObject(ProductStatusEnum.APPROVED);
   }
 
-  static rejected(): ProductStatusValueObject {
+  static createRejected(): ProductStatusValueObject {
     return new ProductStatusValueObject(ProductStatusEnum.REJECTED);
   }
 
-  static draft(): ProductStatusValueObject {
+  static createDraft(): ProductStatusValueObject {
     return new ProductStatusValueObject(ProductStatusEnum.DRAFT);
   }
 }

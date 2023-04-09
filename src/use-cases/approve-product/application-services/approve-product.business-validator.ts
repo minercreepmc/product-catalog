@@ -1,3 +1,5 @@
+import { ProductAggregate } from '@aggregates/product';
+import { ReviewerAggregate } from '@aggregates/reviewer';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import {
@@ -20,34 +22,39 @@ export class ApproveProductBusinessValidator extends BusinessValidatorBase {
     super();
   }
 
-  private productExist: boolean;
-  private reviewerExist: boolean;
+  private product: ProductAggregate;
+  private reviewer: ReviewerAggregate;
 
   async validate(
     domainOptions: ApproveProductDomainOptions,
   ): Promise<ValidationResponse> {
     const { productId, reviewerId } = domainOptions;
 
-    this.clearExceptions();
-    this.productExist = true;
-    this.reviewerExist = true;
+    this.init();
 
     await this.validateProductMustExistById(productId);
     await this.validateReviewerMustExistById(reviewerId);
-    if (this.productExist && this.reviewerExist) {
-      await this.validateReviewerMustBeAdmin(reviewerId);
+    if (this.product && this.reviewer) {
+      this.validateReviewerMustBeAdmin(this.reviewer);
+      this.productMustBeSubmittedForApproval(this.product);
     }
     return this.getValidationResponse();
+  }
+
+  protected init() {
+    this.clearExceptions();
+    this.product = null;
+    this.reviewer = null;
   }
 
   protected async validateProductMustExistById(
     productId: ProductIdValueObject,
   ) {
-    const exist = await this.productManagementService.isProductExistById(
+    const product = await this.productManagementService.getProductById(
       productId,
     );
-    if (!exist) {
-      this.productExist = false;
+    this.product = product;
+    if (!product) {
       this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
     }
   }
@@ -55,24 +62,27 @@ export class ApproveProductBusinessValidator extends BusinessValidatorBase {
   protected async validateReviewerMustExistById(
     reviewerId: ReviewerIdValueObject,
   ) {
-    const exist = await this.reviewerManagementService.isReviewerExistById(
+    const reviewer = await this.reviewerManagementService.getReviewerById(
       reviewerId,
     );
-    if (!exist) {
-      this.reviewerExist = false;
+    this.reviewer = reviewer;
+    if (!reviewer) {
       this.exceptions.push(new ReviewerDomainExceptions.DoesNotExist());
     }
   }
 
-  protected async validateReviewerMustBeAdmin(
-    reviewerId: ReviewerIdValueObject,
-  ) {
-    const reviewer = await this.reviewerManagementService.getReviewerById(
-      reviewerId,
-    );
+  protected validateReviewerMustBeAdmin(reviewer: ReviewerAggregate) {
     if (!reviewer.role.isAdmin()) {
       this.exceptions.push(
         new ReviewerDomainExceptions.NotAuthorizedToApprove(),
+      );
+    }
+  }
+
+  protected productMustBeSubmittedForApproval(product: ProductAggregate) {
+    if (!product.status.isPendingApproval()) {
+      this.exceptions.push(
+        new ProductDomainExceptions.NotSubmittedForApproval(),
       );
     }
   }

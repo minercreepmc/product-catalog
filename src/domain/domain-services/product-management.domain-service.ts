@@ -39,6 +39,10 @@ export class ProductManagementDomainService {
     return Boolean(await this.productRepository.findOneById(id));
   }
 
+  async getProductById(id: ProductIdValueObject): Promise<ProductAggregate> {
+    return this.productRepository.findOneById(id);
+  }
+
   async createProduct(
     options: CreateProductDomainServiceOptions,
   ): Promise<ProductCreatedDomainEvent> {

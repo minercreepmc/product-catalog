@@ -7,4 +7,5 @@ export enum ProductDomainExceptionCodes {
   DescriptionDoesNotValid = 'PRODUCT.DESCRIPTION_DOES_NOT_VALID',
   ImageDoesNotValid = 'PRODUCT.IMAGE_DOES_NOT_VALID',
   AtributeDoesNotValid = 'PRODUCT.ATTRIBUTE_DOES_NOT_VALID',
+  NotSubmittedForApproval = 'PRODUCT.NOT_SUBMITTED_FOR_APPROVAL',
 }

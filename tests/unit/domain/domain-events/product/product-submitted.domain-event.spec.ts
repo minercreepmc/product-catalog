@@ -39,7 +39,7 @@ describe('ProductSubmittedDomainEvent', () => {
     // Set up test data
     const productId = new ProductIdValueObject('123');
     const reviewerId = new ReviewerIdValueObject('456');
-    const productStatus = ProductStatusValueObject.pending();
+    const productStatus = ProductStatusValueObject.createPending();
     const details: ProductSubmittedDomainEventDetails = {
       reviewerId,
       productStatus,

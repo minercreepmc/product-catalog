@@ -43,4 +43,9 @@ export namespace ProductDomainExceptions {
     readonly message = 'Product attribute does not valid';
     readonly code = ProductDomainExceptionCodes.AtributeDoesNotValid;
   }
+
+  export class NotSubmittedForApproval extends ProductValidationException {
+    readonly message = 'Product not submitted for approval';
+    readonly code = ProductDomainExceptionCodes.NotSubmittedForApproval;
+  }
 }

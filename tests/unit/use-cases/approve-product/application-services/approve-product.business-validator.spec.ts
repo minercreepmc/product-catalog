@@ -4,7 +4,7 @@ import {
   ProductManagementDomainService,
   ReviewerManagementDomainService,
 } from '@domain-services';
-import { ApproveProductBusinessValidator } from '@use-cases/approve-product/application-services';
+import { ApproveProductProcessValidator } from '@use-cases/approve-product/application-services';
 import { ProductIdValueObject } from '@value-objects/product';
 import {
   ReviewerEmailValueObject,
@@ -19,13 +19,13 @@ const productManagementServiceMock = mock<ProductManagementDomainService>();
 const reviewerManagementServiceMock = mock<ReviewerManagementDomainService>();
 
 describe('ApproveProductBusinessValidator', () => {
-  let validator: ApproveProductBusinessValidator;
+  let validator: ApproveProductProcessValidator;
   let normalReviewer: ReviewerAggregate;
   let adminReviewer: ReviewerAggregate;
   const adminRole = new ReviewerRoleValueObject('admin');
   const regularRole = new ReviewerRoleValueObject('regular');
   beforeEach(() => {
-    validator = new ApproveProductBusinessValidator(
+    validator = new ApproveProductProcessValidator(
       productManagementServiceMock,
       reviewerManagementServiceMock,
     );
@@ -61,7 +61,7 @@ describe('ApproveProductBusinessValidator', () => {
       adminReviewer,
     );
 
-    const validationResult = await validator.validate({
+    const validationResult = await validator.execute({
       productId,
       reviewerId,
     });
@@ -80,7 +80,7 @@ describe('ApproveProductBusinessValidator', () => {
       adminReviewer,
     );
 
-    const validationResult = await validator.validate({
+    const validationResult = await validator.execute({
       productId,
       reviewerId,
     });
@@ -96,7 +96,7 @@ describe('ApproveProductBusinessValidator', () => {
     productManagementServiceMock.isProductExistById.mockResolvedValue(true);
     reviewerManagementServiceMock.isReviewerExistById.mockResolvedValue(false);
 
-    const validationResult = await validator.validate({
+    const validationResult = await validator.execute({
       productId,
       reviewerId,
     });
@@ -115,7 +115,7 @@ describe('ApproveProductBusinessValidator', () => {
       normalReviewer,
     );
 
-    const validationResult = await validator.validate({
+    const validationResult = await validator.execute({
       productId,
       reviewerId,
     });

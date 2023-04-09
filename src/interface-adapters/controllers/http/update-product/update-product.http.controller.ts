@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
-  UseCaseBusinessValidationExceptions,
+  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 import {
@@ -44,7 +44,7 @@ export class UpdateProductHttpController {
           throw new UnprocessableEntityException(exception.exceptions);
         }
 
-        if (exception instanceof UseCaseBusinessValidationExceptions) {
+        if (exception instanceof UseCaseProcessExceptions) {
           throw new ConflictException(exception.exceptions);
         }
 

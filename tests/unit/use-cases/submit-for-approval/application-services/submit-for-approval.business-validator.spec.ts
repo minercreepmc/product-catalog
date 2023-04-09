@@ -30,7 +30,7 @@ describe('SubmitForApprovalBusinessValidator', () => {
       productManagementService.isProductExistById.mockResolvedValue(true);
       reviewerManagementService.isReviewerExistById.mockResolvedValue(true);
 
-      const result = await businessValidator.validate({
+      const result = await businessValidator.execute({
         productId,
         reviewerId,
       });
@@ -51,7 +51,7 @@ describe('SubmitForApprovalBusinessValidator', () => {
       productManagementService.isProductExistById.mockResolvedValue(false);
       reviewerManagementService.isReviewerExistById.mockResolvedValue(true);
 
-      const result = await businessValidator.validate({
+      const result = await businessValidator.execute({
         productId,
         reviewerId,
       });
@@ -75,7 +75,7 @@ describe('SubmitForApprovalBusinessValidator', () => {
       productManagementService.isProductExistById.mockResolvedValue(true);
       reviewerManagementService.isReviewerExistById.mockResolvedValue(false);
 
-      const result = await businessValidator.validate({
+      const result = await businessValidator.execute({
         productId,
         reviewerId,
       });

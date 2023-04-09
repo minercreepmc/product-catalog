@@ -1,11 +1,11 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { ProductCommandValidator } from '@use-cases/application-services/command-validators';
+import { ProductValidator } from '@use-cases/application-services/command-validators';
 
 describe('ProductCommandValidator', () => {
-  let validator: ProductCommandValidator;
+  let validator: ProductValidator;
 
   beforeEach(() => {
-    validator = new ProductCommandValidator();
+    validator = new ProductValidator();
   });
 
   it('should return an empty validation response when the command is valid', () => {

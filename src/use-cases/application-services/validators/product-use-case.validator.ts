@@ -1,7 +1,7 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { Injectable } from '@nestjs/common';
 import {
-  CommandValidatorBase,
+  ValidatorBase,
   TranslateExceptionToUserFriendlyMessageOptions,
 } from '@use-cases/common';
 import {
@@ -29,36 +29,8 @@ export interface ProductUseCaseCommand {
 }
 
 @Injectable()
-export class ProductCommandValidator extends CommandValidatorBase {
-  validate(command: ProductUseCaseCommand): ValidationResponse {
-    const { id, name, price, description, image, attributes } = command;
-    this.clearExceptions();
-    if (id !== undefined) {
-      this.validateProductId(id);
-    }
-
-    if (name !== undefined) {
-      this.validateName(name);
-    }
-
-    if (price !== undefined) {
-      this.validatePrice(price);
-    }
-
-    if (description !== undefined) {
-      this.validateDescription(description);
-    }
-
-    if (image !== undefined) {
-      this.validateImage(image);
-    }
-
-    if (attributes !== undefined) {
-      this.validateAttributes(attributes);
-    }
-
-    return this.getValidationResponse();
-  }
+export abstract class ProductValidator extends ValidatorBase {
+  abstract validate(command: ProductUseCaseCommand): ValidationResponse;
   translateExceptionToUserFriendlyMessage(
     options: TranslateExceptionToUserFriendlyMessageOptions,
   ): ValidationExceptionBase {
@@ -82,7 +54,7 @@ export class ProductCommandValidator extends CommandValidatorBase {
   protected validateProductId(id: string): void {
     const response = ProductIdValueObject.validate(id);
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ProductIdValueObject.name,
     });
   }
@@ -91,7 +63,7 @@ export class ProductCommandValidator extends CommandValidatorBase {
     const response = ProductNameValueObject.validate(name);
 
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ProductNameValueObject.name,
     });
   }
@@ -100,7 +72,7 @@ export class ProductCommandValidator extends CommandValidatorBase {
     const response = ProductPriceValueObject.validate(price);
 
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ProductPriceValueObject.name,
     });
   }
@@ -109,7 +81,7 @@ export class ProductCommandValidator extends CommandValidatorBase {
     const response = ProductDescriptionValueObject.validate(description);
 
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ProductDescriptionValueObject.name,
     });
   }
@@ -118,7 +90,7 @@ export class ProductCommandValidator extends CommandValidatorBase {
     const response = ProductImageValueObject.validate(image);
 
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ProductImageValueObject.name,
     });
   }
@@ -127,7 +99,7 @@ export class ProductCommandValidator extends CommandValidatorBase {
     const response = ProductAttributesValueObject.validate(attributes);
 
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ProductAttributesValueObject.name,
     });
   }

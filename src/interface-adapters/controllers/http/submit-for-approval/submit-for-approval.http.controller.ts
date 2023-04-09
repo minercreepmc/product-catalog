@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
-  UseCaseBusinessValidationExceptions,
+  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 import {
@@ -35,7 +35,7 @@ export class SubmitForApprovalHttpController {
         if (exception instanceof UseCaseCommandValidationExceptions) {
           throw new UnprocessableEntityException(exception.exceptions);
         }
-        if (exception instanceof UseCaseBusinessValidationExceptions) {
+        if (exception instanceof UseCaseProcessExceptions) {
           throw new ConflictException(exception.exceptions);
         }
         throw exception;

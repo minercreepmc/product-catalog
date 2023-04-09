@@ -74,7 +74,7 @@ describe('CreateReviewerBusinessValidator', () => {
         reviewerManagementDomainService.getReviewerByEmail as jest.Mock
       ).mockResolvedValueOnce(null);
 
-      const response = await createReviewerBusinessValidator.validate(
+      const response = await createReviewerBusinessValidator.execute(
         createReviewerDomainOptions,
       );
 
@@ -91,7 +91,7 @@ describe('CreateReviewerBusinessValidator', () => {
         email: new ReviewerEmailValueObject('johndoe@example.com'),
       });
 
-      const response = await createReviewerBusinessValidator.validate(
+      const response = await createReviewerBusinessValidator.execute(
         createReviewerDomainOptions,
       );
 

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ProductCommandValidator } from '@use-cases/application-services/command-validators';
+import { ProductValidator } from '@use-cases/application-services/validators';
 import { ValidationResponse } from 'common-base-classes';
 import { CreateProductCommand } from '../dtos';
 
 @Injectable()
-export class CreateProductCommandValidator extends ProductCommandValidator {
+export class CreateProductValidator extends ProductValidator {
   validate(command: CreateProductCommand): ValidationResponse {
     const { name, price, description, image } = command;
     this.clearExceptions();

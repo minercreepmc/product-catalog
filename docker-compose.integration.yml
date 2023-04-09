@@ -15,9 +15,9 @@ services:
       - postgres
     env_file:
       - .env
-    command: sh -c 'npm run schema:drop && npm run migration:up && npm run test:e2e'
+    command: sh -c 'npm run schema:drop && npm run migration:up && npm run test -- $INTEGRATION_TEST'
     ports:
-      - 3001:3000
+      - 3002:3000
 
   postgres:
     container_name: product-catalog-database-test
@@ -28,11 +28,4 @@ services:
     volumes:
       - ./data/db_test:/var/lib/postgresql/data
     ports:
-      - 8001:5432
-
-  adminer:
-    container_name: product-catalog-adminer-test
-    image: adminer
-    restart: always
-    ports:
-      - '8901:8080'
+      - 8002:5432

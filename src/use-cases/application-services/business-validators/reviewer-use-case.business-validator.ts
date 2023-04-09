@@ -1,9 +1,9 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ReviewerManagementDomainService } from '@domain-services';
-import { BusinessValidatorBase } from '@use-cases/common';
+import { ProcessBase } from '@use-cases/common';
 import { ReviewerEmailValueObject } from '@value-objects/reviewer';
 
-export abstract class ReviewerBusinessValidator extends BusinessValidatorBase {
+export abstract class ReviewerBusinessValidator extends ProcessBase {
   constructor(
     private readonly reviewerManagementService: ReviewerManagementDomainService,
   ) {

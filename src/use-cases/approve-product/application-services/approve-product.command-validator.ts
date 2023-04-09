@@ -2,7 +2,7 @@ import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { Injectable } from '@nestjs/common';
 import {
-  CommandValidatorBase,
+  ValidatorBase,
   TranslateExceptionToUserFriendlyMessageOptions,
 } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
@@ -14,7 +14,7 @@ import {
 import { ApproveProductCommand } from '../dtos';
 
 @Injectable()
-export class ApproveProductCommandValidator extends CommandValidatorBase {
+export class ApproveProductCommandValidator extends ValidatorBase {
   validate(command: ApproveProductCommand): ValidationResponse {
     const { productId, reviewerId } = command;
     this.clearExceptions();
@@ -26,7 +26,7 @@ export class ApproveProductCommandValidator extends CommandValidatorBase {
   protected validateProductId(productId: string): void {
     const response = ProductIdValueObject.validate(productId);
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ProductIdValueObject.name,
     });
   }
@@ -34,7 +34,7 @@ export class ApproveProductCommandValidator extends CommandValidatorBase {
   protected validateReviewerId(reviewerId: string): void {
     const response = ReviewerIdValueObject.validate(reviewerId);
     this.handlerValidationResponse({
-      response,
+      response: response,
       context: ReviewerIdValueObject.name,
     });
   }

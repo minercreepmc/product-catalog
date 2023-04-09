@@ -13,7 +13,7 @@ import {
   ApproveProductResponseDto,
 } from '@use-cases/approve-product/dtos';
 import {
-  UseCaseBusinessValidationExceptions,
+  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 import { match } from 'oxide.ts';
@@ -38,7 +38,7 @@ export class ApproveProductHttpController {
           throw new UnprocessableEntityException(exception.exceptions);
         }
 
-        if (exception instanceof UseCaseBusinessValidationExceptions) {
+        if (exception instanceof UseCaseProcessExceptions) {
           throw new ConflictException(exception.exceptions);
         }
 

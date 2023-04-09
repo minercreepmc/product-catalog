@@ -1,5 +1,6 @@
 import { ProductAggregate } from '@aggregates/product';
 import { ReviewerAggregate } from '@aggregates/reviewer';
+import { ProductApprovedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import {
@@ -7,14 +8,20 @@ import {
   ReviewerManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { BusinessValidatorBase } from '@use-cases/common';
+import { ProcessBase } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import { ValidationResponse } from 'common-base-classes';
 import { ApproveProductDomainOptions } from '../dtos';
 
+export type ApproveProductProcessSucess = ProductApprovedDomainEvent;
+export type ApproveProductProcessFailure = Array<any>;
+
 @Injectable()
-export class ApproveProductBusinessValidator extends BusinessValidatorBase {
+export class ApproveProductProcessValidator extends ProcessBase<
+  ApproveProductProcessSucess,
+  ApproveProductProcessFailure
+> {
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
     private readonly reviewerManagementService: ReviewerManagementDomainService,
@@ -25,9 +32,7 @@ export class ApproveProductBusinessValidator extends BusinessValidatorBase {
   private product: ProductAggregate;
   private reviewer: ReviewerAggregate;
 
-  async validate(
-    domainOptions: ApproveProductDomainOptions,
-  ): Promise<ValidationResponse> {
+  async execute(domainOptions: ApproveProductDomainOptions) {
     const { productId, reviewerId } = domainOptions;
 
     this.init();
@@ -38,7 +43,7 @@ export class ApproveProductBusinessValidator extends BusinessValidatorBase {
       this.validateReviewerMustBeAdmin(this.reviewer);
       this.productMustBeSubmittedForApproval(this.product);
     }
-    return this.getValidationResponse();
+    return this.getValidationResult();
   }
 
   protected init() {

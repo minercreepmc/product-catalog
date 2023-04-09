@@ -1,20 +1,26 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductManagementDomainService } from '@domain-services';
-import { BusinessValidatorBase } from '@use-cases/common';
+import { ProcessBase } from '@use-cases/common';
 import {
   ProductIdValueObject,
   ProductNameValueObject,
 } from '@value-objects/product';
-import { ValidationResponse } from 'common-base-classes';
+import { Result } from 'oxide.ts';
 
-export abstract class ProductBusinessValidator extends BusinessValidatorBase {
-  abstract validate(domainOptions: any): Promise<ValidationResponse>;
+export abstract class ProductBusinessValidator<
+  Success,
+  Failures extends any[],
+> extends ProcessBase<Success, Failures> {
+  abstract execute(domainOptions: any): Promise<Result<Success, Failures>>;
 
   constructor(
-    private readonly productManagementService: ProductManagementDomainService,
+    protected readonly productManagementService: ProductManagementDomainService,
   ) {
     super();
   }
+
+  nameExist: boolean;
+  idExist: boolean;
 
   protected async validateNameMustNotExist(
     name: ProductNameValueObject,
@@ -22,6 +28,7 @@ export abstract class ProductBusinessValidator extends BusinessValidatorBase {
     const productExists =
       await this.productManagementService.isProductExistByName(name);
     if (productExists) {
+      this.nameExist = true;
       this.exceptions.push(new ProductDomainExceptions.DoesExist());
     }
   }
@@ -30,6 +37,7 @@ export abstract class ProductBusinessValidator extends BusinessValidatorBase {
     const productExists =
       await this.productManagementService.isProductExistById(id);
     if (!productExists) {
+      this.idExist = false;
       this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
     }
   }

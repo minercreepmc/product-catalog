@@ -7,7 +7,7 @@ import {
 } from '@use-cases/common';
 import { Err, Ok } from 'oxide.ts';
 import {
-  ApproveProductBusinessValidator,
+  ApproveProductProcessValidator,
   ApproveProductCommandValidator,
   ApproveProductMapper,
 } from './application-services';
@@ -20,7 +20,7 @@ export class ApproveProductHandler
   constructor(
     private readonly commandValidator: ApproveProductCommandValidator,
     private readonly mapper: ApproveProductMapper,
-    private readonly businessValidator: ApproveProductBusinessValidator,
+    private readonly approveProductProcess: ApproveProductProcessValidator,
     private readonly domainService: ProductApprovalDomainService,
   ) {}
 
@@ -34,13 +34,15 @@ export class ApproveProductHandler
 
     const domainOptions = this.mapper.toDomain(command);
 
-    const businessValidated = await this.businessValidator.validate(
+    const approveProductResult = await this.approveProductProcess.execute(
       domainOptions,
     );
 
-    if (!businessValidated.isValid) {
+    if (!approveProductResult.isErr()) {
       return Err(
-        new UseCaseBusinessValidationExceptions(businessValidated.exceptions),
+        new UseCaseBusinessValidationExceptions(
+          approveProductResult.unwrapErr(),
+        ),
       );
     }
 

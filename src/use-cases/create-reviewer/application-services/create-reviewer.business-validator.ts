@@ -9,13 +9,13 @@ export class CreateReviewerBusinessValidator extends ReviewerBusinessValidator {
   constructor(reviewerManagementService: ReviewerManagementDomainService) {
     super(reviewerManagementService);
   }
-  async validate(
+  async execute(
     domainOptions: CreateReviewerDomainOptions,
   ): Promise<ValidationResponse> {
     const { email } = domainOptions;
 
     this.clearExceptions();
     await this.validateReviewerEmailMustNotExist(email);
-    return this.getValidationResponse();
+    return this.getValidationResult();
   }
 }

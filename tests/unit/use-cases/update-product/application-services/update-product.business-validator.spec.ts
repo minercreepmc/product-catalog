@@ -35,7 +35,7 @@ describe('UpdateProductBusinessValidator', () => {
       productService.isProductExistById.mockResolvedValueOnce(true);
 
       // Act
-      const result = await validator.validate(domainOptions);
+      const result = await validator.execute(domainOptions);
 
       // Assert
       expect(result.isValid).toBe(true);
@@ -58,7 +58,7 @@ describe('UpdateProductBusinessValidator', () => {
       productService.isProductExistByName.mockResolvedValueOnce(false);
 
       // Act
-      const result = await validator.validate(domainOptions);
+      const result = await validator.execute(domainOptions);
 
       // Assert
       expect(result.isValid).toBe(false);

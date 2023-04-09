@@ -15,7 +15,7 @@ import {
   CreateReviewerResponseDto,
 } from '@use-cases/create-reviewer/dtos';
 import {
-  UseCaseBusinessValidationExceptions,
+  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 
@@ -37,7 +37,7 @@ export class CreateReviewerHttpController {
         if (exception instanceof UseCaseCommandValidationExceptions) {
           throw new UnprocessableEntityException(exception.exceptions);
         }
-        if (exception instanceof UseCaseBusinessValidationExceptions) {
+        if (exception instanceof UseCaseProcessExceptions) {
           throw new ConflictException(exception.exceptions);
         }
         throw new InternalServerErrorException(exception);

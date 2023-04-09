@@ -1,8 +1,8 @@
 import { ProductManagementDomainService } from '@domain-services';
 import { CommandHandler } from '@nestjs/cqrs';
-import { ProductCommandValidator } from '@use-cases/application-services/command-validators';
+import { ProductValidator } from '@use-cases/application-services/command-validators';
 import {
-  UseCaseBusinessValidationExceptions,
+  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 import { Err, Ok } from 'oxide.ts';
@@ -30,12 +30,12 @@ export class UpdateProductHandler {
     }
     const domainOptions = this.mapper.toDomain(command);
 
-    const businessValidated = await this.businessValidator.validate(
+    const businessValidated = await this.businessValidator.execute(
       domainOptions,
     );
     if (!businessValidated.isValid) {
       return Err(
-        new UseCaseBusinessValidationExceptions(businessValidated.exceptions),
+        new UseCaseProcessExceptions(businessValidated.exceptions),
       );
     }
 

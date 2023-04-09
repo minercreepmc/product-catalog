@@ -5,28 +5,28 @@ import {
   ReviewerManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { BusinessValidatorBase } from '@use-cases/common';
+import { ProcessBase } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import { ValidationResponse } from 'common-base-classes';
 import { SubmitForApprovalDomainOptions } from '../dtos';
 
 @Injectable()
-export class SubmitForApprovalBusinessValidator extends BusinessValidatorBase {
+export class SubmitForApprovalBusinessValidator extends ProcessBase {
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
     private readonly reviewerManagementService: ReviewerManagementDomainService,
   ) {
     super();
   }
-  async validate(
+  async execute(
     domainOptions: SubmitForApprovalDomainOptions,
   ): Promise<ValidationResponse> {
     const { productId, reviewerId } = domainOptions;
     this.clearExceptions();
     await this.validateProductMustExistById(productId);
     await this.validateReviewerMustExistById(reviewerId);
-    return this.getValidationResponse();
+    return this.getValidationResult();
   }
 
   private async validateProductMustExistById(productId: ProductIdValueObject) {

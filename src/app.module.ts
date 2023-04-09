@@ -21,44 +21,43 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductCommandValidator } from '@use-cases/application-services/command-validators';
-import { ApproveProductHandler } from '@use-cases/approve-product';
-import {
-  ApproveProductBusinessValidator,
-  ApproveProductCommandValidator,
-  ApproveProductMapper,
-} from '@use-cases/approve-product/application-services';
+// import { ApproveProductHandler } from '@use-cases/approve-product';
+// import {
+//   ApproveProductProcessValidator,
+//   ApproveProductCommandValidator,
+//   ApproveProductMapper,
+// } from '@use-cases/approve-product/application-services';
 import { CreateProductHandler } from '@use-cases/create-product';
 import {
-  CreateProductBusinessValidator,
-  CreateProductCommandValidator,
+  CreateProductProcess,
+  CreateProductValidator,
   CreateProductMapper,
 } from '@use-cases/create-product/application-services';
-import { CreateReviewerHandler } from '@use-cases/create-reviewer';
-import {
-  CreateReviewerBusinessValidator,
-  CreateReviewerCommandValidator,
-  CreateReviewerMapper,
-} from '@use-cases/create-reviewer/application-services';
-import {
-  SubmitForApprovalBusinessValidator,
-  SubmitForApprovalCommandValidator,
-  SubmitForApprovalMapper,
-} from '@use-cases/submit-for-approval/application-services';
-import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval/submit-for-approval.handler';
-import { UpdateProductHandler } from '@use-cases/update-product';
-import {
-  UpdateProductBusinessValidator,
-  UpdateProductCommandValidator,
-  UpdateProductMapper,
-} from '@use-cases/update-product/application-services';
+// import { CreateReviewerHandler } from '@use-cases/create-reviewer';
+// import {
+//   CreateReviewerBusinessValidator,
+//   CreateReviewerCommandValidator,
+//   CreateReviewerMapper,
+// } from '@use-cases/create-reviewer/application-services';
+// import {
+//   SubmitForApprovalBusinessValidator,
+//   SubmitForApprovalCommandValidator,
+//   SubmitForApprovalMapper,
+// } from '@use-cases/submit-for-approval/application-services';
+// import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval/submit-for-approval.handler';
+// import { UpdateProductHandler } from '@use-cases/update-product';
+// import {
+//   UpdateProductBusinessValidator,
+//   UpdateProductCommandValidator,
+//   UpdateProductMapper,
+// } from '@use-cases/update-product/application-services';
 import {
   CreateProductHttpController,
-  CreateReviewerHttpController,
-  UpdateProductHttpController,
+  // CreateReviewerHttpController,
+  // UpdateProductHttpController,
 } from './interface-adapters/controllers/http';
-import { ApproveProductHttpController } from './interface-adapters/controllers/http/approve-product';
-import { SubmitForApprovalHttpController } from './interface-adapters/controllers/http/submit-for-approval';
+// import { ApproveProductHttpController } from './interface-adapters/controllers/http/approve-product';
+// import { SubmitForApprovalHttpController } from './interface-adapters/controllers/http/submit-for-approval';
 
 // Domain
 const domainServices: Provider[] = [
@@ -83,56 +82,56 @@ const repositories: Provider[] = [
 const createProductUseCase: Provider[] = [
   CreateProductHandler,
   CreateProductMapper,
-  CreateProductCommandValidator,
-  CreateProductBusinessValidator,
+  CreateProductValidator,
+  CreateProductProcess,
 ];
 
-const updateProductUseCase: Provider[] = [
-  UpdateProductHandler,
-  UpdateProductMapper,
-  UpdateProductCommandValidator,
-  UpdateProductBusinessValidator,
-];
-const createReviewerUseCase: Provider[] = [
-  CreateReviewerHandler,
-  CreateReviewerCommandValidator,
-  CreateReviewerBusinessValidator,
-  CreateReviewerMapper,
-];
-const submitForApprovalUseCase: Provider[] = [
-  SubmitForApprovalHandler,
-  SubmitForApprovalCommandValidator,
-  SubmitForApprovalBusinessValidator,
-  SubmitForApprovalMapper,
-];
-const approveProductUseCase: Provider[] = [
-  ApproveProductHandler,
-  ApproveProductCommandValidator,
-  ApproveProductBusinessValidator,
-  ApproveProductMapper,
-];
+// const updateProductUseCase: Provider[] = [
+//   UpdateProductHandler,
+//   UpdateProductMapper,
+//   UpdateProductCommandValidator,
+//   UpdateProductBusinessValidator,
+// ];
+// const createReviewerUseCase: Provider[] = [
+//   CreateReviewerHandler,
+//   CreateReviewerCommandValidator,
+//   CreateReviewerBusinessValidator,
+//   CreateReviewerMapper,
+// ];
+// const submitForApprovalUseCase: Provider[] = [
+//   SubmitForApprovalHandler,
+//   SubmitForApprovalCommandValidator,
+//   SubmitForApprovalBusinessValidator,
+//   SubmitForApprovalMapper,
+// ];
+// const approveProductUseCase: Provider[] = [
+//   ApproveProductHandler,
+//   ApproveProductCommandValidator,
+//   ApproveProductProcessValidator,
+//   ApproveProductMapper,
+// ];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
-  ...updateProductUseCase,
-  ...createReviewerUseCase,
-  ...submitForApprovalUseCase,
-  ...approveProductUseCase,
+  // ...updateProductUseCase,
+  // ...createReviewerUseCase,
+  // ...submitForApprovalUseCase,
+  // ...approveProductUseCase,
 ];
 
 // Interface Adapters
 const createProductController = [CreateProductHttpController];
-const updateProductController = [UpdateProductHttpController];
-const createReviewerController = [CreateReviewerHttpController];
-const submitForApprovalController = [SubmitForApprovalHttpController];
-const approveProductController = [ApproveProductHttpController];
-
+// const updateProductController = [UpdateProductHttpController];
+// const createReviewerController = [CreateReviewerHttpController];
+// const submitForApprovalController = [SubmitForApprovalHttpController];
+// const approveProductController = [ApproveProductHttpController];
+//
 const controllers = [
   ...createProductController,
-  ...updateProductController,
-  ...createReviewerController,
-  ...submitForApprovalController,
-  ...approveProductController,
+  // ...updateProductController,
+  // ...createReviewerController,
+  // ...submitForApprovalController,
+  // ...approveProductController,
 ];
 
 // Vendor

@@ -14,7 +14,7 @@ export interface TranslateExceptionToUserFriendlyMessageOptions {
   context?: string;
 }
 
-export abstract class CommandValidatorBase {
+export abstract class ValidatorBase {
   exceptions: Map<string, ValidationExceptionBase> = new Map();
   abstract validate(command: ICommand): ValidationResponse;
   protected abstract translateExceptionToUserFriendlyMessage(

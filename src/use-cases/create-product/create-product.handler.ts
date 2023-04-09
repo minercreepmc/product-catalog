@@ -1,14 +1,12 @@
-import { ProductManagementDomainService } from '@domain-services';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ProductCommandValidator } from '@use-cases/application-services/command-validators';
 import {
-  UseCaseBusinessValidationExceptions,
+  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 import { Err, Ok } from 'oxide.ts';
 import {
-  CreateProductBusinessValidator,
-  CreateProductCommandValidator,
+  CreateProductProcess,
+  CreateProductValidator,
   CreateProductMapper,
 } from './application-services';
 import { CreateProductCommand, CreateProductResult } from './dtos';
@@ -18,14 +16,13 @@ export class CreateProductHandler
   implements ICommandHandler<CreateProductCommand, CreateProductResult>
 {
   constructor(
-    private readonly commandValidator: CreateProductCommandValidator,
-    private readonly businessValidator: CreateProductBusinessValidator,
+    private readonly validator: CreateProductValidator,
+    private readonly createProductProcess: CreateProductProcess,
     private readonly mapper: CreateProductMapper,
-    private readonly productManagementService: ProductManagementDomainService,
   ) {}
 
   async execute(command: CreateProductCommand): Promise<CreateProductResult> {
-    const commandValidated = this.commandValidator.validate(command);
+    const commandValidated = this.validator.validate(command);
 
     if (!commandValidated.isValid) {
       return Err(
@@ -34,17 +31,14 @@ export class CreateProductHandler
     }
 
     const domainOptions = this.mapper.toDomain(command);
-    const businessValidated = await this.businessValidator.validate(
+
+    const createProductResult = await this.createProductProcess.execute(
       domainOptions,
     );
-    if (!businessValidated.isValid) {
-      return Err(
-        new UseCaseBusinessValidationExceptions(businessValidated.exceptions),
-      );
+    if (createProductResult.isErr()) {
+      return Err(new UseCaseProcessExceptions(createProductResult.unwrapErr()));
     }
 
-    const productCreatedEvent =
-      await this.productManagementService.createProduct(domainOptions);
-    return Ok(this.mapper.toResponseDto(productCreatedEvent));
+    return Ok(this.mapper.toResponseDto(createProductResult.unwrap()));
   }
 }

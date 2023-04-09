@@ -9,12 +9,12 @@ export class UpdateProductBusinessValidator extends ProductBusinessValidator {
   constructor(productManagementService: ProductManagementDomainService) {
     super(productManagementService);
   }
-  async validate(
+  async execute(
     options: UpdateProductDomainOptions,
   ): Promise<ValidationResponse> {
     const { id } = options;
     this.clearExceptions();
     await this.validateIdMustExist(id);
-    return this.getValidationResponse();
+    return this.getValidationResult();
   }
 }

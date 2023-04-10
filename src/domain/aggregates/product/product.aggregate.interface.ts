@@ -15,7 +15,7 @@ export interface ProductAggregateDetails {
   price: ProductPriceValueObject;
   image?: ProductImageValueObject;
   attributes?: ProductAttributesValueObject;
-  status: ProductStatusValueObject;
+  status?: ProductStatusValueObject;
   submittedBy?: ReviewerIdValueObject;
   approvedBy?: ReviewerIdValueObject;
   rejectedBy?: ReviewerIdValueObject;

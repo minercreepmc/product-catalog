@@ -69,12 +69,12 @@ export class UpdateProductMapper {
     if (description) {
       descriptionUnpacked = description.unpack();
     }
-    return {
+    return new UpdateProductResponseDto({
       productId: event.productId.unpack(),
       name: nameUnpacked,
       price: priceUnpacked,
       image: imageUnpacked,
       description: descriptionUnpacked,
-    };
+    });
   }
 }

@@ -1,6 +1,9 @@
 import { ProductUpdatedDomainEvent } from '@domain-events/product';
 import { UpdateProductMapper } from '@use-cases/update-product/application-services';
-import { UpdateProductCommand } from '@use-cases/update-product/dtos';
+import {
+  UpdateProductCommand,
+  UpdateProductResponseDto,
+} from '@use-cases/update-product/dtos';
 import {
   ProductNameValueObject,
   ProductPriceValueObject,
@@ -67,6 +70,7 @@ describe('UpdateProductMapper', () => {
         productUpdatedDomainEvent,
       );
 
+      expect(result).toBeInstanceOf(UpdateProductResponseDto);
       expect(result.name).toBe(productUpdatedDomainEvent.details.name.unpack());
       expect(result.price.amount).toBe(
         productUpdatedDomainEvent.details.price.unpack().amount,

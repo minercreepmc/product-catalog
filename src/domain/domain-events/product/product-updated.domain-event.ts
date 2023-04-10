@@ -9,8 +9,8 @@ import type {
 import { DomainEvent } from 'common-base-classes';
 
 export interface ProductUpdatedDomainEventDetails {
-  name: ProductNameValueObject;
-  price: ProductPriceValueObject;
+  name?: ProductNameValueObject;
+  price?: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
   image?: ProductImageValueObject;
 }

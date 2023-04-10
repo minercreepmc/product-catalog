@@ -12,7 +12,6 @@ import {
   UseCaseCommandValidationExceptions,
 } from '@use-cases/common';
 
-/* eslint-disable@typescript-eslint/no-unused-vars */
 describe('CreateProductHandler (integration test)', () => {
   let handler: CreateProductHandler;
 

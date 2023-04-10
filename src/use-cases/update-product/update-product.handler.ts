@@ -1,14 +1,12 @@
-import { ProductManagementDomainService } from '@domain-services';
 import { CommandHandler } from '@nestjs/cqrs';
-import { ProductValidator } from '@use-cases/application-services/command-validators';
 import {
-  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
+  UseCaseProcessExceptions,
 } from '@use-cases/common';
 import { Err, Ok } from 'oxide.ts';
 import {
-  UpdateProductBusinessValidator,
-  UpdateProductCommandValidator,
+  UpdateProductProcess,
+  UpdateProductValidator,
 } from './application-services';
 import { UpdateProductMapper } from './application-services/update-product.mapper';
 import { UpdateProductCommand, UpdateProductResult } from './dtos';
@@ -16,13 +14,12 @@ import { UpdateProductCommand, UpdateProductResult } from './dtos';
 @CommandHandler(UpdateProductCommand)
 export class UpdateProductHandler {
   constructor(
-    private readonly commandValidator: UpdateProductCommandValidator,
-    private readonly businessValidator: UpdateProductBusinessValidator,
+    private readonly validator: UpdateProductValidator,
+    private readonly updateProductProcess: UpdateProductProcess,
     private readonly mapper: UpdateProductMapper,
-    private readonly productManagermentService: ProductManagementDomainService,
   ) {}
   async execute(command: UpdateProductCommand): Promise<UpdateProductResult> {
-    const commandValidated = this.commandValidator.validate(command);
+    const commandValidated = this.validator.validate(command);
     if (!commandValidated.isValid) {
       return Err(
         new UseCaseCommandValidationExceptions(commandValidated.exceptions),
@@ -30,19 +27,13 @@ export class UpdateProductHandler {
     }
     const domainOptions = this.mapper.toDomain(command);
 
-    const businessValidated = await this.businessValidator.execute(
+    const updateProductResult = await this.updateProductProcess.execute(
       domainOptions,
     );
-    if (!businessValidated.isValid) {
-      return Err(
-        new UseCaseProcessExceptions(businessValidated.exceptions),
-      );
+    if (updateProductResult.isErr()) {
+      return Err(new UseCaseProcessExceptions(updateProductResult.unwrapErr()));
     }
 
-    const productUpdated = await this.productManagermentService.updateProduct(
-      domainOptions,
-    );
-
-    return Ok(this.mapper.toResponseDto(productUpdated));
+    return Ok(this.mapper.toResponseDto(updateProductResult.unwrap()));
   }
 }

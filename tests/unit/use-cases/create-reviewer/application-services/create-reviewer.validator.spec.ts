@@ -1,9 +1,9 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import { CreateReviewerCommandValidator } from '@use-cases/create-reviewer/application-services';
+import { CreateReviewerValidator } from '@use-cases/create-reviewer/application-services';
 import { CreateReviewerCommand } from '@use-cases/create-reviewer/dtos';
 
-describe('CreateReviewerCommandValidator', () => {
-  let createReviewerCommandValidator: CreateReviewerCommandValidator;
+describe('CreateReviewerValidator', () => {
+  let createReviewerValidator: CreateReviewerValidator;
   const createReviewerCommand = new CreateReviewerCommand({
     name: 'John Doe',
     email: 'johndoe@example.com',
@@ -11,14 +11,12 @@ describe('CreateReviewerCommandValidator', () => {
   });
 
   beforeEach(() => {
-    createReviewerCommandValidator = new CreateReviewerCommandValidator();
+    createReviewerValidator = new CreateReviewerValidator();
   });
 
   describe('validate', () => {
     it('should return a successful validation response for a valid command', () => {
-      const response = createReviewerCommandValidator.validate(
-        createReviewerCommand,
-      );
+      const response = createReviewerValidator.validate(createReviewerCommand);
 
       expect(response.isValid).toBe(true);
       expect(response.exceptions).toHaveLength(0);
@@ -36,7 +34,7 @@ describe('CreateReviewerCommandValidator', () => {
         new ReviewerDomainExceptions.RoleDoesNotValid(),
       ];
 
-      const response = createReviewerCommandValidator.validate(invalidCommand);
+      const response = createReviewerValidator.validate(invalidCommand);
 
       expect(response.isValid).toBe(false);
       expect(response.exceptions).toIncludeAllMembers(expectedExceptions);

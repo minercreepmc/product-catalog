@@ -1,4 +1,3 @@
-import { ReviewerManagementDomainService } from '@domain-services';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   UseCaseProcessExceptions,
@@ -6,8 +5,8 @@ import {
 } from '@use-cases/common';
 import { Err, Ok } from 'oxide.ts';
 import {
-  CreateReviewerBusinessValidator,
-  CreateReviewerCommandValidator,
+  CreateReviewerProcess,
+  CreateReviewerValidator,
 } from './application-services';
 import { CreateReviewerMapper } from './application-services/create-reviewer.mapper';
 import { CreateReviewerResult } from './dtos';
@@ -18,14 +17,13 @@ export class CreateReviewerHandler
   implements ICommandHandler<CreateReviewerCommand, CreateReviewerResult>
 {
   constructor(
-    private readonly commandValidator: CreateReviewerCommandValidator,
+    private readonly validator: CreateReviewerValidator,
+    private readonly createReviewerProcess: CreateReviewerProcess,
     private readonly mapper: CreateReviewerMapper,
-    private readonly businessValidator: CreateReviewerBusinessValidator,
-    private readonly reviewerManagementService: ReviewerManagementDomainService,
   ) {}
 
   async execute(command: CreateReviewerCommand): Promise<CreateReviewerResult> {
-    const commandValidated = this.commandValidator.validate(command);
+    const commandValidated = this.validator.validate(command);
 
     if (!commandValidated.isValid) {
       return Err(
@@ -35,20 +33,16 @@ export class CreateReviewerHandler
 
     const domainOptions = this.mapper.toDomain(command);
 
-    const businessValidated = await this.businessValidator.execute(
+    const createReviewerResult = await this.createReviewerProcess.execute(
       domainOptions,
     );
 
-    if (!businessValidated.isValid) {
+    if (createReviewerResult.isErr()) {
       return Err(
-        new UseCaseProcessExceptions(businessValidated.exceptions),
+        new UseCaseProcessExceptions(createReviewerResult.unwrapErr()),
       );
     }
 
-    const reviewerCreated = await this.reviewerManagementService.createReviewer(
-      domainOptions,
-    );
-
-    return Ok(this.mapper.toResponseDto(reviewerCreated));
+    return Ok(this.mapper.toResponseDto(createReviewerResult.unwrap()));
   }
 }

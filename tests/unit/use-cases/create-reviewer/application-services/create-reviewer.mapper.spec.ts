@@ -1,7 +1,10 @@
 import { ReviewerCreatedDomainEvent } from '@domain-events/reviewer';
 import { CreateReviewerDomainServiceOptions } from '@domain-services';
 import { CreateReviewerMapper } from '@use-cases/create-reviewer/application-services';
-import { CreateReviewerCommand, CreateReviewerResponseDto } from '@use-cases/create-reviewer/dtos';
+import {
+  CreateReviewerCommand,
+  CreateReviewerResponseDto,
+} from '@use-cases/create-reviewer/dtos';
 import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,

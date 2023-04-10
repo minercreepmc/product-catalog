@@ -20,7 +20,7 @@ export interface ReviewerCommand {
   id?: string;
 }
 
-export class ReviewerCommandValidator extends ValidatorBase {
+export class ReviewerValidator extends ValidatorBase {
   validate(command: ReviewerCommand): ValidationResponse {
     const { id, name, email } = command;
     this.clearExceptions();

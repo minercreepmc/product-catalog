@@ -1,4 +1,3 @@
-import { typeormDataSource } from '@config/typeorm';
 import { ProductManagementDomainService } from '@domain-services';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';

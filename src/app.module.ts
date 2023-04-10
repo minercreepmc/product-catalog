@@ -27,6 +27,12 @@ import {
   CreateProductValidator,
   CreateProductMapper,
 } from '@use-cases/create-product/application-services';
+import { CreateReviewerHandler } from '@use-cases/create-reviewer';
+import {
+  CreateReviewerMapper,
+  CreateReviewerProcess,
+  CreateReviewerValidator,
+} from '@use-cases/create-reviewer/application-services';
 import { UpdateProductHandler } from '@use-cases/update-product';
 import {
   UpdateProductMapper,
@@ -35,6 +41,7 @@ import {
 } from '@use-cases/update-product/application-services';
 import {
   CreateProductHttpController,
+  CreateReviewerHttpController,
   UpdateProductHttpController,
 } from './interface-adapters/controllers/http';
 
@@ -71,12 +78,12 @@ const updateProductUseCase: Provider[] = [
   UpdateProductValidator,
   UpdateProductProcess,
 ];
-// const createReviewerUseCase: Provider[] = [
-//   CreateReviewerHandler,
-//   CreateReviewerCommandValidator,
-//   CreateReviewerBusinessValidator,
-//   CreateReviewerMapper,
-// ];
+const createReviewerUseCase: Provider[] = [
+  CreateReviewerHandler,
+  CreateReviewerValidator,
+  CreateReviewerProcess,
+  CreateReviewerMapper,
+];
 // const submitForApprovalUseCase: Provider[] = [
 //   SubmitForApprovalHandler,
 //   SubmitForApprovalCommandValidator,
@@ -93,7 +100,7 @@ const updateProductUseCase: Provider[] = [
 const useCases: Provider[] = [
   ...createProductUseCase,
   ...updateProductUseCase,
-  // ...createReviewerUseCase,
+  ...createReviewerUseCase,
   // ...submitForApprovalUseCase,
   // ...approveProductUseCase,
 ];
@@ -101,14 +108,14 @@ const useCases: Provider[] = [
 // Interface Adapters
 const createProductController = [CreateProductHttpController];
 const updateProductController = [UpdateProductHttpController];
-// const createReviewerController = [CreateReviewerHttpController];
+const createReviewerController = [CreateReviewerHttpController];
 // const submitForApprovalController = [SubmitForApprovalHttpController];
 // const approveProductController = [ApproveProductHttpController];
 //
 const controllers = [
   ...createProductController,
   ...updateProductController,
-  // ...createReviewerController,
+  ...createReviewerController,
   // ...submitForApprovalController,
   // ...approveProductController,
 ];

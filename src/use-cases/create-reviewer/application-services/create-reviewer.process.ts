@@ -34,6 +34,7 @@ export class CreateReviewerProcess extends ProcessBase<
 
   protected init() {
     this.clearExceptions();
+    this.clearValue();
     this.emailExist = false;
   }
 

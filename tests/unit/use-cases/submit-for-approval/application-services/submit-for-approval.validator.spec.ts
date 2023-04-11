@@ -1,11 +1,11 @@
-import { SubmitForApprovalCommandValidator } from '@use-cases/submit-for-approval/application-services';
+import { SubmitForApprovalValidator } from '@use-cases/submit-for-approval/application-services';
 import { SubmitForApprovalCommand } from '@use-cases/submit-for-approval/dtos';
 
 describe('SubmitForApprovalCommandValidator', () => {
-  let validator: SubmitForApprovalCommandValidator;
+  let validator: SubmitForApprovalValidator;
 
   beforeEach(() => {
-    validator = new SubmitForApprovalCommandValidator();
+    validator = new SubmitForApprovalValidator();
   });
 
   describe('validate', () => {

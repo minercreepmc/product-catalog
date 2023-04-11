@@ -1,3 +1,4 @@
+import { SubmitForApprovalHttpController } from '@controllers/http/submit-for-approval';
 import { DatabaseModule } from '@database/di';
 import {
   ProductTypeOrmModel,
@@ -33,6 +34,12 @@ import {
   CreateReviewerProcess,
   CreateReviewerValidator,
 } from '@use-cases/create-reviewer/application-services';
+import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
+import {
+  SubmitForApprovalMapper,
+  SubmitForApprovalProcess,
+  SubmitForApprovalValidator,
+} from '@use-cases/submit-for-approval/application-services';
 import { UpdateProductHandler } from '@use-cases/update-product';
 import {
   UpdateProductMapper,
@@ -84,12 +91,12 @@ const createReviewerUseCase: Provider[] = [
   CreateReviewerProcess,
   CreateReviewerMapper,
 ];
-// const submitForApprovalUseCase: Provider[] = [
-//   SubmitForApprovalHandler,
-//   SubmitForApprovalCommandValidator,
-//   SubmitForApprovalBusinessValidator,
-//   SubmitForApprovalMapper,
-// ];
+const submitForApprovalUseCase: Provider[] = [
+  SubmitForApprovalHandler,
+  SubmitForApprovalValidator,
+  SubmitForApprovalProcess,
+  SubmitForApprovalMapper,
+];
 // const approveProductUseCase: Provider[] = [
 //   ApproveProductHandler,
 //   ApproveProductCommandValidator,
@@ -101,7 +108,7 @@ const useCases: Provider[] = [
   ...createProductUseCase,
   ...updateProductUseCase,
   ...createReviewerUseCase,
-  // ...submitForApprovalUseCase,
+  ...submitForApprovalUseCase,
   // ...approveProductUseCase,
 ];
 
@@ -109,14 +116,14 @@ const useCases: Provider[] = [
 const createProductController = [CreateProductHttpController];
 const updateProductController = [UpdateProductHttpController];
 const createReviewerController = [CreateReviewerHttpController];
-// const submitForApprovalController = [SubmitForApprovalHttpController];
+const submitForApprovalController = [SubmitForApprovalHttpController];
 // const approveProductController = [ApproveProductHttpController];
 //
 const controllers = [
   ...createProductController,
   ...updateProductController,
   ...createReviewerController,
-  // ...submitForApprovalController,
+  ...submitForApprovalController,
   // ...approveProductController,
 ];
 

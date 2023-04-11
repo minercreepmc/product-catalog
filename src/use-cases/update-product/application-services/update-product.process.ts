@@ -32,6 +32,7 @@ export class UpdateProductProcess extends ProcessBase<
 
   protected init(): void {
     this.clearExceptions();
+    this.clearValue();
     this.idExist = true;
   }
 

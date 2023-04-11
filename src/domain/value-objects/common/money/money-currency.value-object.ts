@@ -9,7 +9,7 @@ export enum MoneyCurrencyEnum {
   USD = 'USD',
 }
 
-export const AllowableCurrency = Object.keys(MoneyCurrencyEnum).map(
+export const moneyCurrencies = Object.keys(MoneyCurrencyEnum).map(
   (key) => MoneyCurrencyEnum[key],
 );
 
@@ -25,7 +25,7 @@ export class MoneyCurrencyValueObject extends TextValueObject {
     allowUppercase: true,
     allowSymbols: false,
     allowNumber: false,
-    allowedValues: AllowableCurrency,
+    allowedValues: moneyCurrencies,
   };
 
   static usd(): MoneyCurrencyValueObject {

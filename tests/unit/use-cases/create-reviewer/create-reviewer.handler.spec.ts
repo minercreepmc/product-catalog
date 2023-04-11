@@ -10,7 +10,6 @@ import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
-  ReviewerRoleEnum,
   reviewerRoles,
   ReviewerRoleValueObject,
 } from '@value-objects/reviewer';

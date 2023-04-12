@@ -14,7 +14,7 @@ import {
 import { ApproveProductCommand } from '../dtos';
 
 @Injectable()
-export class ApproveProductCommandValidator extends ValidatorBase {
+export class ApproveProductValidator extends ValidatorBase {
   validate(command: ApproveProductCommand): ValidationResponse {
     const { productId, reviewerId } = command;
     this.clearExceptions();

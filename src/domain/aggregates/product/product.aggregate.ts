@@ -186,7 +186,7 @@ export class ProductAggregate extends AbstractAggregateRoot<
       productId: this.id,
       details: {
         reviewerId,
-        status: this.status,
+        productStatus: this.status,
       },
     });
   }

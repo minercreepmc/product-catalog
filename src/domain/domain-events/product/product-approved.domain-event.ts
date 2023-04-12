@@ -8,7 +8,7 @@ import { DomainEvent } from 'common-base-classes';
 
 export interface ProductApprovedDomainEventDetails {
   reviewerId: ReviewerIdValueObject;
-  status: ProductStatusValueObject;
+  productStatus: ProductStatusValueObject;
 }
 
 export interface ProductApprovedDomainEventOptions {
@@ -36,6 +36,6 @@ export class ProductApprovedDomainEvent extends DomainEvent<ProductApprovedDomai
   }
 
   get status(): ProductStatusValueObject {
-    return this.details.status;
+    return this.details.productStatus;
   }
 }

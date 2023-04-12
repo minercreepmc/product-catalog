@@ -1,15 +1,13 @@
-import { ProductApprovalDomainService } from '@domain-services';
-import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
-  UseCaseBusinessValidationExceptions,
   UseCaseCommandValidationExceptions,
+  UseCaseProcessExceptions,
 } from '@use-cases/common';
 import { Err, Ok } from 'oxide.ts';
 import {
-  ApproveProductProcessValidator,
-  ApproveProductCommandValidator,
   ApproveProductMapper,
+  ApproveProductProcess,
+  ApproveProductValidator,
 } from './application-services';
 import { ApproveProductCommand, ApproveProductResult } from './dtos';
 
@@ -18,14 +16,13 @@ export class ApproveProductHandler
   implements ICommandHandler<ApproveProductCommand, ApproveProductResult>
 {
   constructor(
-    private readonly commandValidator: ApproveProductCommandValidator,
+    private readonly validator: ApproveProductValidator,
     private readonly mapper: ApproveProductMapper,
-    private readonly approveProductProcess: ApproveProductProcessValidator,
-    private readonly domainService: ProductApprovalDomainService,
+    private readonly approveProductProcess: ApproveProductProcess,
   ) {}
 
   async execute(command: ApproveProductCommand): Promise<ApproveProductResult> {
-    const commandValidated = this.commandValidator.validate(command);
+    const commandValidated = this.validator.validate(command);
     if (!commandValidated.isValid) {
       return Err(
         new UseCaseCommandValidationExceptions(commandValidated.exceptions),
@@ -38,18 +35,12 @@ export class ApproveProductHandler
       domainOptions,
     );
 
-    if (!approveProductResult.isErr()) {
+    if (approveProductResult.isErr()) {
       return Err(
-        new UseCaseBusinessValidationExceptions(
-          approveProductResult.unwrapErr(),
-        ),
+        new UseCaseProcessExceptions(approveProductResult.unwrapErr()),
       );
     }
 
-    const productApproved = await this.domainService.approveProduct(
-      domainOptions,
-    );
-
-    return Ok(this.mapper.toResponseDto(productApproved));
+    return Ok(this.mapper.toResponseDto(approveProductResult.unwrap()));
   }
 }

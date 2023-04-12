@@ -39,7 +39,7 @@ describe('ApproveProductMapper', () => {
         productId: new ProductIdValueObject('1'),
         details: {
           reviewerId: new ReviewerIdValueObject('2'),
-          status: new ProductStatusValueObject('approved'),
+          productStatus: new ProductStatusValueObject('approved'),
         },
       });
 

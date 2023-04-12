@@ -12,7 +12,7 @@ export class ReviewerEmailValueObject extends TextValueObject {
 
   static readonly OPTIONS: TextValueObjectOptions = {
     minLength: 5,
-    maxLength: 50,
+    maxLength: 100,
     allowWhitespace: false,
     allowUppercase: false,
     allowLowercase: true,

@@ -13,7 +13,7 @@ describe('ProductApprovedDomainEvent', () => {
 
   const eventDetails = {
     reviewerId,
-    status,
+    productStatus: status,
   };
 
   it('should create an instance of the domain event', () => {

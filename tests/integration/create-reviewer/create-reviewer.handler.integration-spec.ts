@@ -42,7 +42,7 @@ describe('CreateReviewerHandler (integration test)', () => {
     );
   });
 
-  test('should return UseCaseBusinessValidationExceptions when the process fails', async () => {
+  test('should return UseCaseProcessExceptions when the process fails', async () => {
     // Arrange
     const command = new CreateReviewerCommand({
       name: faker.name.fullName(),

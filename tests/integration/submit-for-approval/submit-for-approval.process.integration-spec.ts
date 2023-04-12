@@ -8,7 +8,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { SubmitForApprovalProcess } from '@use-cases/submit-for-approval/application-services';
 import { SubmitForApprovalDomainOptions } from '@use-cases/submit-for-approval/dtos';
-import { MoneyCurrencyEnum } from '@value-objects/common/money';
+import {
+  moneyCurrencies,
+  MoneyCurrencyEnum,
+} from '@value-objects/common/money';
 import {
   ProductIdValueObject,
   ProductNameValueObject,
@@ -20,6 +23,7 @@ import {
   ReviewerNameValueObject,
   ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
+import { faker } from '@faker-js/faker';
 
 describe('SubmitForApprovalProcess Integration Test', () => {
   let submitForApprovalProcess: SubmitForApprovalProcess;
@@ -53,17 +57,19 @@ describe('SubmitForApprovalProcess Integration Test', () => {
 
       // Create a product and a reviewer with the given IDs in the database
       const productCreated = await productManagementService.createProduct({
-        name: new ProductNameValueObject('Test Product'),
+        name: new ProductNameValueObject(faker.commerce.productName()),
         price: ProductPriceValueObject.create({
-          amount: 100,
-          currency: MoneyCurrencyEnum.USD,
+          amount: Number(faker.commerce.price()),
+          currency: faker.helpers.arrayElement(moneyCurrencies),
         }),
       });
       const { productId } = productCreated;
 
       const reviewerCreated = await reviewerManagementService.createReviewer({
-        email: new ReviewerEmailValueObject('existing_email@example.com'),
-        name: new ReviewerNameValueObject('Existing Name'),
+        email: new ReviewerEmailValueObject(
+          faker.internet.email().toLowerCase(),
+        ),
+        name: new ReviewerNameValueObject(faker.name.firstName()),
         role: ReviewerRoleValueObject.createRegular(),
       });
 
@@ -88,10 +94,10 @@ describe('SubmitForApprovalProcess Integration Test', () => {
     it('should not submit for approval when product or reviewer does not exist', async () => {
       // Arrange
       const nonExistentProductId = new ProductIdValueObject(
-        'non-existent-product-id',
+        faker.datatype.uuid(),
       );
       const nonExistentReviewerId = new ReviewerIdValueObject(
-        'non-existent-reviewer-id',
+        faker.datatype.uuid(),
       );
 
       const domainOptions: SubmitForApprovalDomainOptions = {

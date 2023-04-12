@@ -11,7 +11,7 @@ export class ReviewerNameValueObject extends TextValueObject {
 
   static readonly OPTIONS: TextValueObjectOptions = {
     minLength: 2,
-    maxLength: 20,
+    maxLength: 100,
     allowEmpty: false,
     allowNumber: true,
     allowSymbols: true,

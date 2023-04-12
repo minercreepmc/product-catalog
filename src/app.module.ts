@@ -1,3 +1,4 @@
+import { ApproveProductHttpController } from '@controllers/http/approve-product';
 import { SubmitForApprovalHttpController } from '@controllers/http/submit-for-approval';
 import { DatabaseModule } from '@database/di';
 import {
@@ -22,6 +23,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ApproveProductHandler } from '@use-cases/approve-product';
+import {
+  ApproveProductMapper,
+  ApproveProductProcess,
+  ApproveProductValidator,
+} from '@use-cases/approve-product/application-services';
 import { CreateProductHandler } from '@use-cases/create-product';
 import {
   CreateProductProcess,
@@ -97,19 +104,19 @@ const submitForApprovalUseCase: Provider[] = [
   SubmitForApprovalProcess,
   SubmitForApprovalMapper,
 ];
-// const approveProductUseCase: Provider[] = [
-//   ApproveProductHandler,
-//   ApproveProductCommandValidator,
-//   ApproveProductProcessValidator,
-//   ApproveProductMapper,
-// ];
+const approveProductUseCase: Provider[] = [
+  ApproveProductHandler,
+  ApproveProductValidator,
+  ApproveProductProcess,
+  ApproveProductMapper,
+];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
   ...updateProductUseCase,
   ...createReviewerUseCase,
   ...submitForApprovalUseCase,
-  // ...approveProductUseCase,
+  ...approveProductUseCase,
 ];
 
 // Interface Adapters
@@ -117,14 +124,14 @@ const createProductController = [CreateProductHttpController];
 const updateProductController = [UpdateProductHttpController];
 const createReviewerController = [CreateReviewerHttpController];
 const submitForApprovalController = [SubmitForApprovalHttpController];
-// const approveProductController = [ApproveProductHttpController];
+const approveProductController = [ApproveProductHttpController];
 //
 const controllers = [
   ...createProductController,
   ...updateProductController,
   ...createReviewerController,
   ...submitForApprovalController,
-  // ...approveProductController,
+  ...approveProductController,
 ];
 
 // Vendor

@@ -4,6 +4,7 @@ import { ProductApprovedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import {
+  ProductApprovalDomainService,
   ProductManagementDomainService,
   ReviewerManagementDomainService,
 } from '@domain-services';
@@ -11,26 +12,33 @@ import { Injectable } from '@nestjs/common';
 import { ProcessBase } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import { ValidationResponse } from 'common-base-classes';
 import { ApproveProductDomainOptions } from '../dtos';
 
 export type ApproveProductProcessSucess = ProductApprovedDomainEvent;
-export type ApproveProductProcessFailure = Array<any>;
+export type ApproveProductProcessFailure = Array<
+  | ReviewerDomainExceptions.NotAuthorizedToApprove
+  | ReviewerDomainExceptions.DoesNotExist
+  | ProductDomainExceptions.NotSubmittedForApproval
+  | ProductDomainExceptions.DoesNotExist
+>;
 
 @Injectable()
-export class ApproveProductProcessValidator extends ProcessBase<
+export class ApproveProductProcess extends ProcessBase<
   ApproveProductProcessSucess,
   ApproveProductProcessFailure
 > {
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
     private readonly reviewerManagementService: ReviewerManagementDomainService,
+    private readonly productApprovalService: ProductApprovalDomainService,
   ) {
     super();
   }
 
   private product: ProductAggregate;
   private reviewer: ReviewerAggregate;
+  private reviewerIsAdmin: boolean;
+  private productIsSubmittedForApproval: boolean;
 
   async execute(domainOptions: ApproveProductDomainOptions) {
     const { productId, reviewerId } = domainOptions;
@@ -43,13 +51,19 @@ export class ApproveProductProcessValidator extends ProcessBase<
       this.validateReviewerMustBeAdmin(this.reviewer);
       this.productMustBeSubmittedForApproval(this.product);
     }
+    if (this.productIsSubmittedForApproval && this.reviewerIsAdmin) {
+      await this.approveProduct(domainOptions);
+    }
     return this.getValidationResult();
   }
 
   protected init() {
     this.clearExceptions();
+    this.clearValue();
     this.product = null;
     this.reviewer = null;
+    this.reviewerIsAdmin = false;
+    this.productIsSubmittedForApproval = false;
   }
 
   protected async validateProductMustExistById(
@@ -78,9 +92,12 @@ export class ApproveProductProcessValidator extends ProcessBase<
 
   protected validateReviewerMustBeAdmin(reviewer: ReviewerAggregate) {
     if (!reviewer.role.isAdmin()) {
+      this.reviewerIsAdmin = false;
       this.exceptions.push(
         new ReviewerDomainExceptions.NotAuthorizedToApprove(),
       );
+    } else {
+      this.reviewerIsAdmin = true;
     }
   }
 
@@ -89,6 +106,15 @@ export class ApproveProductProcessValidator extends ProcessBase<
       this.exceptions.push(
         new ProductDomainExceptions.NotSubmittedForApproval(),
       );
+    } else {
+      this.productIsSubmittedForApproval = true;
     }
+  }
+
+  protected async approveProduct(options: ApproveProductDomainOptions) {
+    const productApproved = await this.productApprovalService.approveProduct(
+      options,
+    );
+    this.value = productApproved;
   }
 }

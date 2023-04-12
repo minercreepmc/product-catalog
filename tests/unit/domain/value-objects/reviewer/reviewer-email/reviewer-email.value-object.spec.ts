@@ -26,7 +26,7 @@ describe('ReviewerEmailValueObject', () => {
 
     it('should return an invalid response for an email with too many characters', () => {
       const response = ReviewerEmailValueObject.validate(
-        'test@example.com'.repeat(10),
+        'test@example.com'.repeat(100),
       );
       expect(response.isValid).toBe(false);
     });

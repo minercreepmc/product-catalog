@@ -8,10 +8,7 @@ import * as request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
-import {
-  ApproveProductHttpRequest,
-  ApproveProductHttpResponse,
-} from '@controllers/http/approve-product';
+import { ApproveProductHttpRequest } from '@controllers/http/approve-product';
 import { CreateProductHttpRequest } from '@controllers/http/create-product';
 import {
   CreateReviewerHttpRequest,

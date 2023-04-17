@@ -5,9 +5,9 @@ import {
   ProductNameValueObject,
   ProductPriceValueObject,
   ProductStatusValueObject,
+  RejectionReasonValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import { TextValueObject } from 'common-base-classes';
 
 export interface ProductAggregateDetails {
   name: ProductNameValueObject;
@@ -19,7 +19,7 @@ export interface ProductAggregateDetails {
   submittedBy?: ReviewerIdValueObject;
   approvedBy?: ReviewerIdValueObject;
   rejectedBy?: ReviewerIdValueObject;
-  rejectionReason?: TextValueObject;
+  rejectionReason?: RejectionReasonValueObject;
 }
 
 export interface CreateProductAggregateOptions {

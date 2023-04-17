@@ -7,8 +7,12 @@ import {
   ReviewerRepositoryPort,
 } from '@domain-interfaces';
 import { ProductApprovalDomainService } from '@domain-services';
-import { ProductIdValueObject } from '@value-objects/product';
+import {
+  ProductIdValueObject,
+  RejectionReasonValueObject,
+} from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
+import { TextValueObject } from 'common-base-classes';
 import { DeepMockProxy, mock, mockDeep, MockProxy } from 'jest-mock-extended';
 
 describe('ProductApprovalDomainService', () => {
@@ -122,6 +126,68 @@ describe('ProductApprovalDomainService', () => {
       await expect(
         productApprovalDomainService.approveProduct({ productId, reviewerId }),
       ).rejects.toThrow(ReviewerDomainExceptions.NotAuthorizedToApprove);
+    });
+  });
+
+  describe('rejectProduct', () => {
+    it('should reject a product', async () => {
+      const productId = new ProductIdValueObject('1');
+      const reviewerId = new ReviewerIdValueObject('1');
+      const reason = new RejectionReasonValueObject(
+        'Not suitable for our store',
+      );
+      const product = {
+        reject: jest.fn(),
+      };
+      const reviewer = {
+        role: {
+          isAdmin: jest.fn().mockReturnValueOnce(true),
+        },
+      };
+      (productRepository.findOneById as jest.Mock).mockResolvedValueOnce(
+        product,
+      );
+      (reviewerRepository.findOneById as jest.Mock).mockResolvedValueOnce(
+        reviewer,
+      );
+
+      await productApprovalDomainService.rejectProduct({
+        productId,
+        reviewerId,
+        reason,
+      });
+
+      expect(reviewer.role.isAdmin).toHaveBeenCalled();
+      expect(product.reject).toHaveBeenCalledWith(reviewerId, reason);
+      expect(productRepository.save).toHaveBeenCalledWith(product);
+    });
+
+    it('should throw an error if the reviewer is not an admin', async () => {
+      const productId = new ProductIdValueObject('1');
+      const reviewerId = new ReviewerIdValueObject('1');
+      const reason = new RejectionReasonValueObject(
+        'Not suitable for our store',
+      );
+      const product = {};
+      const reviewer = {
+        role: {
+          isAdmin: jest.fn().mockReturnValueOnce(false),
+        },
+      };
+      (productRepository.findOneById as jest.Mock).mockResolvedValueOnce(
+        product,
+      );
+      (reviewerRepository.findOneById as jest.Mock).mockResolvedValueOnce(
+        reviewer,
+      );
+
+      await expect(
+        productApprovalDomainService.rejectProduct({
+          productId,
+          reviewerId,
+          reason,
+        }),
+      ).rejects.toThrow(ReviewerDomainExceptions.NotAuthorizedToReject);
     });
   });
 });

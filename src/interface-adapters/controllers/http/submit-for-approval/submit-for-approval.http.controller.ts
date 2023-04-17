@@ -3,7 +3,9 @@ import {
   ConflictException,
   Controller,
   HttpCode,
+  Param,
   Post,
+  Put,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -23,10 +25,15 @@ import { SubmitForApprovalHttpResponse } from './submit-for-approval.http.respon
 export class SubmitForApprovalHttpController {
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Post('submit-for-approval')
-  @HttpCode(200)
-  async execute(@Body() dto: SubmitForApprovalHttpRequest) {
-    const command = new SubmitForApprovalCommand(dto);
+  @Put('/:productId/submit')
+  async execute(
+    @Param('productId') productId: string,
+    @Body() dto: SubmitForApprovalHttpRequest,
+  ) {
+    const command = new SubmitForApprovalCommand({
+      productId,
+      ...dto,
+    });
     const result = await this.commandBus.execute(command);
     return match(result, {
       Ok: (response: SubmitForApprovalResponseDto) =>

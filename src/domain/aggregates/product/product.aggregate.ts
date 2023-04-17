@@ -3,11 +3,13 @@ import {
   ProductCreatedDomainEvent,
   ProductUpdatedDomainEvent,
   ProductApprovedDomainEvent,
+  ProductRejectedDomainEvent,
 } from '@domain-events/product';
 import {
   ProductIdValueObject,
   ProductStatusEnum,
   ProductStatusValueObject,
+  RejectionReasonValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import {
@@ -85,6 +87,10 @@ export class ProductAggregate extends AbstractAggregateRoot<
 
   set rejectionReason(newRejectionReason: TextValueObject) {
     this.details.rejectionReason = newRejectionReason;
+  }
+
+  isSubmitted(): boolean {
+    return this.status.isPendingApproval();
   }
 
   createProduct(options: CreateProductAggregateOptions) {
@@ -191,7 +197,10 @@ export class ProductAggregate extends AbstractAggregateRoot<
     });
   }
 
-  reject(reviewerId: ReviewerIdValueObject, reason: TextValueObject) {
+  reject(
+    reviewerId: ReviewerIdValueObject,
+    reason: RejectionReasonValueObject,
+  ) {
     if (this.getStatus() !== ProductStatusEnum.PENDING_APPROVAL) {
       throw new InvalidOperationException(
         'Only products pending approval can be rejected.',
@@ -200,5 +209,14 @@ export class ProductAggregate extends AbstractAggregateRoot<
     this.setStatus(ProductStatusEnum.REJECTED);
     this.rejectedBy = reviewerId;
     this.rejectionReason = reason;
+
+    return new ProductRejectedDomainEvent({
+      productId: this.id,
+      details: {
+        rejectedBy: this.rejectedBy,
+        productStatus: this.status,
+        reason,
+      },
+    });
   }
 }

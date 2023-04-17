@@ -1,4 +1,5 @@
 import { ApproveProductHttpController } from '@controllers/http/approve-product';
+import { RejectProductHttpController } from '@controllers/http/reject-product';
 import { SubmitForApprovalHttpController } from '@controllers/http/submit-for-approval';
 import { DatabaseModule } from '@database/di';
 import {
@@ -41,6 +42,12 @@ import {
   CreateReviewerProcess,
   CreateReviewerValidator,
 } from '@use-cases/create-reviewer/application-services';
+import { RejectProductHandler } from '@use-cases/reject-product';
+import {
+  RejectProductMapper,
+  RejectProductProcess,
+  RejectProductValidator,
+} from '@use-cases/reject-product/application-services';
 import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
 import {
   SubmitForApprovalMapper,
@@ -110,6 +117,12 @@ const approveProductUseCase: Provider[] = [
   ApproveProductProcess,
   ApproveProductMapper,
 ];
+const rejectProductUseCase: Provider[] = [
+  RejectProductHandler,
+  RejectProductValidator,
+  RejectProductProcess,
+  RejectProductMapper,
+];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
@@ -117,6 +130,7 @@ const useCases: Provider[] = [
   ...createReviewerUseCase,
   ...submitForApprovalUseCase,
   ...approveProductUseCase,
+  ...rejectProductUseCase,
 ];
 
 // Interface Adapters
@@ -125,6 +139,7 @@ const updateProductController = [UpdateProductHttpController];
 const createReviewerController = [CreateReviewerHttpController];
 const submitForApprovalController = [SubmitForApprovalHttpController];
 const approveProductController = [ApproveProductHttpController];
+const rejectProductController = [RejectProductHttpController];
 //
 const controllers = [
   ...createProductController,
@@ -132,6 +147,7 @@ const controllers = [
   ...createReviewerController,
   ...submitForApprovalController,
   ...approveProductController,
+  ...rejectProductController,
 ];
 
 // Vendor

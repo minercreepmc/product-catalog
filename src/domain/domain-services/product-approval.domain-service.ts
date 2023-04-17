@@ -8,12 +8,11 @@ import {
   ReviewerRepositoryPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
-import { ProductIdValueObject } from '@value-objects/product';
-import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import {
-  InvalidOperationException,
-  TextValueObject,
-} from 'common-base-classes';
+  ProductIdValueObject,
+  RejectionReasonValueObject,
+} from '@value-objects/product';
+import { ReviewerIdValueObject } from '@value-objects/reviewer';
 
 export interface SubmitForApprovalDomainServiceOptions {
   productId: ProductIdValueObject;
@@ -23,6 +22,12 @@ export interface SubmitForApprovalDomainServiceOptions {
 export interface ApproveProductDomainServiceOptions {
   productId: ProductIdValueObject;
   reviewerId: ReviewerIdValueObject;
+}
+
+export interface RejectProductDomainServiceOptions {
+  productId: ProductIdValueObject;
+  reviewerId: ReviewerIdValueObject;
+  reason: RejectionReasonValueObject;
 }
 
 @Injectable()
@@ -78,20 +83,27 @@ export class ProductApprovalDomainService {
     return productApproved;
   }
 
-  async rejectProduct(
-    productId: ProductIdValueObject,
-    reviewerId: ReviewerIdValueObject,
-    reason: TextValueObject,
-  ) {
+  async rejectProduct(options: RejectProductDomainServiceOptions) {
+    const { productId, reviewerId, reason } = options;
     const product = await this.productRepository.findOneById(productId);
 
-    if (!product.isSubmittedApprovalBy(reviewerId)) {
-      throw new InvalidOperationException(
-        'This product is not pending approval by this reviewer',
-      );
+    if (!product) {
+      throw new ProductDomainExceptions.DoesNotExist();
     }
 
-    product.reject(reviewerId, reason);
+    const reviewer = await this.reviewerRepository.findOneById(reviewerId);
+
+    if (!reviewer) {
+      throw new ReviewerDomainExceptions.DoesNotExist();
+    }
+
+    if (!reviewer.role.isAdmin()) {
+      throw new ReviewerDomainExceptions.NotAuthorizedToReject();
+    }
+
+    const productRejected = product.reject(reviewerId, reason);
     await this.productRepository.save(product);
+
+    return productRejected;
   }
 }

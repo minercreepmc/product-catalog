@@ -16,6 +16,10 @@ export function checkResponseForCode(
     return false;
   }
 
+  if (codes.length === 0) {
+    return true;
+  }
+
   // Check if every code in the 'codes' array is present in the responseBody message
   return codes.every((targetCode) =>
     responseBody.message.some(

@@ -17,10 +17,9 @@ import {
 
 describe('ApproveProductHttpController (e2e)', () => {
   let app: INestApplication;
-  const productsUrl = `/products`;
-  const productApproveUrl = '/approve';
-  const requestUrl = `${productsUrl}${productApproveUrl}`;
-  const reviewersUrl = `/reviewers`;
+  const productsUrl = `products`;
+  const productApproveUrl = 'approve';
+  const reviewersUrl = `reviewers`;
 
   let validProductId: string;
   let regularReviewerId: string;
@@ -49,14 +48,14 @@ describe('ApproveProductHttpController (e2e)', () => {
     };
 
     const createProductResponse = await request(app.getHttpServer())
-      .post(productsUrl)
+      .post(`/${productsUrl}`)
       .set('Accept', 'application/json')
       .send(createProductRequest);
 
     expect(createProductResponse.status).toBe(HttpStatus.CREATED);
 
     const createRegularReviewerResponse = await request(app.getHttpServer())
-      .post(reviewersUrl)
+      .post(`/${reviewersUrl}`)
       .set('Accept', 'application/json')
       .send(createRegularReviewerRequest);
 
@@ -72,7 +71,7 @@ describe('ApproveProductHttpController (e2e)', () => {
     };
 
     const createAdminReviewerResponse = await request(app.getHttpServer())
-      .post(reviewersUrl)
+      .post(`/${reviewersUrl}`)
       .set('Accept', 'application/json')
       .send(createAdminReviewerRequest);
 
@@ -91,14 +90,14 @@ describe('ApproveProductHttpController (e2e)', () => {
     await app.close();
   });
 
-  describe(`${productsUrl} (POST)`, () => {
+  describe(`${productsUrl} (PUT)`, () => {
     it('Should not approve product if the request is invalid', async () => {
       const approveProductRequest: ApproveProductHttpRequest = {
-        productId: '',
         reviewerId: '',
       };
+      const productId = '1';
       const response = await request(app.getHttpServer())
-        .post(requestUrl)
+        .put(`/${productsUrl}/${productId}/${productApproveUrl}`)
         .set('Accept', 'application/json')
         .send(approveProductRequest)
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -106,10 +105,7 @@ describe('ApproveProductHttpController (e2e)', () => {
       const requestIsInvalid = checkResponseForCode({
         response,
         statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        codes: [
-          ProductDomainExceptionCodes.IdDoesNotValid,
-          ReviewerDomainExceptionCodes.IdDoesNotValid,
-        ],
+        codes: [ReviewerDomainExceptionCodes.IdDoesNotValid],
       });
 
       expect(requestIsInvalid).toBe(true);
@@ -117,11 +113,12 @@ describe('ApproveProductHttpController (e2e)', () => {
 
     it('Should not approve a product if the product or reviewer is not exist', async () => {
       const approveProductRequest: ApproveProductHttpRequest = {
-        productId: '1',
         reviewerId: '1',
       };
+
+      const productId = '1';
       const response = await request(app.getHttpServer())
-        .post(requestUrl)
+        .put(`/${productsUrl}/${productId}/${productApproveUrl}`)
         .set('Accept', 'application/json')
         .send(approveProductRequest)
         .expect(HttpStatus.CONFLICT);
@@ -140,12 +137,13 @@ describe('ApproveProductHttpController (e2e)', () => {
 
     it('Should not approve a product if reviewer is not admin', async () => {
       const approveProductRequest: ApproveProductHttpRequest = {
-        productId: validProductId,
         reviewerId: regularReviewerId,
       };
 
+      const productId = validProductId;
+
       const response = await request(app.getHttpServer())
-        .post(requestUrl)
+        .put(`/${productsUrl}/${productId}/${productApproveUrl}`)
         .set('Accept', 'application/json')
         .send(approveProductRequest);
 
@@ -160,12 +158,13 @@ describe('ApproveProductHttpController (e2e)', () => {
 
     it('Should not approve product if product not subbmited yet', async () => {
       const approveProductRequest: ApproveProductHttpRequest = {
-        productId: validProductId,
         reviewerId: adminReviewerId,
       };
 
+      const productId = validProductId;
+
       const response = await request(app.getHttpServer())
-        .post(requestUrl)
+        .put(`/${productsUrl}/${productId}/${productApproveUrl}`)
         .set('Accept', 'application/json')
         .send(approveProductRequest);
 

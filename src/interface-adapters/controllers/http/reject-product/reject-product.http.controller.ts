@@ -3,7 +3,6 @@ import {
   ConflictException,
   Controller,
   HttpCode,
-  InternalServerErrorException,
   Param,
   Post,
   Put,
@@ -11,45 +10,42 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
-  ApproveProductCommand,
-  ApproveProductResponseDto,
-} from '@use-cases/approve-product/dtos';
-import {
-  UseCaseProcessExceptions,
   UseCaseCommandValidationExceptions,
+  UseCaseProcessExceptions,
 } from '@use-cases/common';
+import {
+  RejectProductCommand,
+  RejectProductResponseDto,
+} from '@use-cases/reject-product/dtos';
 import { match } from 'oxide.ts';
-import { ApproveProductHttpRequest } from './approve-product.http.request';
-import { ApproveProductHttpResponse } from './approve-product.http.response';
+import { RejectProductHttpRequest } from './reject-product.http.request';
+import { RejectProductHttpResponse } from './reject-product.http.response';
 
 @Controller('products')
-export class ApproveProductHttpController {
+export class RejectProductHttpController {
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Put('/:productId/approve')
+  @Put('/:productId/reject')
   async execute(
     @Param('productId') productId: string,
-    @Body() dto: ApproveProductHttpRequest,
+    @Body() dto: RejectProductHttpRequest,
   ) {
-    const command = new ApproveProductCommand({
+    const command = new RejectProductCommand({
       productId,
       ...dto,
     });
     const result = await this.commandBus.execute(command);
     return match(result, {
-      Ok: (response: ApproveProductResponseDto) =>
-        new ApproveProductHttpResponse(response),
-
+      Ok: (response: RejectProductResponseDto) =>
+        new RejectProductHttpResponse(response),
       Err: (exception: Error) => {
         if (exception instanceof UseCaseCommandValidationExceptions) {
           throw new UnprocessableEntityException(exception.exceptions);
         }
-
         if (exception instanceof UseCaseProcessExceptions) {
           throw new ConflictException(exception.exceptions);
         }
-
-        throw new InternalServerErrorException(exception);
+        throw exception;
       },
     });
   }

@@ -73,4 +73,8 @@ export class ReviewerAggregate extends AbstractAggregateRoot<
       details: eventDetails,
     });
   }
+
+  isAdmin() {
+    return this.role.isAdmin();
+  }
 }

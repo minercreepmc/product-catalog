@@ -18,11 +18,10 @@ import * as request from 'supertest';
 
 describe('SubmitForApprovalHttpController (e2e)', () => {
   let app: INestApplication;
-  const productsUrl = `/products`;
-  const productSubmitUrl = '/submit-for-approval';
-  const requestUrl = `${productsUrl}${productSubmitUrl}`;
+  const productsUrl = `products`;
+  const productSubmitUrl = 'submit';
 
-  const reviewersUrl = `/reviewers`;
+  const reviewersUrl = `reviewers`;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -37,7 +36,7 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
     await app.close();
   });
 
-  describe(`${productsUrl} (POST)`, () => {
+  describe(`${productsUrl}/productId/${productSubmitUrl} (PUT)`, () => {
     it('Should submit product for approval', async () => {
       const createProductRequest: CreateProductHttpRequest = {
         name: 'Product 1',
@@ -47,7 +46,7 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
         },
       };
       const productResponse = await request(app.getHttpServer())
-        .post(productsUrl)
+        .post(`/${productsUrl}`)
         .set('Accept', 'application/json')
         .send(createProductRequest);
 
@@ -57,7 +56,7 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
         role: ReviewerRoleEnum.Regular,
       };
       const reviewerResponse = await request(app.getHttpServer())
-        .post(reviewersUrl)
+        .post(`/${reviewersUrl}`)
         .set('Accept', 'application/json')
         .send(createReviewerRequest);
 
@@ -65,19 +64,18 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
       const reviewer: CreateReviewerHttpResponse = reviewerResponse.body;
 
       const submitForApprovalRequest: SubmitForApprovalHttpRequest = {
-        productId: product.productId,
         reviewerId: reviewer.reviewerId,
       };
 
       return request(app.getHttpServer())
-        .post(requestUrl)
+        .put(`/${productsUrl}/${product.productId}/${productSubmitUrl}`)
         .set('Accept', 'application/json')
         .send(submitForApprovalRequest)
         .expect((response: request.Response) => {
           const { reviewerId, productId } =
             response.body as SubmitForApprovalResponseDto;
 
-          expect(productId).toEqual(submitForApprovalRequest.productId);
+          expect(productId).toEqual(product.productId);
           expect(reviewerId).toEqual(submitForApprovalRequest.reviewerId);
         })
         .expect(HttpStatus.OK);
@@ -86,11 +84,12 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
     it('should return error exceptions if either product or reviewer is not exist', async () => {
       const invalidProductRequest: SubmitForApprovalHttpRequest = {
         reviewerId: '1',
-        productId: '1',
       };
 
+      const productId = '1';
+
       return request(app.getHttpServer())
-        .post(requestUrl)
+        .put(`/${productsUrl}/${productId}/${productSubmitUrl}`)
         .set('Accept', 'application/json')
         .send(invalidProductRequest)
         .expect((response: request.Response) => {
@@ -111,26 +110,38 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
     it('should not create a reviewer if the request format is not valid', async () => {
       const invalidRequest: SubmitForApprovalHttpRequest = {
         reviewerId: '',
-        productId: '',
       };
 
+      const productId = '1';
+
       return request(app.getHttpServer())
-        .post(requestUrl)
+        .put(`/${productsUrl}/${productId}/${productSubmitUrl}`)
         .set('Accept', 'application/json')
         .send(invalidRequest)
         .expect((response: request.Response) => {
           const doesNotValid = checkResponseForCode({
             response,
             statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            codes: [
-              ProductDomainExceptionCodes.IdDoesNotValid,
-              ReviewerDomainExceptionCodes.IdDoesNotValid,
-            ],
+            codes: [ReviewerDomainExceptionCodes.IdDoesNotValid],
           });
 
           expect(doesNotValid).toBeTruthy();
         })
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
+    });
+
+    it('should return not found if productId is empty string due to invalid endpoint', async () => {
+      const invalidProductRequest: SubmitForApprovalHttpRequest = {
+        reviewerId: '',
+      };
+
+      const productId = '';
+
+      return request(app.getHttpServer())
+        .put(`/${productsUrl}/${productId}/${productSubmitUrl}`)
+        .set('Accept', 'application/json')
+        .send(invalidProductRequest)
+        .expect(HttpStatus.NOT_FOUND);
     });
   });
 

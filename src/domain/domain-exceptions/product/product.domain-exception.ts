@@ -48,4 +48,9 @@ export namespace ProductDomainExceptions {
     readonly message = 'Product not submitted for approval';
     readonly code = ProductDomainExceptionCodes.NotSubmittedForApproval;
   }
+
+  export class RejectionReasonDoesNotValid extends ProductValidationException {
+    readonly message = 'Product rejection reason does not valid';
+    readonly code = ProductDomainExceptionCodes.RejectionReasonDoesNotValid;
+  }
 }

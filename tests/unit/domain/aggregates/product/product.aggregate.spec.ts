@@ -5,6 +5,7 @@ import {
 import {
   ProductApprovedDomainEvent,
   ProductCreatedDomainEvent,
+  ProductRejectedDomainEvent,
   ProductSubmittedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
@@ -16,12 +17,10 @@ import {
   ProductPriceValueObject,
   ProductStatusEnum,
   ProductStatusValueObject,
+  RejectionReasonValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import {
-  InvalidOperationException,
-  TextValueObject,
-} from 'common-base-classes';
+import { InvalidOperationException } from 'common-base-classes';
 
 describe('ProductAggregate', () => {
   let productAggregate: ProductAggregate;
@@ -190,7 +189,9 @@ describe('ProductAggregate', () => {
 
     it('should reject a product', () => {
       const reviewerId = new ReviewerIdValueObject();
-      const reason = new TextValueObject('Not suitable for our store');
+      const reason = new RejectionReasonValueObject(
+        'Not suitable for our store',
+      );
       productAggregate.createProduct({
         name: new ProductNameValueObject('Test Product'),
         price: ProductPriceValueObject.create({
@@ -199,18 +200,29 @@ describe('ProductAggregate', () => {
         }),
       });
       productAggregate.submitForApproval(reviewerId);
-      productAggregate.reject(reviewerId, reason);
+      const rejectEvent = productAggregate.reject(reviewerId, reason);
 
       expect(productAggregate.details.status.unpack()).toBe(
         ProductStatusEnum.REJECTED,
       );
       expect(productAggregate.details.rejectedBy).toBe(reviewerId);
       expect(productAggregate.details.rejectionReason).toBe(reason);
+
+      // Test if the reject method returns the correct domain event
+      expect(rejectEvent).toBeInstanceOf(ProductRejectedDomainEvent);
+      expect(rejectEvent.entityId).toEqual(productAggregate.id);
+      expect(rejectEvent.details.rejectedBy).toEqual(reviewerId);
+      expect(rejectEvent.details.productStatus).toEqual(
+        productAggregate.status,
+      );
+      expect(rejectEvent.details.reason).toEqual(reason);
     });
 
     it('should throw an error when trying to reject a non-pending product', () => {
       const reviewerId = new ReviewerIdValueObject();
-      const reason = new TextValueObject('Not suitable for our store');
+      const reason = new RejectionReasonValueObject(
+        'Not suitable for our store',
+      );
       expect(() => productAggregate.reject(reviewerId, reason)).toThrowError(
         InvalidOperationException,
       );

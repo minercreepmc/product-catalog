@@ -3,6 +3,10 @@ import { RejectProductHttpController } from '@controllers/http/reject-product';
 import { SubmitForApprovalHttpController } from '@controllers/http/submit-for-approval';
 import { DatabaseModule } from '@database/di';
 import {
+  CategoryTypeOrmModel,
+  CategoryTypeOrmRepository,
+} from '@database/repositories/typeorm/category';
+import {
   ProductTypeOrmModel,
   ProductTypeOrmRepository,
 } from '@database/repositories/typeorm/product';
@@ -11,10 +15,12 @@ import {
   ReviewerTypeOrmRepository,
 } from '@database/repositories/typeorm/reviewer';
 import {
+  categoryRepositoryDiToken,
   productRepositoryDiToken,
   reviewerRepositoryDiToken,
 } from '@domain-interfaces';
 import {
+  CategoryManagementDomainService,
   ProductApprovalDomainService,
   ProductManagementDomainService,
   ReviewerManagementDomainService,
@@ -30,6 +36,12 @@ import {
   ApproveProductProcess,
   ApproveProductValidator,
 } from '@use-cases/approve-product/application-services';
+import { CreateCategoryHandler } from '@use-cases/create-category';
+import {
+  CreateCategoryMapper,
+  CreateCategoryProcess,
+  CreateCategoryValidator,
+} from '@use-cases/create-category/application-services';
 import { CreateProductHandler } from '@use-cases/create-product';
 import {
   CreateProductProcess,
@@ -71,6 +83,7 @@ const domainServices: Provider[] = [
   ProductApprovalDomainService,
   ProductManagementDomainService,
   ReviewerManagementDomainService,
+  CategoryManagementDomainService,
 ];
 
 // Infrastructure
@@ -82,6 +95,10 @@ const repositories: Provider[] = [
   {
     provide: reviewerRepositoryDiToken,
     useClass: ReviewerTypeOrmRepository,
+  },
+  {
+    provide: categoryRepositoryDiToken,
+    useClass: CategoryTypeOrmRepository,
   },
 ];
 
@@ -123,6 +140,12 @@ const rejectProductUseCase: Provider[] = [
   RejectProductProcess,
   RejectProductMapper,
 ];
+const createCategoryUseCase: Provider[] = [
+  CreateCategoryHandler,
+  CreateCategoryValidator,
+  CreateCategoryProcess,
+  CreateCategoryMapper,
+];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
@@ -131,6 +154,7 @@ const useCases: Provider[] = [
   ...submitForApprovalUseCase,
   ...approveProductUseCase,
   ...rejectProductUseCase,
+  ...createCategoryUseCase,
 ];
 
 // Interface Adapters
@@ -153,7 +177,11 @@ const controllers = [
 // Vendor
 const vendors = [
   CqrsModule,
-  TypeOrmModule.forFeature([ProductTypeOrmModel, ReviewerTypeOrmModel]),
+  TypeOrmModule.forFeature([
+    ProductTypeOrmModel,
+    ReviewerTypeOrmModel,
+    CategoryTypeOrmModel,
+  ]),
 ];
 
 @Module({

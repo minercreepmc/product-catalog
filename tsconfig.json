@@ -85,10 +85,10 @@
         "./src/interface-adapters/controllers/*"
       ],
       "@migrations": [
-        "./src/infrastructures/migrations"
+        "./src/infrastructures/database/migrations"
       ],
       "@migrations/*": [
-        "./src/infrastructures/migrations/*"
+        "./src/infrastructures/database/migrations/*"
       ],
       "@src": [
         "./src"

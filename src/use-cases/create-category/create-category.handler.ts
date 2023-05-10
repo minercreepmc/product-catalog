@@ -17,8 +17,8 @@ export class CreateCategoryHandler
 {
   constructor(
     private readonly validator: CreateCategoryValidator,
-    private readonly createCategoryProcess: CreateCategoryProcess,
     private readonly mapper: CreateCategoryMapper,
+    private readonly createCategoryProcess: CreateCategoryProcess,
   ) {}
 
   async execute(command: CreateCategoryCommand): Promise<CreateCategoryResult> {

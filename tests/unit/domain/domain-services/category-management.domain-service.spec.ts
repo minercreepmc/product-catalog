@@ -27,6 +27,39 @@ describe('CategoryManagementDomainService', () => {
     jest.clearAllMocks();
   });
 
+  describe('doesCategoryNameExist', () => {
+    it('should return true if category name exists', async () => {
+      const existingCategory = new CategoryAggregate();
+      const name = new CategoryNameValueObject('Existing Category');
+      const options: CreateCategoryOptions = {
+        name,
+        productIds: [new ProductIdValueObject('some-product-id')],
+        subCategoryIds: [new SubCategoryIdValueObject('some-sub-category-id')],
+        description: new CategoryDescriptionValueObject('some-description'),
+        parentIds: [new ParentCategoryIdValueObject('some-parent-id')],
+      };
+      existingCategory.createCategory(options);
+
+      mockCategoryRepository.findOneByName.mockResolvedValue(existingCategory);
+
+      const doesExist = await service.doesCategoryNameExist(name);
+
+      expect(doesExist).toBe(true);
+      expect(mockCategoryRepository.findOneByName).toHaveBeenCalledWith(name);
+    });
+
+    it('should return false if category name does not exist', async () => {
+      const name = new CategoryNameValueObject('Nonexistent Category');
+
+      mockCategoryRepository.findOneByName.mockResolvedValue(null);
+
+      const doesExist = await service.doesCategoryNameExist(name);
+
+      expect(doesExist).toBe(false);
+      expect(mockCategoryRepository.findOneByName).toHaveBeenCalledWith(name);
+    });
+  });
+
   describe('createCategory', () => {
     it('should create a category and save it', async () => {
       const options: CreateCategoryOptions = {

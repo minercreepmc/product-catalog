@@ -8,6 +8,7 @@ import {
   CategoryRepositoryPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
+import { CategoryNameValueObject } from '@value-objects/category';
 
 export interface CreateCategoryOptions extends CreateCategoryAggregateOptions {}
 
@@ -17,6 +18,11 @@ export class CategoryManagementDomainService {
     @Inject(categoryRepositoryDiToken)
     private readonly categoryRepository: CategoryRepositoryPort,
   ) {}
+
+  async doesCategoryNameExist(name: CategoryNameValueObject): Promise<boolean> {
+    const exist = await this.categoryRepository.findOneByName(name);
+    return Boolean(exist);
+  }
 
   async createCategory(options: CreateCategoryOptions) {
     const exist = await this.categoryRepository.findOneByName(options.name);

@@ -1,6 +1,6 @@
 import { CategoryAggregate } from '@aggregates/category';
 import { CategoryDomainExceptions } from '@domain-exceptions/category/category.domain-exception';
-import { CategoryRepositoryPort } from '@domain-interfaces';
+import { CategoryManagementDomainService } from '@domain-services';
 import { CreateCategoryProcess } from '@use-cases/create-category/application-services';
 import { CreateCategoryDomainOptions } from '@use-cases/create-category/dtos';
 import { CategoryNameValueObject } from '@value-objects/category';
@@ -8,13 +8,15 @@ import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('CreateCategoryProcess', () => {
   let createCategoryProcess: CreateCategoryProcess;
-  let categoryRepository: MockProxy<CategoryRepositoryPort>;
+  let categoryManagementService: MockProxy<CategoryManagementDomainService>;
   let existingCategory: CategoryAggregate;
   const existingName = new CategoryNameValueObject('existing_category');
 
   beforeEach(() => {
-    categoryRepository = mock<CategoryRepositoryPort>();
-    createCategoryProcess = new CreateCategoryProcess(categoryRepository);
+    categoryManagementService = mock<CategoryManagementDomainService>();
+    createCategoryProcess = new CreateCategoryProcess(
+      categoryManagementService,
+    );
 
     existingCategory = new CategoryAggregate();
     existingCategory.createCategory({ name: existingName });
@@ -24,7 +26,7 @@ describe('CreateCategoryProcess', () => {
     it('should not throw an exception when the category does not exist', async () => {
       // Arrange
       const name = new CategoryNameValueObject('nonexistent_category');
-      categoryRepository.findOneByName.mockResolvedValue(undefined);
+      categoryManagementService.doesCategoryNameExist.mockResolvedValue(false);
 
       // Act
       await (createCategoryProcess as any).validateCategoryMustNotExist(name);
@@ -36,7 +38,7 @@ describe('CreateCategoryProcess', () => {
     it('should throw an exception when the category exists', async () => {
       // Arrange
       const name = new CategoryNameValueObject('existing_category');
-      categoryRepository.findOneByName.mockResolvedValue(existingCategory);
+      categoryManagementService.doesCategoryNameExist.mockResolvedValue(true);
 
       // Act
       await (createCategoryProcess as any).validateCategoryMustNotExist(name);
@@ -55,14 +57,16 @@ describe('CreateCategoryProcess', () => {
         name: new CategoryNameValueObject('New Category'),
         // other properties...
       };
-      categoryRepository.findOneByName.mockResolvedValue(undefined);
+      categoryManagementService.doesCategoryNameExist.mockResolvedValue(false);
 
       // Act
       const result = await createCategoryProcess.execute(domainOptions);
 
       // Assert
       expect(result.isOk()).toBe(true);
-      expect(categoryRepository.findOneByName).toHaveBeenCalled();
+      expect(
+        categoryManagementService.doesCategoryNameExist,
+      ).toHaveBeenCalled();
     });
 
     it('should validate and return an exception when a category with the name exists', async () => {
@@ -71,7 +75,7 @@ describe('CreateCategoryProcess', () => {
         name: new CategoryNameValueObject('Existing Category'),
         // other properties...
       };
-      categoryRepository.findOneByName.mockResolvedValue(existingCategory);
+      categoryManagementService.doesCategoryNameExist.mockResolvedValue(true);
 
       // Act
       const result = await createCategoryProcess.execute(domainOptions);
@@ -81,7 +85,9 @@ describe('CreateCategoryProcess', () => {
       expect(result.unwrapErr()).toIncludeAllMembers([
         new CategoryDomainExceptions.AlreadyExist(),
       ]);
-      expect(categoryRepository.findOneByName).toHaveBeenCalled();
+      expect(
+        categoryManagementService.doesCategoryNameExist,
+      ).toHaveBeenCalled();
     });
   });
 });

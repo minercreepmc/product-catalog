@@ -1,10 +1,12 @@
+import { CategoryTypeOrmModel } from '@database/repositories/typeorm/category';
 import { ProductTypeOrmModel } from '@database/repositories/typeorm/product';
 import { ReviewerTypeOrmModel } from '@database/repositories/typeorm/reviewer';
 import {
   CreateProductMigration1679747919850,
   CreateReviewerMigration1680595085820,
+  AddReviewerRole1680930138166,
+  CreateCategory1683716855518,
 } from '@migrations';
-import { AddReviewerRole1680930138166 } from '@migrations/1680930138166-AddReviewerRole';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
@@ -16,11 +18,12 @@ export const typeOrmDataSourceOptions: DataSourceOptions = {
   username: configService.get('POSTGRES_USER'),
   password: configService.get('POSTGRES_PASSWORD'),
   database: configService.get('POSTGRES_DB'),
-  entities: [ProductTypeOrmModel, ReviewerTypeOrmModel],
+  entities: [ProductTypeOrmModel, ReviewerTypeOrmModel, CategoryTypeOrmModel],
   migrations: [
     CreateProductMigration1679747919850,
     CreateReviewerMigration1680595085820,
     AddReviewerRole1680930138166,
+    CreateCategory1683716855518,
   ],
   //synchronize: true,
 };

@@ -9,7 +9,7 @@ export interface HandlerValidationResponseOptions {
   context?: string;
 }
 
-export interface TranslateExceptionToUserFriendlyMessageOptions {
+export interface TranslateOptions {
   exception: ValidationExceptionBase;
   context?: string;
 }
@@ -18,7 +18,7 @@ export abstract class ValidatorBase {
   exceptions: Map<string, ValidationExceptionBase> = new Map();
   abstract validate(command: ICommand): ValidationResponse;
   protected abstract translateExceptionToUserFriendlyMessage(
-    options: TranslateExceptionToUserFriendlyMessageOptions,
+    options: TranslateOptions,
   ): ValidationExceptionBase;
 
   protected clearExceptions() {

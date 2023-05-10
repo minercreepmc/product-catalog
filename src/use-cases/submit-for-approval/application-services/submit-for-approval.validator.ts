@@ -3,7 +3,7 @@ import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { Injectable } from '@nestjs/common';
 import {
   ValidatorBase,
-  TranslateExceptionToUserFriendlyMessageOptions,
+  TranslateOptions,
 } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
@@ -27,7 +27,7 @@ export class SubmitForApprovalValidator extends ValidatorBase {
     return this.getValidationResponse();
   }
   protected translateExceptionToUserFriendlyMessage(
-    options: TranslateExceptionToUserFriendlyMessageOptions,
+    options: TranslateOptions,
   ): ValidationExceptionBase {
     const { context, exception } = options;
     switch (context) {

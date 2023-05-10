@@ -1,7 +1,7 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import {
   ValidatorBase,
-  TranslateExceptionToUserFriendlyMessageOptions,
+  TranslateOptions,
 } from '@use-cases/common';
 import {
   ReviewerEmailValueObject,
@@ -40,7 +40,7 @@ export class ReviewerValidator extends ValidatorBase {
     return this.getValidationResponse();
   }
   translateExceptionToUserFriendlyMessage(
-    options: TranslateExceptionToUserFriendlyMessageOptions,
+    options: TranslateOptions,
   ): ValidationExceptionBase {
     const { context, exception } = options;
 

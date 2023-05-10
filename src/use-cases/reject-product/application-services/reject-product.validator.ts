@@ -2,7 +2,7 @@ import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { Injectable } from '@nestjs/common';
 import {
-  TranslateExceptionToUserFriendlyMessageOptions,
+  TranslateOptions,
   ValidatorBase,
 } from '@use-cases/common';
 import {
@@ -55,7 +55,7 @@ export class RejectProductValidator extends ValidatorBase {
   }
 
   protected translateExceptionToUserFriendlyMessage(
-    options: TranslateExceptionToUserFriendlyMessageOptions,
+    options: TranslateOptions,
   ): ValidationExceptionBase {
     const { context, exception } = options;
 

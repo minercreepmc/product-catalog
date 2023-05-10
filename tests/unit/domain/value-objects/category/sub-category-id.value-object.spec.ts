@@ -1,11 +1,11 @@
-import { CategoryIdValueObject } from '@value-objects/category';
+import { SubCategoryIdValueObject } from '@value-objects/category';
 import { ID, UUID } from 'common-base-classes';
 
-describe('CategoryIdValueObject', () => {
-  let categoryId: CategoryIdValueObject;
+describe('SubCategoryIdValueObject', () => {
+  let categoryId: SubCategoryIdValueObject;
 
   beforeEach(() => {
-    categoryId = new CategoryIdValueObject();
+    categoryId = new SubCategoryIdValueObject();
   });
 
   it('should be an instance of ID', () => {
@@ -14,14 +14,14 @@ describe('CategoryIdValueObject', () => {
 
   it('should create a valid ProductIdValueObject with a given value', () => {
     const value = '123';
-    const customProductId = new CategoryIdValueObject(value);
-    expect(customProductId).toBeInstanceOf(CategoryIdValueObject);
+    const customProductId = new SubCategoryIdValueObject(value);
+    expect(customProductId).toBeInstanceOf(SubCategoryIdValueObject);
     expect(customProductId.unpack()).toEqual(value);
   });
 
   it('should create a ProductIdValueObject with a new UUID when no value is provided', () => {
-    const productIdWithoutValue = new CategoryIdValueObject();
-    expect(productIdWithoutValue).toBeInstanceOf(CategoryIdValueObject);
+    const productIdWithoutValue = new SubCategoryIdValueObject();
+    expect(productIdWithoutValue).toBeInstanceOf(SubCategoryIdValueObject);
     expect(UUID.isValid(productIdWithoutValue.unpack())).toBe(true);
   });
 });

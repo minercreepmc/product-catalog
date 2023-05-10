@@ -1,9 +1,6 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { Injectable } from '@nestjs/common';
-import {
-  ValidatorBase,
-  TranslateExceptionToUserFriendlyMessageOptions,
-} from '@use-cases/common';
+import { ValidatorBase, TranslateOptions } from '@use-cases/common';
 import {
   CreateProductAttributesOptions,
   CreateProductPriceValueObjectOptions,
@@ -32,7 +29,7 @@ export interface ProductUseCaseCommand {
 export abstract class ProductValidator extends ValidatorBase {
   abstract validate(command: ProductUseCaseCommand): ValidationResponse;
   translateExceptionToUserFriendlyMessage(
-    options: TranslateExceptionToUserFriendlyMessageOptions,
+    options: TranslateOptions,
   ): ValidationExceptionBase {
     const { context, exception } = options;
     switch (context) {

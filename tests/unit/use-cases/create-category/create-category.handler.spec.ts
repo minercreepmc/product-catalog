@@ -36,8 +36,8 @@ describe('CreateCategoryHandler', () => {
 
     handler = new CreateCategoryHandler(
       validator,
-      createCategoryProcess,
       mapper,
+      createCategoryProcess,
     );
   });
 

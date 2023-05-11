@@ -24,8 +24,8 @@ export interface CategoryAggregateOptions {
 export interface CreateCategoryAggregateOptions {
   name: CategoryNameValueObject;
   description?: CategoryDescriptionValueObject;
-  parentIds?: CategoryIdValueObject[];
-  subCategoryIds?: CategoryIdValueObject[];
+  parentIds?: ParentCategoryIdValueObject[];
+  subCategoryIds?: SubCategoryIdValueObject[];
   productIds?: ProductIdValueObject[];
 }
 

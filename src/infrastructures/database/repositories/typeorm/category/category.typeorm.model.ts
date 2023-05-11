@@ -18,12 +18,12 @@ export class CategoryTypeOrmModel extends AbstractTypeOrmModel {
   @Column({ nullable: true })
   description?: string;
 
-  @Column('jsonb', { array: true, nullable: true })
+  @Column('text', { array: true, nullable: true })
   parentIds: string[];
 
-  @Column('jsonb', { array: true, nullable: true })
+  @Column('text', { array: true, nullable: true })
   subCategoryIds: string[];
 
-  @Column('jsonb', { array: true, nullable: true })
+  @Column('text', { array: true, nullable: true })
   productIds: string[];
 }

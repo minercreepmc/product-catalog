@@ -39,6 +39,18 @@ export class ProductManagementDomainService {
     return Boolean(await this.productRepository.findOneById(id));
   }
 
+  async isProductIdsExist(ids: ProductIdValueObject[]): Promise<boolean> {
+    if (!ids || ids.length === 0) {
+      return true;
+    }
+
+    const checks = await Promise.all(
+      ids.map((id) => this.productRepository.findOneById(id)),
+    );
+
+    return checks.every((exist) => exist);
+  }
+
   async getProductById(id: ProductIdValueObject): Promise<ProductAggregate> {
     return this.productRepository.findOneById(id);
   }

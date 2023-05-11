@@ -1,14 +1,25 @@
 import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { CategoryDomainExceptions } from '@domain-exceptions/category/category.domain-exception';
-import { CategoryManagementDomainService } from '@domain-services';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import {
+  CategoryManagementDomainService,
+  ProductManagementDomainService,
+} from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { ProcessBase } from '@use-cases/common';
-import { CategoryNameValueObject } from '@value-objects/category';
+import {
+  CategoryIdValueObject,
+  CategoryNameValueObject,
+} from '@value-objects/category';
 import { CreateCategoryDomainOptions } from '../dtos';
 
 export type CreateCategoryProcessSuccess = CategoryCreatedDomainEvent;
-export type CreateCategoryProcessFailure =
-  Array<CategoryDomainExceptions.AlreadyExist>;
+export type CreateCategoryProcessFailure = Array<
+  | CategoryDomainExceptions.AlreadyExist
+  | CategoryDomainExceptions.ParentIdDoesNotExist
+  | CategoryDomainExceptions.SubCategoryIdDoesNotExist
+  | ProductDomainExceptions.DoesNotExist
+>;
 
 @Injectable()
 export class CreateCategoryProcess extends ProcessBase<
@@ -17,45 +28,115 @@ export class CreateCategoryProcess extends ProcessBase<
 > {
   constructor(
     private readonly categoryManagementService: CategoryManagementDomainService,
+    private readonly productManagementService: ProductManagementDomainService,
   ) {
     super();
   }
 
-  isExist: boolean;
-
   async execute(domainOptions: CreateCategoryDomainOptions) {
-    const { name } = domainOptions;
+    const { name, parentIds, subCategoryIds, productIds } = domainOptions;
     this.init();
-    await this.validateCategoryMustNotExist(name);
-    await this.createCategoryIfNotExistYet(domainOptions);
+
+    const conditions = [
+      this.checkCategoryMustNotExist(name),
+      this.checkParentIdsExistance(parentIds),
+      this.checkSubCategoriesIdExistance(subCategoryIds),
+      this.checkProductIdsExistance(productIds),
+    ];
+
+    await Promise.all(conditions);
+
+    if (!this.exceptions.length) {
+      await this.createCategory(domainOptions);
+    }
+
     return this.getValidationResult();
   }
 
   protected init(): void {
     this.clearExceptions();
     this.clearValue();
-
-    this.isExist = false;
   }
 
-  private async validateCategoryMustNotExist(name: CategoryNameValueObject) {
+  private async checkCategoryMustNotExist(name: CategoryNameValueObject) {
     const exist = await this.categoryManagementService.doesCategoryNameExist(
       name,
     );
     if (exist) {
-      this.isExist = true;
       this.exceptions.push(new CategoryDomainExceptions.AlreadyExist());
     }
   }
 
-  private async createCategoryIfNotExistYet(
-    domainOptions: CreateCategoryDomainOptions,
+  private async checkParentIdsExistance(parentIds: CategoryIdValueObject[]) {
+    if (!parentIds || parentIds.length === 0) {
+      return;
+    }
+    try {
+      const exist = await this.categoryManagementService.doesCategoryIdsExist(
+        parentIds,
+      );
+
+      if (!exist) {
+        this.exceptions.push(
+          new CategoryDomainExceptions.ParentIdDoesNotExist(),
+        );
+      }
+    } catch (err) {
+      this.handleValidationError(err);
+    }
+  }
+
+  private async checkSubCategoriesIdExistance(
+    subCategoryIds: CategoryIdValueObject[],
   ) {
-    if (!this.isExist) {
+    if (!subCategoryIds || subCategoryIds.length === 0) {
+      return;
+    }
+    try {
+      const exist = await this.categoryManagementService.doesCategoryIdsExist(
+        subCategoryIds,
+      );
+
+      if (!exist) {
+        this.exceptions.push(
+          new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
+        );
+      }
+    } catch (err) {
+      this.handleValidationError(err);
+    }
+  }
+
+  private async checkProductIdsExistance(productIds: CategoryIdValueObject[]) {
+    if (!productIds || productIds.length === 0) {
+      return;
+    }
+    try {
+      const exist = await this.productManagementService.isProductIdsExist(
+        productIds,
+      );
+
+      if (!exist) {
+        this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
+      }
+    } catch (err) {
+      this.handleValidationError(err);
+    }
+  }
+
+  private async createCategory(options: CreateCategoryDomainOptions) {
+    try {
       const created = await this.categoryManagementService.createCategory(
-        domainOptions,
+        options,
       );
       this.value = created;
+    } catch (err) {
+      this.handleValidationError(err);
     }
+  }
+
+  private handleValidationError(error: any) {
+    console.error('Validation error:', error);
+    this.exceptions.push(error);
   }
 }

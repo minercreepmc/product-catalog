@@ -1,4 +1,5 @@
 import { ApproveProductHttpController } from '@controllers/http/approve-product';
+import { CreateCategoryHttpController } from '@controllers/http/create-category';
 import { RejectProductHttpController } from '@controllers/http/reject-product';
 import { SubmitForApprovalHttpController } from '@controllers/http/submit-for-approval';
 import { DatabaseModule } from '@database/di';
@@ -164,6 +165,7 @@ const createReviewerController = [CreateReviewerHttpController];
 const submitForApprovalController = [SubmitForApprovalHttpController];
 const approveProductController = [ApproveProductHttpController];
 const rejectProductController = [RejectProductHttpController];
+const createCategoryController = [CreateCategoryHttpController];
 //
 const controllers = [
   ...createProductController,
@@ -172,6 +174,7 @@ const controllers = [
   ...submitForApprovalController,
   ...approveProductController,
   ...rejectProductController,
+  ...createCategoryController,
 ];
 
 // Vendor

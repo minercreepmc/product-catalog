@@ -6,6 +6,7 @@ import {
   CreateReviewerMigration1680595085820,
   AddReviewerRole1680930138166,
   CreateCategory1683716855518,
+  ChangeJsonbToText1683795584288,
 } from '@migrations';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
@@ -24,6 +25,7 @@ export const typeOrmDataSourceOptions: DataSourceOptions = {
     CreateReviewerMigration1680595085820,
     AddReviewerRole1680930138166,
     CreateCategory1683716855518,
+    ChangeJsonbToText1683795584288,
   ],
   //synchronize: true,
 };

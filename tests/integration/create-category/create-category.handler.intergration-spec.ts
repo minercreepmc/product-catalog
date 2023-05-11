@@ -1,3 +1,5 @@
+import { CategoryDomainExceptions } from '@domain-exceptions/category';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { CategoryManagementDomainService } from '@domain-services';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -17,6 +19,7 @@ import {
   CreateCategoryResponseDto,
 } from '@use-cases/create-category/dtos';
 import { CategoryNameValueObject } from '@value-objects/category';
+import { MultipleExceptions } from 'common-base-classes';
 
 describe('CreateCategoryHandler Integration Test', () => {
   let handler: CreateCategoryHandler;
@@ -59,6 +62,24 @@ describe('CreateCategoryHandler Integration Test', () => {
       expect(result.isOk()).toBe(true);
       expect(result.unwrap()).toBeInstanceOf(CreateCategoryResponseDto);
       // Add more assertions for the created category's properties
+    });
+
+    it('should not create a new category if parentsIds, subCategoryIds and productIds was provided but not exist', async () => {
+      // Arrange
+      const command = new CreateCategoryCommand({
+        name: 'New Category',
+        parentIds: ['not_existing_parent_category_id'],
+        subCategoryIds: ['not_existing_sub_category_id'],
+        productIds: ['not_existing_product'],
+      });
+
+      // Act
+      const result = await handler.execute(command);
+
+      // Assert
+      expect(result.isErr()).toBe(true);
+      expect(result.unwrapErr()).toBeInstanceOf(UseCaseProcessExceptions);
+      expect(result.unwrapErr()).toBeInstanceOf(MultipleExceptions);
     });
 
     it('should not create a new category when the category name already exists', async () => {

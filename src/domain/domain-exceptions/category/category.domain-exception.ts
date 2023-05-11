@@ -10,6 +10,16 @@ export namespace CategoryDomainExceptions {
     readonly code = CategoryDomainExceptionCodes.DoesNotExist;
   }
 
+  export class ParentIdDoesNotExist extends CategoryValidationException {
+    readonly message = 'Category parent id does not exist';
+    readonly code = CategoryDomainExceptionCodes.ParentIdDoesNotExist;
+  }
+
+  export class SubCategoryIdDoesNotExist extends CategoryValidationException {
+    readonly message = 'Category sub category id does not exist';
+    readonly code = CategoryDomainExceptionCodes.SubCategoryIdDoesNotExist;
+  }
+
   export class AlreadyExist extends CategoryBusinessException {
     readonly message = 'Category already exist';
     readonly code = CategoryDomainExceptionCodes.AlreadyExist;

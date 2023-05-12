@@ -18,6 +18,10 @@ import {
 import { ProductIdValueObject } from '@value-objects/product';
 
 export interface CreateCategoryOptions extends CreateCategoryAggregateOptions {}
+export interface DoesParentIdsAndCategoryIdsOverlap {
+  parentIds: CategoryIdValueObject[];
+  subCategoryIds: CategoryIdValueObject[];
+}
 
 @Injectable()
 export class CategoryManagementDomainService {
@@ -50,13 +54,41 @@ export class CategoryManagementDomainService {
     return checks.every((exist) => exist);
   }
 
+  doesParentIdsAndCategoryIdsOverlap(
+    options: DoesParentIdsAndCategoryIdsOverlap,
+  ): boolean {
+    const { parentIds, subCategoryIds } = options;
+
+    if (
+      parentIds &&
+      subCategoryIds &&
+      parentIds.length > 0 &&
+      subCategoryIds.length > 0
+    ) {
+      const allIds = [...parentIds, ...subCategoryIds].map((id) => id.unpack());
+      const uniqueIds = new Set(allIds);
+
+      if (allIds.length !== uniqueIds.size) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
   async createCategory(options: CreateCategoryOptions) {
     const { name, parentIds, productIds, subCategoryIds } = options;
 
-    await this.checkCategoryMustNotExist(name);
-    await this.checkParentIdsMustExist(parentIds);
-    await this.checkProductIdsMustExist(productIds);
-    await this.checkSubCategoryIdsMustExist(subCategoryIds);
+    const conditions = [
+      this.checkCategoryMustNotExist(name),
+      this.checkParentIdsMustExist(parentIds),
+      this.checkProductIdsMustExist(productIds),
+      this.checkSubCategoryIdsMustExist(subCategoryIds),
+      this.checkDistinctParentAndSubCategoryIds({ parentIds, subCategoryIds }),
+    ];
+
+    await Promise.all(conditions);
 
     const categoryAggregate = new CategoryAggregate();
 
@@ -99,6 +131,15 @@ export class CategoryManagementDomainService {
           }
         }),
       );
+    }
+  }
+
+  private async checkDistinctParentAndSubCategoryIds(
+    options: DoesParentIdsAndCategoryIdsOverlap,
+  ) {
+    const doesOverlap = this.doesParentIdsAndCategoryIdsOverlap(options);
+    if (doesOverlap) {
+      throw new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap();
     }
   }
 }

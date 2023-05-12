@@ -49,4 +49,10 @@ export namespace CategoryDomainExceptions {
     readonly message = 'Category description does not valid';
     readonly code = CategoryDomainExceptionCodes.DescriptionDoesNotValid;
   }
+
+  export class ParentIdAndSubCategoryIdOverlap extends CategoryValidationException {
+    readonly message = 'Category parent id and sub category id overlap';
+    readonly code =
+      CategoryDomainExceptionCodes.ParentIdAndSubCategoryIdOverlap;
+  }
 }

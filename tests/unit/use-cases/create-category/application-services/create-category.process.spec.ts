@@ -77,6 +77,28 @@ describe('CreateCategoryProcess', () => {
         new ProductDomainExceptions.DoesNotExist(),
       ]);
     });
-    // Add similar tests to cover other failure scenarios (parentIds and subCategoryIds not existing)
+
+    it('should not create a category if parentIds and subCategoryIds overlap', async () => {
+      // Arrange
+      const newCategoryOptions: CreateCategoryDomainOptions = {
+        name: new CategoryNameValueObject('New Category'),
+        parentIds: [new ParentCategoryIdValueObject('same_id')],
+        subCategoryIds: [new SubCategoryIdValueObject('same_id')],
+        // other properties...
+      };
+      // Mock the return value
+      categoryManagementService.doesParentIdsAndCategoryIdsOverlap.mockReturnValue(
+        true,
+      );
+
+      // Act
+      const result = await createCategoryProcess.execute(newCategoryOptions);
+
+      // Assert
+      expect(result.isErr()).toBe(true);
+      expect(result.unwrapErr()).toIncludeAllMembers([
+        new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap(),
+      ]);
+    });
   });
 });

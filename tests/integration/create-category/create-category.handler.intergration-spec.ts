@@ -1,5 +1,3 @@
-import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { CategoryManagementDomainService } from '@domain-services';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -18,8 +16,12 @@ import {
   CreateCategoryDomainOptions,
   CreateCategoryResponseDto,
 } from '@use-cases/create-category/dtos';
-import { CategoryNameValueObject } from '@value-objects/category';
+import {
+  CategoryIdValueObject,
+  CategoryNameValueObject,
+} from '@value-objects/category';
 import { MultipleExceptions } from 'common-base-classes';
+import { faker } from '@faker-js/faker';
 
 describe('CreateCategoryHandler Integration Test', () => {
   let handler: CreateCategoryHandler;
@@ -27,6 +29,7 @@ describe('CreateCategoryHandler Integration Test', () => {
   let mapper: CreateCategoryMapper;
   let createCategoryProcess: CreateCategoryProcess;
   let categoryManagementService: CategoryManagementDomainService;
+  let existingCategoryId: CategoryIdValueObject;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -45,13 +48,19 @@ describe('CreateCategoryHandler Integration Test', () => {
       mapper,
       createCategoryProcess,
     );
+
+    const { entityId } = await categoryManagementService.createCategory({
+      name: new CategoryNameValueObject(faker.lorem.word()),
+    });
+
+    existingCategoryId = entityId;
   });
 
   describe('execute', () => {
-    it('should create a new category when the category name does not exist', async () => {
+    it('should not create a category if command is not valid', async () => {
       // Arrange
       const command = new CreateCategoryCommand({
-        name: 'New Category',
+        name: '',
         // other properties...
       });
 
@@ -59,9 +68,10 @@ describe('CreateCategoryHandler Integration Test', () => {
       const result = await handler.execute(command);
 
       // Assert
-      expect(result.isOk()).toBe(true);
-      expect(result.unwrap()).toBeInstanceOf(CreateCategoryResponseDto);
-      // Add more assertions for the created category's properties
+      expect(result.isErr()).toBe(true);
+      expect(result.unwrapErr()).toBeInstanceOf(
+        UseCaseCommandValidationExceptions,
+      );
     });
 
     it('should not create a new category if parentsIds, subCategoryIds and productIds was provided but not exist', async () => {
@@ -105,10 +115,12 @@ describe('CreateCategoryHandler Integration Test', () => {
       // Add more assertions for the expected exception or error
     });
 
-    it('should not create a category if command is not valid', async () => {
+    it('should not create a new category when the parentIds and subCategoryIds overlap', async () => {
       // Arrange
       const command = new CreateCategoryCommand({
-        name: '',
+        name: 'New Category',
+        parentIds: [existingCategoryId.unpack()],
+        subCategoryIds: [existingCategoryId.unpack()],
         // other properties...
       });
 
@@ -117,9 +129,28 @@ describe('CreateCategoryHandler Integration Test', () => {
 
       // Assert
       expect(result.isErr()).toBe(true);
-      expect(result.unwrapErr()).toBeInstanceOf(
-        UseCaseCommandValidationExceptions,
-      );
+      expect(result.unwrapErr()).toBeInstanceOf(UseCaseProcessExceptions);
+    });
+
+    it('should create a new category when everything is ok', async () => {
+      // Arrange
+      const { entityId: anotherCategoryId } =
+        await categoryManagementService.createCategory({
+          name: new CategoryNameValueObject(faker.lorem.word()),
+        });
+      const command = new CreateCategoryCommand({
+        name: 'New Category',
+        parentIds: [existingCategoryId.unpack()],
+        subCategoryIds: [anotherCategoryId.unpack()],
+      });
+
+      // Act
+      const result = await handler.execute(command);
+
+      // Assert
+      expect(result.isOk()).toBe(true);
+      expect(result.unwrap()).toBeInstanceOf(CreateCategoryResponseDto);
+      // Add more assertions for the created category's properties
     });
   });
 });

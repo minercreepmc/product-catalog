@@ -93,6 +93,25 @@ describe('CreateCategoryProcess Integration Test', () => {
     ]);
   });
 
+  it('should fail to create a new category if parentIds and subCategoryIds overlap', async () => {
+    // Arrange
+    const newCategoryOptions: CreateCategoryDomainOptions = {
+      name: new CategoryNameValueObject('New Category'),
+      parentIds: [existingCategoryId],
+      subCategoryIds: [existingCategoryId],
+      // other properties...
+    };
+
+    // Act
+    const result = await createCategoryProcess.execute(newCategoryOptions);
+
+    // Assert
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toIncludeAllMembers([
+      new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap(),
+    ]);
+  });
+
   it('should create a new category when everything is ok', async () => {
     // Arrange
     const domainOptions: CreateCategoryDomainOptions = {

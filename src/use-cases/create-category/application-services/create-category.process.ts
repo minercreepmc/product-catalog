@@ -10,6 +10,8 @@ import { ProcessBase } from '@use-cases/common';
 import {
   CategoryIdValueObject,
   CategoryNameValueObject,
+  ParentCategoryIdValueObject,
+  SubCategoryIdValueObject,
 } from '@value-objects/category';
 import { CreateCategoryDomainOptions } from '../dtos';
 
@@ -18,6 +20,7 @@ export type CreateCategoryProcessFailure = Array<
   | CategoryDomainExceptions.AlreadyExist
   | CategoryDomainExceptions.ParentIdDoesNotExist
   | CategoryDomainExceptions.SubCategoryIdDoesNotExist
+  | CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap
   | ProductDomainExceptions.DoesNotExist
 >;
 
@@ -42,8 +45,8 @@ export class CreateCategoryProcess extends ProcessBase<
       this.checkParentIdsExistance(parentIds),
       this.checkSubCategoriesIdExistance(subCategoryIds),
       this.checkProductIdsExistance(productIds),
+      this.checkParentIdsAndSubCategoryIdsOverlap(parentIds, subCategoryIds),
     ];
-
     await Promise.all(conditions);
 
     if (!this.exceptions.length) {
@@ -121,6 +124,22 @@ export class CreateCategoryProcess extends ProcessBase<
       }
     } catch (err) {
       this.handleValidationError(err);
+    }
+  }
+
+  private async checkParentIdsAndSubCategoryIdsOverlap(
+    parentIds: ParentCategoryIdValueObject[],
+    subCategoryIds: SubCategoryIdValueObject[],
+  ) {
+    const doesOverlap =
+      this.categoryManagementService.doesParentIdsAndCategoryIdsOverlap({
+        parentIds,
+        subCategoryIds,
+      });
+    if (doesOverlap) {
+      this.exceptions.push(
+        new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap(),
+      );
     }
   }
 

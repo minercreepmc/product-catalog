@@ -3,6 +3,7 @@ import { CategoryDomainExceptions } from '@domain-exceptions/category/category.d
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
   CategoryManagementDomainService,
+  CategoryVerificationDomainService,
   ProductManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
@@ -31,6 +32,7 @@ export class CreateCategoryProcess extends ProcessBase<
 > {
   constructor(
     private readonly categoryManagementService: CategoryManagementDomainService,
+    private readonly categoryVerificationService: CategoryVerificationDomainService,
     private readonly productManagementService: ProductManagementDomainService,
   ) {
     super();
@@ -62,7 +64,7 @@ export class CreateCategoryProcess extends ProcessBase<
   }
 
   private async checkCategoryMustNotExist(name: CategoryNameValueObject) {
-    const exist = await this.categoryManagementService.doesCategoryNameExist(
+    const exist = await this.categoryVerificationService.doesCategoryNameExist(
       name,
     );
     if (exist) {
@@ -75,7 +77,7 @@ export class CreateCategoryProcess extends ProcessBase<
       return;
     }
     try {
-      const exist = await this.categoryManagementService.doesCategoryIdsExist(
+      const exist = await this.categoryVerificationService.doesCategoryIdsExist(
         parentIds,
       );
 
@@ -96,7 +98,7 @@ export class CreateCategoryProcess extends ProcessBase<
       return;
     }
     try {
-      const exist = await this.categoryManagementService.doesCategoryIdsExist(
+      const exist = await this.categoryVerificationService.doesCategoryIdsExist(
         subCategoryIds,
       );
 
@@ -132,7 +134,7 @@ export class CreateCategoryProcess extends ProcessBase<
     subCategoryIds: SubCategoryIdValueObject[],
   ) {
     const doesOverlap =
-      this.categoryManagementService.doesParentIdsAndCategoryIdsOverlap({
+      this.categoryVerificationService.doesParentIdsAndCategoryIdsOverlap({
         parentIds,
         subCategoryIds,
       });

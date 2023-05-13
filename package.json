@@ -27,7 +27,7 @@
     "unit-test": "jest ./tests/unit",
     "e2e-test": "docker compose -f docker-compose.e2e.yml up --abort-on-container-exit",
     "integration-test": "docker compose -f docker-compose.integration.yml up --abort-on-container-exit",
-    "test": "jest",
+    "test": "jest --forceExit",
     "test:unit": "jest ./tests/unit",
     "test:e2e": "jest ./tests/e2e",
     "test:integration": "jest ./tests/integration",

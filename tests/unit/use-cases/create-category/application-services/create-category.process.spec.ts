@@ -1,9 +1,9 @@
 import { CategoryAggregate } from '@aggregates/category';
-import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { CategoryDomainExceptions } from '@domain-exceptions/category/category.domain-exception';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
   CategoryManagementDomainService,
+  CategoryVerificationDomainService,
   ProductManagementDomainService,
 } from '@domain-services';
 import { CreateCategoryProcess } from '@use-cases/create-category/application-services';
@@ -20,14 +20,17 @@ describe('CreateCategoryProcess', () => {
   let createCategoryProcess: CreateCategoryProcess;
   let categoryManagementService: MockProxy<CategoryManagementDomainService>;
   let productManagementService: MockProxy<ProductManagementDomainService>;
+  let categoryVerificationService: MockProxy<CategoryVerificationDomainService>;
   let existingCategory: CategoryAggregate;
   const existingName = new CategoryNameValueObject('existing_category');
 
   beforeEach(() => {
     categoryManagementService = mock<CategoryManagementDomainService>();
     productManagementService = mock<ProductManagementDomainService>();
+    categoryVerificationService = mock<CategoryVerificationDomainService>();
     createCategoryProcess = new CreateCategoryProcess(
       categoryManagementService,
+      categoryVerificationService,
       productManagementService,
     );
 
@@ -42,7 +45,7 @@ describe('CreateCategoryProcess', () => {
         name: existingName,
         // other properties...
       };
-      categoryManagementService.doesCategoryNameExist.mockResolvedValue(true);
+      categoryVerificationService.doesCategoryNameExist.mockResolvedValue(true);
 
       // Act
       const result = await createCategoryProcess.execute(newCategoryOptions);
@@ -87,7 +90,7 @@ describe('CreateCategoryProcess', () => {
         // other properties...
       };
       // Mock the return value
-      categoryManagementService.doesParentIdsAndCategoryIdsOverlap.mockReturnValue(
+      categoryVerificationService.doesParentIdsAndCategoryIdsOverlap.mockReturnValue(
         true,
       );
 

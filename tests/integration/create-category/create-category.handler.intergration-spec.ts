@@ -56,6 +56,8 @@ describe('CreateCategoryHandler Integration Test', () => {
     existingCategoryId = entityId;
   });
 
+  afterAll;
+
   describe('execute', () => {
     it('should not create a category if command is not valid', async () => {
       // Arrange

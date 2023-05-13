@@ -10,11 +10,6 @@ import {
   CreateCategoryHttpRequest,
   CreateCategoryHttpResponse,
 } from '@controllers/http/create-category';
-import {
-  ParentCategoryIdValueObject,
-  SubCategoryIdValueObject,
-} from '@value-objects/category';
-import { ProductIdValueObject } from '@value-objects/product';
 import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
 
 describe('CreateCategoryHttpController (e2e)', () => {

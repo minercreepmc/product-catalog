@@ -22,6 +22,7 @@ import {
 } from '@domain-interfaces';
 import {
   CategoryManagementDomainService,
+  CategoryVerificationDomainService,
   ProductApprovalDomainService,
   ProductManagementDomainService,
   ReviewerManagementDomainService,
@@ -85,6 +86,7 @@ const domainServices: Provider[] = [
   ProductManagementDomainService,
   ReviewerManagementDomainService,
   CategoryManagementDomainService,
+  CategoryVerificationDomainService,
 ];
 
 // Infrastructure

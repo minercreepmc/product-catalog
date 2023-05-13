@@ -2,6 +2,7 @@ import { CategoryCreatedDomainEvent } from '@domain-events/category/category-cre
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import {
   CategoryManagementDomainService,
+  CategoryVerificationDomainService,
   ProductManagementDomainService,
 } from '@domain-services';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -22,6 +23,7 @@ describe('CreateCategoryProcess Integration Test', () => {
   let createCategoryProcess: CreateCategoryProcess;
   let categoryManagementService: CategoryManagementDomainService;
   let productManagementService: ProductManagementDomainService;
+  let categoryVerificationService: CategoryVerificationDomainService;
   let existingCategoryName: CategoryNameValueObject;
   let existingCategoryId: CategoryIdValueObject;
 
@@ -36,8 +38,12 @@ describe('CreateCategoryProcess Integration Test', () => {
     productManagementService = moduleFixture.get(
       ProductManagementDomainService,
     );
+    categoryVerificationService = moduleFixture.get(
+      CategoryVerificationDomainService,
+    );
     createCategoryProcess = new CreateCategoryProcess(
       categoryManagementService,
+      categoryVerificationService,
       productManagementService,
     );
 

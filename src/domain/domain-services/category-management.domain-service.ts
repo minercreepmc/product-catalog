@@ -61,5 +61,16 @@ export class CategoryManagementDomainService {
 
   async addParentCategories(options: AddParentCategoriesServiceOptions) {
     await this.categoryVerification.verifyAddParentCategoriesOptions(options);
+
+    const categoryAggregate = await this.categoryRepository.findOneById(
+      options.categoryId,
+    );
+
+    const parentCategoryAdded = categoryAggregate.addParentCategories(
+      options.parentIds,
+    );
+
+    await this.categoryRepository.save(categoryAggregate);
+    return parentCategoryAdded;
   }
 }

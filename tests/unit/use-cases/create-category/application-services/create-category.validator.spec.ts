@@ -36,7 +36,7 @@ describe('CreateCategoryValidator', () => {
       expect(validationResult.exceptions).toIncludeAllMembers([
         new CategoryDomainExceptions.NameDoesNotValid(),
         new CategoryDomainExceptions.DescriptionDoesNotValid(),
-        new CategoryDomainExceptions.ParentCategoryIdDoesNotValid(),
+        new CategoryDomainExceptions.ParentIdDoesNotValid(),
         new CategoryDomainExceptions.SubCategoryIdsDoesNotValid(),
         new ProductDomainExceptions.IdDoesNotValid(),
       ]);

@@ -34,7 +34,7 @@ export abstract class CategoryValidator extends ValidatorBase {
       case SubCategoryIdValueObject.name:
         return new CategoryDomainExceptions.SubCategoryIdsDoesNotValid();
       case ParentCategoryIdValueObject.name:
-        return new CategoryDomainExceptions.ParentCategoryIdDoesNotValid();
+        return new CategoryDomainExceptions.ParentIdDoesNotValid();
       case CategoryNameValueObject.name:
         return new CategoryDomainExceptions.NameDoesNotValid();
       case CategoryDescriptionValueObject.name:

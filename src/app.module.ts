@@ -33,6 +33,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AddParentCategoriesHandler } from '@use-cases/add-parent-categories';
+import {
+  AddParentCategoriesMapper,
+  AddParentCategoriesProcess,
+  AddParentCategoriesValidator,
+} from '@use-cases/add-parent-categories/application-services';
 import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
 import {
   AddSubCategoriesMapper,
@@ -162,6 +168,12 @@ const addSubCategoryUseCase: Provider[] = [
   AddSubCategoriesValidator,
   AddSubCategoriesProcess,
 ];
+const addParentCategoryUseCase: Provider[] = [
+  AddParentCategoriesHandler,
+  AddParentCategoriesMapper,
+  AddParentCategoriesValidator,
+  AddParentCategoriesProcess,
+];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
@@ -172,6 +184,7 @@ const useCases: Provider[] = [
   ...rejectProductUseCase,
   ...createCategoryUseCase,
   ...addSubCategoryUseCase,
+  ...addParentCategoryUseCase,
 ];
 
 // Interface Adapters

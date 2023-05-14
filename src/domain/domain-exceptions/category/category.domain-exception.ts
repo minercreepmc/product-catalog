@@ -35,7 +35,7 @@ export namespace CategoryDomainExceptions {
     readonly code = CategoryDomainExceptionCodes.NameDoesNotValid;
   }
 
-  export class ParentCategoryIdDoesNotValid extends CategoryValidationException {
+  export class ParentIdDoesNotValid extends CategoryValidationException {
     readonly message = 'Category parent id does not valid';
     readonly code = CategoryDomainExceptionCodes.ParentIdDoesNotValid;
   }

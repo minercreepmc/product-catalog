@@ -6,11 +6,13 @@ import {
   ProductRepositoryPort,
 } from '@domain-interfaces';
 import {
+  AddSubCategoriesServiceOptions,
   CategoryVerificationDomainService,
   CreateCategoryOptions,
 } from '@domain-services';
 import {
   CategoryDescriptionValueObject,
+  CategoryIdValueObject,
   CategoryNameValueObject,
   ParentCategoryIdValueObject,
   SubCategoryIdValueObject,
@@ -96,8 +98,53 @@ describe('CategoryVerificationDomainService', () => {
         service.verifyCategoryCreationOptions(options),
       ).rejects.toThrow();
     });
-
     // Add other cases for each exception that can be thrown
+  });
+
+  // Add test cases for verifyAddSubCategoriesOptions
+  describe('verifyAddSubCategoriesOptions', () => {
+    it('should pass verification with correct options', async () => {
+      const options: AddSubCategoriesServiceOptions = {
+        categoryId: new CategoryIdValueObject('some-category-id'),
+        subCategoryIds: [new SubCategoryIdValueObject('some-sub-category-id')],
+      };
+
+      mockCategoryRepository.findOneById.mockResolvedValue(
+        new CategoryAggregate(),
+      );
+
+      await expect(
+        service.verifyAddSubCategoriesOptions(options),
+      ).resolves.not.toThrow();
+    });
+
+    it('should throw an exception when category or sub category does not exist', async () => {
+      const options: AddSubCategoriesServiceOptions = {
+        categoryId: new CategoryIdValueObject('nonexistent-category-id'),
+        subCategoryIds: [new SubCategoryIdValueObject('some-sub-category-id')],
+      };
+
+      mockCategoryRepository.findOneById.mockResolvedValue(null);
+
+      await expect(
+        service.verifyAddSubCategoriesOptions(options),
+      ).rejects.toThrow();
+    });
+
+    it('should throw an exception when overlap with sub category ids', async () => {
+      const options: AddSubCategoriesServiceOptions = {
+        categoryId: new CategoryIdValueObject('same-category-id'),
+        subCategoryIds: [new SubCategoryIdValueObject('same-category-id')],
+      };
+
+      mockCategoryRepository.findOneById.mockResolvedValue(
+        new CategoryAggregate(),
+      );
+
+      await expect(
+        service.verifyAddSubCategoriesOptions(options),
+      ).rejects.toThrow();
+    });
   });
 
   // Add test cases for other methods

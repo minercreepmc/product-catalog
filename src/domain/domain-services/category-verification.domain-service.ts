@@ -10,12 +10,24 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
   CategoryNameValueObject,
+  ParentCategoryIdValueObject,
+  SubCategoryIdValueObject,
 } from '@value-objects/category';
 import { ProductIdValueObject } from '@value-objects/product';
 import {
+  AddSubCategoriesServiceOptions,
   CreateCategoryOptions,
-  DoesParentIdsAndCategoryIdsOverlap,
 } from './category-management.domain-service';
+
+export interface DoesParentIdsAndCategoryIdsOverlapServiceOptions {
+  parentIds: ParentCategoryIdValueObject[];
+  subCategoryIds: SubCategoryIdValueObject[];
+}
+
+export interface DoesSubCategoryIdsOverlapOptions {
+  categoryId: CategoryIdValueObject;
+  subCategoryIds: SubCategoryIdValueObject[];
+}
 
 @Injectable()
 export class CategoryVerificationDomainService {
@@ -38,9 +50,21 @@ export class CategoryVerificationDomainService {
     ]);
   }
 
+  async verifyAddSubCategoriesOptions(options: AddSubCategoriesServiceOptions) {
+    const { subCategoryIds, categoryId } = options;
+
+    await Promise.all([
+      this.checkSubCategoryIdsMustExist(subCategoryIds),
+      this.checkDistinctSubCategoryIds({
+        categoryId,
+        subCategoryIds,
+      }),
+    ]);
+  }
+
   // Utility Methods
   doesParentIdsAndCategoryIdsOverlap(
-    options: DoesParentIdsAndCategoryIdsOverlap,
+    options: DoesParentIdsAndCategoryIdsOverlapServiceOptions,
   ): boolean {
     const { parentIds, subCategoryIds } = options;
 
@@ -57,6 +81,18 @@ export class CategoryVerificationDomainService {
         return true;
       } else {
         return false;
+      }
+    }
+    return false;
+  }
+
+  doesSubCategoryIdsOverlap(options: DoesSubCategoryIdsOverlapOptions) {
+    const { categoryId, subCategoryIds } = options;
+    if (subCategoryIds && subCategoryIds.length > 0) {
+      const subCategoryIdsArray = subCategoryIds.map((id) => id.unpack());
+
+      if (subCategoryIdsArray.includes(categoryId.unpack())) {
+        return true;
       }
     }
     return false;
@@ -126,11 +162,20 @@ export class CategoryVerificationDomainService {
   }
 
   private async checkDistinctParentAndSubCategoryIds(
-    options: DoesParentIdsAndCategoryIdsOverlap,
+    options: DoesParentIdsAndCategoryIdsOverlapServiceOptions,
   ) {
     const doesOverlap = this.doesParentIdsAndCategoryIdsOverlap(options);
     if (doesOverlap) {
       throw new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap();
+    }
+  }
+
+  private async checkDistinctSubCategoryIds(
+    options: DoesSubCategoryIdsOverlapOptions,
+  ) {
+    const doesOverlap = this.doesSubCategoryIdsOverlap(options);
+    if (doesOverlap) {
+      throw new CategoryDomainExceptions.OverlapWithSubCategoryId();
     }
   }
 }

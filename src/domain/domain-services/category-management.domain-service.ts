@@ -7,13 +7,17 @@ import {
   CategoryRepositoryPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
-import { CategoryIdValueObject } from '@value-objects/category';
+import {
+  CategoryIdValueObject,
+  SubCategoryIdValueObject,
+} from '@value-objects/category';
 import { CategoryVerificationDomainService } from './category-verification.domain-service';
 
 export interface CreateCategoryOptions extends CreateCategoryAggregateOptions {}
-export interface DoesParentIdsAndCategoryIdsOverlap {
-  parentIds: CategoryIdValueObject[];
-  subCategoryIds: CategoryIdValueObject[];
+
+export interface AddSubCategoriesServiceOptions {
+  categoryId: CategoryIdValueObject;
+  subCategoryIds: SubCategoryIdValueObject[];
 }
 
 @Injectable()
@@ -33,5 +37,20 @@ export class CategoryManagementDomainService {
     await this.categoryRepository.save(categoryAggregate);
 
     return categoryCreated;
+  }
+
+  async addSubCategories(options: AddSubCategoriesServiceOptions) {
+    await this.categoryVerification.verifyAddSubCategoriesOptions(options);
+
+    const categoryAggregate = await this.categoryRepository.findOneById(
+      options.categoryId,
+    );
+
+    const subCategoryAdded = categoryAggregate.addSubCategories(
+      options.subCategoryIds,
+    );
+    await this.categoryRepository.save(categoryAggregate);
+
+    return subCategoryAdded;
   }
 }

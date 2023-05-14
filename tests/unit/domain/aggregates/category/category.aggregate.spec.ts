@@ -51,4 +51,24 @@ describe('CategoryAggregate', () => {
       expect(result.details.productIds).toEqual(productIds);
     });
   });
+
+  describe('addSubCategories', () => {
+    it('should add sub-categories to the category and return a SubCategoryAddedDomainEvent with correct properties', () => {
+      // Arrange
+      const subCategoryIds = [
+        new SubCategoryIdValueObject('some-sub-category-id-1'),
+        new SubCategoryIdValueObject('some-sub-category-id-2'),
+      ];
+
+      // Act
+      const result = categoryAggregate.addSubCategories(subCategoryIds);
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(result.entityId).toEqual(categoryAggregate.id);
+      expect(result.details.subCategoryIds).toEqual(
+        expect.arrayContaining(subCategoryIds),
+      );
+    });
+  });
 });

@@ -6,7 +6,6 @@ import {
   SubCategoryIdValueObject,
 } from '@value-objects/category';
 import { ProductIdValueObject } from '@value-objects/product';
-import { EntityOptions } from 'common-base-classes';
 
 export interface CategoryAggregateDetails {
   name: CategoryNameValueObject;
@@ -18,7 +17,7 @@ export interface CategoryAggregateDetails {
 
 export interface CategoryAggregateOptions {
   id?: CategoryIdValueObject;
-  details?: OptionalEntityOptions<CategoryAggregateDetails>;
+  details?: Partial<CategoryAggregateDetails>;
 }
 
 export interface CreateCategoryAggregateOptions {
@@ -28,5 +27,3 @@ export interface CreateCategoryAggregateOptions {
   subCategoryIds?: SubCategoryIdValueObject[];
   productIds?: ProductIdValueObject[];
 }
-
-type OptionalEntityOptions<T> = Partial<EntityOptions<T>>;

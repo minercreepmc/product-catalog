@@ -4,7 +4,7 @@ import {
   ParentCategoryIdValueObject,
   SubCategoryIdValueObject,
 } from '@value-objects/category';
-import type { CategoryNameValueObject } from '@value-objects/category';
+import { CategoryNameValueObject } from '@value-objects/category';
 import { AbstractAggregateRoot, UUID } from 'common-base-classes';
 import {
   CategoryAggregateDetails,
@@ -13,13 +13,20 @@ import {
 } from './category.aggregate.interface';
 import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { ProductIdValueObject } from '@value-objects/product';
+import { SubCategoryAddedDomainEvent } from '@domain-events/category';
 
 export class CategoryAggregate extends AbstractAggregateRoot<
   Partial<CategoryAggregateDetails>
 > {
   constructor(options?: CategoryAggregateOptions) {
     const defaultId = new UUID();
-    const defaultDetails = {};
+    const defaultDetails: Partial<CategoryAggregateDetails> = {
+      name: new CategoryNameValueObject('some-name'),
+      description: new CategoryDescriptionValueObject('some-description'),
+      parentIds: [],
+      subCategoryIds: [],
+      productIds: [],
+    };
     const { id = defaultId, details = defaultDetails } = options ?? {};
 
     super({ id, details });
@@ -29,10 +36,22 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     const { name, parentIds, productIds, description, subCategoryIds } =
       options;
     this.name = name;
-    this.parentIds = parentIds;
-    this.productIds = productIds;
-    this.description = description;
-    this.subCategoryIds = subCategoryIds;
+
+    if (parentIds && parentIds.length > 0) {
+      this.parentIds = parentIds;
+    }
+
+    if (productIds && productIds.length > 0) {
+      this.productIds = productIds;
+    }
+
+    if (description) {
+      this.description = description;
+    }
+
+    if (subCategoryIds && subCategoryIds.length > 0) {
+      this.subCategoryIds = subCategoryIds;
+    }
 
     return new CategoryCreatedDomainEvent({
       id: this.id,
@@ -46,8 +65,14 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     });
   }
 
-  createSubCategory() {
-    throw new Error('Method not implemented.');
+  addSubCategories(subCategoryIds: SubCategoryIdValueObject[]) {
+    this.subCategoryIds.push(...subCategoryIds);
+    return new SubCategoryAddedDomainEvent({
+      id: this.id,
+      details: {
+        subCategoryIds: this.subCategoryIds,
+      },
+    });
   }
 
   addProduct() {

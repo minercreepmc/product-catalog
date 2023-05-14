@@ -3,7 +3,7 @@ import {
   CategoryCreatedDetails,
   CategoryCreatedDomainEvent,
   CategoryCreatedOptions,
-} from '@domain-events/category/category-created.domain-event';
+} from '@domain-events/category';
 import {
   CategoryDescriptionValueObject,
   CategoryIdValueObject,

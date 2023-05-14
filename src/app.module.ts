@@ -1,3 +1,4 @@
+import { AddSubCategoriesHttpController } from '@controllers/http/add-sub-categories';
 import { ApproveProductHttpController } from '@controllers/http/approve-product';
 import { CreateCategoryHttpController } from '@controllers/http/create-category';
 import { RejectProductHttpController } from '@controllers/http/reject-product';
@@ -32,6 +33,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
+import {
+  AddSubCategoriesMapper,
+  AddSubCategoriesProcess,
+  AddSubCategoriesValidator,
+} from '@use-cases/add-sub-categories/application-services';
 import { ApproveProductHandler } from '@use-cases/approve-product';
 import {
   ApproveProductMapper,
@@ -149,6 +156,12 @@ const createCategoryUseCase: Provider[] = [
   CreateCategoryProcess,
   CreateCategoryMapper,
 ];
+const addSubCategoryUseCase: Provider[] = [
+  AddSubCategoriesHandler,
+  AddSubCategoriesMapper,
+  AddSubCategoriesValidator,
+  AddSubCategoriesProcess,
+];
 
 const useCases: Provider[] = [
   ...createProductUseCase,
@@ -158,6 +171,7 @@ const useCases: Provider[] = [
   ...approveProductUseCase,
   ...rejectProductUseCase,
   ...createCategoryUseCase,
+  ...addSubCategoryUseCase,
 ];
 
 // Interface Adapters
@@ -168,6 +182,7 @@ const submitForApprovalController = [SubmitForApprovalHttpController];
 const approveProductController = [ApproveProductHttpController];
 const rejectProductController = [RejectProductHttpController];
 const createCategoryController = [CreateCategoryHttpController];
+const addSubCategoryController = [AddSubCategoriesHttpController];
 //
 const controllers = [
   ...createProductController,
@@ -177,6 +192,7 @@ const controllers = [
   ...approveProductController,
   ...rejectProductController,
   ...createCategoryController,
+  ...addSubCategoryController,
 ];
 
 // Vendor

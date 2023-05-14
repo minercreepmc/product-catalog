@@ -9,4 +9,5 @@ export enum CategoryDomainExceptionCodes {
   SubCategoryIdsDoesNotValid = 'CATEGORY.SUB_CATEGORY_IDS_DOES_NOT_VALID',
   DescriptionDoesNotValid = 'CATEGORY.DESCRIPTION_DOES_NOT_VALID',
   ParentIdAndSubCategoryIdOverlap = 'CATEGORY.PARENT_ID_AND_SUB_CATEGORY_ID_OVERLAP',
+  OverlapWithSubCategoryId = 'CATEGORY.OVERLAP_WITH_SUB_CATEGORY_ID',
 }

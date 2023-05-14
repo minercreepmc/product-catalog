@@ -134,7 +134,7 @@ export class CreateCategoryProcess extends ProcessBase<
     subCategoryIds: SubCategoryIdValueObject[],
   ) {
     const doesOverlap =
-      this.categoryVerificationService.doesParentIdsAndCategoryIdsOverlap({
+      this.categoryVerificationService.doesParentIdsAndSubCategoryIdsOverlap({
         parentIds,
         subCategoryIds,
       });

@@ -20,6 +20,11 @@ export interface AddSubCategoriesServiceOptions {
   subCategoryIds: SubCategoryIdValueObject[];
 }
 
+export interface AddParentCategoriesServiceOptions {
+  categoryId: CategoryIdValueObject;
+  parentIds: SubCategoryIdValueObject[];
+}
+
 @Injectable()
 export class CategoryManagementDomainService {
   constructor(
@@ -52,5 +57,9 @@ export class CategoryManagementDomainService {
     await this.categoryRepository.save(categoryAggregate);
 
     return subCategoryAdded;
+  }
+
+  async addParentCategories(options: AddParentCategoriesServiceOptions) {
+    await this.categoryVerification.verifyAddParentCategoriesOptions(options);
   }
 }

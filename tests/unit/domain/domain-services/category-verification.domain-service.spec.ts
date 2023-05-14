@@ -6,6 +6,7 @@ import {
   ProductRepositoryPort,
 } from '@domain-interfaces';
 import {
+  AddParentCategoriesServiceOptions,
   AddSubCategoriesServiceOptions,
   CategoryVerificationDomainService,
   CreateCategoryOptions,
@@ -143,6 +144,51 @@ describe('CategoryVerificationDomainService', () => {
 
       await expect(
         service.verifyAddSubCategoriesOptions(options),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('verifyAddParentCategoriesOptions', () => {
+    it('should pass verification with correct options', async () => {
+      const options: AddParentCategoriesServiceOptions = {
+        categoryId: new CategoryIdValueObject('some-category-id'),
+        parentIds: [new ParentCategoryIdValueObject('some-parent-category-id')],
+      };
+
+      mockCategoryRepository.findOneById.mockResolvedValue(
+        new CategoryAggregate(),
+      );
+
+      await expect(
+        service.verifyAddParentCategoriesOptions(options),
+      ).resolves.not.toThrow();
+    });
+
+    it('should throw an exception when category or parent category does not exist', async () => {
+      const options: AddParentCategoriesServiceOptions = {
+        categoryId: new CategoryIdValueObject('nonexistent-category-id'),
+        parentIds: [new ParentCategoryIdValueObject('some-parent-category-id')],
+      };
+
+      mockCategoryRepository.findOneById.mockResolvedValue(null);
+
+      await expect(
+        service.verifyAddParentCategoriesOptions(options),
+      ).rejects.toThrow();
+    });
+
+    it('should throw an exception when overlap with sub category ids', async () => {
+      const options: AddParentCategoriesServiceOptions = {
+        categoryId: new CategoryIdValueObject('same-category-id'),
+        parentIds: [new ParentCategoryIdValueObject('same-category-id')],
+      };
+
+      mockCategoryRepository.findOneById.mockResolvedValue(
+        new CategoryAggregate(),
+      );
+
+      await expect(
+        service.verifyAddParentCategoriesOptions(options),
       ).rejects.toThrow();
     });
   });

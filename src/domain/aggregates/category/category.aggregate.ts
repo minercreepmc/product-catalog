@@ -13,7 +13,10 @@ import {
 } from './category.aggregate.interface';
 import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { ProductIdValueObject } from '@value-objects/product';
-import { SubCategoryAddedDomainEvent } from '@domain-events/category';
+import {
+  ParentCategoryAddedDomainEvent,
+  SubCategoryAddedDomainEvent,
+} from '@domain-events/category';
 
 export class CategoryAggregate extends AbstractAggregateRoot<
   Partial<CategoryAggregateDetails>
@@ -71,6 +74,16 @@ export class CategoryAggregate extends AbstractAggregateRoot<
       id: this.id,
       details: {
         subCategoryIds: this.subCategoryIds,
+      },
+    });
+  }
+
+  addParentCategories(parentIds: ParentCategoryIdValueObject[]) {
+    this.parentIds.push(...parentIds);
+    return new ParentCategoryAddedDomainEvent({
+      id: this.id,
+      details: {
+        parentIds: this.parentIds,
       },
     });
   }

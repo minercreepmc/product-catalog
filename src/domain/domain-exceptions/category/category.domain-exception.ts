@@ -60,4 +60,9 @@ export namespace CategoryDomainExceptions {
     readonly message = 'Category overlap with sub category id';
     readonly code = CategoryDomainExceptionCodes.OverlapWithSubCategoryId;
   }
+
+  export class OverlapWithParentId extends CategoryValidationException {
+    readonly message = 'Category overlap with parent id';
+    readonly code = CategoryDomainExceptionCodes.OverlapWithParentId;
+  }
 }

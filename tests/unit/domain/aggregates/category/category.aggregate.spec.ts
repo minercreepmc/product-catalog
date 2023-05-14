@@ -71,4 +71,24 @@ describe('CategoryAggregate', () => {
       );
     });
   });
+
+  describe('addParentCategories', () => {
+    it('should add sub-categories to the category and return a SubCategoryAddedDomainEvent with correct properties', () => {
+      // Arrange
+      const parentIds = [
+        new ParentCategoryIdValueObject('some-parent-category-id-1'),
+        new ParentCategoryIdValueObject('some-parent-category-id-2'),
+      ];
+
+      // Act
+      const result = categoryAggregate.addParentCategories(parentIds);
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(result.entityId).toEqual(categoryAggregate.id);
+      expect(result.details.parentIds).toEqual(
+        expect.arrayContaining(parentIds),
+      );
+    });
+  });
 });

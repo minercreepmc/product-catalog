@@ -90,7 +90,7 @@ describe('CreateCategoryProcess', () => {
         // other properties...
       };
       // Mock the return value
-      categoryVerificationService.doesParentIdsAndCategoryIdsOverlap.mockReturnValue(
+      categoryVerificationService.doesParentIdsAndSubCategoryIdsOverlap.mockReturnValue(
         true,
       );
 

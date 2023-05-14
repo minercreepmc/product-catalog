@@ -15,6 +15,7 @@ import {
 } from '@value-objects/category';
 import { ProductIdValueObject } from '@value-objects/product';
 import {
+  AddParentCategoriesServiceOptions,
   AddSubCategoriesServiceOptions,
   CreateCategoryOptions,
 } from './category-management.domain-service';
@@ -27,6 +28,11 @@ export interface DoesParentIdsAndCategoryIdsOverlapServiceOptions {
 export interface DoesSubCategoryIdsOverlapOptions {
   categoryId: CategoryIdValueObject;
   subCategoryIds: SubCategoryIdValueObject[];
+}
+
+export interface DoesParentIdsOverlapOptions {
+  categoryId: CategoryIdValueObject;
+  parentIds: ParentCategoryIdValueObject[];
 }
 
 @Injectable()
@@ -62,8 +68,22 @@ export class CategoryVerificationDomainService {
     ]);
   }
 
+  async verifyAddParentCategoriesOptions(
+    options: AddParentCategoriesServiceOptions,
+  ) {
+    const { parentIds, categoryId } = options;
+
+    await Promise.all([
+      this.checkParentIdsMustExist(parentIds),
+      this.checkDistinctParentIds({
+        categoryId,
+        parentIds,
+      }),
+    ]);
+  }
+
   // Utility Methods
-  doesParentIdsAndCategoryIdsOverlap(
+  doesParentIdsAndSubCategoryIdsOverlap(
     options: DoesParentIdsAndCategoryIdsOverlapServiceOptions,
   ): boolean {
     const { parentIds, subCategoryIds } = options;
@@ -92,6 +112,18 @@ export class CategoryVerificationDomainService {
       const subCategoryIdsArray = subCategoryIds.map((id) => id.unpack());
 
       if (subCategoryIdsArray.includes(categoryId.unpack())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  doesParentIdsOverlap(options: DoesParentIdsOverlapOptions) {
+    const { categoryId, parentIds } = options;
+    if (parentIds && parentIds.length > 0) {
+      const parentIdsArray = parentIds.map((id) => id.unpack());
+
+      if (parentIdsArray.includes(categoryId.unpack())) {
         return true;
       }
     }
@@ -133,7 +165,7 @@ export class CategoryVerificationDomainService {
   }
 
   private async checkParentIdsMustExist(parentIds: CategoryIdValueObject[]) {
-    const exist = this.doesCategoryIdsExist(parentIds);
+    const exist = await this.doesCategoryIdsExist(parentIds);
     if (!exist) {
       throw new CategoryDomainExceptions.ParentIdDoesNotExist();
     }
@@ -164,7 +196,7 @@ export class CategoryVerificationDomainService {
   private async checkDistinctParentAndSubCategoryIds(
     options: DoesParentIdsAndCategoryIdsOverlapServiceOptions,
   ) {
-    const doesOverlap = this.doesParentIdsAndCategoryIdsOverlap(options);
+    const doesOverlap = this.doesParentIdsAndSubCategoryIdsOverlap(options);
     if (doesOverlap) {
       throw new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap();
     }
@@ -176,6 +208,15 @@ export class CategoryVerificationDomainService {
     const doesOverlap = this.doesSubCategoryIdsOverlap(options);
     if (doesOverlap) {
       throw new CategoryDomainExceptions.OverlapWithSubCategoryId();
+    }
+  }
+
+  private async checkDistinctParentIds(
+    options: AddParentCategoriesServiceOptions,
+  ) {
+    const doesOverlap = this.doesParentIdsOverlap(options);
+    if (doesOverlap) {
+      throw new CategoryDomainExceptions.OverlapWithParentId();
     }
   }
 }

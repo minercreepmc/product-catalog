@@ -6,15 +6,21 @@ import {
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { faker } from '@faker-js/faker';
 import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
 import * as request from 'supertest';
 import { RejectProductHttpRequest } from '@controllers/http/reject-product';
-import { checkResponseForCode } from '@utils/functions';
-import { ReviewerDomainExceptionCodes } from '@domain-exceptions/reviewer';
-import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
-import { JoinAttribute } from 'typeorm/query-builder/JoinAttribute';
+import {
+  generateRandomProductId,
+  generateRandomProductName,
+  generateRandomProductPrice,
+  generateRandomReviewerEmail,
+  generateRandomReviewerId,
+  generateRandomReviewerName,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
+import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { SubmitForApprovalHttpRequest } from '@controllers/http/submit-for-approval';
 
 describe('RejectProductHttpController (PUT)', () => {
@@ -37,16 +43,16 @@ describe('RejectProductHttpController (PUT)', () => {
     await app.init();
 
     const createProductRequest: CreateProductHttpRequest = {
-      name: faker.commerce.productName(),
+      name: generateRandomProductName(),
       price: {
-        amount: Number(faker.commerce.price()),
+        amount: generateRandomProductPrice(),
         currency: MoneyCurrencyEnum.USD,
       },
     };
 
     const createRegularReviewerRequest: CreateReviewerHttpRequest = {
-      name: faker.name.fullName(),
-      email: faker.internet.email().toLowerCase(),
+      name: generateRandomReviewerName(),
+      email: generateRandomReviewerEmail(),
       role: ReviewerRoleEnum.Regular,
     };
 
@@ -68,8 +74,8 @@ describe('RejectProductHttpController (PUT)', () => {
     );
 
     const createAdminReviewerRequest: CreateReviewerHttpRequest = {
-      name: faker.name.fullName(),
-      email: faker.internet.email().toLowerCase(),
+      name: generateRandomReviewerName(),
+      email: generateRandomReviewerEmail(),
       role: ReviewerRoleEnum.Admin,
     };
 
@@ -100,22 +106,18 @@ describe('RejectProductHttpController (PUT)', () => {
         reason: 'Bad',
       };
 
-      const rejectProductResponse = await request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${validProductId}/${productRejectUrl}`)
         .set('Accept', 'application/json')
         .send(rejectProductRequest)
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
-      const commandIsNotValid = checkResponseForCode({
-        response: rejectProductResponse,
-        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        codes: [
-          ReviewerDomainExceptionCodes.IdDoesNotValid,
-          ProductDomainExceptionCodes.RejectionReasonDoesNotValid,
-        ],
-      });
-
-      expect(commandIsNotValid).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.IdDoesNotValid(),
+          new ProductDomainExceptions.RejectionReasonDoesNotValid(),
+        ]),
+      );
     });
 
     it('should not reject a product if product does not exist', async () => {
@@ -124,42 +126,38 @@ describe('RejectProductHttpController (PUT)', () => {
         reason: 'Bad stuff',
       };
 
-      const nonExistentProductId = '1';
+      const nonExistentProductId = generateRandomProductId();
 
-      const rejectProductResponse = await request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${nonExistentProductId}/${productRejectUrl}`)
         .set('Accept', 'application/json')
         .send(rejectProductRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const reviewerDoesNotExist = checkResponseForCode({
-        response: rejectProductResponse,
-        statusCode: HttpStatus.CONFLICT,
-        codes: [ProductDomainExceptionCodes.DoesNotExist],
-      });
-
-      expect(reviewerDoesNotExist).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.DoesNotExist(),
+        ]),
+      );
     });
 
     it('should not reject a product if reviewer does not exist', async () => {
       const rejectProductRequest: RejectProductHttpRequest = {
-        reviewerId: 'non-existent-reviewer-id',
+        reviewerId: generateRandomReviewerId(),
         reason: 'Bad stuff',
       };
 
-      const rejectProductResponse = await request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${validProductId}/${productRejectUrl}`)
         .set('Accept', 'application/json')
         .send(rejectProductRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const reviewerDoesNotExist = checkResponseForCode({
-        response: rejectProductResponse,
-        statusCode: HttpStatus.CONFLICT,
-        codes: [ProductDomainExceptionCodes.DoesNotExist],
-      });
-
-      expect(reviewerDoesNotExist).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.DoesNotExist(),
+        ]),
+      );
     });
 
     it('should not reject a product if reviewer is not an admin', async () => {
@@ -168,19 +166,17 @@ describe('RejectProductHttpController (PUT)', () => {
         reason: 'Bad stuff',
       };
 
-      const rejectProductResponse = await request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${validProductId}/${productRejectUrl}`)
         .set('Accept', 'application/json')
         .send(rejectProductRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const reviewerIsNotAdmin = checkResponseForCode({
-        response: rejectProductResponse,
-        statusCode: HttpStatus.CONFLICT,
-        codes: [ReviewerDomainExceptionCodes.NotAuthorizedToReject],
-      });
-
-      expect(reviewerIsNotAdmin).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.NotAuthorizedToReject(),
+        ]),
+      );
     });
 
     it('should not reject a product if product is not submitted for approval yet', async () => {
@@ -189,19 +185,17 @@ describe('RejectProductHttpController (PUT)', () => {
         reason: 'Bad stuff',
       };
 
-      const rejectProductResponse = await request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${validProductId}/${productRejectUrl}`)
         .set('Accept', 'application/json')
         .send(rejectProductRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const notSubmitted = checkResponseForCode({
-        response: rejectProductResponse,
-        statusCode: HttpStatus.CONFLICT,
-        codes: [ProductDomainExceptionCodes.NotSubmittedForApproval],
-      });
-
-      expect(notSubmitted).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.NotSubmittedForApproval(),
+        ]),
+      );
     });
 
     it('should reject a product if request is valid', async () => {

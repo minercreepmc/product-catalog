@@ -1,4 +1,4 @@
-import { ReviewerDomainExceptionCodes } from '@domain-exceptions/reviewer';
+import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -6,7 +6,12 @@ import {
   CreateReviewerHttpRequest,
   CreateReviewerHttpResponse,
 } from '@src/interface-adapters/controllers/http';
-import { checkResponseForCode } from '@utils/functions';
+import {
+  generateRandomReviewerEmail,
+  generateRandomReviewerName,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
+import { ReviewerRoleEnum } from '@value-objects/reviewer';
 import * as request from 'supertest';
 
 describe('CreateReviewerHttpController (e2e)', () => {
@@ -14,9 +19,9 @@ describe('CreateReviewerHttpController (e2e)', () => {
   const reviewersUrl = `/reviewers`;
 
   const createReviewerRequest: CreateReviewerHttpRequest = {
-    name: 'John Doe',
-    email: '6ycjc@example.com',
-    role: 'regular',
+    name: generateRandomReviewerName(),
+    email: generateRandomReviewerEmail(),
+    role: ReviewerRoleEnum.Regular,
   };
 
   beforeAll(async () => {
@@ -33,21 +38,20 @@ describe('CreateReviewerHttpController (e2e)', () => {
   });
 
   describe(`${reviewersUrl} (POST)`, () => {
-    it('should create a reviewer and return the new reviewer information', () => {
-      return request(app.getHttpServer())
+    it('should create a reviewer and return the new reviewer information', async () => {
+      const response = await request(app.getHttpServer())
         .post(reviewersUrl)
         .set('Accept', 'application/json')
         .send(createReviewerRequest)
-        .expect((response: request.Response) => {
-          const { name, email, reviewerId, role } =
-            response.body as CreateReviewerHttpResponse;
-
-          expect(name).toEqual(createReviewerRequest.name);
-          expect(email).toEqual(createReviewerRequest.email);
-          expect(role).toEqual(createReviewerRequest.role);
-          expect(reviewerId).toBeDefined();
-        })
         .expect(HttpStatus.CREATED);
+
+      const { name, email, reviewerId, role } =
+        response.body as CreateReviewerHttpResponse;
+
+      expect(name).toEqual(createReviewerRequest.name);
+      expect(email).toEqual(createReviewerRequest.email);
+      expect(role).toEqual(createReviewerRequest.role);
+      expect(reviewerId).toBeDefined();
     });
 
     it('should not create a reviewer if it already exists', async () => {
@@ -56,21 +60,17 @@ describe('CreateReviewerHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         .send(createReviewerRequest);
 
-      // Attempt to create the reviewer again
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .post(reviewersUrl)
         .set('Accept', 'application/json')
         .send(createReviewerRequest)
-        .expect((response: request.Response) => {
-          const emailIsExist = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.CONFLICT,
-            codes: [ReviewerDomainExceptionCodes.DoesExist],
-          });
-
-          expect(emailIsExist).toBeTruthy();
-        })
         .expect(HttpStatus.CONFLICT);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.DoesExist(),
+        ]),
+      );
     });
 
     it('should not create a reviewer if the request format is not valid', async () => {
@@ -80,24 +80,19 @@ describe('CreateReviewerHttpController (e2e)', () => {
         role: '',
       };
 
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .post(reviewersUrl)
         .set('Accept', 'application/json')
         .send(invalidProductRequest)
-        .expect((response: request.Response) => {
-          const requestIsNotValid = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            codes: [
-              ReviewerDomainExceptionCodes.NameDoesNotValid,
-              ReviewerDomainExceptionCodes.EmailDoesNotValid,
-              ReviewerDomainExceptionCodes.RoleDoesNotValid,
-            ],
-          });
-
-          expect(requestIsNotValid).toBeTruthy();
-        })
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.NameDoesNotValid(),
+          new ReviewerDomainExceptions.EmailDoesNotValid(),
+          new ReviewerDomainExceptions.RoleDoesNotValid(),
+        ]),
+      );
     });
   });
 

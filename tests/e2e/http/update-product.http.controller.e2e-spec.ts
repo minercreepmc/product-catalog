@@ -1,4 +1,4 @@
-import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -7,7 +7,11 @@ import {
   UpdateProductHttpRequest,
   UpdateProductHttpResponse,
 } from '@src/interface-adapters/controllers/http';
-import { checkResponseForCode } from '@utils/functions';
+import {
+  generateRandomProductName,
+  generateRandomProductPrice,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
 import * as request from 'supertest';
 
 describe('UpdateProductHttpController (e2e)', () => {
@@ -15,16 +19,16 @@ describe('UpdateProductHttpController (e2e)', () => {
   const productsUrl = `/products`;
 
   const createProductRequest: CreateProductHttpRequest = {
-    name: 'Wtf Product',
+    name: generateRandomProductName(),
     price: {
-      amount: 25.99,
+      amount: generateRandomProductPrice(),
       currency: 'USD',
     },
   };
   const updateProductRequest: UpdateProductHttpRequest = {
-    name: 'Oke Product',
+    name: generateRandomProductName(),
     price: {
-      amount: 29.99,
+      amount: generateRandomProductPrice(),
       currency: 'USD',
     },
     description: 'Sample description',
@@ -71,24 +75,20 @@ describe('UpdateProductHttpController (e2e)', () => {
     it('should not update a product if it not exists', async () => {
       // Attempt to create the product again
       const productIdDidNotExist = '123';
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/products/${productIdDidNotExist}`)
         .set('Accept', 'application/json')
         .send(updateProductRequest)
-        .expect((response: request.Response) => {
-          const productIsNotExist = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.CONFLICT,
-            codes: [ProductDomainExceptionCodes.DoesNotExist],
-          });
-
-          expect(productIsNotExist).toBeTruthy();
-        })
         .expect(HttpStatus.CONFLICT);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.DoesNotExist(),
+        ]),
+      );
     });
 
     it('should not update a product if the request format is not valid', async () => {
-      // Attempt to create the product again
       const productIdDidNotExist = '123';
       const invalidUpdateProductRequest: UpdateProductHttpRequest = {
         name: '',
@@ -99,25 +99,20 @@ describe('UpdateProductHttpController (e2e)', () => {
         description: '',
         image: '',
       };
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/products/${productIdDidNotExist}`)
         .set('Accept', 'application/json')
         .send(invalidUpdateProductRequest)
-        .expect((response: request.Response) => {
-          const productIsNotExist = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            codes: [
-              ProductDomainExceptionCodes.NameDoesNotValid,
-              ProductDomainExceptionCodes.PriceDoesNotValid,
-              ProductDomainExceptionCodes.DescriptionDoesNotValid,
-              ProductDomainExceptionCodes.ImageDoesNotValid,
-            ],
-          });
-
-          expect(productIsNotExist).toBeTruthy();
-        })
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.NameDoesNotValid(),
+          new ProductDomainExceptions.PriceDoesNotValid(),
+          new ProductDomainExceptions.DescriptionDoesNotValid(),
+          new ProductDomainExceptions.ImageDoesNotValid(),
+        ]),
+      );
     });
   });
 

@@ -2,15 +2,19 @@ import { HttpStatus } from '@nestjs/common';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
-import { faker } from '@faker-js/faker';
 import { AppModule } from '@src/app.module';
-import { CategoryDomainExceptionCodes } from '@domain-exceptions/category';
-import { checkResponseForCode } from '@utils/functions';
+import { CategoryDomainExceptions } from '@domain-exceptions/category';
+import {
+  generateRandomCategoryId,
+  generateRandomCategoryName,
+  generateRandomProductId,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
 import {
   CreateCategoryHttpRequest,
   CreateCategoryHttpResponse,
 } from '@controllers/http/create-category';
-import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 
 describe('CreateCategoryHttpController (e2e)', () => {
   let app: INestApplication;
@@ -43,18 +47,20 @@ describe('CreateCategoryHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         .send(createCategoryRequest);
 
-      const isNotValid = checkResponseForCode({
-        response,
-        codes: [CategoryDomainExceptionCodes.NameDoesNotValid],
-        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      });
-
-      expect(isNotValid).toBeTruthy();
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new CategoryDomainExceptions.NameDoesNotValid(),
+          new ProductDomainExceptions.IdDoesNotValid(),
+          new CategoryDomainExceptions.SubCategoryIdsDoesNotValid(),
+          new CategoryDomainExceptions.ParentIdDoesNotValid(),
+          new CategoryDomainExceptions.DescriptionDoesNotValid(),
+        ]),
+      );
     });
 
     it('Should not create a category if the category name already exists', async () => {
       const createCategoryRequest = {
-        name: faker.commerce.department(),
+        name: generateRandomCategoryName(),
       };
 
       await request(app.getHttpServer())
@@ -69,21 +75,19 @@ describe('CreateCategoryHttpController (e2e)', () => {
         .send(createCategoryRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const doesExist = checkResponseForCode({
-        response,
-        codes: [CategoryDomainExceptionCodes.AlreadyExist],
-        statusCode: HttpStatus.CONFLICT,
-      });
-
-      expect(doesExist).toBeTruthy();
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new CategoryDomainExceptions.AlreadyExist(),
+        ]),
+      );
     });
 
     it('should not create a category if parentsIds, subCategories and productIds was provided but does not exist', async () => {
       const createCategoryRequest = {
-        name: faker.commerce.department(),
-        parentIds: ['not_existing_parent_category_id'],
-        subCategoryIds: ['not_existing_sub_category_id'],
-        productIds: ['not_existing_product_id'],
+        name: generateRandomCategoryName(),
+        parentIds: [generateRandomCategoryId()],
+        subCategoryIds: [generateRandomCategoryId()],
+        productIds: [generateRandomProductId()],
       };
 
       const response = await request(app.getHttpServer())
@@ -92,24 +96,21 @@ describe('CreateCategoryHttpController (e2e)', () => {
         .send(createCategoryRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const doesNotExist = checkResponseForCode({
-        response,
-        codes: [
-          CategoryDomainExceptionCodes.ParentIdDoesNotExist,
-          CategoryDomainExceptionCodes.SubCategoryIdDoesNotExist,
-          ProductDomainExceptionCodes.DoesNotExist,
-        ],
-        statusCode: HttpStatus.CONFLICT,
-      });
-
-      expect(doesNotExist).toBeTruthy();
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new CategoryDomainExceptions.ParentIdDoesNotExist(),
+          new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
+          new ProductDomainExceptions.DoesNotExist(),
+        ]),
+      );
     });
 
     it('should not create a category if parentIds and subCategories overlap', async () => {
+      const randomId = generateRandomCategoryId();
       const createCategoryRequest = {
-        name: faker.commerce.department(),
-        parentIds: ['same_category_id'],
-        subCategoryIds: ['same_category_id'],
+        name: generateRandomCategoryName(),
+        parentIds: [randomId],
+        subCategoryIds: [randomId],
       };
 
       const response = await request(app.getHttpServer())
@@ -118,21 +119,19 @@ describe('CreateCategoryHttpController (e2e)', () => {
         .send(createCategoryRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const doesNotExist = checkResponseForCode({
-        response,
-        codes: [CategoryDomainExceptionCodes.ParentIdAndSubCategoryIdOverlap],
-        statusCode: HttpStatus.CONFLICT,
-      });
-
-      expect(doesNotExist).toBeTruthy();
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap(),
+        ]),
+      );
     });
 
     it('Should create a category if the request is valid', async () => {
       const createCategoryOneRequest = {
-        name: 'category1',
+        name: generateRandomCategoryName(),
       };
       const createCategoryTwoRequest = {
-        name: 'category2',
+        name: generateRandomCategoryName(),
       };
 
       const responseOne = await request(app.getHttpServer())
@@ -152,7 +151,7 @@ describe('CreateCategoryHttpController (e2e)', () => {
       const bodyTwo: CreateCategoryHttpResponse = responseTwo.body;
 
       const createCategoryRequest: CreateCategoryHttpRequest = {
-        name: faker.commerce.department(),
+        name: generateRandomCategoryName(),
         parentIds: [bodyOne.id],
         subCategoryIds: [bodyTwo.id],
       };

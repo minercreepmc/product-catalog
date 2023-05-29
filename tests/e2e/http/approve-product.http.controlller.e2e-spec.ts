@@ -1,9 +1,13 @@
-import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
-import { ReviewerDomainExceptionCodes } from '@domain-exceptions/reviewer';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { checkResponseForCode } from '@utils/functions';
+import {
+  generateRandomProductId,
+  generateRandomReviewerId,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
 import * as request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { MoneyCurrencyEnum } from '@value-objects/common/money';
@@ -95,44 +99,38 @@ describe('ApproveProductHttpController (e2e)', () => {
       const approveProductRequest: ApproveProductHttpRequest = {
         reviewerId: '',
       };
-      const productId = '1';
+      const productId = generateRandomProductId();
       const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${productId}/${productApproveUrl}`)
         .set('Accept', 'application/json')
         .send(approveProductRequest)
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
-      const requestIsInvalid = checkResponseForCode({
-        response,
-        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        codes: [ReviewerDomainExceptionCodes.IdDoesNotValid],
-      });
-
-      expect(requestIsInvalid).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.IdDoesNotValid(),
+        ]),
+      );
     });
 
     it('Should not approve a product if the product or reviewer is not exist', async () => {
       const approveProductRequest: ApproveProductHttpRequest = {
-        reviewerId: '1',
+        reviewerId: generateRandomReviewerId(),
       };
 
-      const productId = '1';
+      const productId = generateRandomProductId();
       const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${productId}/${productApproveUrl}`)
         .set('Accept', 'application/json')
         .send(approveProductRequest)
         .expect(HttpStatus.CONFLICT);
 
-      const isNotExist = checkResponseForCode({
-        response,
-        statusCode: HttpStatus.CONFLICT,
-        codes: [
-          ProductDomainExceptionCodes.DoesNotExist,
-          ReviewerDomainExceptionCodes.DoesNotExist,
-        ],
-      });
-
-      expect(isNotExist).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.DoesNotExist(),
+          new ReviewerDomainExceptions.DoesNotExist(),
+        ]),
+      );
     });
 
     it('Should not approve a product if reviewer is not admin', async () => {
@@ -147,13 +145,11 @@ describe('ApproveProductHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         .send(approveProductRequest);
 
-      const isNotAdmin = checkResponseForCode({
-        response,
-        statusCode: HttpStatus.CONFLICT,
-        codes: [ReviewerDomainExceptionCodes.NotAuthorizedToApprove],
-      });
-
-      expect(isNotAdmin).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.NotAuthorizedToApprove(),
+        ]),
+      );
     });
 
     it('Should not approve product if product not subbmited yet', async () => {
@@ -168,13 +164,11 @@ describe('ApproveProductHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         .send(approveProductRequest);
 
-      const isNotSubmited = checkResponseForCode({
-        response,
-        statusCode: HttpStatus.CONFLICT,
-        codes: [ProductDomainExceptionCodes.NotSubmittedForApproval],
-      });
-
-      expect(isNotSubmited).toBe(true);
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.NotSubmittedForApproval(),
+        ]),
+      );
     });
   });
 

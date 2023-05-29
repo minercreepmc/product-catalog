@@ -1,4 +1,8 @@
-import { checkResponseForCode } from '@utils/functions';
+import {
+  generateRandomCategoryName,
+  generateRandomProductName,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -7,14 +11,14 @@ import {
   CreateProductHttpRequest,
   CreateProductHttpResponse,
 } from '@src/interface-adapters/controllers/http';
-import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 
 describe('CreateProductHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `/products`;
 
   const createProductRequest: CreateProductHttpRequest = {
-    name: 'Sample Product',
+    name: generateRandomProductName(),
     price: {
       amount: 25.99,
       currency: 'USD',
@@ -62,20 +66,15 @@ describe('CreateProductHttpController (e2e)', () => {
         .send(createProductRequest);
 
       // Attempt to create the product again
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .post('/products')
         .set('Accept', 'application/json')
         .send(createProductRequest)
-        .expect((response: request.Response) => {
-          const productIsExist = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.CONFLICT,
-            codes: [ProductDomainExceptionCodes.DoesExist],
-          });
-
-          expect(productIsExist).toBeTruthy();
-        })
         .expect(HttpStatus.CONFLICT);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([new ProductDomainExceptions.DoesExist()]),
+      );
     });
 
     it('should not create a product if the request format is not valid', async () => {
@@ -89,25 +88,20 @@ describe('CreateProductHttpController (e2e)', () => {
         image: 'wtf',
       };
 
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .post(productsUrl)
         .set('Accept', 'application/json')
         .send(invalidProductRequest)
-        .expect((response: request.Response) => {
-          const priceIsNotValid = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            codes: [
-              ProductDomainExceptionCodes.PriceDoesNotValid,
-              ProductDomainExceptionCodes.NameDoesNotValid,
-              ProductDomainExceptionCodes.DescriptionDoesNotValid,
-              ProductDomainExceptionCodes.ImageDoesNotValid,
-            ],
-          });
-
-          expect(priceIsNotValid).toBeTruthy();
-        })
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.PriceDoesNotValid(),
+          new ProductDomainExceptions.DescriptionDoesNotValid(),
+          new ProductDomainExceptions.ImageDoesNotValid(),
+          new ProductDomainExceptions.NameDoesNotValid(),
+        ]),
+      );
     });
   });
 

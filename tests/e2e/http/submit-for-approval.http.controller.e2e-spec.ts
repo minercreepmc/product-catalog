@@ -1,5 +1,5 @@
-import { ProductDomainExceptionCodes } from '@domain-exceptions/product';
-import { ReviewerDomainExceptionCodes } from '@domain-exceptions/reviewer';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -11,7 +11,14 @@ import {
 } from '@src/interface-adapters/controllers/http';
 import { SubmitForApprovalHttpRequest } from '@src/interface-adapters/controllers/http/submit-for-approval';
 import { SubmitForApprovalResponseDto } from '@use-cases/submit-for-approval/dtos';
-import { checkResponseForCode } from '@utils/functions';
+import {
+  generateRandomProductId,
+  generateRandomProductName,
+  generateRandomReviewerEmail,
+  generateRandomReviewerId,
+  generateRandomReviewerName,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
 import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
 import * as request from 'supertest';
@@ -39,7 +46,7 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
   describe(`${productsUrl}/productId/${productSubmitUrl} (PUT)`, () => {
     it('Should submit product for approval', async () => {
       const createProductRequest: CreateProductHttpRequest = {
-        name: 'Product 1',
+        name: generateRandomProductName(),
         price: {
           amount: 100,
           currency: MoneyCurrencyEnum.USD,
@@ -51,8 +58,8 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
         .send(createProductRequest);
 
       const createReviewerRequest: CreateReviewerHttpRequest = {
-        name: 'Reviewer 1',
-        email: 'reviewer1@example.com',
+        name: generateRandomReviewerName(),
+        email: generateRandomReviewerEmail(),
         role: ReviewerRoleEnum.Regular,
       };
       const reviewerResponse = await request(app.getHttpServer())
@@ -83,28 +90,23 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
 
     it('should return error exceptions if either product or reviewer is not exist', async () => {
       const invalidProductRequest: SubmitForApprovalHttpRequest = {
-        reviewerId: '1',
+        reviewerId: generateRandomReviewerId(),
       };
 
-      const productId = '1';
+      const productId = generateRandomProductId();
 
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${productId}/${productSubmitUrl}`)
         .set('Accept', 'application/json')
         .send(invalidProductRequest)
-        .expect((response: request.Response) => {
-          const doesNotExist = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.CONFLICT,
-            codes: [
-              ProductDomainExceptionCodes.DoesNotExist,
-              ReviewerDomainExceptionCodes.DoesNotExist,
-            ],
-          });
-
-          expect(doesNotExist).toBeTruthy();
-        })
         .expect(HttpStatus.CONFLICT);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.DoesNotExist(),
+          new ReviewerDomainExceptions.DoesNotExist(),
+        ]),
+      );
     });
 
     it('should not create a reviewer if the request format is not valid', async () => {
@@ -112,22 +114,19 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
         reviewerId: '',
       };
 
-      const productId = '1';
+      const productId = generateRandomProductId();
 
-      return request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/${productsUrl}/${productId}/${productSubmitUrl}`)
         .set('Accept', 'application/json')
         .send(invalidRequest)
-        .expect((response: request.Response) => {
-          const doesNotValid = checkResponseForCode({
-            response,
-            statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            codes: [ReviewerDomainExceptionCodes.IdDoesNotValid],
-          });
-
-          expect(doesNotValid).toBeTruthy();
-        })
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new ReviewerDomainExceptions.IdDoesNotValid(),
+        ]),
+      );
     });
 
     it('should return not found if productId is empty string due to invalid endpoint', async () => {
@@ -137,7 +136,7 @@ describe('SubmitForApprovalHttpController (e2e)', () => {
 
       const productId = '';
 
-      return request(app.getHttpServer())
+      await request(app.getHttpServer())
         .put(`/${productsUrl}/${productId}/${productSubmitUrl}`)
         .set('Accept', 'application/json')
         .send(invalidProductRequest)

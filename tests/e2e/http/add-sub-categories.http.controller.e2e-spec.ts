@@ -5,10 +5,13 @@ import {
   AddSubCategoriesHttpRequest,
   AddSubCategoriesHttpResponse,
 } from '@controllers/http/add-sub-categories';
-import { checkResponseForCode } from '@utils/functions';
-import { CategoryDomainExceptionCodes } from '@domain-exceptions/category';
+import {
+  generateRandomCategoryId,
+  generateRandomCategoryName,
+  mapDomainExceptionsToObjects,
+} from '@utils/functions';
+import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { AppModule } from '@src/app.module';
-import { faker } from '@faker-js/faker';
 import {
   CreateCategoryHttpRequest,
   CreateCategoryHttpResponse,
@@ -42,42 +45,46 @@ describe('AddSubCategoriesHttpController (e2e)', () => {
         subCategoryIds: [''],
       };
 
-      const invalidCategoryId = '123';
-      await request(app.getHttpServer())
+      const invalidCategoryId = generateRandomCategoryId();
+      const response = await request(app.getHttpServer())
         .put(`/${categoriesUrl}/${invalidCategoryId}/${addSubCategoriesUrl}`)
         .set('Accept', 'application/json')
         .send(addSubCategoriesRequest)
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);
+
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new CategoryDomainExceptions.SubCategoryIdsDoesNotValid(),
+        ]),
+      );
     });
 
     it('Should not add subcategories if the category or subcategories do not exist', async () => {
       const addSubCategoriesRequest: AddSubCategoriesHttpRequest = {
-        subCategoryIds: ['nonexistentId'],
+        subCategoryIds: [generateRandomCategoryId()],
       };
 
-      const invalidCategoryId = faker.datatype.uuid();
+      const invalidCategoryId = generateRandomCategoryId();
       const response = await request(app.getHttpServer())
         .put(`/${categoriesUrl}/${invalidCategoryId}/${addSubCategoriesUrl}`)
         .set('Accept', 'application/json')
         .send(addSubCategoriesRequest)
         .expect(HttpStatus.CONFLICT);
 
-      checkResponseForCode({
-        response,
-        codes: [
-          CategoryDomainExceptionCodes.DoesNotExist,
-          CategoryDomainExceptionCodes.SubCategoryIdDoesNotExist,
-        ],
-        statusCode: HttpStatus.CONFLICT,
-      });
+      expect(response.body.message).toIncludeAllMembers(
+        mapDomainExceptionsToObjects([
+          new CategoryDomainExceptions.DoesNotExist(),
+          new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
+        ]),
+      );
     });
 
     it('Should add subcategories successfully when request is valid', async () => {
       const createCategoryFirstRequest: CreateCategoryHttpRequest = {
-        name: faker.lorem.word(),
+        name: generateRandomCategoryName(),
       };
       const createCategorySecondRequest: CreateCategoryHttpRequest = {
-        name: faker.lorem.word(),
+        name: generateRandomCategoryName(),
       };
 
       const firstResponse = await request(app.getHttpServer())

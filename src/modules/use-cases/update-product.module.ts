@@ -1,4 +1,4 @@
-import { UpdateProductHttpController } from '@controllers/http';
+import { V1UpdateProductHttpController } from '@controllers/http/v1';
 import {
   ProductTypeOrmModel,
   ProductTypeOrmRepository,
@@ -31,7 +31,7 @@ const useCases: Provider[] = [
   UpdateProductProcess,
 ];
 
-const controllers = [UpdateProductHttpController];
+const controllers = [V1UpdateProductHttpController];
 const vendors = [TypeOrmModule.forFeature([ProductTypeOrmModel]), CqrsModule];
 
 @Module({

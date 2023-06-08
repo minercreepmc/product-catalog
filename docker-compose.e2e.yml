@@ -17,7 +17,7 @@ services:
       - .env
     command: sh -c 'npm run schema:drop && npm run migration:up && npm run test -- $E2E_TEST'
     ports:
-      - 3999:3000
+      - 3999:3002
 
   postgres:
     container_name: product-catalog-database-test

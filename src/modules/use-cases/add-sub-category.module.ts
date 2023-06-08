@@ -1,4 +1,4 @@
-import { AddSubCategoriesHttpController } from '@controllers/http';
+import { V1AddSubCategoriesHttpController } from '@controllers/http/v1';
 import {
   CategoryTypeOrmModel,
   CategoryTypeOrmRepository,
@@ -48,7 +48,7 @@ const applicationServices: Provider[] = [
   AddSubCategoriesProcess,
 ];
 
-const controllers = [AddSubCategoriesHttpController];
+const controllers = [V1AddSubCategoriesHttpController];
 
 const vendors = [
   TypeOrmModule.forFeature([CategoryTypeOrmModel, ProductTypeOrmModel]),

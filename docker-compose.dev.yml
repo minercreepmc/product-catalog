@@ -1,8 +1,8 @@
 version: '3.9'
 
 services:
-  product-catalog:
-    container_name: product-catalog
+  product-catalog-dev:
+    container_name: product-catalog-dev
     restart: always
     build:
       dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
       - .env
     command: npm run start:dev
     ports:
-      - 3002:3000
+      - 3002:3002
 
   postgres:
     container_name: product-catalog-database

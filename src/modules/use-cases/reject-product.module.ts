@@ -1,4 +1,4 @@
-import { RejectProductHttpController } from '@controllers/http';
+import { V1RejectProductHttpController } from '@controllers/http/v1';
 import {
   ProductTypeOrmModel,
   ProductTypeOrmRepository,
@@ -50,7 +50,7 @@ const applicationServices: Provider[] = [
   RejectProductMapper,
 ];
 
-const controllers = [RejectProductHttpController];
+const controllers = [V1RejectProductHttpController];
 
 const vendors = [
   TypeOrmModule.forFeature([ProductTypeOrmModel, ReviewerTypeOrmModel]),

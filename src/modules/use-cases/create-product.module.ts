@@ -1,4 +1,4 @@
-import { CreateProductHttpController } from '@controllers/http';
+import { V1CreateProductHttpController } from '@controllers/http/v1';
 import {
   ProductTypeOrmModel,
   ProductTypeOrmRepository,
@@ -31,7 +31,7 @@ const applicationServices: Provider[] = [
   CreateProductProcess,
 ];
 
-const controllers = [CreateProductHttpController];
+const controllers = [V1CreateProductHttpController];
 const vendors = [TypeOrmModule.forFeature([ProductTypeOrmModel]), CqrsModule];
 
 @Module({

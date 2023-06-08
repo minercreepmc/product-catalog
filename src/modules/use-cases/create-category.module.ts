@@ -1,4 +1,4 @@
-import { CreateCategoryHttpController } from '@controllers/http';
+import { V1CreateCategoryHttpController } from '@controllers/http/v1';
 import {
   CategoryTypeOrmModel,
   CategoryTypeOrmRepository,
@@ -50,7 +50,7 @@ const applicationServices: Provider[] = [
   CreateCategoryMapper,
 ];
 
-const controllers = [CreateCategoryHttpController];
+const controllers = [V1CreateCategoryHttpController];
 
 const vendors = [
   TypeOrmModule.forFeature([ProductTypeOrmModel, CategoryTypeOrmModel]),

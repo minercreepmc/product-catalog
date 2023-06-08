@@ -19,89 +19,36 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
-    "types": [
-      "jest",
-      "jest-extended"
-    ],
+    "types": ["jest", "jest-extended"],
     "paths": {
-      "@config": [
-        "./config"
-      ],
-      "@config/*": [
-        "./config/*"
-      ],
-      "@aggregates": [
-        "./src/domain/aggregates"
-      ],
-      "@aggregates/*": [
-        "./src/domain/aggregates/*"
-      ],
-      "@value-objects": [
-        "./src/domain/value-objects"
-      ],
-      "@value-objects/*": [
-        "./src/domain/value-objects/*"
-      ],
-      "@domain-events": [
-        "./src/domain/domain-events"
-      ],
-      "@domain-events/*": [
-        "./src/domain/domain-events/*"
-      ],
-      "@domain-services": [
-        "./src/domain/domain-services"
-      ],
-      "@domain-services/*": [
-        "./src/domain/domain-services/*"
-      ],
-      "@domain-exceptions": [
-        "./src/domain/domain-exceptions"
-      ],
-      "@domain-exceptions/*": [
-        "./src/domain/domain-exceptions/*"
-      ],
-      "@domain-interfaces": [
-        "./src/domain/interfaces"
-      ],
-      "@domain-interfaces/*": [
-        "./src/domain/interfaces/*"
-      ],
-      "@use-cases": [
-        "./src/use-cases"
-      ],
-      "@use-cases/*": [
-        "./src/use-cases/*"
-      ],
-      "@database": [
-        "./src/infrastructures/database"
-      ],
-      "@database/*": [
-        "./src/infrastructures/database/*"
-      ],
-      "@controllers": [
-        "./src/interface-adapters/controllers"
-      ],
-      "@controllers/*": [
-        "./src/interface-adapters/controllers/*"
-      ],
-      "@migrations": [
-        "./src/infrastructures/database/migrations"
-      ],
-      "@migrations/*": [
-        "./src/infrastructures/database/migrations/*"
-      ],
-      "@src": [
-        "./src"
-      ],
-      "@src/*": [
-        "./src/*"
-      ],
-      "@utils": [
-        "./utils"
-      ],
-      "@utils/*": [
-        "./utils/*"
-      ]
+      "@config": ["./config"],
+      "@config/*": ["./config/*"],
+      "@aggregates": ["./src/domain/aggregates"],
+      "@aggregates/*": ["./src/domain/aggregates/*"],
+      "@value-objects": ["./src/domain/value-objects"],
+      "@value-objects/*": ["./src/domain/value-objects/*"],
+      "@domain-events": ["./src/domain/domain-events"],
+      "@domain-events/*": ["./src/domain/domain-events/*"],
+      "@domain-services": ["./src/domain/domain-services"],
+      "@domain-services/*": ["./src/domain/domain-services/*"],
+      "@domain-exceptions": ["./src/domain/domain-exceptions"],
+      "@domain-exceptions/*": ["./src/domain/domain-exceptions/*"],
+      "@domain-interfaces": ["./src/domain/interfaces"],
+      "@domain-interfaces/*": ["./src/domain/interfaces/*"],
+      "@use-cases": ["./src/use-cases"],
+      "@use-cases/*": ["./src/use-cases/*"],
+      "@database": ["./src/infrastructures/database"],
+      "@database/*": ["./src/infrastructures/database/*"],
+      "@controllers": ["./src/interface-adapters/controllers"],
+      "@controllers/*": ["./src/interface-adapters/controllers/*"],
+      "@interceptors/*": ["./src/interface-adapters/interceptors/*"],
+      "@interceptors": ["./src/interface-adapters/interceptors"],
+      "@migrations": ["./src/infrastructures/database/migrations"],
+      "@migrations/*": ["./src/infrastructures/database/migrations/*"],
+      "@src": ["./src"],
+      "@src/*": ["./src/*"],
+      "@utils": ["./utils"],
+      "@utils/*": ["./utils/*"]
     }
   },
   "include": [
@@ -112,8 +59,5 @@
     "./jest.config.ts",
     "./tsconfig.json"
   ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

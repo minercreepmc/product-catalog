@@ -1,6 +1,7 @@
 import { DatabaseModule } from '@database/di';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import HealthModule from './modules/infrastructures/health-check/health.module';
 import {
   AddParentCategoryModule,
   AddSubCategoryModule,
@@ -28,6 +29,7 @@ import {
     CreateCategoryModule,
     AddSubCategoryModule,
     AddParentCategoryModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

@@ -1,4 +1,4 @@
-import { SubmitForApprovalHttpController } from '@controllers/http';
+import { V1SubmitForApprovalHttpController } from '@controllers/http/v1';
 import {
   ProductTypeOrmModel,
   ProductTypeOrmRepository,
@@ -50,7 +50,7 @@ const useCases: Provider[] = [
   SubmitForApprovalMapper,
 ];
 
-const controllers = [SubmitForApprovalHttpController];
+const controllers = [V1SubmitForApprovalHttpController];
 
 const vendors = [
   TypeOrmModule.forFeature([ProductTypeOrmModel, ReviewerTypeOrmModel]),

@@ -1,4 +1,4 @@
-import { CreateReviewerHttpController } from '@controllers/http';
+import { V1CreateReviewerHttpController } from '@controllers/http/v1';
 import {
   ReviewerTypeOrmModel,
   ReviewerTypeOrmRepository,
@@ -30,7 +30,7 @@ const useCases: Provider[] = [
   CreateReviewerMapper,
 ];
 
-const controllers = [CreateReviewerHttpController];
+const controllers = [V1CreateReviewerHttpController];
 
 const vendors = [TypeOrmModule.forFeature([ReviewerTypeOrmModel]), CqrsModule];
 

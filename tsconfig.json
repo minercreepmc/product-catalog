@@ -48,7 +48,9 @@
       "@src": ["./src"],
       "@src/*": ["./src/*"],
       "@utils": ["./utils"],
-      "@utils/*": ["./utils/*"]
+      "@utils/*": ["./utils/*"],
+      "@modules": ["./src/modules"],
+      "@modules/*": ["./src/modules/*"]
     }
   },
   "include": [

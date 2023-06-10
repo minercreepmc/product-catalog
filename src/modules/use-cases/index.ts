@@ -1,9 +1,25 @@
-export * from './create-product.module';
-export * from './update-product.module';
-export * from './create-reviewer.module';
-export * from './submit-for-approval.module';
-export * from './approve-product.module';
-export * from './reject-product.module';
-export * from './create-category.module';
-export * from './add-sub-category.module';
-export * from './add-parent-category.module';
+import { Module } from '@nestjs/common';
+import { AddParentCategoryModule } from './add-parent-category.module';
+import { AddSubCategoryModule } from './add-sub-category.module';
+import { ApproveProductModule } from './approve-product.module';
+import { CreateCategoryModule } from './create-category.module';
+import { CreateProductModule } from './create-product.module';
+import { CreateReviewerModule } from './create-reviewer.module';
+import { RejectProductModule } from './reject-product.module';
+import { SubmitForApprovalModule } from './submit-for-approval.module';
+import { UpdateProductModule } from './update-product.module';
+
+@Module({
+  imports: [
+    CreateProductModule,
+    UpdateProductModule,
+    CreateReviewerModule,
+    SubmitForApprovalModule,
+    ApproveProductModule,
+    RejectProductModule,
+    CreateCategoryModule,
+    AddSubCategoryModule,
+    AddParentCategoryModule,
+  ],
+})
+export class UseCaseModule {}

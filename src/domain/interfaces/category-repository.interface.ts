@@ -3,7 +3,7 @@ import {
   CategoryAggregateDetails,
 } from '@aggregates/category';
 import { CategoryNameValueObject } from '@value-objects/category';
-import { RepositoryPort } from 'common-base-classes';
+import { RepositoryPort } from '@domain-interfaces';
 
 export interface CategoryRepositoryPort
   extends RepositoryPort<CategoryAggregate, CategoryAggregateDetails> {

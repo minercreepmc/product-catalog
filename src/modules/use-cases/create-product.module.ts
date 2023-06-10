@@ -1,26 +1,14 @@
 import { V1CreateProductHttpController } from '@controllers/http/v1';
-import {
-  ProductTypeOrmModel,
-  ProductTypeOrmRepository,
-} from '@database/repositories/typeorm/product';
-import { productRepositoryDiToken } from '@domain-interfaces';
 import { ProductManagementDomainService } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateProductHandler } from '@use-cases/create-product';
 import {
   CreateProductMapper,
   CreateProductProcess,
   CreateProductValidator,
 } from '@use-cases/create-product/application-services';
-
-const repositories: Provider[] = [
-  {
-    provide: productRepositoryDiToken,
-    useClass: ProductTypeOrmRepository,
-  },
-];
+import { DatabaseModule } from '../infrastructures/database';
 
 const domainServices: Provider[] = [ProductManagementDomainService];
 
@@ -32,11 +20,11 @@ const applicationServices: Provider[] = [
 ];
 
 const controllers = [V1CreateProductHttpController];
-const vendors = [TypeOrmModule.forFeature([ProductTypeOrmModel]), CqrsModule];
+const vendors = [CqrsModule, DatabaseModule];
 
 @Module({
   imports: [...vendors],
   controllers,
-  providers: [...domainServices, ...repositories, ...applicationServices],
+  providers: [...domainServices, ...applicationServices],
 })
 export class CreateProductModule {}

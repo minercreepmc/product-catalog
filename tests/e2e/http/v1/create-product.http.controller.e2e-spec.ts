@@ -2,7 +2,7 @@ import {
   generateRandomProductName,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
-import { HttpStatus, INestApplication, VersioningType } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import * as request from 'supertest';
@@ -41,23 +41,19 @@ describe('V1CreateProductHttpController (e2e)', () => {
   });
 
   describe(`${productsUrl} (POST)`, () => {
-    it('should create a product and return the new product information', () => {
-      console.log(`/${apiPrefix}/${productsUrl}`);
-
-      return request(app.getHttpServer())
+    it('should create a product and return the new product information', async () => {
+      const response = await request(app.getHttpServer())
         .post(`/${apiPrefix}/${productsUrl}`)
         .set('Accept', 'application/json')
         .send(createProductRequest)
-        .expect((response: request.Response) => {
-          const { name, price, description, image } =
-            response.body as V1CreateProductHttpResponse;
-
-          expect(name).toEqual(createProductRequest.name);
-          expect(price).toEqual(createProductRequest.price);
-          expect(description).toEqual(createProductRequest.description);
-          expect(image).toEqual(createProductRequest.image);
-        })
         .expect(HttpStatus.CREATED);
+
+      const body: V1CreateProductHttpResponse = response.body;
+
+      expect(body.name).toEqual(createProductRequest.name);
+      expect(body.price).toEqual(createProductRequest.price);
+      expect(body.description).toEqual(createProductRequest.description);
+      expect(body.image).toEqual(createProductRequest.image);
     });
 
     it('should not create a product if it already exists', async () => {

@@ -1,5 +1,4 @@
 import { swaggerOption } from '@config/swagger';
-import { typeormDataSource } from '@config/typeorm';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
@@ -28,9 +27,6 @@ async function bootstrap() {
     }),
   );
   app.enableCors();
-
-  // Initialize the database connection and start the app
-  await typeormDataSource.initialize();
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT');

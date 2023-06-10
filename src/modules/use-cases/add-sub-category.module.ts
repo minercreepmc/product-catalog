@@ -1,40 +1,17 @@
 import { V1AddSubCategoriesHttpController } from '@controllers/http/v1';
 import {
-  CategoryTypeOrmModel,
-  CategoryTypeOrmRepository,
-} from '@database/repositories/typeorm/category';
-import {
-  ProductTypeOrmModel,
-  ProductTypeOrmRepository,
-} from '@database/repositories/typeorm/product';
-import {
-  categoryRepositoryDiToken,
-  productRepositoryDiToken,
-} from '@domain-interfaces';
-import {
   CategoryManagementDomainService,
   CategoryVerificationDomainService,
 } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
 import {
   AddSubCategoriesMapper,
   AddSubCategoriesProcess,
   AddSubCategoriesValidator,
 } from '@use-cases/add-sub-categories/application-services';
-
-const repositories: Provider[] = [
-  {
-    provide: categoryRepositoryDiToken,
-    useClass: CategoryTypeOrmRepository,
-  },
-  {
-    provide: productRepositoryDiToken,
-    useClass: ProductTypeOrmRepository,
-  },
-];
+import { DatabaseModule } from '@modules/infrastructures/database';
 
 const domainServices: Provider[] = [
   CategoryManagementDomainService,
@@ -50,14 +27,11 @@ const applicationServices: Provider[] = [
 
 const controllers = [V1AddSubCategoriesHttpController];
 
-const vendors = [
-  TypeOrmModule.forFeature([CategoryTypeOrmModel, ProductTypeOrmModel]),
-  CqrsModule,
-];
+const vendors = [CqrsModule];
 
 @Module({
-  imports: [...vendors],
+  imports: [...vendors, DatabaseModule],
   controllers,
-  providers: [...domainServices, ...applicationServices, ...repositories],
+  providers: [...domainServices, ...applicationServices],
 })
 export class AddSubCategoryModule {}

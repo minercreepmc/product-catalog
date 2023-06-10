@@ -1,41 +1,18 @@
 import { V1SubmitForApprovalHttpController } from '@controllers/http/v1';
 import {
-  ProductTypeOrmModel,
-  ProductTypeOrmRepository,
-} from '@database/repositories/typeorm/product';
-import {
-  ReviewerTypeOrmModel,
-  ReviewerTypeOrmRepository,
-} from '@database/repositories/typeorm/reviewer';
-import {
-  productRepositoryDiToken,
-  reviewerRepositoryDiToken,
-} from '@domain-interfaces';
-import {
   ProductApprovalDomainService,
   ProductManagementDomainService,
   ReviewerManagementDomainService,
 } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
 import {
   SubmitForApprovalMapper,
   SubmitForApprovalProcess,
   SubmitForApprovalValidator,
 } from '@use-cases/submit-for-approval/application-services';
-
-const repositories: Provider[] = [
-  {
-    provide: productRepositoryDiToken,
-    useClass: ProductTypeOrmRepository,
-  },
-  {
-    provide: reviewerRepositoryDiToken,
-    useClass: ReviewerTypeOrmRepository,
-  },
-];
+import { DatabaseModule } from '../infrastructures/database';
 
 const domainServices: Provider[] = [
   ProductManagementDomainService,
@@ -52,14 +29,11 @@ const useCases: Provider[] = [
 
 const controllers = [V1SubmitForApprovalHttpController];
 
-const vendors = [
-  TypeOrmModule.forFeature([ProductTypeOrmModel, ReviewerTypeOrmModel]),
-  CqrsModule,
-];
+const vendors = [CqrsModule, DatabaseModule];
 
 @Module({
   imports: [...vendors],
   controllers,
-  providers: [...repositories, ...domainServices, ...useCases],
+  providers: [...domainServices, ...useCases],
 })
 export class SubmitForApprovalModule {}

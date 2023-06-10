@@ -58,14 +58,14 @@ export class ProductManagementDomainService {
   async createProduct(
     options: CreateProductDomainServiceOptions,
   ): Promise<ProductCreatedDomainEvent> {
-    let product = await this.productRepository.findOneByName(options.name);
-    if (product) {
-      throw new ProductDomainExceptions.DoesExist();
-    }
-    product = new ProductAggregate();
-    const productCreatedEvent = product.createProduct(options);
-    await this.productRepository.save(product);
-    return productCreatedEvent;
+      let product = await this.productRepository.findOneByName(options.name);
+      if (product) {
+        throw new ProductDomainExceptions.DoesExist();
+      }
+      product = new ProductAggregate();
+      const productCreatedEvent = product.createProduct(options);
+      await this.productRepository.save(product);
+      return productCreatedEvent;
   }
 
   async updateProduct(

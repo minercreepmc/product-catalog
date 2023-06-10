@@ -2,21 +2,21 @@ import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheckService,
   HealthCheck,
-  TypeOrmHealthIndicator,
+  MikroOrmHealthIndicator,
 } from '@nestjs/terminus';
 
 @Controller('health')
 class HealthController {
   constructor(
     private healthCheckService: HealthCheckService,
-    private typeOrmHealthIndicator: TypeOrmHealthIndicator,
+    private mikroOrmHealthIndicator: MikroOrmHealthIndicator,
   ) {}
 
   @Get()
   @HealthCheck()
   check() {
     return this.healthCheckService.check([
-      () => this.typeOrmHealthIndicator.pingCheck('database'),
+      () => this.mikroOrmHealthIndicator.pingCheck('database'),
     ]);
   }
 }

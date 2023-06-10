@@ -6,7 +6,7 @@ import {
   ReviewerEmailValueObject,
   ReviewerNameValueObject,
 } from '@value-objects/reviewer';
-import { RepositoryPort } from 'common-base-classes';
+import { RepositoryPort } from '@domain-interfaces';
 
 export interface ReviewerRepositoryPort
   extends RepositoryPort<ReviewerAggregate, ReviewerAggregateDetails> {

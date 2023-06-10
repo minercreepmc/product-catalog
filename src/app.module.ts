@@ -1,34 +1,20 @@
-import { DatabaseModule } from '@database/di';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
+import { DatabaseModule } from './modules/infrastructures/database';
 import HealthModule from './modules/infrastructures/health-check/health.module';
-import {
-  AddParentCategoryModule,
-  AddSubCategoryModule,
-  ApproveProductModule,
-  CreateCategoryModule,
-  CreateProductModule,
-  CreateReviewerModule,
-  RejectProductModule,
-  SubmitForApprovalModule,
-  UpdateProductModule,
-} from './modules/use-cases';
+import { IpcModule } from './modules/infrastructures/ipc';
+import { UseCaseModule } from './modules/use-cases';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CqrsModule,
     DatabaseModule,
-    CreateProductModule,
-    UpdateProductModule,
-    CreateReviewerModule,
-    SubmitForApprovalModule,
-    ApproveProductModule,
-    RejectProductModule,
-    CreateCategoryModule,
-    AddSubCategoryModule,
-    AddParentCategoryModule,
+    UseCaseModule,
+    IpcModule,
     HealthModule,
   ],
 })

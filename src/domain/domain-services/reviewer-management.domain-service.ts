@@ -7,6 +7,8 @@ import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import {
   reviewerRepositoryDiToken,
   ReviewerRepositoryPort,
+  unitOfWorkDiToken,
+  UnitOfWorkPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import {
@@ -21,6 +23,8 @@ export class ReviewerManagementDomainService {
   constructor(
     @Inject(reviewerRepositoryDiToken)
     private readonly reviewerRepository: ReviewerRepositoryPort,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 
   async getReviewerByEmail(
@@ -40,16 +44,18 @@ export class ReviewerManagementDomainService {
   async createReviewer(
     options: CreateReviewerDomainServiceOptions,
   ): Promise<ReviewerCreatedDomainEvent> {
-    const { email } = options;
-    const exist = await this.reviewerRepository.findOneByEmail(email);
+    return this.unitOfWork.runInTransaction(async () => {
+      const { email } = options;
+      const exist = await this.reviewerRepository.findOneByEmail(email);
 
-    if (exist) {
-      throw new ReviewerDomainExceptions.DoesExist();
-    }
+      if (exist) {
+        throw new ReviewerDomainExceptions.DoesExist();
+      }
 
-    const reviewer = new ReviewerAggregate();
-    const reviewerCreated = reviewer.createReviewer(options);
-    await this.reviewerRepository.save(reviewer);
-    return reviewerCreated;
+      const reviewer = new ReviewerAggregate();
+      const reviewerCreated = reviewer.createReviewer(options);
+      await this.reviewerRepository.save(reviewer);
+      return reviewerCreated;
+    });
   }
 }

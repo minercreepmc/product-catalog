@@ -1,5 +1,5 @@
 import { ArrayType, Entity, Property } from '@mikro-orm/core';
-import { MikroOrmModelBase } from '@utils/repositories/mikroorm';
+import { MikroOrmModelBase } from '@utils/base/database/repositories/mikroorm';
 
 @Entity({
   tableName: 'categories',

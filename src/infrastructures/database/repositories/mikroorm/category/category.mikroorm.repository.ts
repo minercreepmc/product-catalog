@@ -5,7 +5,7 @@ import {
 import { CategoryRepositoryPort } from '@domain-interfaces';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Injectable, Logger } from '@nestjs/common';
-import { MikroOrmRepositoryBase } from '@utils/repositories/mikroorm';
+import { MikroOrmRepositoryBase } from '@utils/base/database/repositories/mikroorm';
 import { CategoryNameValueObject } from '@value-objects/category';
 import { ProductMikroOrmRepository } from '../product';
 import { CategoryMikroOrmMapper } from './category.mikroorm.mapper';

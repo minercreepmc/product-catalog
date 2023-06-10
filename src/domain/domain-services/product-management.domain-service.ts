@@ -12,6 +12,7 @@ import {
   productRepositoryDiToken,
   ProductRepositoryPort,
 } from '@domain-interfaces';
+import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   ProductIdValueObject,
@@ -29,6 +30,8 @@ export class ProductManagementDomainService {
   constructor(
     @Inject(productRepositoryDiToken)
     private readonly productRepository: ProductRepositoryPort,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 
   async isProductExistByName(name: ProductNameValueObject): Promise<boolean> {
@@ -58,6 +61,7 @@ export class ProductManagementDomainService {
   async createProduct(
     options: CreateProductDomainServiceOptions,
   ): Promise<ProductCreatedDomainEvent> {
+    return this.unitOfWork.runInTransaction(async () => {
       let product = await this.productRepository.findOneByName(options.name);
       if (product) {
         throw new ProductDomainExceptions.DoesExist();
@@ -66,19 +70,22 @@ export class ProductManagementDomainService {
       const productCreatedEvent = product.createProduct(options);
       await this.productRepository.save(product);
       return productCreatedEvent;
+    });
   }
 
   async updateProduct(
     options: UpdateProductDomainServiceOptions,
   ): Promise<ProductUpdatedDomainEvent> {
-    const product = await this.productRepository.findOneById(options.id);
+    return this.unitOfWork.runInTransaction(async () => {
+      const product = await this.productRepository.findOneById(options.id);
 
-    if (!product) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
+      if (!product) {
+        throw new ProductDomainExceptions.DoesNotExist();
+      }
 
-    const productUpdatedEvent = product.updateProduct(options.payload);
-    await this.productRepository.save(product);
-    return productUpdatedEvent;
+      const productUpdatedEvent = product.updateProduct(options.payload);
+      await this.productRepository.save(product);
+      return productUpdatedEvent;
+    });
   }
 }

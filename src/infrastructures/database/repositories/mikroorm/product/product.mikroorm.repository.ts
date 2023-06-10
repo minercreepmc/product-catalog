@@ -2,7 +2,7 @@ import { ProductAggregate, ProductAggregateDetails } from '@aggregates/product';
 import { ProductRepositoryPort } from '@domain-interfaces';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Injectable, Logger } from '@nestjs/common';
-import { MikroOrmRepositoryBase } from '@utils/repositories/mikroorm';
+import { MikroOrmRepositoryBase } from '@utils/base/database/repositories/mikroorm';
 import { ProductNameValueObject } from '@value-objects/product';
 import { ProductMikroOrmMapper } from './product.mikroorm.mapper';
 import { ProductMikroOrmModel } from './product.mikroorm.model';

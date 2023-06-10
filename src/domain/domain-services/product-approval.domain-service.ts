@@ -6,6 +6,8 @@ import {
   ProductRepositoryPort,
   reviewerRepositoryDiToken,
   ReviewerRepositoryPort,
+  unitOfWorkDiToken,
+  UnitOfWorkPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import {
@@ -37,73 +39,81 @@ export class ProductApprovalDomainService {
     private readonly productRepository: ProductRepositoryPort,
     @Inject(reviewerRepositoryDiToken)
     private readonly reviewerRepository: ReviewerRepositoryPort,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 
   async submitForApproval(
     options: SubmitForApprovalDomainServiceOptions,
   ): Promise<ProductSubmittedDomainEvent> {
-    const { productId, reviewerId } = options;
-    const product = await this.productRepository.findOneById(productId);
-    if (!product) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
+    return this.unitOfWork.runInTransaction(async () => {
+      const { productId, reviewerId } = options;
+      const product = await this.productRepository.findOneById(productId);
+      if (!product) {
+        throw new ProductDomainExceptions.DoesNotExist();
+      }
 
-    const reviewer = await this.reviewerRepository.findOneById(reviewerId);
-    if (!reviewer) {
-      throw new ReviewerDomainExceptions.DoesNotExist();
-    }
+      const reviewer = await this.reviewerRepository.findOneById(reviewerId);
+      if (!reviewer) {
+        throw new ReviewerDomainExceptions.DoesNotExist();
+      }
 
-    const productSubmitted = product.submitForApproval(reviewerId);
-    await this.productRepository.save(product);
+      const productSubmitted = product.submitForApproval(reviewerId);
+      await this.productRepository.save(product);
 
-    return productSubmitted;
+      return productSubmitted;
+    });
   }
 
   async approveProduct(options: ApproveProductDomainServiceOptions) {
-    const { reviewerId, productId } = options;
-    const product = await this.productRepository.findOneById(productId);
+    return this.unitOfWork.runInTransaction(async () => {
+      const { reviewerId, productId } = options;
+      const product = await this.productRepository.findOneById(productId);
 
-    if (!product) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
+      if (!product) {
+        throw new ProductDomainExceptions.DoesNotExist();
+      }
 
-    const reviewer = await this.reviewerRepository.findOneById(reviewerId);
+      const reviewer = await this.reviewerRepository.findOneById(reviewerId);
 
-    if (!reviewer) {
-      throw new ReviewerDomainExceptions.DoesNotExist();
-    }
+      if (!reviewer) {
+        throw new ReviewerDomainExceptions.DoesNotExist();
+      }
 
-    if (!reviewer.role.isAdmin()) {
-      throw new ReviewerDomainExceptions.NotAuthorizedToApprove();
-    }
+      if (!reviewer.role.isAdmin()) {
+        throw new ReviewerDomainExceptions.NotAuthorizedToApprove();
+      }
 
-    const productApproved = product.approve(reviewerId);
-    await this.productRepository.save(product);
+      const productApproved = product.approve(reviewerId);
+      await this.productRepository.save(product);
 
-    return productApproved;
+      return productApproved;
+    });
   }
 
   async rejectProduct(options: RejectProductDomainServiceOptions) {
-    const { productId, reviewerId, reason } = options;
-    const product = await this.productRepository.findOneById(productId);
+    return this.unitOfWork.runInTransaction(async () => {
+      const { productId, reviewerId, reason } = options;
+      const product = await this.productRepository.findOneById(productId);
 
-    if (!product) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
+      if (!product) {
+        throw new ProductDomainExceptions.DoesNotExist();
+      }
 
-    const reviewer = await this.reviewerRepository.findOneById(reviewerId);
+      const reviewer = await this.reviewerRepository.findOneById(reviewerId);
 
-    if (!reviewer) {
-      throw new ReviewerDomainExceptions.DoesNotExist();
-    }
+      if (!reviewer) {
+        throw new ReviewerDomainExceptions.DoesNotExist();
+      }
 
-    if (!reviewer.role.isAdmin()) {
-      throw new ReviewerDomainExceptions.NotAuthorizedToReject();
-    }
+      if (!reviewer.role.isAdmin()) {
+        throw new ReviewerDomainExceptions.NotAuthorizedToReject();
+      }
 
-    const productRejected = product.reject(reviewerId, reason);
-    await this.productRepository.save(product);
+      const productRejected = product.reject(reviewerId, reason);
+      await this.productRepository.save(product);
 
-    return productRejected;
+      return productRejected;
+    });
   }
 }

@@ -2,7 +2,7 @@ import { ProductAggregate, ProductAggregateDetails } from '@aggregates/product';
 import {
   MikroOrmMapperBase,
   OrmModelDetails,
-} from '@utils/repositories/mikroorm';
+} from '@utils/base/database/repositories/mikroorm';
 import {
   ProductAttributesValueObject,
   ProductDescriptionValueObject,

@@ -5,7 +5,7 @@ import {
 import {
   MikroOrmMapperBase,
   OrmModelDetails,
-} from '@utils/repositories/mikroorm';
+} from '@utils/base/database/repositories/mikroorm';
 import {
   CategoryDescriptionValueObject,
   CategoryNameValueObject,

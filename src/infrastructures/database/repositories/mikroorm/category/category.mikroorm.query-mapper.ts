@@ -2,7 +2,7 @@ import { CategoryAggregateDetails } from '@aggregates/category';
 import {
   MikroOrmQueryMapper,
   OrmModelDetails,
-} from '@utils/repositories/mikroorm';
+} from '@utils/base/database/repositories/mikroorm';
 import { IBaseEntity } from 'common-base-classes';
 import { CategoryMikroOrmModel } from './category.mikroorm.model';
 

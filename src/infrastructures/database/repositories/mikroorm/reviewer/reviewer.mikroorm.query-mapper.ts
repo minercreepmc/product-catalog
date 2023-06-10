@@ -2,7 +2,7 @@ import { ReviewerAggregateDetails } from '@aggregates/reviewer';
 import {
   MikroOrmQueryMapper,
   OrmModelDetails,
-} from '@utils/repositories/mikroorm';
+} from '@utils/base/database/repositories/mikroorm';
 import { QueryParams } from 'common-base-classes';
 import { ReviewerMikroOrmModel } from './reviewer.mikroorm.model';
 

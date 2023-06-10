@@ -2,7 +2,7 @@ import { ProductAggregateDetails } from '@aggregates/product';
 import {
   MikroOrmQueryMapper,
   OrmModelDetails,
-} from '@utils/repositories/mikroorm';
+} from '@utils/base/database/repositories/mikroorm';
 import { IBaseEntity } from 'common-base-classes';
 import { ProductMikroOrmModel } from './product.mikroorm.model';
 

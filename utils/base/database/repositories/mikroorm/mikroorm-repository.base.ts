@@ -92,10 +92,4 @@ export abstract class MikroOrmRepositoryBase<
 
     return updated ? this.mapper.toDomain(updated) : null;
   }
-
-  runInTransaction<T>(fn: () => Promise<T>): Promise<T> {
-    return this.entityManager.transactional<T>(() => {
-      return fn();
-    });
-  }
 }

@@ -1,3 +1,5 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { RejectProductCommand } from '@commands';
 import { ProductRejectedDomainEvent } from '@domain-events/product';
 import { Injectable } from '@nestjs/common';
 import {
@@ -5,16 +7,12 @@ import {
   RejectionReasonValueObject,
 } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import {
-  RejectProductCommand,
-  RejectProductDomainOptions,
-  RejectProductResponseDto,
-} from '../dtos';
+import { RejectProductRequestDto, RejectProductResponseDto } from '../dtos';
 
 @Injectable()
-export class RejectProductMapper {
-  toDomain(command: RejectProductCommand): RejectProductDomainOptions {
-    const { reason, productId, reviewerId } = command;
+export class RejectProductMapper extends UseCaseMapperBase<RejectProductResponseDto> {
+  toCommand(dto: RejectProductRequestDto): RejectProductCommand {
+    const { reason, productId, reviewerId } = dto;
 
     return {
       reviewerId: new ReviewerIdValueObject(reviewerId),

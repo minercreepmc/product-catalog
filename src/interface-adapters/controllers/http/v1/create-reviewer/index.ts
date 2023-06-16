@@ -1,3 +1,3 @@
-export * from './create-reviewer.http.request';
-export * from './create-reviewer.http.response';
-export * from './create-reviewer.http.controller';
+export * from './create-reviewer.http.request.v1';
+export * from './create-reviewer.http.response.v1';
+export * from './create-reviewer.http.controller.v1';

@@ -1,6 +1,6 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { CreateProductValidator } from '@use-cases/create-product/application-services';
-import { CreateProductCommand } from '@use-cases/create-product/dtos';
+import { CreateProductRequestDto } from '@use-cases/create-product/dtos';
 
 describe('CreateProductValidator', () => {
   let validator: CreateProductValidator;
@@ -11,7 +11,7 @@ describe('CreateProductValidator', () => {
 
   describe('validate', () => {
     it('should return a success validation response when the command is valid', () => {
-      const command = new CreateProductCommand({
+      const command = new CreateProductRequestDto({
         name: 'Valid Name',
         price: {
           amount: 100,
@@ -25,7 +25,7 @@ describe('CreateProductValidator', () => {
     });
 
     it('should return a failed validation response when the command is invalid', () => {
-      const command = new CreateProductCommand({
+      const command = new CreateProductRequestDto({
         name: '',
         price: {
           amount: -1,
@@ -51,7 +51,7 @@ describe('CreateProductValidator', () => {
       const invalidPrice = { amount: -1, currency: 'USD' };
 
       // First call with invalid input
-      const command1 = new CreateProductCommand({
+      const command1 = new CreateProductRequestDto({
         name: invalidName,
         price: invalidPrice,
       });
@@ -60,7 +60,7 @@ describe('CreateProductValidator', () => {
       expect(validationResult1.exceptions.length).toBeGreaterThan(0);
 
       // Second call with valid input
-      const command2 = new CreateProductCommand({
+      const command2 = new CreateProductRequestDto({
         name: validName,
         price: validPrice,
       });

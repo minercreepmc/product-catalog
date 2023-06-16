@@ -5,13 +5,13 @@ import {
   ReviewerManagementDomainService,
 } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
 import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
 import {
   SubmitForApprovalMapper,
   SubmitForApprovalProcess,
   SubmitForApprovalValidator,
 } from '@use-cases/submit-for-approval/application-services';
+import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
 
 const domainServices: Provider[] = [
@@ -29,7 +29,7 @@ const useCases: Provider[] = [
 
 const controllers = [V1SubmitForApprovalHttpController];
 
-const vendors = [CqrsModule, DatabaseModule];
+const vendors = [MediatorModule, DatabaseModule];
 
 @Module({
   imports: [...vendors],

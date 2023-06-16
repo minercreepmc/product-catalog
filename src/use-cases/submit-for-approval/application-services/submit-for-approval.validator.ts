@@ -1,22 +1,19 @@
+import { TranslateOptions, ValidatorBase } from '@base/use-cases';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { Injectable } from '@nestjs/common';
-import {
-  ValidatorBase,
-  TranslateOptions,
-} from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import {
   ValidationResponse,
   ValidationExceptionBase,
 } from 'common-base-classes';
-import { SubmitForApprovalCommand } from '../dtos';
+import { SubmitForApprovalRequestDto } from '../dtos';
 
 @Injectable()
 export class SubmitForApprovalValidator extends ValidatorBase {
-  validate(command: SubmitForApprovalCommand): ValidationResponse {
-    const { reviewerId, productId } = command;
+  validate(dto: SubmitForApprovalRequestDto): ValidationResponse {
+    const { reviewerId, productId } = dto;
     this.clearExceptions();
     if (reviewerId !== undefined) {
       this.validateReviewerId(reviewerId);

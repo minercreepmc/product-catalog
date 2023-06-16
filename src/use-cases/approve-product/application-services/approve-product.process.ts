@@ -1,5 +1,7 @@
 import { ProductAggregate } from '@aggregates/product';
 import { ReviewerAggregate } from '@aggregates/reviewer';
+import { ProcessBase } from '@base/use-cases';
+import { ApproveProductCommand } from '@commands';
 import { ProductApprovedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
@@ -9,10 +11,8 @@ import {
   ReviewerManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import { ApproveProductDomainOptions } from '../dtos';
 
 export type ApproveProductProcessSucess = ProductApprovedDomainEvent;
 export type ApproveProductProcessFailure = Array<
@@ -40,8 +40,8 @@ export class ApproveProductProcess extends ProcessBase<
   private reviewerIsAdmin: boolean;
   private productIsSubmittedForApproval: boolean;
 
-  async execute(domainOptions: ApproveProductDomainOptions) {
-    const { productId, reviewerId } = domainOptions;
+  async execute(command: ApproveProductCommand) {
+    const { productId, reviewerId } = command;
 
     this.init();
 
@@ -52,7 +52,7 @@ export class ApproveProductProcess extends ProcessBase<
       this.productMustBeSubmittedForApproval(this.product);
     }
     if (this.productIsSubmittedForApproval && this.reviewerIsAdmin) {
-      await this.approveProduct(domainOptions);
+      await this.approveProduct(command);
     }
     return this.getValidationResult();
   }
@@ -111,9 +111,9 @@ export class ApproveProductProcess extends ProcessBase<
     }
   }
 
-  protected async approveProduct(options: ApproveProductDomainOptions) {
+  protected async approveProduct(command: ApproveProductCommand) {
     const productApproved = await this.productApprovalService.approveProduct(
-      options,
+      command,
     );
     this.value = productApproved;
   }

@@ -1,20 +1,18 @@
 import { ReviewerCreatedDomainEvent } from '@domain-events/reviewer';
 import { Injectable } from '@nestjs/common';
+import { CreateReviewerCommand } from '@commands';
 import {
   ReviewerEmailValueObject,
   ReviewerNameValueObject,
   ReviewerRoleValueObject,
 } from '@value-objects/reviewer';
-import {
-  CreateReviewerCommand,
-  CreateReviewerDomainOptions,
-  CreateReviewerResponseDto,
-} from '../dtos';
+import { CreateReviewerRequestDto, CreateReviewerResponseDto } from '../dtos';
+import { UseCaseMapperBase } from '@base/use-cases';
 
 @Injectable()
-export class CreateReviewerMapper {
-  toDomain(command: CreateReviewerCommand): CreateReviewerDomainOptions {
-    const { email, name, role } = command;
+export class CreateReviewerMapper extends UseCaseMapperBase<CreateReviewerResponseDto> {
+  toCommand(dto: CreateReviewerRequestDto): CreateReviewerCommand {
+    const { email, name, role } = dto;
     return {
       email: new ReviewerEmailValueObject(email),
       name: new ReviewerNameValueObject(name),

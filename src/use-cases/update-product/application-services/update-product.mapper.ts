@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { UseCaseMapperBase } from '@base/use-cases';
+import { UpdateProductCommand } from '@commands';
 import { ProductUpdatedDomainEvent } from '@domain-events/product';
 import { Injectable } from '@nestjs/common';
 import {
@@ -8,16 +10,12 @@ import {
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
-import {
-  UpdateProductCommand,
-  UpdateProductResponseDto,
-  UpdateProductDomainOptions,
-} from '../dtos';
+import { UpdateProductRequestDto, UpdateProductResponseDto } from '../dtos';
 
 @Injectable()
-export class UpdateProductMapper {
-  toDomain(command: UpdateProductCommand): UpdateProductDomainOptions {
-    const { name, price, image, description } = command;
+export class UpdateProductMapper extends UseCaseMapperBase<UpdateProductResponseDto> {
+  toCommand(dto: UpdateProductRequestDto): UpdateProductCommand {
+    const { name, price, image, description } = dto;
     let domainName: ProductNameValueObject;
     let domainPrice: ProductPriceValueObject;
     let domainImage: ProductImageValueObject;
@@ -38,15 +36,13 @@ export class UpdateProductMapper {
       domainDescription = new ProductDescriptionValueObject(description);
     }
 
-    return {
-      id: new ProductIdValueObject(command.productId),
-      payload: {
-        name: domainName,
-        price: domainPrice,
-        description: domainDescription,
-        image: domainImage,
-      },
-    };
+    return new UpdateProductCommand({
+      productId: new ProductIdValueObject(dto.productId),
+      name: domainName,
+      price: domainPrice,
+      description: domainDescription,
+      image: domainImage,
+    });
   }
 
   toResponseDto(event: ProductUpdatedDomainEvent): UpdateProductResponseDto {

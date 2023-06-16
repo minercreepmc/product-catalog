@@ -1,6 +1,6 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { UpdateProductValidator } from '@use-cases/update-product/application-services';
-import { UpdateProductCommand } from '@use-cases/update-product/dtos';
+import { UpdateProductRequestDto } from '@use-cases/update-product/dtos';
 import {
   ArgumentTooLongException,
   StringExceptionCodes,
@@ -20,7 +20,7 @@ describe('UpdateProductValidator', () => {
 
   describe('validate', () => {
     it('should not add any exceptions if the command is valid', () => {
-      const updateProductCommand: UpdateProductCommand = {
+      const updateProductCommand: UpdateProductRequestDto = {
         productId: '123',
         name: 'Test Product Name',
         price: {
@@ -37,7 +37,7 @@ describe('UpdateProductValidator', () => {
     });
 
     it('should add an exception if the name is not valid', () => {
-      const updateProductCommand = new UpdateProductCommand({
+      const updateProductCommand = new UpdateProductRequestDto({
         productId: '123',
         name: '',
         price: {
@@ -58,7 +58,7 @@ describe('UpdateProductValidator', () => {
     });
 
     it('should add an exception if the price is not valid', () => {
-      const updateProductCommand: UpdateProductCommand = {
+      const updateProductCommand: UpdateProductRequestDto = {
         productId: '123',
         name: 'Test Product Name',
         price: {
@@ -77,7 +77,7 @@ describe('UpdateProductValidator', () => {
     });
 
     it('should add an exception if null is provided', () => {
-      const updateProductCommand: UpdateProductCommand = {
+      const updateProductCommand: UpdateProductRequestDto = {
         productId: '123',
         name: null,
         price: null,
@@ -94,7 +94,7 @@ describe('UpdateProductValidator', () => {
     });
 
     it('should ignore the undefined since it mean not provided', () => {
-      const updateProductCommand: UpdateProductCommand = {
+      const updateProductCommand: UpdateProductRequestDto = {
         productId: '123',
         name: undefined,
         price: {

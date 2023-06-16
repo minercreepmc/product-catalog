@@ -10,7 +10,7 @@ import {
 } from '@use-cases/common';
 import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
 import {
-  SubmitForApprovalCommand,
+  SubmitForApprovalRequestDto,
   SubmitForApprovalResponseDto,
 } from '@use-cases/submit-for-approval/dtos';
 import {
@@ -48,7 +48,7 @@ describe('SubmitForApprovalHandler (integration test)', () => {
   // Test scenarios go here
   test('should return UseCaseCommandValidationExceptions when the command is invalid', async () => {
     // Arrange
-    const command = new SubmitForApprovalCommand({
+    const command = new SubmitForApprovalRequestDto({
       productId: '',
       reviewerId: '',
     });
@@ -65,7 +65,7 @@ describe('SubmitForApprovalHandler (integration test)', () => {
 
   test('should return UseCaseProcessExceptions when the process fails', async () => {
     // Arrange
-    const command = new SubmitForApprovalCommand({
+    const command = new SubmitForApprovalRequestDto({
       productId: 'nonexistent-product-id',
       reviewerId: 'nonexistent-reviewer-id',
     });
@@ -95,7 +95,7 @@ describe('SubmitForApprovalHandler (integration test)', () => {
       ),
     });
 
-    const command = new SubmitForApprovalCommand({
+    const command = new SubmitForApprovalRequestDto({
       productId: productId.unpack(),
       reviewerId: reviewerId.unpack(),
     });

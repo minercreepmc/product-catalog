@@ -1,7 +1,7 @@
 import { ProductApprovedDomainEvent } from '@domain-events/product';
 import { ApproveProductMapper } from '@use-cases/approve-product/application-services';
 import {
-  ApproveProductCommand,
+  ApproveProductRequestDto,
   ApproveProductResponseDto,
 } from '@use-cases/approve-product/dtos';
 import {
@@ -19,7 +19,7 @@ describe('ApproveProductMapper', () => {
 
   describe('toDomain', () => {
     it('should return an ApproveProductDomainOptions object with the correct properties', () => {
-      const command: ApproveProductCommand = {
+      const command: ApproveProductRequestDto = {
         productId: '1',
         reviewerId: '2',
       };

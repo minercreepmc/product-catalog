@@ -1,7 +1,7 @@
 import { SubCategoryAddedDomainEvent } from '@domain-events/category';
 import { AddSubCategoriesMapper } from '@use-cases/add-sub-categories/application-services';
 import {
-  AddSubCategoriesCommand,
+  AddSubCategoriesRequestDto,
   AddSubCategoriesResponseDto,
 } from '@use-cases/add-sub-categories/dtos';
 import {
@@ -18,7 +18,7 @@ describe('AddSubCategoriesMapper', () => {
 
   describe('toDomain', () => {
     it('should return an AddSubCategoriesDomainOptions object with the correct properties', () => {
-      const command: AddSubCategoriesCommand = {
+      const command: AddSubCategoriesRequestDto = {
         categoryId: '1',
         subCategoryIds: ['2', '3'],
       };

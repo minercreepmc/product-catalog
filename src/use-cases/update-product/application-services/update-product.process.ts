@@ -1,10 +1,10 @@
+import { ProcessBase } from '@base/use-cases';
+import { UpdateProductCommand } from '@commands';
 import { ProductUpdatedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
-import { UpdateProductDomainOptions } from '../dtos';
 
 export type UpdateProductProcessSuccess = ProductUpdatedDomainEvent;
 export type UpdateProductProcessFailure =
@@ -22,11 +22,11 @@ export class UpdateProductProcess extends ProcessBase<
   }
   private idExist: boolean;
 
-  async execute(options: UpdateProductDomainOptions) {
-    const { id } = options;
+  async execute(command: UpdateProductCommand) {
+    const { productId } = command;
     this.init();
-    await this.validateIdMustExist(id);
-    await this.updateProductIfIdExist(options);
+    await this.validateIdMustExist(productId);
+    await this.updateProductIfIdExist(command);
     return this.getValidationResult();
   }
 
@@ -45,11 +45,17 @@ export class UpdateProductProcess extends ProcessBase<
     }
   }
 
-  protected async updateProductIfIdExist(options: UpdateProductDomainOptions) {
+  protected async updateProductIfIdExist(command: UpdateProductCommand) {
     if (this.idExist) {
-      const productUpdated = await this.productManagementService.updateProduct(
-        options,
-      );
+      const productUpdated = await this.productManagementService.updateProduct({
+        id: command.productId,
+        payload: {
+          name: command.name,
+          description: command.description,
+          price: command.price,
+          image: command.image,
+        },
+      });
       this.value = productUpdated;
     }
   }

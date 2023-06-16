@@ -1,7 +1,7 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { RejectProductValidator } from '@use-cases/reject-product/application-services';
-import { RejectProductCommand } from '@use-cases/reject-product/dtos';
+import { RejectProductRequestDto } from '@use-cases/reject-product/dtos';
 
 describe('RejectProductValidator', () => {
   let rejectProductValidator: RejectProductValidator;
@@ -11,7 +11,7 @@ describe('RejectProductValidator', () => {
   });
 
   it('should validate a valid command', () => {
-    const command = new RejectProductCommand({
+    const command = new RejectProductRequestDto({
       reviewerId: 'valid-reviewer-id',
       productId: 'valid-product-id',
       reason: 'This product does not meet our requirements.',
@@ -22,7 +22,7 @@ describe('RejectProductValidator', () => {
   });
 
   it('should return an error for invalid reviewerId', () => {
-    const command = new RejectProductCommand({
+    const command = new RejectProductRequestDto({
       reviewerId: '',
       productId: 'valid-product-id',
       reason: 'This product does not meet our requirements.',
@@ -36,7 +36,7 @@ describe('RejectProductValidator', () => {
   });
 
   it('should return an error for invalid productId', () => {
-    const command = new RejectProductCommand({
+    const command = new RejectProductRequestDto({
       reviewerId: 'valid-reviewer-id',
       productId: '',
       reason: 'This product does not meet our requirements.',
@@ -50,7 +50,7 @@ describe('RejectProductValidator', () => {
   });
 
   it('should return an error for invalid reason', () => {
-    const command = new RejectProductCommand({
+    const command = new RejectProductRequestDto({
       reviewerId: 'valid-reviewer-id',
       productId: 'valid-product-id',
       reason: 'Bad', // Assume this reason does not pass the validation defined in RejectionReasonValueObject
@@ -64,7 +64,7 @@ describe('RejectProductValidator', () => {
   });
 
   it('should return multiple errors for multiple invalid fields', () => {
-    const command = new RejectProductCommand({
+    const command = new RejectProductRequestDto({
       reviewerId: '',
       productId: '',
       reason: 'Bad', // Assume this reason does not pass the validation defined in RejectionReasonValueObject

@@ -1,3 +1,5 @@
+import { ProcessBase } from '@base/use-cases';
+import { AddParentCategoriesCommand } from '@commands';
 import { ParentCategoryAddedDomainEvent } from '@domain-events/category';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import {
@@ -5,9 +7,7 @@ import {
   CategoryVerificationDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { CategoryIdValueObject } from '@value-objects/category';
-import { AddParentCategoriesDomainOptions } from '../dtos';
 
 export type AddParentCategoriesProcessSuccess = ParentCategoryAddedDomainEvent;
 export type AddParentCategoriesProcessFailure = Array<
@@ -28,8 +28,8 @@ export class AddParentCategoriesProcess extends ProcessBase<
     super();
   }
 
-  async execute(domainOptions: AddParentCategoriesDomainOptions) {
-    const { categoryId, parentIds } = domainOptions;
+  async execute(command: AddParentCategoriesCommand) {
+    const { categoryId, parentIds } = command;
     this.init();
 
     const conditions = [
@@ -41,7 +41,7 @@ export class AddParentCategoriesProcess extends ProcessBase<
     await Promise.all(conditions);
 
     if (this.exceptions.length === 0) {
-      await this.addParentCategories(domainOptions);
+      await this.addParentCategories(command);
     }
 
     return this.getValidationResult();
@@ -88,9 +88,9 @@ export class AddParentCategoriesProcess extends ProcessBase<
     }
   }
 
-  private async addParentCategories(options: AddParentCategoriesDomainOptions) {
+  private async addParentCategories(command: AddParentCategoriesCommand) {
     const parentCategoriesAdded =
-      await this.categoryManagementService.addParentCategories(options);
+      await this.categoryManagementService.addParentCategories(command);
 
     this.value = parentCategoriesAdded;
   }

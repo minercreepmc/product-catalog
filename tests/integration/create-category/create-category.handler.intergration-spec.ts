@@ -12,7 +12,7 @@ import {
   CreateCategoryValidator,
 } from '@use-cases/create-category/application-services';
 import {
-  CreateCategoryCommand,
+  CreateCategoryRequestDto,
   CreateCategoryDomainOptions,
   CreateCategoryResponseDto,
 } from '@use-cases/create-category/dtos';
@@ -59,7 +59,7 @@ describe('CreateCategoryHandler Integration Test', () => {
   describe('execute', () => {
     it('should not create a category if command is not valid', async () => {
       // Arrange
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: '',
         // other properties...
       });
@@ -76,7 +76,7 @@ describe('CreateCategoryHandler Integration Test', () => {
 
     it('should not create a new category if parentsIds, subCategoryIds and productIds was provided but not exist', async () => {
       // Arrange
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: 'New Category',
         parentIds: ['not_existing_parent_category_id'],
         subCategoryIds: ['not_existing_sub_category_id'],
@@ -101,7 +101,7 @@ describe('CreateCategoryHandler Integration Test', () => {
       };
       await categoryManagementService.createCategory(existingCategoryOptions);
 
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: categoryName, // Use the same name as the existing category
         // other properties...
       });
@@ -117,7 +117,7 @@ describe('CreateCategoryHandler Integration Test', () => {
 
     it('should not create a new category when the parentIds and subCategoryIds overlap', async () => {
       // Arrange
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: 'New Category',
         parentIds: [existingCategoryId.unpack()],
         subCategoryIds: [existingCategoryId.unpack()],
@@ -138,7 +138,7 @@ describe('CreateCategoryHandler Integration Test', () => {
         await categoryManagementService.createCategory({
           name: new CategoryNameValueObject(faker.lorem.word()),
         });
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: 'New Category',
         parentIds: [existingCategoryId.unpack()],
         subCategoryIds: [anotherCategoryId.unpack()],

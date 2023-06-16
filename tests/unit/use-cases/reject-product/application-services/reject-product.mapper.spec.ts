@@ -1,7 +1,7 @@
 import { ProductRejectedDomainEvent } from '@domain-events/product';
 import { RejectProductMapper } from '@use-cases/reject-product/application-services';
 import {
-  RejectProductCommand,
+  RejectProductRequestDto,
   RejectProductResponseDto,
 } from '@use-cases/reject-product/dtos';
 import {
@@ -20,7 +20,7 @@ describe('RejectProductMapper', () => {
 
   describe('toDomain', () => {
     it('should map a RejectProductCommand to RejectProductDomainOptions', () => {
-      const command = new RejectProductCommand({
+      const command = new RejectProductRequestDto({
         reviewerId: 'reviewer-1',
         productId: 'product-1',
         reason: 'Product does not meet quality standards',

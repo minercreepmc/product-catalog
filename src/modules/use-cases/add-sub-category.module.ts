@@ -4,7 +4,6 @@ import {
   CategoryVerificationDomainService,
 } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
 import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
 import {
   AddSubCategoriesMapper,
@@ -12,6 +11,7 @@ import {
   AddSubCategoriesValidator,
 } from '@use-cases/add-sub-categories/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
+import { MediatorModule } from 'nestjs-mediator';
 
 const domainServices: Provider[] = [
   CategoryManagementDomainService,
@@ -27,10 +27,10 @@ const applicationServices: Provider[] = [
 
 const controllers = [V1AddSubCategoriesHttpController];
 
-const vendors = [CqrsModule];
+const vendors = [MediatorModule, DatabaseModule];
 
 @Module({
-  imports: [...vendors, DatabaseModule],
+  imports: [...vendors],
   controllers,
   providers: [...domainServices, ...applicationServices],
 })

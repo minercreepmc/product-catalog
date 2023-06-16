@@ -1,8 +1,5 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import {
-  ValidatorBase,
-  TranslateOptions,
-} from '@use-cases/common';
+import { TranslateOptions, ValidatorBase } from '@base/use-cases';
 import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,

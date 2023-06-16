@@ -1,3 +1,5 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { AddSubCategoriesCommand } from '@commands';
 import { SubCategoryAddedDomainEvent } from '@domain-events/category';
 import { Injectable } from '@nestjs/common';
 import {
@@ -5,15 +7,14 @@ import {
   SubCategoryIdValueObject,
 } from '@value-objects/category';
 import {
-  AddSubCategoriesCommand,
-  AddSubCategoriesDomainOptions,
+  AddSubCategoriesRequestDto,
   AddSubCategoriesResponseDto,
 } from '../dtos';
 
 @Injectable()
-export class AddSubCategoriesMapper {
-  toDomain(command: AddSubCategoriesCommand): AddSubCategoriesDomainOptions {
-    const { categoryId, subCategoryIds } = command;
+export class AddSubCategoriesMapper extends UseCaseMapperBase<AddSubCategoriesResponseDto> {
+  toCommand(dto: AddSubCategoriesRequestDto): AddSubCategoriesCommand {
+    const { categoryId, subCategoryIds } = dto;
     return {
       subCategoryIds: subCategoryIds.map(
         (id) => new SubCategoryIdValueObject(id),

@@ -1,3 +1,5 @@
+import { ProcessBase } from '@base/use-cases';
+import { AddSubCategoriesCommand } from '@commands';
 import { SubCategoryAddedDomainEvent } from '@domain-events/category';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import {
@@ -5,9 +7,7 @@ import {
   CategoryVerificationDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { CategoryIdValueObject } from '@value-objects/category';
-import { AddSubCategoriesDomainOptions } from '../dtos';
 
 export type AddSubCategoriesProcessSuccess = SubCategoryAddedDomainEvent;
 export type AddSubCategoriesProcessFailure = Array<
@@ -28,8 +28,8 @@ export class AddSubCategoriesProcess extends ProcessBase<
     super();
   }
 
-  async execute(domainOptions: AddSubCategoriesDomainOptions) {
-    const { categoryId, subCategoryIds } = domainOptions;
+  async execute(command: AddSubCategoriesCommand) {
+    const { categoryId, subCategoryIds } = command;
     this.init();
 
     const conditions = [
@@ -41,7 +41,7 @@ export class AddSubCategoriesProcess extends ProcessBase<
     await Promise.all(conditions);
 
     if (this.exceptions.length === 0) {
-      await this.addSubCategories(domainOptions);
+      await this.addSubCategories(command);
     }
 
     return this.getValidationResult();
@@ -92,9 +92,9 @@ export class AddSubCategoriesProcess extends ProcessBase<
     }
   }
 
-  private async addSubCategories(options: AddSubCategoriesDomainOptions) {
+  private async addSubCategories(command: AddSubCategoriesCommand) {
     const subCategoriesAdded =
-      await this.categoryManagementService.addSubCategories(options);
+      await this.categoryManagementService.addSubCategories(command);
 
     this.value = subCategoriesAdded;
   }

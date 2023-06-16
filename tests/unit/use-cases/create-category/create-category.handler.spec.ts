@@ -5,7 +5,7 @@ import {
   CreateCategoryValidator,
 } from '@use-cases/create-category/application-services';
 import {
-  CreateCategoryCommand,
+  CreateCategoryRequestDto,
   CreateCategoryResponseDto,
 } from '@use-cases/create-category/dtos';
 import { mock, MockProxy } from 'jest-mock-extended';
@@ -42,7 +42,7 @@ describe('CreateCategoryHandler', () => {
   });
 
   describe('execute', () => {
-    const command = new CreateCategoryCommand({
+    const command = new CreateCategoryRequestDto({
       name: faker.random.word(),
       // Other properties...
     });

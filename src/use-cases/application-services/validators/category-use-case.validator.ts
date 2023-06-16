@@ -1,6 +1,6 @@
+import { TranslateOptions, ValidatorBase } from '@base/use-cases';
 import { CategoryDomainExceptions } from '@domain-exceptions/category/category.domain-exception';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { TranslateOptions, ValidatorBase } from '@use-cases/common';
 import {
   CategoryDescriptionValueObject,
   CategoryIdValueObject,

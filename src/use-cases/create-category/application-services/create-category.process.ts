@@ -1,3 +1,5 @@
+import { ProcessBase } from '@base/use-cases';
+import { CreateCategoryCommand } from '@commands';
 import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { CategoryDomainExceptions } from '@domain-exceptions/category/category.domain-exception';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
@@ -7,14 +9,12 @@ import {
   ProductManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import {
   CategoryIdValueObject,
   CategoryNameValueObject,
   ParentCategoryIdValueObject,
   SubCategoryIdValueObject,
 } from '@value-objects/category';
-import { CreateCategoryDomainOptions } from '../dtos';
 
 export type CreateCategoryProcessSuccess = CategoryCreatedDomainEvent;
 export type CreateCategoryProcessFailure = Array<
@@ -38,8 +38,8 @@ export class CreateCategoryProcess extends ProcessBase<
     super();
   }
 
-  async execute(domainOptions: CreateCategoryDomainOptions) {
-    const { name, parentIds, subCategoryIds, productIds } = domainOptions;
+  async execute(command: CreateCategoryCommand) {
+    const { name, parentIds, subCategoryIds, productIds } = command;
     this.init();
 
     const conditions = [
@@ -52,7 +52,7 @@ export class CreateCategoryProcess extends ProcessBase<
     await Promise.all(conditions);
 
     if (!this.exceptions.length) {
-      await this.createCategory(domainOptions);
+      await this.createCategory(command);
     }
 
     return this.getValidationResult();
@@ -145,10 +145,10 @@ export class CreateCategoryProcess extends ProcessBase<
     }
   }
 
-  private async createCategory(options: CreateCategoryDomainOptions) {
+  private async createCategory(command: CreateCategoryCommand) {
     try {
       const created = await this.categoryManagementService.createCategory(
-        options,
+        command,
       );
       this.value = created;
     } catch (err) {

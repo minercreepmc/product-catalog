@@ -23,7 +23,7 @@ import { Err, Ok } from 'oxide.ts';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ReviewerCreatedDomainEvent } from '@domain-events/reviewer';
 import {
-  CreateReviewerCommand,
+  CreateReviewerRequestDto,
   CreateReviewerResponseDto,
 } from '@use-cases/create-reviewer/dtos';
 
@@ -46,7 +46,7 @@ describe('CreateReviewerHandler', () => {
   });
 
   describe('execute', () => {
-    const command = new CreateReviewerCommand({
+    const command = new CreateReviewerRequestDto({
       email: faker.internet.email(),
       name: faker.name.firstName(),
       role: faker.helpers.arrayElement(reviewerRoles),

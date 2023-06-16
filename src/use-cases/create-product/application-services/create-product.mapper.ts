@@ -1,3 +1,5 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { CreateProductCommand } from '@commands';
 import { ProductCreatedDomainEvent } from '@domain-events/product';
 import { Injectable } from '@nestjs/common';
 import {
@@ -6,16 +8,12 @@ import {
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
-import {
-  CreateProductCommand,
-  CreateProductDomainOptions,
-  CreateProductResponseDto,
-} from '../dtos';
+import { CreateProductRequestDto, CreateProductResponseDto } from '../dtos';
 
 @Injectable()
-export class CreateProductMapper {
-  toDomain(command: CreateProductCommand): CreateProductDomainOptions {
-    const { name, price, image, description } = command;
+export class CreateProductMapper extends UseCaseMapperBase<CreateProductResponseDto> {
+  toCommand(dto: CreateProductRequestDto): CreateProductCommand {
+    const { name, price, image, description } = dto;
     let domainDescription: ProductDescriptionValueObject;
     let domainImage: ProductImageValueObject;
 

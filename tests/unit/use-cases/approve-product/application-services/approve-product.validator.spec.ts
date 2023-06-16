@@ -1,7 +1,7 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ApproveProductValidator } from '@use-cases/approve-product/application-services';
-import { ApproveProductCommand } from '@use-cases/approve-product/dtos';
+import { ApproveProductRequestDto } from '@use-cases/approve-product/dtos';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 
@@ -14,7 +14,7 @@ describe('ApproveProductCommandValidator', () => {
 
   describe('validate', () => {
     it('should return valid if both productId and reviewerId are valid', () => {
-      const command: ApproveProductCommand = {
+      const command: ApproveProductRequestDto = {
         productId: new ProductIdValueObject().unpack(),
         reviewerId: new ReviewerIdValueObject().unpack(),
       };
@@ -25,7 +25,7 @@ describe('ApproveProductCommandValidator', () => {
     });
 
     it('should throw a validation exception if productId is not valid', () => {
-      const command: ApproveProductCommand = {
+      const command: ApproveProductRequestDto = {
         productId: '',
         reviewerId: new ReviewerIdValueObject().unpack(),
       };
@@ -38,7 +38,7 @@ describe('ApproveProductCommandValidator', () => {
     });
 
     it('should throw a validation exception if reviewerId is not valid', () => {
-      const command: ApproveProductCommand = {
+      const command: ApproveProductRequestDto = {
         productId: '123',
         reviewerId: '',
       };

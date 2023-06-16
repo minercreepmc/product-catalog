@@ -9,7 +9,7 @@ import {
   AddSubCategoriesValidator,
 } from '@use-cases/add-sub-categories/application-services';
 import {
-  AddSubCategoriesCommand,
+  AddSubCategoriesRequestDto,
   AddSubCategoriesResponseDto,
 } from '@use-cases/add-sub-categories/dtos';
 import {
@@ -57,7 +57,7 @@ describe('AddSubCategoriesHandler Integration Test', () => {
   describe('execute', () => {
     it('should not add subcategories if command is not valid', async () => {
       // Arrange
-      const command = new AddSubCategoriesCommand({
+      const command = new AddSubCategoriesRequestDto({
         categoryId: '',
         subCategoryIds: [],
       });
@@ -74,7 +74,7 @@ describe('AddSubCategoriesHandler Integration Test', () => {
 
     it('should not add subcategories if category or subcategories does not exist', async () => {
       // Arrange
-      const command = new AddSubCategoriesCommand({
+      const command = new AddSubCategoriesRequestDto({
         categoryId: 'non_existing_category_id',
         subCategoryIds: ['non_existing_sub_category_id'],
       });
@@ -89,7 +89,7 @@ describe('AddSubCategoriesHandler Integration Test', () => {
 
     it('should not add subcategories when the category and subcategory ids overlap', async () => {
       // Arrange
-      const command = new AddSubCategoriesCommand({
+      const command = new AddSubCategoriesRequestDto({
         categoryId: existingCategoryId.unpack(),
         subCategoryIds: [existingCategoryId.unpack()],
       });
@@ -108,7 +108,7 @@ describe('AddSubCategoriesHandler Integration Test', () => {
         await categoryManagementService.createCategory({
           name: new CategoryNameValueObject(faker.lorem.word()),
         });
-      const command = new AddSubCategoriesCommand({
+      const command = new AddSubCategoriesRequestDto({
         categoryId: existingCategoryId.unpack(),
         subCategoryIds: [subCategoryId.unpack()],
       });

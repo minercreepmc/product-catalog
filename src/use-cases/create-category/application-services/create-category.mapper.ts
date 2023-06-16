@@ -1,3 +1,5 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { CreateCategoryCommand } from '@commands';
 import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { Injectable } from '@nestjs/common';
 import {
@@ -7,41 +9,37 @@ import {
   SubCategoryIdValueObject,
 } from '@value-objects/category';
 import { ProductIdValueObject } from '@value-objects/product';
-import {
-  CreateCategoryCommand,
-  CreateCategoryDomainOptions,
-  CreateCategoryResponseDto,
-} from '../dtos';
+import { CreateCategoryRequestDto, CreateCategoryResponseDto } from '../dtos';
 
 @Injectable()
-export class CreateCategoryMapper {
-  toDomain(command: CreateCategoryCommand): CreateCategoryDomainOptions {
+export class CreateCategoryMapper extends UseCaseMapperBase<CreateCategoryResponseDto> {
+  toCommand(dto: CreateCategoryRequestDto): CreateCategoryCommand {
     let description: CategoryDescriptionValueObject;
     let parentIds: ParentCategoryIdValueObject[];
     let subCategoryIds: SubCategoryIdValueObject[];
     let productIds: ProductIdValueObject[];
-    if (command.description) {
-      description = new CategoryDescriptionValueObject(command.description);
+    if (dto.description) {
+      description = new CategoryDescriptionValueObject(dto.description);
     }
 
-    if (command.parentIds && command.parentIds.length > 0) {
-      parentIds = command.parentIds.map(
+    if (dto.parentIds && dto.parentIds.length > 0) {
+      parentIds = dto.parentIds.map(
         (id) => new ParentCategoryIdValueObject(id),
       );
     }
 
-    if (command.subCategoryIds && command.subCategoryIds.length > 0) {
-      subCategoryIds = command.subCategoryIds.map(
+    if (dto.subCategoryIds && dto.subCategoryIds.length > 0) {
+      subCategoryIds = dto.subCategoryIds.map(
         (id) => new SubCategoryIdValueObject(id),
       );
     }
 
-    if (command.productIds && command.productIds.length > 0) {
-      productIds = command.productIds.map((id) => new ProductIdValueObject(id));
+    if (dto.productIds && dto.productIds.length > 0) {
+      productIds = dto.productIds.map((id) => new ProductIdValueObject(id));
     }
 
     return {
-      name: new CategoryNameValueObject(command.name),
+      name: new CategoryNameValueObject(dto.name),
       description,
       parentIds,
       subCategoryIds,

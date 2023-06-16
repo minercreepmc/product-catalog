@@ -1,5 +1,7 @@
 import { ProductAggregate } from '@aggregates/product';
 import { ReviewerAggregate } from '@aggregates/reviewer';
+import { ProcessBase } from '@base/use-cases';
+import { RejectProductCommand } from '@commands';
 import { ProductRejectedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
@@ -9,10 +11,8 @@ import {
   ReviewerManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import { RejectProductDomainOptions } from '../dtos';
 
 export type RejectProductProcessSuccess = ProductRejectedDomainEvent;
 export type RejectProductProcessFailure = Array<
@@ -40,8 +40,8 @@ export class RejectProductProcess extends ProcessBase<
   reviewerIsAdmin: boolean;
   productIsSubmitted: boolean;
 
-  async execute(domainOptions: RejectProductDomainOptions) {
-    const { productId, reviewerId } = domainOptions;
+  async execute(command: RejectProductCommand) {
+    const { productId, reviewerId } = command;
     this.init();
     await this.validateProductMustExist(productId);
     await this.validateReviewerMustExist(reviewerId);
@@ -52,7 +52,7 @@ export class RejectProductProcess extends ProcessBase<
     }
 
     if (this.productIsSubmitted && this.reviewerIsAdmin) {
-      await this.rejectProduct(domainOptions);
+      await this.rejectProduct(command);
     }
 
     return this.getValidationResult();
@@ -114,9 +114,9 @@ export class RejectProductProcess extends ProcessBase<
     }
   }
 
-  private async rejectProduct(options: RejectProductDomainOptions) {
+  private async rejectProduct(command: RejectProductCommand) {
     const productRejected = await this.productApprovalService.rejectProduct(
-      options,
+      command,
     );
 
     this.value = productRejected;

@@ -1,47 +1,25 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  UseCaseProcessExceptions,
-  UseCaseCommandValidationExceptions,
-} from '@use-cases/common';
-import { Err, Ok } from 'oxide.ts';
+import { HandlerBase } from '@base/use-cases';
+import { RequestHandler } from 'nestjs-mediator';
 import {
   SubmitForApprovalValidator,
   SubmitForApprovalMapper,
   SubmitForApprovalProcess,
 } from './application-services';
-import { SubmitForApprovalCommand, SubmitForApprovalResult } from './dtos';
+import {
+  SubmitForApprovalRequestDto,
+  SubmitForApprovalResponseDto,
+} from './dtos';
 
-@CommandHandler(SubmitForApprovalCommand)
-export class SubmitForApprovalHandler
-  implements ICommandHandler<SubmitForApprovalCommand, SubmitForApprovalResult>
-{
+@RequestHandler(SubmitForApprovalRequestDto)
+export class SubmitForApprovalHandler extends HandlerBase<
+  SubmitForApprovalRequestDto,
+  SubmitForApprovalResponseDto
+> {
   constructor(
-    private readonly validator: SubmitForApprovalValidator,
-    private readonly mapper: SubmitForApprovalMapper,
-    private readonly submitForApprovalProcess: SubmitForApprovalProcess,
-  ) {}
-  async execute(
-    command: SubmitForApprovalCommand,
-  ): Promise<SubmitForApprovalResult> {
-    const commandValidated = this.validator.validate(command);
-    if (!commandValidated.isValid) {
-      return Err(
-        new UseCaseCommandValidationExceptions(commandValidated.exceptions),
-      );
-    }
-
-    const domainOptions = this.mapper.toDomain(command);
-
-    const submitForApprovalResult = await this.submitForApprovalProcess.execute(
-      domainOptions,
-    );
-
-    if (submitForApprovalResult.isErr()) {
-      return Err(
-        new UseCaseProcessExceptions(submitForApprovalResult.unwrapErr()),
-      );
-    }
-
-    return Ok(this.mapper.toResponseDto(submitForApprovalResult.unwrap()));
+    validator: SubmitForApprovalValidator,
+    mapper: SubmitForApprovalMapper,
+    process: SubmitForApprovalProcess,
+  ) {
+    super(validator, mapper, process);
   }
 }

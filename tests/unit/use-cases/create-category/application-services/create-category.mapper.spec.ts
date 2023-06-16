@@ -1,7 +1,7 @@
 import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { CreateCategoryMapper } from '@use-cases/create-category/application-services';
 import {
-  CreateCategoryCommand,
+  CreateCategoryRequestDto,
   CreateCategoryDomainOptions,
   CreateCategoryResponseDto,
 } from '@use-cases/create-category/dtos';
@@ -23,7 +23,7 @@ describe('CreateCategoryMapper', () => {
 
   describe('toDomain', () => {
     it('should return a CreateCategoryDomainOptions object with the correct properties', () => {
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: 'Test Category',
         description: 'Test Description',
         parentIds: ['1'],

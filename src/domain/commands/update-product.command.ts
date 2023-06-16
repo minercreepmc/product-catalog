@@ -1,0 +1,23 @@
+import {
+  ProductDescriptionValueObject,
+  ProductIdValueObject,
+  ProductImageValueObject,
+  ProductNameValueObject,
+  ProductPriceValueObject,
+} from '@value-objects/product';
+
+export class UpdateProductCommand {
+  productId: ProductIdValueObject;
+  name?: ProductNameValueObject;
+  price?: ProductPriceValueObject;
+  description?: ProductDescriptionValueObject;
+  image?: ProductImageValueObject;
+
+  constructor(options: UpdateProductCommand) {
+    this.productId = options.productId;
+    this.name = options.name;
+    this.price = options.price;
+    this.description = options.description;
+    this.image = options.image;
+  }
+}

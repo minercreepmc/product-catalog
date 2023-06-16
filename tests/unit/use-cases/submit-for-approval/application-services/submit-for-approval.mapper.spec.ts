@@ -1,7 +1,7 @@
 import { ProductSubmittedDomainEvent } from '@domain-events/product';
 import { SubmitForApprovalMapper } from '@use-cases/submit-for-approval/application-services';
 import {
-  SubmitForApprovalCommand,
+  SubmitForApprovalRequestDto,
   SubmitForApprovalResponseDto,
 } from '@use-cases/submit-for-approval/dtos';
 import {
@@ -20,7 +20,7 @@ describe('SubmitForApprovalMapper', () => {
 
   describe('toDomain', () => {
     it('should map the command to domain options', () => {
-      const command = new SubmitForApprovalCommand({
+      const command = new SubmitForApprovalRequestDto({
         reviewerId: 'abc123',
         productId: '123',
       });

@@ -1,10 +1,10 @@
+import { ProcessBase } from '@base/use-cases';
 import { ReviewerCreatedDomainEvent } from '@domain-events/reviewer';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ReviewerManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
+import { CreateReviewerCommand } from '@src/domain/commands';
 import { ReviewerEmailValueObject } from '@value-objects/reviewer';
-import { CreateReviewerDomainOptions } from '../dtos';
 
 export type CreateReviewerProcessSuccess = ReviewerCreatedDomainEvent;
 export type CreateReviewerProcessFailure =
@@ -23,12 +23,12 @@ export class CreateReviewerProcess extends ProcessBase<
 
   emailExist: boolean;
 
-  async execute(domainOptions: CreateReviewerDomainOptions) {
-    const { email } = domainOptions;
+  async execute(command: CreateReviewerCommand) {
+    const { email } = command;
 
     this.init();
     await this.reviewerEmailMustNotExist(email);
-    await this.createReviewerIfEmailNotExist(domainOptions);
+    await this.createReviewerIfEmailNotExist(command);
     return this.getValidationResult();
   }
 
@@ -51,13 +51,13 @@ export class CreateReviewerProcess extends ProcessBase<
   }
 
   async createReviewerIfEmailNotExist(
-    domainOptions: CreateReviewerDomainOptions,
+    command: CreateReviewerCommand,
   ): Promise<void> {
     if (this.emailExist) {
       return;
     }
     const reviewerCreated = await this.reviewerManagementService.createReviewer(
-      domainOptions,
+      command,
     );
     this.value = reviewerCreated;
   }

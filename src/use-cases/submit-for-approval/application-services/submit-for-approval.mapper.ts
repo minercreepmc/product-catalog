@@ -1,17 +1,18 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { SubmitForApprovalCommand } from '@commands';
 import { ProductSubmittedDomainEvent } from '@domain-events/product';
 import { Injectable } from '@nestjs/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import {
-  SubmitForApprovalCommand,
-  SubmitForApprovalDomainOptions,
+  SubmitForApprovalRequestDto,
   SubmitForApprovalResponseDto,
 } from '../dtos';
 
 @Injectable()
-export class SubmitForApprovalMapper {
-  toDomain(command: SubmitForApprovalCommand): SubmitForApprovalDomainOptions {
-    const { reviewerId, productId } = command;
+export class SubmitForApprovalMapper extends UseCaseMapperBase<SubmitForApprovalResponseDto> {
+  toCommand(dto: SubmitForApprovalRequestDto): SubmitForApprovalCommand {
+    const { reviewerId, productId } = dto;
     return {
       productId: new ProductIdValueObject(productId),
       reviewerId: new ReviewerIdValueObject(reviewerId),

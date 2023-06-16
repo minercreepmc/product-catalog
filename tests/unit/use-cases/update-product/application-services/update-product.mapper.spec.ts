@@ -1,7 +1,7 @@
 import { ProductUpdatedDomainEvent } from '@domain-events/product';
 import { UpdateProductMapper } from '@use-cases/update-product/application-services';
 import {
-  UpdateProductCommand,
+  UpdateProductRequestDto,
   UpdateProductResponseDto,
 } from '@use-cases/update-product/dtos';
 import {
@@ -15,7 +15,7 @@ describe('UpdateProductMapper', () => {
 
   describe('toDomain', () => {
     it('should return UpdateProductDomainOptions object', () => {
-      const updateProductCommand = new UpdateProductCommand({
+      const updateProductCommand = new UpdateProductRequestDto({
         productId: '12345',
         name: 'Test Product Name',
         price: {
@@ -42,7 +42,7 @@ describe('UpdateProductMapper', () => {
     });
 
     it('should should update without all properties', () => {
-      const updateProductCommand = new UpdateProductCommand({
+      const updateProductCommand = new UpdateProductRequestDto({
         productId: '12345',
         name: 'Test Product Name',
         image: 'https://example.com/image.png',

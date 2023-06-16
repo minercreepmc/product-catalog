@@ -23,7 +23,7 @@ import {
   ProductPriceValueObject,
 } from '@value-objects/product';
 import {
-  RejectProductCommand,
+  RejectProductRequestDto,
   RejectProductResponseDto,
 } from '@use-cases/reject-product/dtos';
 import {
@@ -98,7 +98,7 @@ describe('RejectProductHandler Integration Test', () => {
   describe('execute', () => {
     it('should not approve a product if command is not valid', async () => {
       // Arrange
-      const command: RejectProductCommand = {
+      const command: RejectProductRequestDto = {
         reviewerId: '',
         reason: '',
         productId: '123',
@@ -116,7 +116,7 @@ describe('RejectProductHandler Integration Test', () => {
 
     it('should not approve a product if process fails', async () => {
       // Arrange
-      const command: RejectProductCommand = {
+      const command: RejectProductRequestDto = {
         reviewerId: regularReviewerId.unpack(),
         reason: 'some reason',
         productId: 'non-existing-product-id',
@@ -145,7 +145,7 @@ describe('RejectProductHandler Integration Test', () => {
         reviewerId: regularReviewerId,
       });
 
-      const command: RejectProductCommand = {
+      const command: RejectProductRequestDto = {
         reviewerId: adminReviewerId.unpack(),
         reason: 'some reason',
         productId: productId.unpack(),

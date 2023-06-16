@@ -1,6 +1,6 @@
+import { TranslateOptions, ValidatorBase } from '@base/use-cases';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { Injectable } from '@nestjs/common';
-import { ValidatorBase, TranslateOptions } from '@use-cases/common';
 import {
   CreateProductAttributesOptions,
   CreateProductPriceValueObjectOptions,

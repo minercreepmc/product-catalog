@@ -3,7 +3,6 @@ import {
   CategoryVerificationDomainService,
 } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
 import { AddParentCategoriesHandler } from '@use-cases/add-parent-categories';
 import {
   AddParentCategoriesMapper,
@@ -11,6 +10,8 @@ import {
   AddParentCategoriesValidator,
 } from '@use-cases/add-parent-categories/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
+import { V1AddParentCategoriesHttpController } from '@controllers/http/v1/add-parent-categories';
+import { MediatorModule } from 'nestjs-mediator';
 
 const domainServices: Provider[] = [
   CategoryManagementDomainService,
@@ -24,11 +25,13 @@ const applicationServices: Provider[] = [
   AddParentCategoriesProcess,
 ];
 
-const vendors = [CqrsModule, DatabaseModule];
+const controllers = [V1AddParentCategoriesHttpController];
+
+const vendors = [MediatorModule, DatabaseModule];
 
 @Module({
   imports: [...vendors],
-  controllers: [],
+  controllers,
   providers: [...domainServices, ...applicationServices],
 })
 export class AddParentCategoryModule {}

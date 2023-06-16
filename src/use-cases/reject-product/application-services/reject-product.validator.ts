@@ -1,10 +1,7 @@
+import { TranslateOptions, ValidatorBase } from '@base/use-cases';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { Injectable } from '@nestjs/common';
-import {
-  TranslateOptions,
-  ValidatorBase,
-} from '@use-cases/common';
 import {
   ProductIdValueObject,
   RejectionReasonValueObject,
@@ -14,12 +11,12 @@ import {
   ValidationResponse,
   ValidationExceptionBase,
 } from 'common-base-classes';
-import { RejectProductCommand } from '../dtos';
+import { RejectProductRequestDto } from '../dtos';
 
 @Injectable()
 export class RejectProductValidator extends ValidatorBase {
-  validate(command: RejectProductCommand): ValidationResponse {
-    const { reviewerId, productId, reason } = command;
+  validate(dto: RejectProductRequestDto): ValidationResponse {
+    const { reviewerId, productId, reason } = dto;
     this.clearExceptions();
     this.validateReviewerId(reviewerId);
     this.validateProductId(productId);

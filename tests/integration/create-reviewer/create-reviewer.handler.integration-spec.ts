@@ -6,7 +6,7 @@ import {
 } from '@use-cases/common';
 import { CreateReviewerHandler } from '@use-cases/create-reviewer';
 import {
-  CreateReviewerCommand,
+  CreateReviewerRequestDto,
   CreateReviewerResponseDto,
 } from '@use-cases/create-reviewer/dtos';
 import { faker } from '@faker-js/faker';
@@ -26,7 +26,7 @@ describe('CreateReviewerHandler (integration test)', () => {
   // Test scenarios go here
   test('should return UseCaseCommandValidationExceptions when the command is invalid', async () => {
     // Arrange
-    const command = new CreateReviewerCommand({
+    const command = new CreateReviewerRequestDto({
       name: '',
       email: '',
       role: '',
@@ -44,7 +44,7 @@ describe('CreateReviewerHandler (integration test)', () => {
 
   test('should return UseCaseProcessExceptions when the process fails', async () => {
     // Arrange
-    const command = new CreateReviewerCommand({
+    const command = new CreateReviewerRequestDto({
       name: faker.name.fullName(),
       email: faker.internet.email().toLowerCase(),
       role: faker.helpers.arrayElement(reviewerRoles),
@@ -61,7 +61,7 @@ describe('CreateReviewerHandler (integration test)', () => {
 
   test('should return a valid CreateReviewerResult when the command is valid', async () => {
     // Arrange
-    const command = new CreateReviewerCommand({
+    const command = new CreateReviewerRequestDto({
       name: faker.name.fullName(),
       email: faker.internet.email().toLowerCase(),
       role: faker.helpers.arrayElement(reviewerRoles),

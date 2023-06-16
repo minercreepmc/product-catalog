@@ -1,10 +1,10 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { CreateReviewerValidator } from '@use-cases/create-reviewer/application-services';
-import { CreateReviewerCommand } from '@use-cases/create-reviewer/dtos';
+import { CreateReviewerRequestDto } from '@use-cases/create-reviewer/dtos';
 
 describe('CreateReviewerValidator', () => {
   let createReviewerValidator: CreateReviewerValidator;
-  const createReviewerCommand = new CreateReviewerCommand({
+  const createReviewerCommand = new CreateReviewerRequestDto({
     name: 'John Doe',
     email: 'johndoe@example.com',
     role: 'regular',
@@ -23,7 +23,7 @@ describe('CreateReviewerValidator', () => {
     });
 
     it('should return a validation response with exceptions for an invalid command', () => {
-      const invalidCommand = new CreateReviewerCommand({
+      const invalidCommand = new CreateReviewerRequestDto({
         name: '',
         email: 'invalid-email',
         role: '',

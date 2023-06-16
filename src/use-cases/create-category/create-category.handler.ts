@@ -1,47 +1,22 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  UseCaseCommandValidationExceptions,
-  UseCaseProcessExceptions,
-} from '@use-cases/common';
-import { Err, Ok } from 'oxide.ts';
+import { HandlerBase } from '@base/use-cases';
+import { RequestHandler } from 'nestjs-mediator';
 import {
   CreateCategoryMapper,
   CreateCategoryProcess,
   CreateCategoryValidator,
 } from './application-services';
-import { CreateCategoryCommand, CreateCategoryResult } from './dtos';
+import { CreateCategoryRequestDto, CreateCategoryResponseDto } from './dtos';
 
-@CommandHandler(CreateCategoryCommand)
-export class CreateCategoryHandler
-  implements ICommandHandler<CreateCategoryCommand, CreateCategoryResult>
-{
+@RequestHandler(CreateCategoryRequestDto)
+export class CreateCategoryHandler extends HandlerBase<
+  CreateCategoryRequestDto,
+  CreateCategoryResponseDto
+> {
   constructor(
-    private readonly validator: CreateCategoryValidator,
-    private readonly mapper: CreateCategoryMapper,
-    private readonly createCategoryProcess: CreateCategoryProcess,
-  ) {}
-
-  async execute(command: CreateCategoryCommand): Promise<CreateCategoryResult> {
-    const commandValidated = this.validator.validate(command);
-
-    if (!commandValidated.isValid) {
-      return Err(
-        new UseCaseCommandValidationExceptions(commandValidated.exceptions),
-      );
-    }
-
-    const domainOptions = this.mapper.toDomain(command);
-
-    const createCategoryResult = await this.createCategoryProcess.execute(
-      domainOptions,
-    );
-
-    if (createCategoryResult.isErr()) {
-      return Err(
-        new UseCaseProcessExceptions(createCategoryResult.unwrapErr()),
-      );
-    }
-
-    return Ok(this.mapper.toResponseDto(createCategoryResult.unwrap()));
+    validator: CreateCategoryValidator,
+    mapper: CreateCategoryMapper,
+    process: CreateCategoryProcess,
+  ) {
+    super(validator, mapper, process);
   }
 }

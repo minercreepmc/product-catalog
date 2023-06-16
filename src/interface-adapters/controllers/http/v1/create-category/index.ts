@@ -1,3 +1,3 @@
-export * from './create-category.http.controller';
-export * from './create-category.http.request';
-export * from './create-category.http.response';
+export * from './create-category.http.controller.v1';
+export * from './create-category.http.request.v1';
+export * from './create-category.http.response.v1';

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ReviewerValidator } from '@use-cases/application-services/validators';
 import { ValidationResponse } from 'common-base-classes';
-import { CreateReviewerCommand } from '../dtos';
+import { CreateReviewerRequestDto } from '../dtos';
 
 @Injectable()
 export class CreateReviewerValidator extends ReviewerValidator {
-  validate(command: CreateReviewerCommand): ValidationResponse {
+  validate(command: CreateReviewerRequestDto): ValidationResponse {
     const { name, email, role } = command;
 
     this.clearExceptions();

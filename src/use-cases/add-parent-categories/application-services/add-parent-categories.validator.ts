@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CategoryValidator } from '@use-cases/application-services/validators';
 import { ValidationResponse } from 'common-base-classes';
-import { AddParentCategoriesCommand } from '../dtos';
+import { AddParentCategoriesRequestDto } from '../dtos';
 
 @Injectable()
 export class AddParentCategoriesValidator extends CategoryValidator {
-  validate(command: AddParentCategoriesCommand): ValidationResponse {
-    const { categoryId, parentIds: parentCategoryIds } = command;
+  validate(dto: AddParentCategoriesRequestDto): ValidationResponse {
+    const { categoryId, parentIds: parentCategoryIds } = dto;
     this.clearExceptions();
 
     this.validateCategoryId(categoryId);

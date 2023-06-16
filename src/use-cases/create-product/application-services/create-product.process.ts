@@ -1,11 +1,11 @@
 import { ProductManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { CreateProductDomainOptions } from '../dtos';
 import { Result } from 'oxide.ts';
 import { ProductCreatedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { ProcessBase } from '@use-cases/common';
 import { ProductNameValueObject } from '@value-objects/product';
+import { CreateProductCommand } from '@commands';
+import { ProcessBase } from '@base/use-cases';
 
 export type CreateProductProcessSuccess = ProductCreatedDomainEvent;
 
@@ -31,13 +31,13 @@ export class CreateProductProcess extends ProcessBase<
   private nameExist: boolean;
 
   async execute(
-    domainOptions: CreateProductDomainOptions,
+    command: CreateProductCommand,
   ): Promise<CreateProductProcessResult> {
-    const { name } = domainOptions;
+    const { name } = command;
 
     this.init();
     await this.validateNameMustNotExist(name);
-    await this.createProductIfNameNotExist(domainOptions);
+    await this.createProductIfNameNotExist(command);
 
     return this.getValidationResult();
   }
@@ -60,7 +60,7 @@ export class CreateProductProcess extends ProcessBase<
   }
 
   private async createProductIfNameNotExist(
-    domainOptions: CreateProductDomainOptions,
+    domainOptions: CreateProductCommand,
   ) {
     if (!this.nameExist) {
       const productCreatedEvent =

@@ -1,7 +1,7 @@
 import { CategoryDomainExceptions } from '@domain-exceptions/category/category.domain-exception';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { CreateCategoryValidator } from '@use-cases/create-category/application-services';
-import { CreateCategoryCommand } from '@use-cases/create-category/dtos';
+import { CreateCategoryRequestDto } from '@use-cases/create-category/dtos';
 
 describe('CreateCategoryValidator', () => {
   let validator: CreateCategoryValidator;
@@ -12,7 +12,7 @@ describe('CreateCategoryValidator', () => {
 
   describe('validate', () => {
     it('should return a success validation response when the command is valid', () => {
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: 'Valid Name',
         description: 'Valid Description',
         parentIds: ['ValidParentId'],
@@ -24,7 +24,7 @@ describe('CreateCategoryValidator', () => {
     });
 
     it('should return a failed validation response when the command is invalid', () => {
-      const command = new CreateCategoryCommand({
+      const command = new CreateCategoryRequestDto({
         name: '',
         description: '',
         parentIds: [''],
@@ -49,7 +49,7 @@ describe('CreateCategoryValidator', () => {
       const invalidDescription = '';
 
       // First call with invalid input
-      const command1 = new CreateCategoryCommand({
+      const command1 = new CreateCategoryRequestDto({
         name: invalidName,
         description: invalidDescription,
       });
@@ -58,7 +58,7 @@ describe('CreateCategoryValidator', () => {
       expect(validationResult1.exceptions.length).toBeGreaterThan(0);
 
       // Second call with valid input
-      const command2 = new CreateCategoryCommand({
+      const command2 = new CreateCategoryRequestDto({
         name: validName,
         description: validDescription,
       });

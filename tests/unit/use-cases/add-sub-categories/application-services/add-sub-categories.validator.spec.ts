@@ -1,6 +1,6 @@
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { AddSubCategoriesValidator } from '@use-cases/add-sub-categories/application-services';
-import { AddSubCategoriesCommand } from '@use-cases/add-sub-categories/dtos';
+import { AddSubCategoriesRequestDto } from '@use-cases/add-sub-categories/dtos';
 
 describe('AddSubCategoriesValidator', () => {
   let validator: AddSubCategoriesValidator;
@@ -11,7 +11,7 @@ describe('AddSubCategoriesValidator', () => {
 
   describe('validate', () => {
     it('should return a success validation response when the command is valid', () => {
-      const command = new AddSubCategoriesCommand({
+      const command = new AddSubCategoriesRequestDto({
         categoryId: 'ValidCategoryId',
         subCategoryIds: ['ValidSubCategoryId1', 'ValidSubCategoryId2'],
       });
@@ -20,7 +20,7 @@ describe('AddSubCategoriesValidator', () => {
     });
 
     it('should return a failed validation response when the command is invalid', () => {
-      const command = new AddSubCategoriesCommand({
+      const command = new AddSubCategoriesRequestDto({
         categoryId: '',
         subCategoryIds: [''],
       });
@@ -42,7 +42,7 @@ describe('AddSubCategoriesValidator', () => {
       const invalidSubCategoryIds = [''];
 
       // First call with invalid input
-      const command1 = new AddSubCategoriesCommand({
+      const command1 = new AddSubCategoriesRequestDto({
         categoryId: invalidCategoryId,
         subCategoryIds: invalidSubCategoryIds,
       });
@@ -51,7 +51,7 @@ describe('AddSubCategoriesValidator', () => {
       expect(validationResult1.exceptions.length).toBeGreaterThan(0);
 
       // Second call with valid input
-      const command2 = new AddSubCategoriesCommand({
+      const command2 = new AddSubCategoriesRequestDto({
         categoryId: validCategoryId,
         subCategoryIds: validSubCategoryIds,
       });

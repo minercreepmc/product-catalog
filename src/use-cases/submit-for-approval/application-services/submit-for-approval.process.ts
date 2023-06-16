@@ -1,3 +1,5 @@
+import { ProcessBase } from '@base/use-cases';
+import { SubmitForApprovalCommand } from '@commands';
 import { ProductSubmittedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
@@ -7,10 +9,8 @@ import {
   ReviewerManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProcessBase } from '@use-cases/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import { SubmitForApprovalDomainOptions } from '../dtos';
 
 export type SubmitForApprovalProcessSuccess = ProductSubmittedDomainEvent;
 export type SubmitForApprovalProcessFailure = Array<
@@ -33,12 +33,12 @@ export class SubmitForApprovalProcess extends ProcessBase<
   reviewerExist: boolean;
   productExist: boolean;
 
-  async execute(domainOptions: SubmitForApprovalDomainOptions) {
-    const { productId, reviewerId } = domainOptions;
+  async execute(command: SubmitForApprovalCommand) {
+    const { productId, reviewerId } = command;
     this.init();
     await this.validateProductMustExistById(productId);
     await this.validateReviewerMustExistById(reviewerId);
-    await this.submitIfProductAndReviewerExist(domainOptions);
+    await this.submitIfProductAndReviewerExist(command);
     return this.getValidationResult();
   }
 
@@ -72,11 +72,11 @@ export class SubmitForApprovalProcess extends ProcessBase<
   }
 
   private async submitIfProductAndReviewerExist(
-    options: SubmitForApprovalDomainOptions,
+    command: SubmitForApprovalCommand,
   ) {
     if (this.productExist && this.reviewerExist) {
       const productSubmitted =
-        await this.productApprovalService.submitForApproval(options);
+        await this.productApprovalService.submitForApproval(command);
 
       this.value = productSubmitted;
     }

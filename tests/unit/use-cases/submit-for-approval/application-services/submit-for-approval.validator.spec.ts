@@ -1,5 +1,5 @@
 import { SubmitForApprovalValidator } from '@use-cases/submit-for-approval/application-services';
-import { SubmitForApprovalCommand } from '@use-cases/submit-for-approval/dtos';
+import { SubmitForApprovalRequestDto } from '@use-cases/submit-for-approval/dtos';
 
 describe('SubmitForApprovalCommandValidator', () => {
   let validator: SubmitForApprovalValidator;
@@ -10,7 +10,7 @@ describe('SubmitForApprovalCommandValidator', () => {
 
   describe('validate', () => {
     it('should return an array of validation exceptions when the command is invalid', () => {
-      const command = new SubmitForApprovalCommand({
+      const command = new SubmitForApprovalRequestDto({
         reviewerId: '',
         productId: '',
       });
@@ -21,7 +21,7 @@ describe('SubmitForApprovalCommandValidator', () => {
     });
 
     it('should return an empty array of validation exceptions when the command is valid', () => {
-      const command = new SubmitForApprovalCommand({
+      const command = new SubmitForApprovalRequestDto({
         reviewerId: '1',
         productId: '1',
       });

@@ -13,6 +13,7 @@ import {
   ApproveProductValidator,
 } from '@use-cases/approve-product/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
+import { MediatorModule } from 'nestjs-mediator';
 
 const domainServices: Provider[] = [
   ProductManagementDomainService,
@@ -28,10 +29,10 @@ const useCases: Provider[] = [
 ];
 
 const controllers = [V1ApproveProductHttpController];
-const vendors = [CqrsModule];
+const vendors = [MediatorModule, DatabaseModule];
 
 @Module({
-  imports: [...vendors, DatabaseModule],
+  imports: [...vendors],
   controllers,
   providers: [...domainServices, ...useCases],
 })

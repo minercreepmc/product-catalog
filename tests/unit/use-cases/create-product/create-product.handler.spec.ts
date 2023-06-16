@@ -4,7 +4,7 @@ import {
   CreateProductProcess,
   CreateProductValidator,
 } from '@use-cases/create-product/application-services';
-import { CreateProductCommand } from '@use-cases/create-product/dtos';
+import { CreateProductRequestDto } from '@use-cases/create-product/dtos';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { faker } from '@faker-js/faker';
 import { MoneyCurrencyEnum } from '@value-objects/common/money';
@@ -33,7 +33,7 @@ describe('CreateProductHandler', () => {
   });
 
   describe('execute', () => {
-    const command = new CreateProductCommand({
+    const command = new CreateProductRequestDto({
       name: faker.commerce.productName(),
       price: {
         amount: Number(faker.commerce.price()),

@@ -1,7 +1,7 @@
 import { ProductCreatedDomainEvent } from '@domain-events/product';
 import { CreateProductMapper } from '@use-cases/create-product/application-services';
 import {
-  CreateProductCommand,
+  CreateProductRequestDto,
   CreateProductDomainOptions,
   CreateProductResponseDto,
 } from '@use-cases/create-product/dtos';
@@ -22,7 +22,7 @@ describe('CreateProductMapper', () => {
 
   describe('toDomain', () => {
     it('should map CreateProductCommand to CreateProductDomainOptions', () => {
-      const command = new CreateProductCommand({
+      const command = new CreateProductRequestDto({
         name: 'Valid Name',
         price: { amount: 100, currency: 'USD' },
         description: 'Valid Description',
@@ -49,7 +49,7 @@ describe('CreateProductMapper', () => {
   });
 
   it('should map required properties CreateProductDomainOptions to CreateProductResponseDto and ignore optional properties', () => {
-    const command = new CreateProductCommand({
+    const command = new CreateProductRequestDto({
       name: 'Valid Name',
       price: { amount: 100, currency: 'USD' },
     });

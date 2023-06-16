@@ -39,8 +39,7 @@ export abstract class MikroOrmRepositoryBase<
     const query = this.queryMapper.toQuery(params);
 
     const ormEntity = await this.entityManager.findOne<OrmModel>(
-      this.mikroEntityName,
-      query,
+      this.mikroEntityName, query
     );
 
     await this.entityManager.removeAndFlush(ormEntity);

@@ -1,3 +1,5 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { AddParentCategoriesCommand } from '@commands';
 import { ParentCategoryAddedDomainEvent } from '@domain-events/category';
 import { Injectable } from '@nestjs/common';
 import {
@@ -5,21 +7,16 @@ import {
   ParentCategoryIdValueObject,
 } from '@value-objects/category';
 import {
-  AddParentCategoriesCommand,
-  AddParentCategoriesDomainOptions,
+  AddParentCategoriesRequestDto,
   AddParentCategoriesResponseDto,
 } from '../dtos';
 
 @Injectable()
-export class AddParentCategoriesMapper {
-  toDomain(
-    command: AddParentCategoriesCommand,
-  ): AddParentCategoriesDomainOptions {
+export class AddParentCategoriesMapper extends UseCaseMapperBase<AddParentCategoriesResponseDto> {
+  toCommand(dto: AddParentCategoriesRequestDto): AddParentCategoriesCommand {
     return {
-      categoryId: new CategoryIdValueObject(command.categoryId),
-      parentIds: command.parentIds.map(
-        (id) => new ParentCategoryIdValueObject(id),
-      ),
+      categoryId: new CategoryIdValueObject(dto.categoryId),
+      parentIds: dto.parentIds.map((id) => new ParentCategoryIdValueObject(id)),
     };
   }
 

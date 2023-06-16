@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { CreateProductHandler } from '@use-cases/create-product';
 import {
-  CreateProductCommand,
+  CreateProductRequestDto,
   CreateProductResponseDto,
 } from '@use-cases/create-product/dtos';
 import { faker } from '@faker-js/faker';
@@ -26,7 +26,7 @@ describe('CreateProductHandler (integration test)', () => {
   // Test scenarios go here
   test('should return UseCaseCommandValidationExceptions when the command is invalid', async () => {
     // Arrange
-    const command = new CreateProductCommand({
+    const command = new CreateProductRequestDto({
       name: '',
       price: {
         amount: faker.datatype.number(),
@@ -46,7 +46,7 @@ describe('CreateProductHandler (integration test)', () => {
 
   test('should return UseCaseBusinessValidationExceptions when the process fails', async () => {
     // Arrange
-    const command = new CreateProductCommand({
+    const command = new CreateProductRequestDto({
       name: faker.commerce.productName(),
       price: {
         amount: faker.datatype.number(),
@@ -65,7 +65,7 @@ describe('CreateProductHandler (integration test)', () => {
 
   test('should return a valid CreateProductResult when the command is valid', async () => {
     // Arrange
-    const command = new CreateProductCommand({
+    const command = new CreateProductRequestDto({
       name: faker.commerce.productName(),
       price: {
         amount: faker.datatype.number(),

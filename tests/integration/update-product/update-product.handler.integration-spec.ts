@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { UpdateProductHandler } from '@use-cases/update-product';
 import {
-  UpdateProductCommand,
+  UpdateProductRequestDto,
   UpdateProductResponseDto,
 } from '@use-cases/update-product/dtos';
 import {
@@ -46,7 +46,7 @@ describe('UpdateProductHandler (integration test)', () => {
 
   test('should update a product if the command is valid', async () => {
     // Arrange
-    const command = new UpdateProductCommand({
+    const command = new UpdateProductRequestDto({
       productId: sampleProduct.id.unpack(),
       name: 'new_name',
       price: {

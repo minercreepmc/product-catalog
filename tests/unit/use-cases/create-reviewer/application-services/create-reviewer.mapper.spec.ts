@@ -2,7 +2,7 @@ import { ReviewerCreatedDomainEvent } from '@domain-events/reviewer';
 import { CreateReviewerDomainServiceOptions } from '@domain-services';
 import { CreateReviewerMapper } from '@use-cases/create-reviewer/application-services';
 import {
-  CreateReviewerCommand,
+  CreateReviewerRequestDto,
   CreateReviewerResponseDto,
 } from '@use-cases/create-reviewer/dtos';
 import {
@@ -14,7 +14,7 @@ import {
 
 describe('CreateReviewerMapper', () => {
   let createReviewerMapper: CreateReviewerMapper;
-  const createReviewerCommand: CreateReviewerCommand = {
+  const createReviewerCommand: CreateReviewerRequestDto = {
     name: 'John Doe',
     email: 'johndoe@example.com',
     role: 'regular',
@@ -48,7 +48,7 @@ describe('CreateReviewerMapper', () => {
 
   describe('toDomain', () => {
     it('should map a CreateReviewerCommand to CreateReviewerDomainServiceOptions', () => {
-      const result = createReviewerMapper.toDomain(createReviewerCommand);
+      const result = createReviewerMapper.toCommand(createReviewerCommand);
 
       expect(result).toEqual(createReviewerDomainServiceOptions);
     });

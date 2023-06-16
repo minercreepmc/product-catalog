@@ -12,7 +12,7 @@ import {
   SubmitForApprovalValidator,
 } from '@use-cases/submit-for-approval/application-services';
 import {
-  SubmitForApprovalCommand,
+  SubmitForApprovalRequestDto,
   SubmitForApprovalResponseDto,
 } from '@use-cases/submit-for-approval/dtos';
 import { ValidationResponse } from 'common-base-classes';
@@ -44,7 +44,7 @@ describe('SubmitForApprovalHandler', () => {
   });
 
   describe('execute', () => {
-    const command = new SubmitForApprovalCommand({
+    const command = new SubmitForApprovalRequestDto({
       productId: faker.datatype.uuid(),
       reviewerId: faker.datatype.uuid(),
     });

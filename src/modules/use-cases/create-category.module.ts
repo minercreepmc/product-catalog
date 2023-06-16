@@ -5,7 +5,6 @@ import {
   ProductManagementDomainService,
 } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
 import { CreateCategoryHandler } from '@use-cases/create-category';
 import {
   CreateCategoryMapper,
@@ -13,6 +12,7 @@ import {
   CreateCategoryValidator,
 } from '@use-cases/create-category/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
+import { MediatorModule } from 'nestjs-mediator';
 
 const domainServices: Provider[] = [
   CategoryManagementDomainService,
@@ -28,7 +28,7 @@ const applicationServices: Provider[] = [
 ];
 
 const controllers = [V1CreateCategoryHttpController];
-const vendors = [CqrsModule, DatabaseModule];
+const vendors = [MediatorModule, DatabaseModule];
 
 @Module({
   imports: [...vendors],

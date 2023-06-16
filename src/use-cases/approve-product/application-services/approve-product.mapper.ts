@@ -1,17 +1,15 @@
+import { UseCaseMapperBase } from '@base/use-cases';
+import { ApproveProductCommand } from '@commands';
 import { ProductApprovedDomainEvent } from '@domain-events/product';
 import { Injectable } from '@nestjs/common';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
-import {
-  ApproveProductCommand,
-  ApproveProductDomainOptions,
-  ApproveProductResponseDto,
-} from '../dtos';
+import { ApproveProductRequestDto, ApproveProductResponseDto } from '../dtos';
 
 @Injectable()
-export class ApproveProductMapper {
-  toDomain(command: ApproveProductCommand): ApproveProductDomainOptions {
-    const { productId, reviewerId } = command;
+export class ApproveProductMapper extends UseCaseMapperBase<ApproveProductResponseDto> {
+  toCommand(dto: ApproveProductRequestDto): ApproveProductCommand {
+    const { productId, reviewerId } = dto;
     return {
       productId: new ProductIdValueObject(productId),
       reviewerId: new ReviewerIdValueObject(reviewerId),

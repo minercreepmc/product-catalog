@@ -5,7 +5,7 @@ import {
   AddSubCategoriesValidator,
 } from '@use-cases/add-sub-categories/application-services';
 import {
-  AddSubCategoriesCommand,
+  AddSubCategoriesRequestDto,
   AddSubCategoriesResponseDto,
 } from '@use-cases/add-sub-categories/dtos';
 import { mock, MockProxy } from 'jest-mock-extended';
@@ -42,7 +42,7 @@ describe('AddSubCategoriesHandler', () => {
   });
 
   describe('execute', () => {
-    const command = new AddSubCategoriesCommand({
+    const command = new AddSubCategoriesRequestDto({
       categoryId: faker.datatype.uuid(),
       subCategoryIds: [faker.datatype.uuid(), faker.datatype.uuid()],
     });

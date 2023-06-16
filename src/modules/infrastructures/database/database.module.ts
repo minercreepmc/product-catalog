@@ -7,7 +7,7 @@ import {
   productRepositoryDiToken,
   reviewerRepositoryDiToken,
 } from '@domain-interfaces';
-import { unitOfWorkDiToken } from '@domain-interfaces/unit-of-work.interface';
+import { unitOfWorkDiToken } from '@domain-interfaces';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module, Provider } from '@nestjs/common';
 import { MikroOrmUnitOfWork } from '@utils/base/database/unit-of-work';

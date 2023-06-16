@@ -13,7 +13,7 @@ import {
   RejectProductValidator,
 } from '@use-cases/reject-product/application-services';
 import {
-  RejectProductCommand,
+  RejectProductRequestDto,
   RejectProductDomainOptions,
   RejectProductResponseDto,
 } from '@use-cases/reject-product/dtos';
@@ -34,7 +34,7 @@ describe('RejectProductHandler', () => {
   });
 
   it('should return validation error if command is invalid', async () => {
-    const command = new RejectProductCommand({
+    const command = new RejectProductRequestDto({
       reviewerId: '',
       productId: '',
       reason: '',
@@ -57,7 +57,7 @@ describe('RejectProductHandler', () => {
   });
 
   it('should return process error if the rejectProductProcess fails', async () => {
-    const command = mock<RejectProductCommand>();
+    const command = mock<RejectProductRequestDto>();
     const domainOptions = mock<RejectProductDomainOptions>();
     const failResult = mock<Err<RejectProductProcessFailure>>();
     failResult.isErr.mockReturnValue(true);
@@ -76,7 +76,7 @@ describe('RejectProductHandler', () => {
   });
 
   it('should return success if the product is rejected successfully', async () => {
-    const command = mock<RejectProductCommand>();
+    const command = mock<RejectProductRequestDto>();
     const domainOptions = mock<RejectProductDomainOptions>();
     const successResult = mock<Ok<RejectProductProcessSuccess>>();
     const responseDto = mock<RejectProductResponseDto>();

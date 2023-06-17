@@ -1,6 +1,5 @@
 import { ReviewerAggregate } from '@aggregates/reviewer';
 import {
-  ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
   ReviewerRoleValueObject,
@@ -14,7 +13,6 @@ export interface ReviewerCreatedDomainEventOptions {
 
 export interface ReviewerCreatedDomainEventDetails {
   name: ReviewerNameValueObject;
-  email: ReviewerEmailValueObject;
   role: ReviewerRoleValueObject;
 }
 

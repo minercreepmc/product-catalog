@@ -4,7 +4,7 @@ import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ReviewerManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { CreateReviewerCommand } from '@src/domain/commands';
-import { ReviewerEmailValueObject } from '@value-objects/reviewer';
+import { ReviewerNameValueObject } from '@value-objects/reviewer';
 
 export type CreateReviewerProcessSuccess = ReviewerCreatedDomainEvent;
 export type CreateReviewerProcessFailure =
@@ -21,41 +21,32 @@ export class CreateReviewerProcess extends ProcessBase<
     super();
   }
 
-  emailExist: boolean;
-
   async execute(command: CreateReviewerCommand) {
-    const { email } = command;
+    const { name } = command;
 
     this.init();
-    await this.reviewerEmailMustNotExist(email);
-    await this.createReviewerIfEmailNotExist(command);
+    await this.reviewerNameMustNotExist(name);
+    if (this.exceptions.length === 0) {
+      await this.createReviewer(command);
+    }
     return this.getValidationResult();
   }
 
   protected init() {
     this.clearExceptions();
     this.clearValue();
-    this.emailExist = false;
   }
 
-  async reviewerEmailMustNotExist(
-    email: ReviewerEmailValueObject,
-  ): Promise<void> {
-    const reviewer = await this.reviewerManagementService.getReviewerByEmail(
-      email,
+  async reviewerNameMustNotExist(name: ReviewerNameValueObject) {
+    const reviewer = await this.reviewerManagementService.getReviewerByName(
+      name,
     );
     if (reviewer) {
-      this.emailExist = true;
       this.exceptions.push(new ReviewerDomainExceptions.DoesExist());
     }
   }
 
-  async createReviewerIfEmailNotExist(
-    command: CreateReviewerCommand,
-  ): Promise<void> {
-    if (this.emailExist) {
-      return;
-    }
+  async createReviewer(command: CreateReviewerCommand): Promise<void> {
     const reviewerCreated = await this.reviewerManagementService.createReviewer(
       command,
     );

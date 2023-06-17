@@ -18,11 +18,12 @@ import {
   generateRandomReviewerEmail,
   generateRandomReviewerId,
   generateRandomReviewerName,
+  generateRandomReviewerPassword,
+  generateRandomReviewerUsername,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { warn } from 'console';
 
 describe('V1RejectProductHttpController (PUT)', () => {
   let app: INestApplication;
@@ -55,6 +56,8 @@ describe('V1RejectProductHttpController (PUT)', () => {
     const createRegularReviewerRequest: V1CreateReviewerHttpRequest = {
       name: generateRandomReviewerName(),
       email: generateRandomReviewerEmail(),
+      password: generateRandomReviewerPassword(),
+      username: generateRandomReviewerUsername(),
       role: ReviewerRoleEnum.Regular,
     };
 
@@ -78,6 +81,8 @@ describe('V1RejectProductHttpController (PUT)', () => {
     const createAdminReviewerRequest: V1CreateReviewerHttpRequest = {
       name: generateRandomReviewerName(),
       email: generateRandomReviewerEmail(),
+      password: generateRandomReviewerPassword(),
+      username: generateRandomReviewerUsername(),
       role: ReviewerRoleEnum.Admin,
     };
 

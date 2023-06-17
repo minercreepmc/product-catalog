@@ -6,10 +6,7 @@ import { ReviewerRepositoryPort } from '@domain-interfaces';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Injectable, Logger } from '@nestjs/common';
 import { MikroOrmRepositoryBase } from '@utils/base/database/repositories/mikroorm';
-import {
-  ReviewerNameValueObject,
-  ReviewerEmailValueObject,
-} from '@value-objects/reviewer';
+import { ReviewerNameValueObject } from '@value-objects/reviewer';
 import { ReviewerMikroOrmMapper } from './reviewer.mikroorm.mapper';
 import { ReviewerMikroOrmModel } from './reviewer.mikroorm.model';
 import { ReviewerMikroOrmQueryMapper } from './reviewer.mikroorm.query-mapper';
@@ -32,11 +29,7 @@ export class ReviewerMikroOrmRepository
       new Logger(ReviewerMikroOrmRepository.name),
     );
   }
-
   findOneByName(name: ReviewerNameValueObject): Promise<ReviewerAggregate> {
     return this.findOne({ name });
-  }
-  findOneByEmail(email: ReviewerEmailValueObject): Promise<ReviewerAggregate> {
-    return this.findOne({ email });
   }
 }

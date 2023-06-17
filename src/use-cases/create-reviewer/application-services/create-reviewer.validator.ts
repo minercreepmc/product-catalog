@@ -5,12 +5,11 @@ import { CreateReviewerRequestDto } from '../dtos';
 
 @Injectable()
 export class CreateReviewerValidator extends ReviewerValidator {
-  validate(command: CreateReviewerRequestDto): ValidationResponse {
-    const { name, email, role } = command;
+  validate(dto: CreateReviewerRequestDto): ValidationResponse {
+    const { name, role } = dto;
 
     this.clearExceptions();
     this.validateName(name);
-    this.validateEmail(email);
     this.validateRole(role);
     return this.getValidationResponse();
   }

@@ -14,8 +14,15 @@ export class ReviewerMikroOrmModel extends MikroOrmModelBase {
   name: string;
 
   @Property()
-  email: string;
-
-  @Property()
   role: string;
+
+  // Currently we temporarily save these, later on other microservices handle it
+  //@Property()
+  //email: string;
+
+  //@Property()
+  //username: string;
+
+  //@Property()
+  //password: string;
 }

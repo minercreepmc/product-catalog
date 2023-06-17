@@ -275,15 +275,6 @@
           "nullable": false,
           "mappedType": "string"
         },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
         "role": {
           "name": "role",
           "type": "varchar(255)",

@@ -9,12 +9,12 @@ function generateRandomString(length: number) {
   return `${randomString}${timestamp}${counter}`;
 }
 
-export function generateRandomUsername() {
+export function generateRandomReviewerUsername() {
   const usernameLength = 8;
   return generateRandomString(usernameLength);
 }
 
-export function generateRandomPassword() {
+export function generateRandomReviewerPassword() {
   const passwordLength = 8;
   return generateRandomString(passwordLength);
 }

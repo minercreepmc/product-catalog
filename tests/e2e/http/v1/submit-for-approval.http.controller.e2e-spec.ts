@@ -17,6 +17,7 @@ import {
   generateRandomReviewerEmail,
   generateRandomReviewerId,
   generateRandomReviewerName,
+  generateRandomReviewerPassword,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { MoneyCurrencyEnum } from '@value-objects/common/money';
@@ -61,6 +62,8 @@ describe('V1SubmitForApprovalHttpController (e2e)', () => {
 
       const createReviewerRequest: V1CreateReviewerHttpRequest = {
         name: generateRandomReviewerName(),
+        username: generateRandomReviewerName(),
+        password: generateRandomReviewerPassword(),
         email: generateRandomReviewerEmail(),
         role: ReviewerRoleEnum.Regular,
       };

@@ -9,6 +9,8 @@ import { AppModule } from '@src/app.module';
 import {
   generateRandomReviewerEmail,
   generateRandomReviewerName,
+  generateRandomReviewerPassword,
+  generateRandomReviewerUsername,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
@@ -18,12 +20,6 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
   let app: INestApplication;
   const reviewersUrl = `reviewers`;
   const apiPrefix = `api/v1`;
-
-  const createReviewerRequest: V1CreateReviewerHttpRequest = {
-    name: generateRandomReviewerName(),
-    email: generateRandomReviewerEmail(),
-    role: ReviewerRoleEnum.Regular,
-  };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -40,31 +36,47 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
 
   describe(`${reviewersUrl} (POST)`, () => {
     it('should create a reviewer and return the new reviewer information', async () => {
+      const createReviewerRequest: V1CreateReviewerHttpRequest = {
+        name: generateRandomReviewerName(),
+        email: generateRandomReviewerEmail(),
+        password: generateRandomReviewerPassword(),
+        username: generateRandomReviewerUsername(),
+        role: ReviewerRoleEnum.Regular,
+      };
       const response = await request(app.getHttpServer())
         .post(`/${apiPrefix}/${reviewersUrl}`)
         .set('Accept', 'application/json')
         .send(createReviewerRequest)
         .expect(HttpStatus.CREATED);
 
-      const { name, email, reviewerId, role } =
+      const { name, /**email,**/ reviewerId, role } =
         response.body as V1CreateReviewerHttpResponse;
 
       expect(name).toEqual(createReviewerRequest.name);
-      expect(email).toEqual(createReviewerRequest.email);
+      //expect(email).toEqual(createReviewerRequest.email);
       expect(role).toEqual(createReviewerRequest.role);
       expect(reviewerId).toBeDefined();
     });
 
-    it('should not create a reviewer if it already exists', async () => {
+    it('should not create a reviewer if name already exists', async () => {
+      const existNameRequest: V1CreateReviewerHttpRequest = {
+        name: generateRandomReviewerName(),
+        email: generateRandomReviewerEmail(),
+        password: generateRandomReviewerPassword(),
+        username: generateRandomReviewerUsername(),
+        role: ReviewerRoleEnum.Regular,
+      };
+
       await request(app.getHttpServer())
         .post(`/${apiPrefix}/${reviewersUrl}`)
         .set('Accept', 'application/json')
-        .send(createReviewerRequest);
+        .send(existNameRequest)
+        .expect(HttpStatus.CREATED);
 
       const response = await request(app.getHttpServer())
         .post(`/${apiPrefix}/${reviewersUrl}`)
         .set('Accept', 'application/json')
-        .send(createReviewerRequest)
+        .send(existNameRequest)
         .expect(HttpStatus.CONFLICT);
 
       expect(response.body.message).toIncludeAllMembers(
@@ -75,9 +87,12 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
     });
 
     it('should not create a reviewer if the request format is not valid', async () => {
+      // TODO: It should return other domain exceptions too, since it belong to other microservices
       const invalidProductRequest: V1CreateReviewerHttpRequest = {
         name: '',
         email: 'WTF@##@#@ple.com',
+        username: '',
+        password: '',
         role: '',
       };
 
@@ -90,7 +105,6 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
           new ReviewerDomainExceptions.NameDoesNotValid(),
-          new ReviewerDomainExceptions.EmailDoesNotValid(),
           new ReviewerDomainExceptions.RoleDoesNotValid(),
         ]),
       );

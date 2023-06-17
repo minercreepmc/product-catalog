@@ -19,7 +19,7 @@ export class ReviewerMikroOrmQueryMapper extends MikroOrmQueryMapper<
     params: ReviewerQueryParams,
   ): CategoryMikroOrmModelDetails {
     const where: CategoryMikroOrmModelDetails = {};
-    const { name, email, role } = params;
+    const { name, role } = params;
 
     if (name) {
       where.name = name.unpack();
@@ -27,10 +27,6 @@ export class ReviewerMikroOrmQueryMapper extends MikroOrmQueryMapper<
 
     if (role) {
       where.role = role.unpack();
-    }
-
-    if (email) {
-      where.email = email.unpack();
     }
 
     return where;

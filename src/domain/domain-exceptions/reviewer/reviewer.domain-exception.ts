@@ -25,11 +25,6 @@ export namespace ReviewerDomainExceptions {
     readonly code = ReviewerDomainExceptionCodes.NameDoesNotValid;
   }
 
-  export class EmailDoesNotValid extends ReviewerValidationException {
-    readonly message = 'Reviewer email does not valid';
-    readonly code = ReviewerDomainExceptionCodes.EmailDoesNotValid;
-  }
-
   export class RoleDoesNotValid extends ReviewerValidationException {
     readonly message = 'Reviewer role does not valid';
     readonly code = ReviewerDomainExceptionCodes.RoleDoesNotValid;

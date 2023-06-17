@@ -20,4 +20,16 @@ export class V1CreateReviewerHttpRequest {
     enum: reviewerRoles,
   })
   readonly role: string;
+
+  @ApiProperty({
+    description: 'The username of the reviewer',
+    example: 'john.doe',
+  })
+  readonly username: string;
+
+  @ApiProperty({
+    description: 'The password of the reviewer',
+    example: 'password',
+  })
+  readonly password: string;
 }

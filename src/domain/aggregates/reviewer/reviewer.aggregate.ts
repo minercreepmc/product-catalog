@@ -8,7 +8,9 @@ import {
   ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
+  ReviewerPasswordValueObject,
   ReviewerRoleValueObject,
+  ReviewerUsernameValueObject,
 } from '@value-objects/reviewer';
 import { AbstractAggregateRoot } from 'common-base-classes';
 import {
@@ -32,10 +34,6 @@ export class ReviewerAggregate extends AbstractAggregateRoot<
     return this.details.name;
   }
 
-  get email(): ReviewerEmailValueObject {
-    return this.details.email;
-  }
-
   get role(): ReviewerRoleValueObject {
     return this.details.role;
   }
@@ -44,13 +42,11 @@ export class ReviewerAggregate extends AbstractAggregateRoot<
     options: CreateReviewerAggregateOptions,
   ): ReviewerCreatedDomainEvent {
     this.details.name = options.name;
-    this.details.email = options.email;
     this.details.role = options.role;
     return new ReviewerCreatedDomainEvent({
       reviewerId: this.id,
       details: {
         name: this.details.name,
-        email: this.details.email,
         role: this.details.role,
       },
     });

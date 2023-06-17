@@ -1,7 +1,6 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { TranslateOptions, ValidatorBase } from '@base/use-cases';
 import {
-  ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
   ReviewerRoleValueObject,
@@ -11,15 +10,17 @@ import {
   ValidationResponse,
 } from 'common-base-classes';
 
-export interface ReviewerCommand {
+export interface ReviewerRequestDto {
+  id?: string;
   name?: string;
   email?: string;
-  id?: string;
+  username?: string;
+  password?: string;
 }
 
 export class ReviewerValidator extends ValidatorBase {
-  validate(command: ReviewerCommand): ValidationResponse {
-    const { id, name, email } = command;
+  validate(dto: ReviewerRequestDto): ValidationResponse {
+    const { id, name } = dto;
     this.clearExceptions();
 
     if (id !== undefined) {
@@ -28,10 +29,6 @@ export class ReviewerValidator extends ValidatorBase {
 
     if (name !== undefined) {
       this.validateName(name);
-    }
-
-    if (email !== undefined) {
-      this.validateEmail(email);
     }
 
     return this.getValidationResponse();
@@ -44,9 +41,6 @@ export class ReviewerValidator extends ValidatorBase {
     switch (context) {
       case ReviewerNameValueObject.name:
         return new ReviewerDomainExceptions.NameDoesNotValid();
-      case ReviewerEmailValueObject.name:
-        return new ReviewerDomainExceptions.EmailDoesNotValid();
-
       case ReviewerRoleValueObject.name:
         return new ReviewerDomainExceptions.RoleDoesNotValid();
       default:
@@ -69,15 +63,6 @@ export class ReviewerValidator extends ValidatorBase {
     this.handlerValidationResponse({
       response: response,
       context: ReviewerNameValueObject.name,
-    });
-  }
-
-  protected validateEmail(email: string) {
-    const response = ReviewerEmailValueObject.validate(email);
-
-    this.handlerValidationResponse({
-      response: response,
-      context: ReviewerEmailValueObject.name,
     });
   }
 

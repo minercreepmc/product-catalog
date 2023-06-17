@@ -7,7 +7,6 @@ import {
   Body,
   ConflictException,
   InternalServerErrorException,
-  Param,
   Post,
   UnprocessableEntityException,
 } from '@nestjs/common';

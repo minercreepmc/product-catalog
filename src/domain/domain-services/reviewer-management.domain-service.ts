@@ -12,8 +12,8 @@ import {
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  ReviewerEmailValueObject,
   ReviewerIdValueObject,
+  ReviewerNameValueObject,
 } from '@value-objects/reviewer';
 
 export type CreateReviewerDomainServiceOptions = CreateReviewerAggregateOptions;
@@ -27,12 +27,6 @@ export class ReviewerManagementDomainService {
     private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 
-  async getReviewerByEmail(
-    email: ReviewerEmailValueObject,
-  ): Promise<ReviewerAggregate> {
-    return this.reviewerRepository.findOneByEmail(email);
-  }
-
   async isReviewerExistById(id: ReviewerIdValueObject) {
     return Boolean(await this.reviewerRepository.findOneById(id));
   }
@@ -41,12 +35,16 @@ export class ReviewerManagementDomainService {
     return this.reviewerRepository.findOneById(id);
   }
 
+  async getReviewerByName(name: ReviewerNameValueObject) {
+    return this.reviewerRepository.findOneByName(name);
+  }
+
   async createReviewer(
     options: CreateReviewerDomainServiceOptions,
   ): Promise<ReviewerCreatedDomainEvent> {
     return this.unitOfWork.runInTransaction(async () => {
-      const { email } = options;
-      const exist = await this.reviewerRepository.findOneByEmail(email);
+      const { name } = options;
+      const exist = await this.reviewerRepository.findOneByName(name);
 
       if (exist) {
         throw new ReviewerDomainExceptions.DoesExist();
@@ -55,6 +53,7 @@ export class ReviewerManagementDomainService {
       const reviewer = new ReviewerAggregate();
       const reviewerCreated = reviewer.createReviewer(options);
       await this.reviewerRepository.save(reviewer);
+
       return reviewerCreated;
     });
   }

@@ -47,7 +47,7 @@ describe('UpdateProductHandler (integration test)', () => {
   test('should update a product if the command is valid', async () => {
     // Arrange
     const command = new UpdateProductRequestDto({
-      productId: sampleProduct.id.unpack(),
+      id: sampleProduct.id.unpack(),
       name: 'new_name',
       price: {
         amount: 200,

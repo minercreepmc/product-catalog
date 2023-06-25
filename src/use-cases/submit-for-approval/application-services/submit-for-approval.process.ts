@@ -1,84 +1,50 @@
-import { ProcessBase } from '@base/use-cases';
+import { CompositeBusinessRulesEnforcer, ProcessBase } from '@base/use-cases';
 import { SubmitForApprovalCommand } from '@commands';
 import { ProductSubmittedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import {
-  ProductApprovalDomainService,
-  ProductManagementDomainService,
-  ReviewerManagementDomainService,
-} from '@domain-services';
+import { ProductApprovalDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProductIdValueObject } from '@value-objects/product';
-import { ReviewerIdValueObject } from '@value-objects/reviewer';
+import {
+  ProductBusinessEnforcer,
+  ReviewerBusinessEnforcer,
+} from '@use-cases/application-services/process';
 
 export type SubmitForApprovalProcessSuccess = ProductSubmittedDomainEvent;
-export type SubmitForApprovalProcessFailure = Array<
-  ProductDomainExceptions.DoesNotExist | ReviewerDomainExceptions.DoesNotExist
->;
+
+type ProductFailure = Array<ProductDomainExceptions.DoesNotExist>;
+type ReviewerFailure = Array<ReviewerDomainExceptions.DoesNotExist>;
+
+export type SubmitForApprovalProcessFailure = ProductFailure | ReviewerFailure;
 
 @Injectable()
 export class SubmitForApprovalProcess extends ProcessBase<
   SubmitForApprovalProcessSuccess,
   SubmitForApprovalProcessFailure
 > {
-  constructor(
-    private readonly productManagementService: ProductManagementDomainService,
-    private readonly reviewerManagementService: ReviewerManagementDomainService,
-    private readonly productApprovalService: ProductApprovalDomainService,
-  ) {
-    super();
-  }
-
-  reviewerExist: boolean;
-  productExist: boolean;
-
-  async execute(command: SubmitForApprovalCommand) {
-    const { productId, reviewerId } = command;
-    this.init();
-    await this.validateProductMustExistById(productId);
-    await this.validateReviewerMustExistById(reviewerId);
-    await this.submitIfProductAndReviewerExist(command);
-    return this.getValidationResult();
-  }
-
-  protected init(): void {
-    this.clearExceptions();
-    this.clearValue();
-    this.reviewerExist = true;
-    this.productExist = true;
-  }
-
-  private async validateProductMustExistById(productId: ProductIdValueObject) {
-    const exist = await this.productManagementService.isProductExistById(
-      productId,
-    );
-    if (!exist) {
-      this.productExist = false;
-      this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
-    }
-  }
-
-  private async validateReviewerMustExistById(
-    reviewerId: ReviewerIdValueObject,
-  ) {
-    const exist = await this.reviewerManagementService.isReviewerExistById(
-      reviewerId,
-    );
-    if (!exist) {
-      this.reviewerExist = false;
-      this.exceptions.push(new ReviewerDomainExceptions.DoesNotExist());
-    }
-  }
-
-  private async submitIfProductAndReviewerExist(
+  protected async enforceBusinessRules(
     command: SubmitForApprovalCommand,
-  ) {
-    if (this.productExist && this.reviewerExist) {
-      const productSubmitted =
-        await this.productApprovalService.submitForApproval(command);
+  ): Promise<void> {
+    const { reviewerId, productId } = command;
 
-      this.value = productSubmitted;
-    }
+    await this.reviewerEnforcer.reviewerIdMustExist(reviewerId);
+    await this.productEnforcer.productIdMustExist(productId);
+  }
+  protected executeMainTask(
+    command: SubmitForApprovalCommand,
+  ): Promise<ProductSubmittedDomainEvent> {
+    return this.productApprovalService.submitForApproval(command);
+  }
+  constructor(
+    private readonly productApprovalService: ProductApprovalDomainService,
+    private readonly productEnforcer: ProductBusinessEnforcer<ProductFailure>,
+    private readonly reviewerEnforcer: ReviewerBusinessEnforcer<ReviewerFailure>,
+  ) {
+    const composite = new CompositeBusinessRulesEnforcer();
+    composite.addEnforcer(productEnforcer);
+    composite.addEnforcer(reviewerEnforcer);
+    super({
+      compositeBusinessEnforcer: composite,
+    });
   }
 }

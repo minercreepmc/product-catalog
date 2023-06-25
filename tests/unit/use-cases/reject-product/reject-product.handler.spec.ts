@@ -10,7 +10,7 @@ import {
   RejectProductProcess,
   RejectProductProcessFailure,
   RejectProductProcessSuccess,
-  RejectProductValidator,
+  RejectProductRequestValidator,
 } from '@use-cases/reject-product/application-services';
 import {
   RejectProductRequestDto,
@@ -21,13 +21,13 @@ import { mock, MockProxy } from 'jest-mock-extended';
 import { Err, Ok } from 'oxide.ts';
 
 describe('RejectProductHandler', () => {
-  let validator: MockProxy<RejectProductValidator>;
+  let validator: MockProxy<RejectProductRequestValidator>;
   let rejectProductProcess: MockProxy<RejectProductProcess>;
   let mapper: MockProxy<RejectProductMapper>;
   let handler: RejectProductHandler;
 
   beforeEach(() => {
-    validator = mock<RejectProductValidator>();
+    validator = mock<RejectProductRequestValidator>();
     rejectProductProcess = mock<RejectProductProcess>();
     mapper = mock<RejectProductMapper>();
     handler = new RejectProductHandler(validator, mapper, rejectProductProcess);

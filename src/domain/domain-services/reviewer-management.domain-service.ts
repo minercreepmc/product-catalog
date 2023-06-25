@@ -2,7 +2,11 @@ import {
   CreateReviewerAggregateOptions,
   ReviewerAggregate,
 } from '@aggregates/reviewer';
-import { ReviewerCreatedDomainEvent } from '@domain-events/reviewer';
+import { RemoveReviewerCommand } from '@commands';
+import {
+  ReviewerCreatedDomainEvent,
+  ReviewerRemovedDomainEvent,
+} from '@domain-events/reviewer';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import {
   reviewerRepositoryDiToken,
@@ -17,6 +21,9 @@ import {
 } from '@value-objects/reviewer';
 
 export type CreateReviewerDomainServiceOptions = CreateReviewerAggregateOptions;
+export type RemoveReviewerDomainServiceOptions = {
+  reviewerId: ReviewerIdValueObject;
+};
 
 @Injectable()
 export class ReviewerManagementDomainService {
@@ -55,6 +62,21 @@ export class ReviewerManagementDomainService {
       await this.reviewerRepository.save(reviewer);
 
       return reviewerCreated;
+    });
+  }
+
+  async removeReviewer(command: RemoveReviewerCommand) {
+    return this.unitOfWork.runInTransaction(async () => {
+      const { id } = command;
+      const exist = await this.reviewerRepository.findOneById(id);
+
+      if (!exist) {
+        throw new ReviewerDomainExceptions.DoesNotExist();
+      }
+
+      await this.reviewerRepository.delete(exist);
+
+      return new ReviewerRemovedDomainEvent({ id });
     });
   }
 }

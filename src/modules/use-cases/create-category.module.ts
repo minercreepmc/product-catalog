@@ -9,7 +9,7 @@ import { CreateCategoryHandler } from '@use-cases/create-category';
 import {
   CreateCategoryMapper,
   CreateCategoryProcess,
-  CreateCategoryValidator,
+  CreateCategoryRequestValidator,
 } from '@use-cases/create-category/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
@@ -22,7 +22,7 @@ const domainServices: Provider[] = [
 
 const applicationServices: Provider[] = [
   CreateCategoryHandler,
-  CreateCategoryValidator,
+  CreateCategoryRequestValidator,
   CreateCategoryProcess,
   CreateCategoryMapper,
 ];

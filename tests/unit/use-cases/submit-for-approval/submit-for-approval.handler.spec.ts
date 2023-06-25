@@ -9,7 +9,7 @@ import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
 import {
   SubmitForApprovalMapper,
   SubmitForApprovalProcess,
-  SubmitForApprovalValidator,
+  SubmitForApprovalRequestValidator,
 } from '@use-cases/submit-for-approval/application-services';
 import {
   SubmitForApprovalRequestDto,
@@ -27,12 +27,12 @@ import { ReviewerIdValueObject } from '@value-objects/reviewer';
 
 describe('SubmitForApprovalHandler', () => {
   let handler: SubmitForApprovalHandler;
-  let validator: MockProxy<SubmitForApprovalValidator>;
+  let validator: MockProxy<SubmitForApprovalRequestValidator>;
   let mapper: MockProxy<SubmitForApprovalMapper>;
   let submitForApprovalProcess: MockProxy<SubmitForApprovalProcess>;
 
   beforeEach(() => {
-    validator = mock<SubmitForApprovalValidator>();
+    validator = mock<SubmitForApprovalRequestValidator>();
     mapper = mock<SubmitForApprovalMapper>();
     submitForApprovalProcess = mock<SubmitForApprovalProcess>();
 

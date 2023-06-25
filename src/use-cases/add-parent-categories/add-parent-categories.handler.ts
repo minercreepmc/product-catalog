@@ -3,7 +3,7 @@ import { RequestHandler } from 'nestjs-mediator';
 import {
   AddParentCategoriesMapper,
   AddParentCategoriesProcess,
-  AddParentCategoriesValidator,
+  AddParentCategoriesRequestValidator,
 } from './application-services';
 import {
   AddParentCategoriesRequestDto,
@@ -16,7 +16,7 @@ export class AddParentCategoriesHandler extends HandlerBase<
   AddParentCategoriesResponseDto
 > {
   constructor(
-    validator: AddParentCategoriesValidator,
+    validator: AddParentCategoriesRequestValidator,
     mapper: AddParentCategoriesMapper,
     process: AddParentCategoriesProcess,
   ) {

@@ -1,12 +1,12 @@
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import { AddSubCategoriesValidator } from '@use-cases/add-sub-categories/application-services';
+import { AddSubCategoriesRequestValidator } from '@use-cases/add-sub-categories/application-services';
 import { AddSubCategoriesRequestDto } from '@use-cases/add-sub-categories/dtos';
 
 describe('AddSubCategoriesValidator', () => {
-  let validator: AddSubCategoriesValidator;
+  let validator: AddSubCategoriesRequestValidator;
 
   beforeEach(() => {
-    validator = new AddSubCategoriesValidator();
+    validator = new AddSubCategoriesRequestValidator();
   });
 
   describe('validate', () => {

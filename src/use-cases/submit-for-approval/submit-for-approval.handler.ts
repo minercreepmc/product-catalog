@@ -1,7 +1,7 @@
 import { HandlerBase } from '@base/use-cases';
 import { RequestHandler } from 'nestjs-mediator';
 import {
-  SubmitForApprovalValidator,
+  SubmitForApprovalRequestValidator,
   SubmitForApprovalMapper,
   SubmitForApprovalProcess,
 } from './application-services';
@@ -16,7 +16,7 @@ export class SubmitForApprovalHandler extends HandlerBase<
   SubmitForApprovalResponseDto
 > {
   constructor(
-    validator: SubmitForApprovalValidator,
+    validator: SubmitForApprovalRequestValidator,
     mapper: SubmitForApprovalMapper,
     process: SubmitForApprovalProcess,
   ) {

@@ -1,15 +1,15 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import { ApproveProductValidator } from '@use-cases/approve-product/application-services';
+import { ApproveProductRequestValidator } from '@use-cases/approve-product/application-services';
 import { ApproveProductRequestDto } from '@use-cases/approve-product/dtos';
 import { ProductIdValueObject } from '@value-objects/product';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 
 describe('ApproveProductCommandValidator', () => {
-  let validator: ApproveProductValidator;
+  let validator: ApproveProductRequestValidator;
 
   beforeEach(() => {
-    validator = new ApproveProductValidator();
+    validator = new ApproveProductRequestValidator();
   });
 
   describe('validate', () => {

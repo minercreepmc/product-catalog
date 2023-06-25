@@ -2,7 +2,7 @@ import { CreateReviewerHandler } from '@use-cases/create-reviewer';
 import {
   CreateReviewerMapper,
   CreateReviewerProcess,
-  CreateReviewerValidator,
+  CreateReviewerRequestValidator,
 } from '@use-cases/create-reviewer/application-services';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { faker } from '@faker-js/faker';
@@ -29,12 +29,12 @@ import {
 
 describe('CreateReviewerHandler', () => {
   let handler: CreateReviewerHandler;
-  let validator: MockProxy<CreateReviewerValidator>;
+  let validator: MockProxy<CreateReviewerRequestValidator>;
   let createReviewerProcess: MockProxy<CreateReviewerProcess>;
   let mapper: MockProxy<CreateReviewerMapper>;
 
   beforeEach(() => {
-    validator = mock<CreateReviewerValidator>();
+    validator = mock<CreateReviewerRequestValidator>();
     createReviewerProcess = mock<CreateReviewerProcess>();
     mapper = mock<CreateReviewerMapper>();
 

@@ -6,7 +6,7 @@ import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
 import {
   AddSubCategoriesMapper,
   AddSubCategoriesProcess,
-  AddSubCategoriesValidator,
+  AddSubCategoriesRequestValidator,
 } from '@use-cases/add-sub-categories/application-services';
 import {
   AddSubCategoriesRequestDto,
@@ -23,7 +23,7 @@ import {
 
 describe('AddSubCategoriesHandler Integration Test', () => {
   let handler: AddSubCategoriesHandler;
-  let validator: AddSubCategoriesValidator;
+  let validator: AddSubCategoriesRequestValidator;
   let mapper: AddSubCategoriesMapper;
   let addSubCategoriesProcess: AddSubCategoriesProcess;
   let categoryManagementService: CategoryManagementDomainService;
@@ -34,7 +34,7 @@ describe('AddSubCategoriesHandler Integration Test', () => {
       imports: [AppModule],
     }).compile();
 
-    validator = moduleFixture.get(AddSubCategoriesValidator);
+    validator = moduleFixture.get(AddSubCategoriesRequestValidator);
     mapper = moduleFixture.get(AddSubCategoriesMapper);
     addSubCategoriesProcess = moduleFixture.get(AddSubCategoriesProcess);
     categoryManagementService = moduleFixture.get(

@@ -6,7 +6,7 @@ export class UpdateProductPriceRequestDto {
 }
 
 export class UpdateProductRequestDto extends RequestDtoBase<UpdateProductResponseDto> {
-  productId: string;
+  id: string;
   name?: string;
   price?: UpdateProductPriceRequestDto;
   description?: string;
@@ -14,7 +14,7 @@ export class UpdateProductRequestDto extends RequestDtoBase<UpdateProductRespons
 
   constructor(options: Omit<UpdateProductRequestDto, 'returnType'>) {
     super();
-    this.productId = options.productId;
+    this.id = options.id;
     this.name = options.name;
     this.price = options.price;
     this.description = options.description;
@@ -23,7 +23,7 @@ export class UpdateProductRequestDto extends RequestDtoBase<UpdateProductRespons
 }
 
 export class UpdateProductResponseDto extends ResponseDtoBase {
-  productId: string;
+  id: string;
   name?: string;
   price?: {
     amount: number;
@@ -34,7 +34,7 @@ export class UpdateProductResponseDto extends ResponseDtoBase {
 
   constructor(dto: Omit<UpdateProductResponseDto, 'message'>) {
     super('Product updated successfully');
-    this.productId = dto.productId;
+    this.id = dto.id;
     if (dto.name) {
       this.name = dto.name;
     }

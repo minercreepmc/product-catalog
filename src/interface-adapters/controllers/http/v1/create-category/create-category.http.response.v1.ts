@@ -16,13 +16,13 @@ export class V1CreateCategoryHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(response: V1CreateCategoryHttpResponse) {
+  constructor(response: Omit<V1CreateCategoryHttpResponse, 'message'>) {
     this.id = response.id;
     this.name = response.name;
     this.description = response.description;
     this.parentIds = response.parentIds;
     this.subCategoryIds = response.subCategoryIds;
     this.productIds = response.productIds;
-    this.message = response.message;
+    this.message = 'Category created successfully';
   }
 }

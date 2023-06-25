@@ -9,7 +9,7 @@ import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
 import {
   SubmitForApprovalMapper,
   SubmitForApprovalProcess,
-  SubmitForApprovalValidator,
+  SubmitForApprovalRequestValidator,
 } from '@use-cases/submit-for-approval/application-services';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
@@ -22,7 +22,7 @@ const domainServices: Provider[] = [
 
 const useCases: Provider[] = [
   SubmitForApprovalHandler,
-  SubmitForApprovalValidator,
+  SubmitForApprovalRequestValidator,
   SubmitForApprovalProcess,
   SubmitForApprovalMapper,
 ];

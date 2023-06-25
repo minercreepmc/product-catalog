@@ -1,12 +1,12 @@
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import { AddParentCategoriesValidator } from '@use-cases/add-parent-categories/application-services';
+import { AddParentCategoriesRequestValidator } from '@use-cases/add-parent-categories/application-services';
 import { AddParentCategoriesCommand } from '@use-cases/add-parent-categories/dtos';
 
 describe('AddParentCategoriesValidator', () => {
-  let validator: AddParentCategoriesValidator;
+  let validator: AddParentCategoriesRequestValidator;
 
   beforeEach(() => {
-    validator = new AddParentCategoriesValidator();
+    validator = new AddParentCategoriesRequestValidator();
   });
 
   describe('validate', () => {

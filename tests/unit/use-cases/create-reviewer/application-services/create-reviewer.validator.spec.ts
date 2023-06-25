@@ -1,9 +1,9 @@
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import { CreateReviewerValidator } from '@use-cases/create-reviewer/application-services';
+import { CreateReviewerRequestValidator } from '@use-cases/create-reviewer/application-services';
 import { CreateReviewerRequestDto } from '@use-cases/create-reviewer/dtos';
 
 describe('CreateReviewerValidator', () => {
-  let createReviewerValidator: CreateReviewerValidator;
+  let createReviewerValidator: CreateReviewerRequestValidator;
   const createReviewerCommand = new CreateReviewerRequestDto({
     name: 'John Doe',
     email: 'johndoe@example.com',
@@ -11,7 +11,7 @@ describe('CreateReviewerValidator', () => {
   });
 
   beforeEach(() => {
-    createReviewerValidator = new CreateReviewerValidator();
+    createReviewerValidator = new CreateReviewerRequestValidator();
   });
 
   describe('validate', () => {

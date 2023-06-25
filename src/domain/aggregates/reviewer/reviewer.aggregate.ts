@@ -5,12 +5,9 @@ import {
 } from '@domain-events/reviewer/reviewer-updated.domain-event';
 import { OptionalEntityOptions } from '@utils/types';
 import {
-  ReviewerEmailValueObject,
   ReviewerIdValueObject,
   ReviewerNameValueObject,
-  ReviewerPasswordValueObject,
   ReviewerRoleValueObject,
-  ReviewerUsernameValueObject,
 } from '@value-objects/reviewer';
 import { AbstractAggregateRoot } from 'common-base-classes';
 import {

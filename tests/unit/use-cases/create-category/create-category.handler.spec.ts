@@ -2,7 +2,7 @@ import { CreateCategoryHandler } from '@use-cases/create-category';
 import {
   CreateCategoryMapper,
   CreateCategoryProcess,
-  CreateCategoryValidator,
+  CreateCategoryRequestValidator,
 } from '@use-cases/create-category/application-services';
 import {
   CreateCategoryRequestDto,
@@ -25,12 +25,12 @@ import {
 
 describe('CreateCategoryHandler', () => {
   let handler: CreateCategoryHandler;
-  let validator: MockProxy<CreateCategoryValidator>;
+  let validator: MockProxy<CreateCategoryRequestValidator>;
   let createCategoryProcess: MockProxy<CreateCategoryProcess>;
   let mapper: MockProxy<CreateCategoryMapper>;
 
   beforeEach(() => {
-    validator = mock<CreateCategoryValidator>();
+    validator = mock<CreateCategoryRequestValidator>();
     createCategoryProcess = mock<CreateCategoryProcess>();
     mapper = mock<CreateCategoryMapper>();
 

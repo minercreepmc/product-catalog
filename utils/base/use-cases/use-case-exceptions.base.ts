@@ -1,5 +1,7 @@
 import { MultipleExceptions } from 'common-base-classes';
 
-export class UseCaseCommandValidationExceptions extends MultipleExceptions {}
+export class HandlerException extends MultipleExceptions {}
 
-export class UseCaseProcessExceptions extends MultipleExceptions {}
+export class UseCaseCommandValidationExceptions extends HandlerException {}
+
+export class UseCaseProcessExceptions extends HandlerException {}

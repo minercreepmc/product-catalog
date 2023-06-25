@@ -2,12 +2,9 @@ import { ProcessBase } from '@base/use-cases';
 import { AddParentCategoriesCommand } from '@commands';
 import { ParentCategoryAddedDomainEvent } from '@domain-events/category';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import {
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-} from '@domain-services';
+import { CategoryManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { CategoryIdValueObject } from '@value-objects/category';
+import { CategoryBusinessEnforcer } from '@application-services/process';
 
 export type AddParentCategoriesProcessSuccess = ParentCategoryAddedDomainEvent;
 export type AddParentCategoriesProcessFailure = Array<
@@ -21,77 +18,34 @@ export class AddParentCategoriesProcess extends ProcessBase<
   AddParentCategoriesProcessSuccess,
   AddParentCategoriesProcessFailure
 > {
-  constructor(
-    private readonly categoryManagementService: CategoryManagementDomainService,
-    private readonly categoryVerificationService: CategoryVerificationDomainService,
-  ) {
-    super();
+  execute(command: AddParentCategoriesCommand) {
+    return super.execute(command);
   }
 
-  async execute(command: AddParentCategoriesCommand) {
-    const { categoryId, parentIds } = command;
-    this.init();
-
-    const conditions = [
-      this.checkCategoryIdMustExist(categoryId),
-      this.checkParentCategoriesIdMustExist(parentIds),
-      this.checkDistinctParentCategories(categoryId, parentIds),
+  protected async enforceBusinessRules(
+    command: AddParentCategoriesCommand,
+  ): Promise<void> {
+    const { parentIds, categoryId } = command;
+    const businessRules = [
+      this.categoryEnforcer.parentCategoriesIdMustExist(parentIds),
+      this.categoryEnforcer.categordIdMustExist(categoryId),
+      this.categoryEnforcer.distinctParentCategories(categoryId, parentIds),
     ];
 
-    await Promise.all(conditions);
-
-    if (this.exceptions.length === 0) {
-      await this.addParentCategories(command);
-    }
-
-    return this.getValidationResult();
+    await Promise.all(businessRules);
+  }
+  protected executeMainTask(
+    command: AddParentCategoriesCommand,
+  ): Promise<ParentCategoryAddedDomainEvent> {
+    return this.categoryManagementService.addParentCategories(command);
   }
 
-  protected init(): void {
-    this.clearValue();
-    this.clearExceptions();
-  }
-
-  private async checkCategoryIdMustExist(categoryId: CategoryIdValueObject) {
-    const exist = await this.categoryVerificationService.doesCategoryIdExist(
-      categoryId,
-    );
-
-    if (!exist) {
-      this.exceptions.push(new CategoryDomainExceptions.DoesNotExist());
-    }
-  }
-
-  private async checkParentCategoriesIdMustExist(
-    parentIds: CategoryIdValueObject[],
+  constructor(
+    private readonly categoryManagementService: CategoryManagementDomainService,
+    private readonly categoryEnforcer: CategoryBusinessEnforcer<AddParentCategoriesProcessFailure>,
   ) {
-    const exist = await this.categoryVerificationService.doesCategoryIdsExist(
-      parentIds,
-    );
-
-    if (!exist) {
-      this.exceptions.push(new CategoryDomainExceptions.ParentIdDoesNotExist());
-    }
-  }
-
-  private async checkDistinctParentCategories(
-    categoryId: CategoryIdValueObject,
-    parentIds: CategoryIdValueObject[],
-  ) {
-    const doesOverlap = this.categoryVerificationService.doesParentIdsOverlap({
-      categoryId,
-      parentIds,
+    super({
+      businessEnforcer: categoryEnforcer,
     });
-
-    if (doesOverlap) {
-      this.exceptions.push(new CategoryDomainExceptions.OverlapWithParentId());
-    }
-  }
-
-  private async addParentCategories(command: AddParentCategoriesCommand) {
-    const parentCategoriesAdded =
-      await this.categoryManagementService.addParentCategories(command);
-
-    this.value = parentCategoriesAdded;
   }
 }

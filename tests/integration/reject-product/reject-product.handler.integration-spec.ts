@@ -9,7 +9,7 @@ import { RejectProductHandler } from '@use-cases/reject-product';
 import {
   RejectProductMapper,
   RejectProductProcess,
-  RejectProductValidator,
+  RejectProductRequestValidator,
 } from '@use-cases/reject-product/application-services';
 import {
   ReviewerEmailValueObject,
@@ -34,7 +34,7 @@ import { moneyCurrencies } from '@value-objects/common/money';
 
 describe('RejectProductHandler Integration Test', () => {
   let handler: RejectProductHandler;
-  let validator: RejectProductValidator;
+  let validator: RejectProductRequestValidator;
   let mapper: RejectProductMapper;
   let approveProductProcess: RejectProductProcess;
   let productManagementService: ProductManagementDomainService;
@@ -48,7 +48,7 @@ describe('RejectProductHandler Integration Test', () => {
       imports: [AppModule],
     }).compile();
 
-    validator = moduleFixture.get(RejectProductValidator);
+    validator = moduleFixture.get(RejectProductRequestValidator);
     mapper = moduleFixture.get(RejectProductMapper);
     approveProductProcess = moduleFixture.get(RejectProductProcess);
     productManagementService = moduleFixture.get(

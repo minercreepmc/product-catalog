@@ -1,13 +1,13 @@
 import { CategoryDomainExceptions } from '@domain-exceptions/category/category.domain-exception';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { CreateCategoryValidator } from '@use-cases/create-category/application-services';
+import { CreateCategoryRequestValidator } from '@use-cases/create-category/application-services';
 import { CreateCategoryRequestDto } from '@use-cases/create-category/dtos';
 
 describe('CreateCategoryValidator', () => {
-  let validator: CreateCategoryValidator;
+  let validator: CreateCategoryRequestValidator;
 
   beforeEach(() => {
-    validator = new CreateCategoryValidator();
+    validator = new CreateCategoryRequestValidator();
   });
 
   describe('validate', () => {

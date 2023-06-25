@@ -12,12 +12,12 @@ export class V1CreateReviewerHttpResponse {
   @ApiProperty()
   readonly message: string;
 
-  constructor(options: V1CreateReviewerHttpResponse) {
-    const { reviewerId, name, role, message } = options;
+  constructor(options: Omit<V1CreateReviewerHttpResponse, 'message'>) {
+    const { reviewerId, name, role } = options;
     this.reviewerId = reviewerId;
     this.name = name;
     //this.email = email;
     this.role = role;
-    this.message = message;
+    this.message = 'Reviewer created successfully';
   }
 }

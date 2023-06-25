@@ -2,7 +2,7 @@ import { CreateProductHandler } from '@use-cases/create-product';
 import {
   CreateProductMapper,
   CreateProductProcess,
-  CreateProductValidator,
+  CreateProductRequestValidator,
 } from '@use-cases/create-product/application-services';
 import { CreateProductRequestDto } from '@use-cases/create-product/dtos';
 import { mock, MockProxy } from 'jest-mock-extended';
@@ -20,12 +20,12 @@ import {
 
 describe('CreateProductHandler', () => {
   let handler: CreateProductHandler;
-  let validator: MockProxy<CreateProductValidator>;
+  let validator: MockProxy<CreateProductRequestValidator>;
   let createProductProcess: MockProxy<CreateProductProcess>;
   let mapper: MockProxy<CreateProductMapper>;
 
   beforeEach(() => {
-    validator = mock<CreateProductValidator>();
+    validator = mock<CreateProductRequestValidator>();
     createProductProcess = mock<CreateProductProcess>();
     mapper = mock<CreateProductMapper>();
 

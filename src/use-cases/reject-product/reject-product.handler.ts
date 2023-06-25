@@ -3,7 +3,7 @@ import { RequestHandler } from 'nestjs-mediator';
 import {
   RejectProductMapper,
   RejectProductProcess,
-  RejectProductValidator,
+  RejectProductRequestValidator,
 } from './application-services';
 import { RejectProductRequestDto, RejectProductResponseDto } from './dtos';
 
@@ -13,7 +13,7 @@ export class RejectProductHandler extends HandlerBase<
   RejectProductResponseDto
 > {
   constructor(
-    validator: RejectProductValidator,
+    validator: RejectProductRequestValidator,
     mapper: RejectProductMapper,
     rejectProductProcess: RejectProductProcess,
   ) {

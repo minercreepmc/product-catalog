@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { RejectProductResponseDto } from '@use-cases/reject-product/dtos';
 
 export class V1RejectProductHttpResponse {
   @ApiProperty()
@@ -11,11 +10,11 @@ export class V1RejectProductHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(options: V1RejectProductHttpResponse) {
-    const { productId, reason, rejectedBy, message } = options;
+  constructor(options: Omit<V1RejectProductHttpResponse, 'message'>) {
+    const { productId, reason, rejectedBy } = options;
     this.rejectedBy = rejectedBy;
     this.productId = productId;
     this.reason = reason;
-    this.message = message;
+    this.message = 'Rejected product';
   }
 }

@@ -8,9 +8,9 @@ export class V1AddSubCategoriesHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(options: V1AddSubCategoriesHttpResponse) {
+  constructor(options: Omit<V1AddSubCategoriesHttpResponse, 'message'>) {
     this.categoryId = options.categoryId;
     this.subCategoryIds = options.subCategoryIds;
-    this.message = options.message;
+    this.message = 'Subcategories added successfully';
   }
 }

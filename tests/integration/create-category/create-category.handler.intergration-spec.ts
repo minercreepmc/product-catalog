@@ -9,7 +9,7 @@ import { CreateCategoryHandler } from '@use-cases/create-category';
 import {
   CreateCategoryMapper,
   CreateCategoryProcess,
-  CreateCategoryValidator,
+  CreateCategoryRequestValidator,
 } from '@use-cases/create-category/application-services';
 import {
   CreateCategoryRequestDto,
@@ -25,7 +25,7 @@ import { faker } from '@faker-js/faker';
 
 describe('CreateCategoryHandler Integration Test', () => {
   let handler: CreateCategoryHandler;
-  let validator: CreateCategoryValidator;
+  let validator: CreateCategoryRequestValidator;
   let mapper: CreateCategoryMapper;
   let createCategoryProcess: CreateCategoryProcess;
   let categoryManagementService: CategoryManagementDomainService;
@@ -36,7 +36,7 @@ describe('CreateCategoryHandler Integration Test', () => {
       imports: [AppModule],
     }).compile();
 
-    validator = moduleFixture.get(CreateCategoryValidator);
+    validator = moduleFixture.get(CreateCategoryRequestValidator);
     mapper = moduleFixture.get(CreateCategoryMapper);
     createCategoryProcess = moduleFixture.get(CreateCategoryProcess);
     categoryManagementService = moduleFixture.get(

@@ -5,7 +5,7 @@ import { UpdateProductHandler } from '@use-cases/update-product';
 import {
   UpdateProductMapper,
   UpdateProductProcess,
-  UpdateProductValidator,
+  UpdateProductRequestValidator,
 } from '@use-cases/update-product/application-services';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
@@ -15,7 +15,7 @@ const domainServices: Provider[] = [ProductManagementDomainService];
 const useCases: Provider[] = [
   UpdateProductHandler,
   UpdateProductMapper,
-  UpdateProductValidator,
+  UpdateProductRequestValidator,
   UpdateProductProcess,
 ];
 

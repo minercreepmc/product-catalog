@@ -3,7 +3,7 @@ import { RequestHandler } from 'nestjs-mediator';
 import {
   ApproveProductMapper,
   ApproveProductProcess,
-  ApproveProductValidator,
+  ApproveProductRequestValidator,
 } from './application-services';
 import { ApproveProductRequestDto, ApproveProductResponseDto } from './dtos';
 
@@ -13,7 +13,7 @@ export class ApproveProductHandler extends HandlerBase<
   ApproveProductResponseDto
 > {
   constructor(
-    validator: ApproveProductValidator,
+    validator: ApproveProductRequestValidator,
     mapper: ApproveProductMapper,
     process: ApproveProductProcess,
   ) {

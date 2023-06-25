@@ -3,9 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { Result } from 'oxide.ts';
 import { ProductCreatedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { ProductNameValueObject } from '@value-objects/product';
 import { CreateProductCommand } from '@commands';
 import { ProcessBase } from '@base/use-cases';
+import { ProductCommandValidator } from '@use-cases/application-services/validators';
+import { ProductBusinessEnforcer } from '@use-cases/application-services/process';
 
 export type CreateProductProcessSuccess = ProductCreatedDomainEvent;
 
@@ -22,50 +23,30 @@ export class CreateProductProcess extends ProcessBase<
   CreateProductProcessSuccess,
   CreateProductProcessFailure
 > {
-  constructor(
-    private readonly productManagementService: ProductManagementDomainService,
-  ) {
-    super();
+  execute(command: CreateProductCommand) {
+    return super.execute(command);
   }
 
-  private nameExist: boolean;
-
-  async execute(
+  protected async enforceBusinessRules(
     command: CreateProductCommand,
-  ): Promise<CreateProductProcessResult> {
+  ): Promise<void> {
     const { name } = command;
 
-    this.init();
-    await this.validateNameMustNotExist(name);
-    await this.createProductIfNameNotExist(command);
-
-    return this.getValidationResult();
+    await this.productEnforcer.productNameMustNotExist(name);
   }
 
-  protected init(): void {
-    this.clearExceptions();
-    this.clearValue();
-    this.nameExist = false;
+  protected executeMainTask(
+    command: CreateProductCommand,
+  ): Promise<ProductCreatedDomainEvent> {
+    return this.productManagementService.createProduct(command);
   }
 
-  protected async validateNameMustNotExist(
-    name: ProductNameValueObject,
-  ): Promise<void> {
-    const productExists =
-      await this.productManagementService.isProductExistByName(name);
-    if (productExists) {
-      this.nameExist = true;
-      this.exceptions.push(new ProductDomainExceptions.DoesExist());
-    }
-  }
-
-  private async createProductIfNameNotExist(
-    domainOptions: CreateProductCommand,
+  constructor(
+    private readonly productManagementService: ProductManagementDomainService,
+    private readonly productEnforcer: ProductCommandValidator<CreateProductProcessFailure>,
   ) {
-    if (!this.nameExist) {
-      const productCreatedEvent =
-        await this.productManagementService.createProduct(domainOptions);
-      this.value = productCreatedEvent;
-    }
+    super({
+      businessEnforcer: productEnforcer,
+    });
   }
 }

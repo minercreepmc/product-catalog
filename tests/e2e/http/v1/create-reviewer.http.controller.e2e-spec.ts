@@ -93,7 +93,7 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
         email: 'WTF@##@#@ple.com',
         username: '',
         password: '',
-        role: '',
+        role: '' as ReviewerRoleEnum,
       };
 
       const response = await request(app.getHttpServer())

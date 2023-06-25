@@ -7,13 +7,13 @@ import {
   UseCaseProcessExceptions,
 } from './use-case-exceptions.base';
 import { UseCaseMapperBase } from './use-case-mapper.base';
-import { ValidatorBase } from './validator.base';
+import { RequestValidatorBase } from './validator.base';
 
 export abstract class HandlerBase<RequestDto extends Request<any>, ResponseDto>
   implements IRequestHandler<RequestDto, ResponseResult<ResponseDto>>
 {
   constructor(
-    private readonly validator: ValidatorBase | null,
+    private readonly validator: RequestValidatorBase | null,
     private readonly mapper: UseCaseMapperBase<ResponseDto>,
     private readonly process: ProcessBase<any, any>,
   ) {}

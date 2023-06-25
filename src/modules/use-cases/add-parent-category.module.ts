@@ -7,7 +7,7 @@ import { AddParentCategoriesHandler } from '@use-cases/add-parent-categories';
 import {
   AddParentCategoriesMapper,
   AddParentCategoriesProcess,
-  AddParentCategoriesValidator,
+  AddParentCategoriesRequestValidator,
 } from '@use-cases/add-parent-categories/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { V1AddParentCategoriesHttpController } from '@controllers/http/v1/add-parent-categories';
@@ -21,7 +21,7 @@ const domainServices: Provider[] = [
 const applicationServices: Provider[] = [
   AddParentCategoriesHandler,
   AddParentCategoriesMapper,
-  AddParentCategoriesValidator,
+  AddParentCategoriesRequestValidator,
   AddParentCategoriesProcess,
 ];
 

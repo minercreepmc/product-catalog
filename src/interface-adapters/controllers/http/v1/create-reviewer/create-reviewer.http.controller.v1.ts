@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { V1CreateReviewerHttpRequest } from './create-reviewer.http.request.v1';
 import { V1CreateReviewerHttpResponse } from './create-reviewer.http.response.v1';
 import {
@@ -15,6 +15,11 @@ export class V1CreateReviewerHttpController extends HttpPostControllerBase<
 > {
   constructor(mediator: Mediator) {
     super(mediator);
+  }
+
+  @Post()
+  async execute(httpRequest: V1CreateReviewerHttpRequest) {
+    return super.execute(httpRequest);
   }
 
   createDto(

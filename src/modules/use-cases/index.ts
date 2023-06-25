@@ -5,6 +5,7 @@ import { ApproveProductModule } from './approve-product.module';
 import { CreateCategoryModule } from './create-category.module';
 import { CreateProductModule } from './create-product.module';
 import { CreateReviewerModule } from './create-reviewer.module';
+import { CreateReviewerSagaModule } from './create-reviewer.saga.module';
 import { RejectProductModule } from './reject-product.module';
 import { SubmitForApprovalModule } from './submit-for-approval.module';
 import { UpdateProductModule } from './update-product.module';
@@ -13,7 +14,7 @@ import { UpdateProductModule } from './update-product.module';
   imports: [
     CreateProductModule,
     UpdateProductModule,
-    CreateReviewerModule,
+    CreateReviewerSagaModule,
     SubmitForApprovalModule,
     ApproveProductModule,
     RejectProductModule,

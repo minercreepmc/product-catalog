@@ -1,3 +1,3 @@
-export * from './product-use-case.validator';
-export * from './reviewer-use-case.validator';
-export * from './category-use-case.validator';
+export * from './category.request-validator';
+export * from './product.request-validator';
+export * from './reviewer.request-validator';

@@ -21,7 +21,7 @@ export class V1UpdateProductHttpController extends HttpPutControllerBase<
     id?: string,
   ): UpdateProductRequestDto {
     return new UpdateProductRequestDto({
-      productId: id,
+      id: id,
       name: httpRequest.name,
       description: httpRequest.description,
       price: httpRequest.price,

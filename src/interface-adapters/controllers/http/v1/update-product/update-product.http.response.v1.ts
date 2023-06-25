@@ -38,8 +38,8 @@ export class V1UpdateProductHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(options: UpdateProductResponseDto) {
-    const { productId: id, name, price, description, image } = options;
+  constructor(options: Omit<UpdateProductResponseDto, 'message'>) {
+    const { id: id, name, price, description, image } = options;
     this.productId = id;
     if (name) {
       this.name = name;
@@ -57,6 +57,6 @@ export class V1UpdateProductHttpResponse {
       this.image = image;
     }
 
-    this.message = options.message;
+    this.message = 'Product updated successfully';
   }
 }

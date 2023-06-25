@@ -1,5 +1,5 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { UpdateProductValidator } from '@use-cases/update-product/application-services';
+import { UpdateProductRequestValidator } from '@use-cases/update-product/application-services';
 import { UpdateProductRequestDto } from '@use-cases/update-product/dtos';
 import {
   ArgumentTooLongException,
@@ -8,10 +8,10 @@ import {
 } from 'common-base-classes';
 
 describe('UpdateProductValidator', () => {
-  let updateProductValidator: UpdateProductValidator;
+  let updateProductValidator: UpdateProductRequestValidator;
 
   beforeEach(() => {
-    updateProductValidator = new UpdateProductValidator();
+    updateProductValidator = new UpdateProductRequestValidator();
   });
 
   it('should have an empty array of exceptions when initialized', () => {
@@ -21,7 +21,7 @@ describe('UpdateProductValidator', () => {
   describe('validate', () => {
     it('should not add any exceptions if the command is valid', () => {
       const updateProductCommand: UpdateProductRequestDto = {
-        productId: '123',
+        id: '123',
         name: 'Test Product Name',
         price: {
           amount: 10.99,
@@ -38,7 +38,7 @@ describe('UpdateProductValidator', () => {
 
     it('should add an exception if the name is not valid', () => {
       const updateProductCommand = new UpdateProductRequestDto({
-        productId: '123',
+        id: '123',
         name: '',
         price: {
           amount: 10.99,
@@ -59,7 +59,7 @@ describe('UpdateProductValidator', () => {
 
     it('should add an exception if the price is not valid', () => {
       const updateProductCommand: UpdateProductRequestDto = {
-        productId: '123',
+        id: '123',
         name: 'Test Product Name',
         price: {
           amount: -10.99,
@@ -78,7 +78,7 @@ describe('UpdateProductValidator', () => {
 
     it('should add an exception if null is provided', () => {
       const updateProductCommand: UpdateProductRequestDto = {
-        productId: '123',
+        id: '123',
         name: null,
         price: null,
       };
@@ -95,7 +95,7 @@ describe('UpdateProductValidator', () => {
 
     it('should ignore the undefined since it mean not provided', () => {
       const updateProductCommand: UpdateProductRequestDto = {
-        productId: '123',
+        id: '123',
         name: undefined,
         price: {
           amount: 11.99,

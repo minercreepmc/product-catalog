@@ -37,7 +37,7 @@ export class UpdateProductMapper extends UseCaseMapperBase<UpdateProductResponse
     }
 
     return new UpdateProductCommand({
-      productId: new ProductIdValueObject(dto.productId),
+      productId: new ProductIdValueObject(dto.id),
       name: domainName,
       price: domainPrice,
       description: domainDescription,
@@ -66,7 +66,7 @@ export class UpdateProductMapper extends UseCaseMapperBase<UpdateProductResponse
       descriptionUnpacked = description.unpack();
     }
     return new UpdateProductResponseDto({
-      productId: event.productId.unpack(),
+      id: event.productId.unpack(),
       name: nameUnpacked,
       price: priceUnpacked,
       image: imageUnpacked,

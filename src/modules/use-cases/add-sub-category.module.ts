@@ -8,7 +8,7 @@ import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
 import {
   AddSubCategoriesMapper,
   AddSubCategoriesProcess,
-  AddSubCategoriesValidator,
+  AddSubCategoriesRequestValidator,
 } from '@use-cases/add-sub-categories/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
@@ -21,7 +21,7 @@ const domainServices: Provider[] = [
 const applicationServices: Provider[] = [
   AddSubCategoriesHandler,
   AddSubCategoriesMapper,
-  AddSubCategoriesValidator,
+  AddSubCategoriesRequestValidator,
   AddSubCategoriesProcess,
 ];
 

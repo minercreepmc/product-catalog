@@ -26,4 +26,8 @@ export class CreateReviewerMapper extends UseCaseMapperBase<CreateReviewerRespon
       reviewerId: event.reviewerId.unpack(),
     });
   }
+  //
+  // toSagaStates(dto: CreateReviewerRequestDto): CreateReviewerSagaStates {
+  //   return new CreateReviewerSagaStates(dto);
+  // }
 }

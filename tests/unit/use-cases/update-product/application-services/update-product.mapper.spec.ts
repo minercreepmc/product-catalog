@@ -16,7 +16,7 @@ describe('UpdateProductMapper', () => {
   describe('toDomain', () => {
     it('should return UpdateProductDomainOptions object', () => {
       const updateProductCommand = new UpdateProductRequestDto({
-        productId: '12345',
+        id: '12345',
         name: 'Test Product Name',
         price: {
           amount: 10.99,
@@ -43,7 +43,7 @@ describe('UpdateProductMapper', () => {
 
     it('should should update without all properties', () => {
       const updateProductCommand = new UpdateProductRequestDto({
-        productId: '12345',
+        id: '12345',
         name: 'Test Product Name',
         image: 'https://example.com/image.png',
       });

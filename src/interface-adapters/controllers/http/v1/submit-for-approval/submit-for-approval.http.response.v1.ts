@@ -11,10 +11,10 @@ export class V1SubmitForApprovalHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(dto: SubmitForApprovalResponseDto) {
+  constructor(dto: Omit<SubmitForApprovalResponseDto, 'message'>) {
     this.productId = dto.productId;
     this.reviewerId = dto.reviewerId;
     this.productStatus = dto.productStatus;
-    this.message = dto.message;
+    this.message = 'Product submitted for approval';
   }
 }

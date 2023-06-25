@@ -4,7 +4,7 @@ import { ProductUpdatedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProductIdValueObject } from '@value-objects/product';
+import { ProductBusinessEnforcer } from '@use-cases/application-services/process';
 
 export type UpdateProductProcessSuccess = ProductUpdatedDomainEvent;
 export type UpdateProductProcessFailure =
@@ -15,48 +15,33 @@ export class UpdateProductProcess extends ProcessBase<
   UpdateProductProcessSuccess,
   UpdateProductProcessFailure
 > {
+  protected async enforceBusinessRules(
+    command: UpdateProductCommand,
+  ): Promise<void> {
+    const { productId } = command;
+
+    await this.productEnforcer.productIdMustExist(productId);
+  }
+  protected executeMainTask(
+    command: UpdateProductCommand,
+  ): Promise<ProductUpdatedDomainEvent> {
+    return this.productManagementService.updateProduct({
+      id: command.productId,
+      payload: {
+        name: command.name,
+        description: command.description,
+        price: command.price,
+        image: command.image,
+      },
+    });
+  }
+
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
+    private readonly productEnforcer: ProductBusinessEnforcer<UpdateProductProcessFailure>,
   ) {
-    super();
-  }
-  private idExist: boolean;
-
-  async execute(command: UpdateProductCommand) {
-    const { productId } = command;
-    this.init();
-    await this.validateIdMustExist(productId);
-    await this.updateProductIfIdExist(command);
-    return this.getValidationResult();
-  }
-
-  protected init(): void {
-    this.clearExceptions();
-    this.clearValue();
-    this.idExist = true;
-  }
-
-  protected async validateIdMustExist(id: ProductIdValueObject): Promise<void> {
-    const productExists =
-      await this.productManagementService.isProductExistById(id);
-    if (!productExists) {
-      this.idExist = false;
-      this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
-    }
-  }
-
-  protected async updateProductIfIdExist(command: UpdateProductCommand) {
-    if (this.idExist) {
-      const productUpdated = await this.productManagementService.updateProduct({
-        id: command.productId,
-        payload: {
-          name: command.name,
-          description: command.description,
-          price: command.price,
-          image: command.image,
-        },
-      });
-      this.value = productUpdated;
-    }
+    super({
+      businessEnforcer: productEnforcer,
+    });
   }
 }

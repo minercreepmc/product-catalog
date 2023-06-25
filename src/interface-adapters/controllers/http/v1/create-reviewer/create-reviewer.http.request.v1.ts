@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { reviewerRoles } from '@value-objects/reviewer';
+import { ReviewerRoleEnum, reviewerRoles } from '@value-objects/reviewer';
 
 export class V1CreateReviewerHttpRequest {
   @ApiProperty({
@@ -19,7 +19,7 @@ export class V1CreateReviewerHttpRequest {
     example: 'regular',
     enum: reviewerRoles,
   })
-  readonly role: string;
+  readonly role: ReviewerRoleEnum;
 
   @ApiProperty({
     description: 'The username of the reviewer',

@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+enum Services {
+  USER_MANAGEMENT = 0;
+  PRODUCT_CATALOG = 1;
+}

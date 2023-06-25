@@ -2,7 +2,7 @@ import { HandlerBase } from '@base/use-cases';
 import { RequestHandler } from 'nestjs-mediator';
 import {
   UpdateProductProcess,
-  UpdateProductValidator,
+  UpdateProductRequestValidator,
 } from './application-services';
 import { UpdateProductMapper } from './application-services/update-product.mapper';
 import { UpdateProductRequestDto, UpdateProductResponseDto } from './dtos';
@@ -13,7 +13,7 @@ export class UpdateProductHandler extends HandlerBase<
   UpdateProductResponseDto
 > {
   constructor(
-    validator: UpdateProductValidator,
+    validator: UpdateProductRequestValidator,
     mapper: UpdateProductMapper,
     process: UpdateProductProcess,
   ) {

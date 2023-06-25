@@ -6,7 +6,7 @@ import { AddParentCategoriesHandler } from '@use-cases/add-parent-categories';
 import {
   AddParentCategoriesMapper,
   AddParentCategoriesProcess,
-  AddParentCategoriesValidator,
+  AddParentCategoriesRequestValidator,
 } from '@use-cases/add-parent-categories/application-services';
 import {
   AddParentCategoriesCommand,
@@ -23,7 +23,7 @@ import {
 
 describe('AddParentCategoriesHandler Integration Test', () => {
   let handler: AddParentCategoriesHandler;
-  let validator: AddParentCategoriesValidator;
+  let validator: AddParentCategoriesRequestValidator;
   let mapper: AddParentCategoriesMapper;
   let addParentCategoriesProcess: AddParentCategoriesProcess;
   let categoryManagementService: CategoryManagementDomainService;
@@ -34,7 +34,7 @@ describe('AddParentCategoriesHandler Integration Test', () => {
       imports: [AppModule],
     }).compile();
 
-    validator = moduleFixture.get(AddParentCategoriesValidator);
+    validator = moduleFixture.get(AddParentCategoriesRequestValidator);
     mapper = moduleFixture.get(AddParentCategoriesMapper);
     addParentCategoriesProcess = moduleFixture.get(AddParentCategoriesProcess);
     categoryManagementService = moduleFixture.get(

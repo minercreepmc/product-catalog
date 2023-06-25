@@ -3,7 +3,7 @@ import { RequestHandler } from 'nestjs-mediator';
 import {
   CreateCategoryMapper,
   CreateCategoryProcess,
-  CreateCategoryValidator,
+  CreateCategoryRequestValidator,
 } from './application-services';
 import { CreateCategoryRequestDto, CreateCategoryResponseDto } from './dtos';
 
@@ -13,7 +13,7 @@ export class CreateCategoryHandler extends HandlerBase<
   CreateCategoryResponseDto
 > {
   constructor(
-    validator: CreateCategoryValidator,
+    validator: CreateCategoryRequestValidator,
     mapper: CreateCategoryMapper,
     process: CreateCategoryProcess,
   ) {

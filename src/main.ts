@@ -6,6 +6,7 @@ import { AppModule } from './app.module';
 import * as path from 'path';
 import * as fs from 'fs';
 import { ConfigService } from '@nestjs/config';
+import { RmqService } from './modules/infrastructures/ipc/rmb';
 
 async function bootstrap() {
   // Create the NestJS app instance
@@ -28,9 +29,14 @@ async function bootstrap() {
   );
   app.enableCors();
 
+  //const rmqService = app.get<RmqService>(RmqService);
+  //app.connectMicroservice(rmqService.getOptions());
+
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT');
+
   await app.listen(port);
+  //await app.startAllMicroservices();
 }
 
 bootstrap();

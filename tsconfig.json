@@ -39,6 +39,8 @@
       "@commands/*": ["./src/domain/commands/*"],
       "@use-cases": ["./src/use-cases"],
       "@use-cases/*": ["./src/use-cases/*"],
+      "@application-services": ["./src/use-cases/application-services"],
+      "@application-services/*": ["./src/use-cases/application-services/*"],
       "@database": ["./src/infrastructures/database"],
       "@database/*": ["./src/infrastructures/database/*"],
       "@controllers": ["./src/interface-adapters/controllers"],
@@ -53,6 +55,8 @@
       "@base/*": ["./utils/base/*"],
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
+      "@shared": ["./shared"],
+      "@shared/*": ["./shared/*"],
       "@modules": ["./src/modules"],
       "@modules/*": ["./src/modules/*"]
     }
@@ -62,6 +66,7 @@
     "./tests/**/*",
     "./config/**/*",
     "./utils/**/*",
+    "./shared/**/*",
     "./jest.config.ts",
     "./tsconfig.json"
   ],

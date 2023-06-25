@@ -19,6 +19,9 @@ services:
     command: npm run start:dev
     ports:
       - 3002:3002
+    networks:
+      - product-catalog
+      - shared_network
 
   postgres:
     container_name: product-catalog-database
@@ -31,6 +34,8 @@ services:
       - ./data/db:/var/lib/postgresql/data
     ports:
       - 8002:5432
+    networks:
+      - product-catalog
 
   adminer:
     container_name: product-catalog-adminer
@@ -38,3 +43,11 @@ services:
     restart: always
     ports:
       - '8902:8080'
+    networks:
+      - product-catalog
+
+networks:
+  shared_network:
+    external: true
+  product-catalog:
+    driver: bridge

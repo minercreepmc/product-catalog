@@ -1,29 +1,35 @@
 import { V1CreateReviewerHttpController } from '@controllers/http/v1';
-import { ReviewerManagementDomainService } from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { CreateReviewerHandler } from '@use-cases/create-reviewer';
 import {
   CreateReviewerMapper,
   CreateReviewerProcess,
-  CreateReviewerValidator,
+  CreateReviewerRequestValidator,
 } from '@use-cases/create-reviewer/application-services';
 import { MediatorModule } from 'nestjs-mediator';
+import { DomainServicesModule } from '../domains';
 import { DatabaseModule } from '../infrastructures/database';
+import { ApplicationServicesModule } from './application-services';
 
-const domainServices: Provider[] = [ReviewerManagementDomainService];
 const useCases: Provider[] = [
   CreateReviewerHandler,
-  CreateReviewerValidator,
+  CreateReviewerRequestValidator,
   CreateReviewerProcess,
   CreateReviewerMapper,
 ];
 
 const controllers = [V1CreateReviewerHttpController];
-const vendors = [MediatorModule, DatabaseModule];
+const providerModules = [
+  MediatorModule,
+  DatabaseModule,
+  DomainServicesModule,
+  ApplicationServicesModule,
+];
 
 @Module({
-  imports: [...vendors],
+  imports: [...providerModules],
   controllers,
-  providers: [...domainServices, ...useCases],
+  providers: [...useCases],
+  exports: [CreateReviewerHandler],
 })
 export class CreateReviewerModule {}

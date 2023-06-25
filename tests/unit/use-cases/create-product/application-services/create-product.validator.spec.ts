@@ -1,12 +1,12 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { CreateProductValidator } from '@use-cases/create-product/application-services';
+import { CreateProductRequestValidator } from '@use-cases/create-product/application-services';
 import { CreateProductRequestDto } from '@use-cases/create-product/dtos';
 
 describe('CreateProductValidator', () => {
-  let validator: CreateProductValidator;
+  let validator: CreateProductRequestValidator;
 
   beforeEach(() => {
-    validator = new CreateProductValidator();
+    validator = new CreateProductRequestValidator();
   });
 
   describe('validate', () => {

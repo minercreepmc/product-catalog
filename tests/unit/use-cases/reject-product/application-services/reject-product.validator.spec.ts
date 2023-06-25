@@ -1,13 +1,13 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import { RejectProductValidator } from '@use-cases/reject-product/application-services';
+import { RejectProductRequestValidator } from '@use-cases/reject-product/application-services';
 import { RejectProductRequestDto } from '@use-cases/reject-product/dtos';
 
 describe('RejectProductValidator', () => {
-  let rejectProductValidator: RejectProductValidator;
+  let rejectProductValidator: RejectProductRequestValidator;
 
   beforeEach(() => {
-    rejectProductValidator = new RejectProductValidator();
+    rejectProductValidator = new RejectProductRequestValidator();
   });
 
   it('should validate a valid command', () => {

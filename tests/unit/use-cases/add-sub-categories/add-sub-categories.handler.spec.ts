@@ -2,7 +2,7 @@ import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
 import {
   AddSubCategoriesMapper,
   AddSubCategoriesProcess,
-  AddSubCategoriesValidator,
+  AddSubCategoriesRequestValidator,
 } from '@use-cases/add-sub-categories/application-services';
 import {
   AddSubCategoriesRequestDto,
@@ -25,12 +25,12 @@ import {
 
 describe('AddSubCategoriesHandler', () => {
   let handler: AddSubCategoriesHandler;
-  let validator: MockProxy<AddSubCategoriesValidator>;
+  let validator: MockProxy<AddSubCategoriesRequestValidator>;
   let addSubCategoryProcess: MockProxy<AddSubCategoriesProcess>;
   let mapper: MockProxy<AddSubCategoriesMapper>;
 
   beforeEach(() => {
-    validator = mock<AddSubCategoriesValidator>();
+    validator = mock<AddSubCategoriesRequestValidator>();
     addSubCategoryProcess = mock<AddSubCategoriesProcess>();
     mapper = mock<AddSubCategoriesMapper>();
 

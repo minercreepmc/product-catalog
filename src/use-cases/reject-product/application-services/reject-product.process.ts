@@ -1,124 +1,62 @@
-import { ProductAggregate } from '@aggregates/product';
-import { ReviewerAggregate } from '@aggregates/reviewer';
-import { ProcessBase } from '@base/use-cases';
+import { CompositeBusinessRulesEnforcer, ProcessBase } from '@base/use-cases';
 import { RejectProductCommand } from '@commands';
 import { ProductRejectedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
-import {
-  ProductApprovalDomainService,
-  ProductManagementDomainService,
-  ReviewerManagementDomainService,
-} from '@domain-services';
+import { ProductApprovalDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
-import { ProductIdValueObject } from '@value-objects/product';
-import { ReviewerIdValueObject } from '@value-objects/reviewer';
+import {
+  ProductBusinessEnforcer,
+  ReviewerBusinessEnforcer,
+} from '@use-cases/application-services/process';
 
 export type RejectProductProcessSuccess = ProductRejectedDomainEvent;
-export type RejectProductProcessFailure = Array<
-  | ProductDomainExceptions.NotSubmittedForApproval
-  | ReviewerDomainExceptions.NotAuthorizedToReject
+
+type ProductFailure = Array<
   | ProductDomainExceptions.DoesNotExist
-  | ReviewerDomainExceptions.DoesNotExist
+  | ProductDomainExceptions.NotSubmittedForApproval
 >;
+type ReviewerFailure = Array<
+  | ReviewerDomainExceptions.DoesNotExist
+  | ReviewerDomainExceptions.NotAuthorizedToReject
+>;
+
+export type RejectProductProcessFailure = ProductFailure | ReviewerFailure;
 
 @Injectable()
 export class RejectProductProcess extends ProcessBase<
   RejectProductProcessSuccess,
   RejectProductProcessFailure
 > {
-  constructor(
-    private readonly productManagementService: ProductManagementDomainService,
-    private readonly reviewerManagmentService: ReviewerManagementDomainService,
-    private readonly productApprovalService: ProductApprovalDomainService,
-  ) {
-    super();
-  }
-
-  product: ProductAggregate;
-  reviewer: ReviewerAggregate;
-  reviewerIsAdmin: boolean;
-  productIsSubmitted: boolean;
-
-  async execute(command: RejectProductCommand) {
-    const { productId, reviewerId } = command;
-    this.init();
-    await this.validateProductMustExist(productId);
-    await this.validateReviewerMustExist(reviewerId);
-
-    if (this.product && this.reviewer) {
-      this.validateReviewerMustBeAdmin(this.reviewer);
-      this.productMustBeSubmittedForApproval(this.product);
-    }
-
-    if (this.productIsSubmitted && this.reviewerIsAdmin) {
-      await this.rejectProduct(command);
-    }
-
-    return this.getValidationResult();
-  }
-
-  protected init(): void {
-    this.clearValue();
-    this.clearExceptions();
-    this.product = null;
-    this.reviewer = null;
-    this.reviewerIsAdmin = false;
-    this.productIsSubmitted = false;
-  }
-
-  private async validateProductMustExist(
-    productId: ProductIdValueObject,
+  protected async enforceBusinessRules(
+    command: RejectProductCommand,
   ): Promise<void> {
-    const product = await this.productManagementService.getProductById(
-      productId,
-    );
+    const { productId, reviewerId } = command;
 
-    this.product = product;
-    if (!product) {
-      this.exceptions.push(new ProductDomainExceptions.DoesNotExist());
+    await this.productEnforcer.productIdMustExist(productId);
+    await this.reviewerEnforcer.reviewerIdMustExist(reviewerId);
+
+    if (this.hasNoExceptions()) {
+      this.reviewerEnforcer.reviewerMustBeAdmin();
+      this.productEnforcer.productMustBeSubmittedForApproval();
     }
   }
-
-  private async validateReviewerMustExist(reviewerId: ReviewerIdValueObject) {
-    const reviewer = await this.reviewerManagmentService.getReviewerById(
-      reviewerId,
-    );
-
-    this.reviewer = reviewer;
-
-    if (!reviewer) {
-      this.exceptions.push(new ReviewerDomainExceptions.DoesNotExist());
-    }
+  protected executeMainTask(
+    command: RejectProductCommand,
+  ): Promise<ProductRejectedDomainEvent> {
+    return this.productApprovalService.rejectProduct(command);
   }
 
-  private validateReviewerMustBeAdmin(reviewer: ReviewerAggregate) {
-    const isAdmin = reviewer.isAdmin();
-    if (!isAdmin) {
-      this.exceptions.push(
-        new ReviewerDomainExceptions.NotAuthorizedToReject(),
-      );
-    } else {
-      this.reviewerIsAdmin = true;
-    }
-  }
-
-  private productMustBeSubmittedForApproval(product: ProductAggregate) {
-    const isSubmittedForApproval = product.isSubmitted();
-    if (!isSubmittedForApproval) {
-      this.exceptions.push(
-        new ProductDomainExceptions.NotSubmittedForApproval(),
-      );
-    } else {
-      this.productIsSubmitted = true;
-    }
-  }
-
-  private async rejectProduct(command: RejectProductCommand) {
-    const productRejected = await this.productApprovalService.rejectProduct(
-      command,
-    );
-
-    this.value = productRejected;
+  constructor(
+    private readonly productApprovalService: ProductApprovalDomainService,
+    private readonly productEnforcer: ProductBusinessEnforcer<ProductFailure>,
+    private readonly reviewerEnforcer: ReviewerBusinessEnforcer<ReviewerFailure>,
+  ) {
+    const composite = new CompositeBusinessRulesEnforcer();
+    composite.addEnforcer(productEnforcer);
+    composite.addEnforcer(reviewerEnforcer);
+    super({
+      compositeBusinessEnforcer: composite,
+    });
   }
 }

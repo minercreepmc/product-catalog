@@ -11,11 +11,11 @@ export class V1ApproveProductHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(dto: ApproveProductResponseDto) {
-    const { reviewerId, productId, message, productStatus } = dto;
+  constructor(dto: Omit<ApproveProductResponseDto, 'message'>) {
+    const { reviewerId, productId, productStatus } = dto;
     this.reviewerId = reviewerId;
     this.productId = productId;
-    this.message = message;
     this.productStatus = productStatus;
+    this.message = 'Product approved';
   }
 }

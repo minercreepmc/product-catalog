@@ -9,7 +9,7 @@ import { RejectProductHandler } from '@use-cases/reject-product';
 import {
   RejectProductMapper,
   RejectProductProcess,
-  RejectProductValidator,
+  RejectProductRequestValidator,
 } from '@use-cases/reject-product/application-services';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
@@ -22,7 +22,7 @@ const domainServices: Provider[] = [
 
 const applicationServices: Provider[] = [
   RejectProductHandler,
-  RejectProductValidator,
+  RejectProductRequestValidator,
   RejectProductProcess,
   RejectProductMapper,
 ];

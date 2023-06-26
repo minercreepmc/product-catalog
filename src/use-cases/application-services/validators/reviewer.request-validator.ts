@@ -14,7 +14,7 @@ export type ReviewerRequestDto = CreateReviewerRequestDto &
 
 export class ReviewerRequestValidator extends RequestValidatorBase {
   _validate(requestDto: ReviewerRequestDto): void {
-    //
+    throw new Error('Method not implemented.');
   }
 
   translateExceptionToUserFriendlyMessage(
@@ -27,6 +27,8 @@ export class ReviewerRequestValidator extends RequestValidatorBase {
         return new ReviewerDomainExceptions.NameDoesNotValid();
       case ReviewerRoleValueObject.name:
         return new ReviewerDomainExceptions.RoleDoesNotValid();
+      case ReviewerIdValueObject.name:
+        return new ReviewerDomainExceptions.IdDoesNotValid();
       default:
         return exception;
     }

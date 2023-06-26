@@ -1,9 +1,4 @@
 import { V1CreateCategoryHttpController } from '@controllers/http/v1';
-import {
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-  ProductManagementDomainService,
-} from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { CreateCategoryHandler } from '@use-cases/create-category';
 import {
@@ -13,14 +8,10 @@ import {
 } from '@use-cases/create-category/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
+import { ApplicationServicesModule } from './application-services';
+import { DomainServicesModule } from '@modules/domains';
 
-const domainServices: Provider[] = [
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-  ProductManagementDomainService,
-];
-
-const applicationServices: Provider[] = [
+const useCase: Provider[] = [
   CreateCategoryHandler,
   CreateCategoryRequestValidator,
   CreateCategoryProcess,
@@ -28,11 +19,16 @@ const applicationServices: Provider[] = [
 ];
 
 const controllers = [V1CreateCategoryHttpController];
-const vendors = [MediatorModule, DatabaseModule];
+const sharedModules = [
+  MediatorModule,
+  DatabaseModule,
+  DomainServicesModule,
+  ApplicationServicesModule,
+];
 
 @Module({
-  imports: [...vendors],
+  imports: [...sharedModules],
   controllers,
-  providers: [...domainServices, ...applicationServices],
+  providers: [...useCase],
 })
 export class CreateCategoryModule {}

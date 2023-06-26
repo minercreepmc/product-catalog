@@ -189,7 +189,7 @@ describe('V1RejectProductHttpController (PUT)', () => {
 
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
-          new ReviewerDomainExceptions.NotAuthorizedToReject(),
+          new ReviewerDomainExceptions.NotAuthorized(),
         ]),
       );
     });

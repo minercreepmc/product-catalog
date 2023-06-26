@@ -30,13 +30,8 @@ export namespace ReviewerDomainExceptions {
     readonly code = ReviewerDomainExceptionCodes.RoleDoesNotValid;
   }
 
-  export class NotAuthorizedToApprove extends ReviewerValidationException {
-    readonly message = 'Reviewer not authorized to approve';
-    readonly code = ReviewerDomainExceptionCodes.NotAuthorizedToApprove;
-  }
-
-  export class NotAuthorizedToReject extends ReviewerValidationException {
-    readonly message = 'Reviewer not authorized to reject';
-    readonly code = ReviewerDomainExceptionCodes.NotAuthorizedToReject;
+  export class NotAuthorized extends ReviewerValidationException {
+    readonly message = 'Reviewer not authorized';
+    readonly code = ReviewerDomainExceptionCodes.NotAuthorized;
   }
 }

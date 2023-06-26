@@ -8,6 +8,7 @@ import {
 import { MediatorModule } from 'nestjs-mediator';
 import { DomainServicesModule } from '../domains';
 import { DatabaseModule } from '../infrastructures/database';
+import { ApplicationServicesModule } from './application-services';
 
 const useCases: Provider[] = [
   RemoveReviewerHandler,
@@ -17,10 +18,15 @@ const useCases: Provider[] = [
 ];
 
 //const controllers = [V1CreateReviewerHttpController];
-const providerModules = [MediatorModule, DatabaseModule, DomainServicesModule];
+const sharedModules = [
+  MediatorModule,
+  DatabaseModule,
+  DomainServicesModule,
+  ApplicationServicesModule,
+];
 
 @Module({
-  imports: [...providerModules],
+  imports: [...sharedModules],
   controllers: [],
   providers: [...useCases],
 })

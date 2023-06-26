@@ -5,7 +5,6 @@ import { ProductCreatedDomainEvent } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { CreateProductCommand } from '@commands';
 import { ProcessBase } from '@base/use-cases';
-import { ProductCommandValidator } from '@use-cases/application-services/validators';
 import { ProductBusinessEnforcer } from '@use-cases/application-services/process';
 
 export type CreateProductProcessSuccess = ProductCreatedDomainEvent;
@@ -43,7 +42,7 @@ export class CreateProductProcess extends ProcessBase<
 
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
-    private readonly productEnforcer: ProductCommandValidator<CreateProductProcessFailure>,
+    private readonly productEnforcer: ProductBusinessEnforcer<CreateProductProcessFailure>,
   ) {
     super({
       businessEnforcer: productEnforcer,

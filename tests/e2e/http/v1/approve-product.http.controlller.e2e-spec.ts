@@ -62,14 +62,16 @@ describe('V1ApproveProductHttpController (e2e)', () => {
     const createProductResponse = await request(app.getHttpServer())
       .post(`/${apiPrefix}/${productsUrl}`)
       .set('Accept', 'application/json')
-      .send(createProductRequest);
+      .send(createProductRequest)
+      .expect(HttpStatus.CREATED);
 
     expect(createProductResponse.status).toBe(HttpStatus.CREATED);
 
     const createRegularReviewerResponse = await request(app.getHttpServer())
       .post(`/${apiPrefix}/${reviewersUrl}`)
       .set('Accept', 'application/json')
-      .send(createRegularReviewerRequest);
+      .send(createRegularReviewerRequest)
+      .expect(HttpStatus.CREATED);
 
     expect(createRegularReviewerResponse.status).toBe(HttpStatus.CREATED);
     expect(createRegularReviewerResponse.body.role).toBe(
@@ -87,7 +89,8 @@ describe('V1ApproveProductHttpController (e2e)', () => {
     const createAdminReviewerResponse = await request(app.getHttpServer())
       .post(`/${apiPrefix}/${reviewersUrl}`)
       .set('Accept', 'application/json')
-      .send(createAdminReviewerRequest);
+      .send(createAdminReviewerRequest)
+      .expect(HttpStatus.CREATED);
 
     const { productId } = createProductResponse.body;
     const regularResponseBody: V1CreateReviewerHttpResponse =
@@ -157,7 +160,7 @@ describe('V1ApproveProductHttpController (e2e)', () => {
 
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
-          new ReviewerDomainExceptions.NotAuthorizedToApprove(),
+          new ReviewerDomainExceptions.NotAuthorized(),
         ]),
       );
     });

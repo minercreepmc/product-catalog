@@ -11,7 +11,7 @@ import { DomainServicesModule } from '../domains';
 import { DatabaseModule } from '../infrastructures/database';
 import { ApplicationServicesModule } from './application-services';
 
-const useCases: Provider[] = [
+const useCase: Provider[] = [
   CreateReviewerHandler,
   CreateReviewerRequestValidator,
   CreateReviewerProcess,
@@ -29,7 +29,7 @@ const providerModules = [
 @Module({
   imports: [...providerModules],
   controllers,
-  providers: [...useCases],
+  providers: [...useCase],
   exports: [CreateReviewerHandler],
 })
 export class CreateReviewerModule {}

@@ -5,6 +5,7 @@ import {
   CategoryVerificationDomainService,
   ProductManagementDomainService,
 } from '@domain-services';
+import { Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
   CategoryNameValueObject,
@@ -23,6 +24,7 @@ export type CategoryProcessFailure = Array<
   | ProductDomainExceptions.DoesNotExist
 >;
 
+@Injectable()
 export class CategoryBusinessEnforcer<
   Failures extends CategoryProcessFailure,
 > extends BusinessRulesEnforcer<Failures> {
@@ -150,7 +152,7 @@ export class CategoryBusinessEnforcer<
     }
   }
 
-  async parentIdsAndSubCategoryIdsOverlap(
+  async parentIdsAndSubCategoryIdsNotOverlap(
     parentIds: ParentCategoryIdValueObject[],
     subCategoryIds: SubCategoryIdValueObject[],
   ) {

@@ -2,6 +2,7 @@ import { ReviewerAggregate } from '@aggregates/reviewer';
 import { BusinessRulesEnforcer } from '@base/use-cases';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ReviewerManagementDomainService } from '@domain-services';
+import { Injectable } from '@nestjs/common';
 import {
   ReviewerIdValueObject,
   ReviewerNameValueObject,
@@ -19,10 +20,11 @@ export interface ReviewerCommand {
 export type ReviewerProcessFailures = Array<
   | ReviewerDomainExceptions.DoesNotExist
   | ReviewerDomainExceptions.DoesExist
-  | ReviewerDomainExceptions.NotAuthorizedToApprove
-  | ReviewerDomainExceptions.NotAuthorizedToReject
+  | ReviewerDomainExceptions.NotAuthorized
+  | ReviewerDomainExceptions.NotAuthorized
 >;
 
+@Injectable()
 export class ReviewerBusinessEnforcer<
   Failures extends ReviewerProcessFailures,
 > extends BusinessRulesEnforcer<Failures> {
@@ -56,9 +58,7 @@ export class ReviewerBusinessEnforcer<
     if (!this.reviewer) {
       this.exceptions.push(new ReviewerDomainExceptions.DoesNotExist());
     } else if (!this.reviewer.role.isAdmin()) {
-      this.exceptions.push(
-        new ReviewerDomainExceptions.NotAuthorizedToApprove(),
-      );
+      this.exceptions.push(new ReviewerDomainExceptions.NotAuthorized());
     }
   }
 }

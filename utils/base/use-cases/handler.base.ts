@@ -1,13 +1,13 @@
 import { IRequestHandler, Request } from 'nestjs-mediator';
 import { Err, Ok } from 'oxide.ts';
 import { ResponseResult } from './dto.base';
-import { ProcessBase } from './process.base';
+import { ProcessBase } from './process';
 import {
   UseCaseCommandValidationExceptions,
   UseCaseProcessExceptions,
 } from './use-case-exceptions.base';
 import { UseCaseMapperBase } from './use-case-mapper.base';
-import { RequestValidatorBase } from './validator.base';
+import { RequestValidatorBase } from './validator';
 
 export abstract class HandlerBase<RequestDto extends Request<any>, ResponseDto>
   implements IRequestHandler<RequestDto, ResponseResult<ResponseDto>>

@@ -2,6 +2,7 @@ import { ProductAggregate } from '@aggregates/product';
 import { BusinessRulesEnforcer } from '@base/use-cases';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductManagementDomainService } from '@domain-services';
+import { Injectable } from '@nestjs/common';
 import {
   ProductIdValueObject,
   ProductNameValueObject,
@@ -13,6 +14,7 @@ export type ProductProcessFailures = Array<
   | ProductDomainExceptions.NotSubmittedForApproval
 >;
 
+@Injectable()
 export class ProductBusinessEnforcer<
   Failures extends ProductProcessFailures,
 > extends BusinessRulesEnforcer<Failures> {

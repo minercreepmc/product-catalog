@@ -1,9 +1,9 @@
 import { HandlerBase } from '@base/use-cases';
-import { ProductRequestValidator } from '@use-cases/application-services/validators';
 import { RequestHandler } from 'nestjs-mediator';
 import {
   CreateProductMapper,
   CreateProductProcess,
+  CreateProductRequestValidator,
 } from './application-services';
 import { CreateProductRequestDto, CreateProductResponseDto } from './dtos';
 
@@ -13,7 +13,7 @@ export class CreateProductHandler extends HandlerBase<
   CreateProductResponseDto
 > {
   constructor(
-    validator: ProductRequestValidator,
+    validator: CreateProductRequestValidator,
     mapper: CreateProductMapper,
     process: CreateProductProcess,
   ) {

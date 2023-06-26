@@ -23,19 +23,7 @@ export type ProductRequestDto =
 @Injectable()
 export class ProductRequestValidator extends RequestValidatorBase {
   _validate(requestDto: ProductRequestDto): void {
-    const { image, description, price, name } = requestDto;
-    if (name) {
-      this.validateName(name);
-    }
-    if (price) {
-      this.validatePrice(price);
-    }
-    if (description) {
-      this.validateDescription(description);
-    }
-    if (image) {
-      this.validateImage(image);
-    }
+    throw new Error('Method not implemented.');
   }
   translateExceptionToUserFriendlyMessage(
     options: TranslateOptions,
@@ -52,6 +40,8 @@ export class ProductRequestValidator extends RequestValidatorBase {
         return new ProductDomainExceptions.DescriptionDoesNotValid();
       case ProductImageValueObject.name:
         return new ProductDomainExceptions.ImageDoesNotValid();
+      case RejectionReasonValueObject.name:
+        return new ProductDomainExceptions.RejectionReasonDoesNotValid();
       default:
         return exception;
     }

@@ -14,7 +14,8 @@ import { UpdateProductModule } from './update-product.module';
   imports: [
     CreateProductModule,
     UpdateProductModule,
-    CreateReviewerSagaModule,
+    //CreateReviewerSagaModule,
+    CreateReviewerModule,
     SubmitForApprovalModule,
     ApproveProductModule,
     RejectProductModule,

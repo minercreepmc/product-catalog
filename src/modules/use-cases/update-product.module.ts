@@ -1,5 +1,5 @@
 import { V1UpdateProductHttpController } from '@controllers/http/v1';
-import { ProductManagementDomainService } from '@domain-services';
+import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
 import { UpdateProductHandler } from '@use-cases/update-product';
 import {
@@ -9,10 +9,9 @@ import {
 } from '@use-cases/update-product/application-services';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
+import { ApplicationServicesModule } from './application-services';
 
-const domainServices: Provider[] = [ProductManagementDomainService];
-
-const useCases: Provider[] = [
+const useCase: Provider[] = [
   UpdateProductHandler,
   UpdateProductMapper,
   UpdateProductRequestValidator,
@@ -21,11 +20,16 @@ const useCases: Provider[] = [
 
 const controllers = [V1UpdateProductHttpController];
 
-const vendors = [MediatorModule, DatabaseModule];
+const sharedModules = [
+  MediatorModule,
+  DatabaseModule,
+  DomainServicesModule,
+  ApplicationServicesModule,
+];
 
 @Module({
-  imports: [...vendors],
+  imports: [...sharedModules],
   controllers,
-  providers: [...domainServices, ...useCases],
+  providers: [...useCase],
 })
 export class UpdateProductModule {}

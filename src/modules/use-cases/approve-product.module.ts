@@ -1,39 +1,34 @@
 import { V1ApproveProductHttpController } from '@controllers/http/v1';
-import {
-  ProductApprovalDomainService,
-  ProductManagementDomainService,
-  ReviewerManagementDomainService,
-} from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
 import { ApproveProductHandler } from '@use-cases/approve-product';
 import {
   ApproveProductMapper,
   ApproveProductProcess,
-  ApproveProductValidator,
+  ApproveProductRequestValidator,
 } from '@use-cases/approve-product/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
+import { ApplicationServicesModule } from './application-services';
+import { DomainServicesModule } from '@modules/domains';
 
-const domainServices: Provider[] = [
-  ProductManagementDomainService,
-  ReviewerManagementDomainService,
-  ProductApprovalDomainService,
-];
-
-const useCases: Provider[] = [
+const useCase: Provider[] = [
   ApproveProductHandler,
-  ApproveProductValidator,
+  ApproveProductRequestValidator,
   ApproveProductProcess,
   ApproveProductMapper,
 ];
 
 const controllers = [V1ApproveProductHttpController];
-const vendors = [MediatorModule, DatabaseModule];
+const sharedModules = [
+  MediatorModule,
+  DatabaseModule,
+  DomainServicesModule,
+  ApplicationServicesModule,
+];
 
 @Module({
-  imports: [...vendors],
+  imports: [...sharedModules],
   controllers,
-  providers: [...domainServices, ...useCases],
+  providers: [...useCase],
 })
 export class ApproveProductModule {}

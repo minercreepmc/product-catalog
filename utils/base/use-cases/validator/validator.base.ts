@@ -26,11 +26,13 @@ export abstract class RequestValidatorBase {
 
   abstract _validate(requestDto: RequestDtoBase<any>): void;
 
-  abstract translateExceptionToUserFriendlyMessage(
+  translateExceptionToUserFriendlyMessage(
     options: TranslateOptions,
-  ): ValidationExceptionBase;
+  ): ValidationExceptionBase {
+    throw new Error('Method should be overridden in a derived class');
+  }
 
-  protected init() {
+  init() {
     this.clearExceptions();
   }
 

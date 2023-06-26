@@ -1,8 +1,4 @@
 import { V1AddSubCategoriesHttpController } from '@controllers/http/v1';
-import {
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-} from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
 import { AddSubCategoriesHandler } from '@use-cases/add-sub-categories';
 import {
@@ -12,13 +8,10 @@ import {
 } from '@use-cases/add-sub-categories/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
+import { ApplicationServicesModule } from './application-services';
+import { DomainServicesModule } from '@modules/domains';
 
-const domainServices: Provider[] = [
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-];
-
-const applicationServices: Provider[] = [
+const useCase: Provider[] = [
   AddSubCategoriesHandler,
   AddSubCategoriesMapper,
   AddSubCategoriesRequestValidator,
@@ -27,11 +20,16 @@ const applicationServices: Provider[] = [
 
 const controllers = [V1AddSubCategoriesHttpController];
 
-const vendors = [MediatorModule, DatabaseModule];
+const sharedModules = [
+  MediatorModule,
+  DatabaseModule,
+  DomainServicesModule,
+  ApplicationServicesModule,
+];
 
 @Module({
-  imports: [...vendors],
+  imports: [...sharedModules],
   controllers,
-  providers: [...domainServices, ...applicationServices],
+  providers: [...useCase],
 })
 export class AddSubCategoryModule {}

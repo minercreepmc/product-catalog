@@ -12,13 +12,10 @@ import {
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { V1AddParentCategoriesHttpController } from '@controllers/http/v1/add-parent-categories';
 import { MediatorModule } from 'nestjs-mediator';
+import { ApplicationServicesModule } from './application-services';
+import { DomainServicesModule } from '@modules/domains';
 
-const domainServices: Provider[] = [
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-];
-
-const applicationServices: Provider[] = [
+const useCase: Provider[] = [
   AddParentCategoriesHandler,
   AddParentCategoriesMapper,
   AddParentCategoriesRequestValidator,
@@ -27,11 +24,16 @@ const applicationServices: Provider[] = [
 
 const controllers = [V1AddParentCategoriesHttpController];
 
-const vendors = [MediatorModule, DatabaseModule];
+const sharedModules = [
+  MediatorModule,
+  DatabaseModule,
+  ApplicationServicesModule,
+  DomainServicesModule,
+];
 
 @Module({
-  imports: [...vendors],
+  imports: [...sharedModules],
   controllers,
-  providers: [...domainServices, ...applicationServices],
+  providers: [...useCase],
 })
 export class AddParentCategoryModule {}

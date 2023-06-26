@@ -81,7 +81,7 @@ export class ProductApprovalDomainService {
       }
 
       if (!reviewer.role.isAdmin()) {
-        throw new ReviewerDomainExceptions.NotAuthorizedToApprove();
+        throw new ReviewerDomainExceptions.NotAuthorized();
       }
 
       const productApproved = product.approve(reviewerId);
@@ -107,7 +107,7 @@ export class ProductApprovalDomainService {
       }
 
       if (!reviewer.role.isAdmin()) {
-        throw new ReviewerDomainExceptions.NotAuthorizedToReject();
+        throw new ReviewerDomainExceptions.NotAuthorized();
       }
 
       const productRejected = product.reject(reviewerId, reason);

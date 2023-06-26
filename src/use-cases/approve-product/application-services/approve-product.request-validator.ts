@@ -1,4 +1,4 @@
-import { CompositeRequestValidator } from '@base/use-cases';
+import { CompositeRequestValidator, TranslateOptions } from '@base/use-cases';
 import { Injectable } from '@nestjs/common';
 import {
   ProductRequestValidator,
@@ -13,14 +13,14 @@ export class ApproveProductRequestValidator extends CompositeRequestValidator {
     private reviewerValidator: ReviewerRequestValidator,
   ) {
     super();
-    this.addValidator(productValidator);
     this.addValidator(reviewerValidator);
+    this.addValidator(productValidator);
   }
 
   _validate(requestDto: ApproveProductRequestDto): void {
     const { productId, reviewerId } = requestDto;
-    this.productValidator.validateProductId(productId);
     this.reviewerValidator.validateReviewerId(reviewerId);
+    this.productValidator.validateProductId(productId);
   }
 
   // protected translateExceptionToUserFriendlyMessage(

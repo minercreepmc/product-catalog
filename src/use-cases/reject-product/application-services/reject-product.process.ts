@@ -17,8 +17,7 @@ type ProductFailure = Array<
   | ProductDomainExceptions.NotSubmittedForApproval
 >;
 type ReviewerFailure = Array<
-  | ReviewerDomainExceptions.DoesNotExist
-  | ReviewerDomainExceptions.NotAuthorizedToReject
+  ReviewerDomainExceptions.DoesNotExist | ReviewerDomainExceptions.NotAuthorized
 >;
 
 export type RejectProductProcessFailure = ProductFailure | ReviewerFailure;

@@ -35,6 +35,10 @@ export class CreateCategoryProcess extends ProcessBase<
       this.categoryEnforcer.parentCategoryIdMustExistIfProvided(parentIds),
       this.categoryEnforcer.subCategoryIdMustExistIfProvided(subCategoryIds),
       this.categoryEnforcer.productIdsMustExistIfProvided(productIds),
+      this.categoryEnforcer.parentIdsAndSubCategoryIdsNotOverlap(
+        parentIds,
+        subCategoryIds,
+      ),
     ];
 
     await Promise.all(businessRules);

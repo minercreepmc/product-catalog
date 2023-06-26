@@ -36,8 +36,6 @@ export class CompositeBusinessRulesEnforcer<
   }
 
   public clear(): void {
-    super.clear();
-
     for (const enforcer of this.enforcers) {
       enforcer.clear();
     }

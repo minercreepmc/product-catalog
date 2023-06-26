@@ -49,6 +49,8 @@
       "@interceptors": ["./src/interface-adapters/interceptors"],
       "@migrations": ["./src/infrastructures/database/migrations"],
       "@migrations/*": ["./src/infrastructures/database/migrations/*"],
+      "@modules": ["./src/modules"],
+      "@modules/*": ["./src/modules/*"],
       "@src": ["./src"],
       "@src/*": ["./src/*"],
       "@base": ["./utils/base"],
@@ -56,9 +58,7 @@
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
       "@shared": ["./shared"],
-      "@shared/*": ["./shared/*"],
-      "@modules": ["./src/modules"],
-      "@modules/*": ["./src/modules/*"]
+      "@shared/*": ["./shared/*"]
     }
   },
   "include": [

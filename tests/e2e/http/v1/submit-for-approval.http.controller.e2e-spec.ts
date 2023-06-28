@@ -62,9 +62,6 @@ describe('V1SubmitForApprovalHttpController (e2e)', () => {
 
       const createReviewerRequest: V1CreateReviewerHttpRequest = {
         name: generateRandomReviewerName(),
-        username: generateRandomReviewerName(),
-        password: generateRandomReviewerPassword(),
-        email: generateRandomReviewerEmail(),
         role: ReviewerRoleEnum.Regular,
       };
       const reviewerResponse = await request(app.getHttpServer())
@@ -76,7 +73,7 @@ describe('V1SubmitForApprovalHttpController (e2e)', () => {
       const reviewer: V1CreateReviewerHttpResponse = reviewerResponse.body;
 
       const submitForApprovalRequest: V1SubmitForApprovalHttpRequest = {
-        reviewerId: reviewer.reviewerId,
+        reviewerId: reviewer.id,
       };
 
       return request(app.getHttpServer())

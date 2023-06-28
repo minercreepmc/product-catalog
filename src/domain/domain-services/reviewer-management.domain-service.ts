@@ -74,7 +74,7 @@ export class ReviewerManagementDomainService {
         throw new ReviewerDomainExceptions.DoesNotExist();
       }
 
-      await this.reviewerRepository.delete(exist);
+      const removed = await this.reviewerRepository.delete(exist);
 
       return new ReviewerRemovedDomainEvent({ id });
     });

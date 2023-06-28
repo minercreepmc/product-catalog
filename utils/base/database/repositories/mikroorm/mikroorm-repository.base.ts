@@ -35,16 +35,21 @@ export abstract class MikroOrmRepositoryBase<
     return this.mapper.toDomain(saved);
   }
 
-  async delete(params: QueryParams<DomainModelDetails> = {}): Promise<boolean> {
+  async delete(
+    params: QueryParams<DomainModelDetails> = {},
+  ): Promise<DomainModel> {
     const query = this.queryMapper.toQuery(params);
 
-    const ormEntity = await this.entityManager.findOne<OrmModel>(
-      this.mikroEntityName, query
+    const entity = this.entityManager.getReference(this.mikroEntityName, query);
+    const found = await this.entityManager.findOne<OrmModel>(
+      this.mikroEntityName,
+      query,
     );
 
-    await this.entityManager.removeAndFlush(ormEntity);
-    this.logger.debug(`[Repository]: deleted ${ormEntity.id}`);
-    return true;
+    await this.entityManager.removeAndFlush(entity);
+    this.logger.debug(`[Repository]: deleted`);
+
+    return found ? this.mapper.toDomain(found) : null;
   }
 
   async findOneById(id: ID): Promise<DomainModel> {

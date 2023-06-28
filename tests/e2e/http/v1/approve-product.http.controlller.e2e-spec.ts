@@ -4,13 +4,10 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import {
-  generateRandomReviewerPassword,
   generateRandomProductId,
   generateRandomProductName,
-  generateRandomReviewerEmail,
   generateRandomReviewerId,
   generateRandomReviewerName,
-  generateRandomReviewerUsername,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import * as request from 'supertest';
@@ -53,9 +50,6 @@ describe('V1ApproveProductHttpController (e2e)', () => {
 
     const createRegularReviewerRequest: V1CreateReviewerHttpRequest = {
       name: generateRandomReviewerName(),
-      username: generateRandomReviewerUsername(),
-      email: generateRandomReviewerEmail(),
-      password: generateRandomReviewerPassword(),
       role: ReviewerRoleEnum.Regular,
     };
 
@@ -80,9 +74,6 @@ describe('V1ApproveProductHttpController (e2e)', () => {
 
     const createAdminReviewerRequest: V1CreateReviewerHttpRequest = {
       name: generateRandomReviewerName(),
-      username: generateRandomReviewerUsername(),
-      email: generateRandomReviewerEmail(),
-      password: generateRandomReviewerPassword(),
       role: ReviewerRoleEnum.Admin,
     };
 
@@ -99,8 +90,8 @@ describe('V1ApproveProductHttpController (e2e)', () => {
       createAdminReviewerResponse.body;
 
     validProductId = productId;
-    regularReviewerId = regularResponseBody.reviewerId;
-    adminReviewerId = adminResponseBody.reviewerId;
+    regularReviewerId = regularResponseBody.id;
+    adminReviewerId = adminResponseBody.id;
   });
 
   afterAll(async () => {

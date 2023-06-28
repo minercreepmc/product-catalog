@@ -1,5 +1,5 @@
-import { RequestDtoBase } from '@base/use-cases';
-import { V1RegisterMemberRequestDto } from '@shared/gateways/register-member.interface';
+import { RequestDtoBase, ResponseDtoBase } from '@base/use-cases';
+import { V1RegisterMemberRequestDto } from '@shared/proxies/handlers';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
 import { CreateReviewerRequestDto } from '../dtos';
 
@@ -35,14 +35,18 @@ export class CreateReviewerSagaRequestDto extends RequestDtoBase<CreateReviewerS
   }
 }
 
-export class CreateReviewerSagaResponseDto extends RequestDtoBase<any> {
-  readonly reviewerId: string;
+export class CreateReviewerSagaResponseDto extends ResponseDtoBase {
+  readonly id: string;
   readonly name: string;
+  readonly username: string;
+  readonly email: string;
   readonly role: string;
   constructor(dto: CreateReviewerSagaResponseDto) {
     super();
-    this.reviewerId = dto.reviewerId;
+    this.id = dto.id;
     this.name = dto.name;
+    this.username = dto.username;
+    this.email = dto.email;
     this.role = dto.role;
   }
 }

@@ -1,5 +1,7 @@
 import { V1CreateReviewerHttpController } from '@controllers/http/v1';
+import { V1CreateReviewerRmqMessageHandler } from '@message-handlers/rmq/v1';
 import { Module, Provider } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { CreateReviewerHandler } from '@use-cases/create-reviewer';
 import {
   CreateReviewerMapper,
@@ -19,8 +21,10 @@ const useCase: Provider[] = [
 ];
 
 const controllers = [V1CreateReviewerHttpController];
+const messageHandlers = [V1CreateReviewerRmqMessageHandler];
 const providerModules = [
   MediatorModule,
+  CqrsModule,
   DatabaseModule,
   DomainServicesModule,
   ApplicationServicesModule,
@@ -28,7 +32,7 @@ const providerModules = [
 
 @Module({
   imports: [...providerModules],
-  controllers,
+  controllers: [...controllers, ...messageHandlers],
   providers: [...useCase],
   exports: [CreateReviewerHandler],
 })

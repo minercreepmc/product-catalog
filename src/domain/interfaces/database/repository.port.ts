@@ -8,7 +8,7 @@ import {
 
 export interface RepositoryPort<DomainEntity, DomainEntityDetails>
   extends Save<DomainEntity>,
-    Delete<DomainEntityDetails>,
+    Delete<DomainEntity, DomainEntityDetails>,
     FindOneById<DomainEntity>,
     FindOne<DomainEntity, DomainEntityDetails>,
     Update<DomainEntity, DomainEntityDetails> {}

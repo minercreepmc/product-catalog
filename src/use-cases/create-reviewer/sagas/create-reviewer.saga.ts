@@ -1,9 +1,7 @@
-import { HandlerExceptions } from '@shared/gateways';
-import { UserProxy } from '@use-cases/application-services/proxies';
+import { ProductProxy, UserProxy } from '@shared/proxies';
+import { HandlerExceptions } from '@shared/proxies/dtos/handler.exceptions';
+import { RemoveReviewerRequestDto } from '@use-cases/remove-reviewer/dtos';
 import { Builder, Saga } from 'nestjs-saga';
-import { match } from 'oxide.ts';
-import { CreateReviewerHandler } from '../create-reviewer.handler';
-import { CreateReviewerResponseDto } from '../dtos';
 import {
   CreateReviewerSagaRequestDto,
   CreateReviewerSagaResponseDto,
@@ -12,7 +10,7 @@ import {
 @Saga(CreateReviewerSagaRequestDto)
 export class CreateReviewerSaga {
   constructor(
-    private readonly createReviewerHandler: CreateReviewerHandler,
+    private readonly productProxy: ProductProxy,
     private readonly userProxy: UserProxy,
   ) {}
 
@@ -24,7 +22,7 @@ export class CreateReviewerSaga {
   >()
     .step('create reviewer')
     .invoke(this.createReviewer)
-    .withCompensation(this.deleteReviewer)
+    .withCompensation(this.removeReviewer)
     .step('register member')
     .invoke(this.registerMember)
     .withCompensation(this.onMemberCreationFailure)
@@ -33,32 +31,47 @@ export class CreateReviewerSaga {
 
   async createReviewer(states: CreateReviewerSagaRequestDto) {
     const dto = states.makeCreateReviewerRequestDto();
-    const result = await this.createReviewerHandler.handle(dto);
-    match(result, {
-      Ok: (response: CreateReviewerResponseDto) => {
-        this.response = Object.assign(response);
-      },
-      Err: (exception: HandlerExceptions) => {
-        throw new Error(JSON.stringify(exception.exceptions));
-      },
-    });
+    let response: any;
+    try {
+      response = await this.productProxy.createReviewer(dto);
+    } catch (exceptions) {
+      if (exceptions instanceof HandlerExceptions) {
+        throw new Error(JSON.stringify(exceptions.exceptions));
+      }
+    }
+
+    Object.assign(this.response, response);
   }
 
-  async deleteReviewer(states: CreateReviewerSagaRequestDto) {
-    //
+  async removeReviewer() {
+    const dto = new RemoveReviewerRequestDto({
+      id: this.response.id,
+    });
+
+    let result: any;
+
+    try {
+      result = await this.productProxy.removeReviewer(dto);
+    } catch (exceptions) {
+      if (exceptions instanceof HandlerExceptions) {
+        throw new Error(JSON.stringify(exceptions.exceptions));
+      }
+    }
+
+    this.response = result;
   }
 
   async registerMember(states: CreateReviewerSagaRequestDto) {
-    let result: any;
+    let response: any;
     const dto = states.makeRegisterMemberRequestDto();
     try {
-      result = await this.userProxy.registerMember(dto);
+      response = await this.userProxy.registerMember(dto);
     } catch (exception) {
       if (exception instanceof HandlerExceptions) {
         throw new Error(JSON.stringify(exception.exceptions));
       }
     }
-    this.response = result;
+    Object.assign(this.response, response);
   }
 
   onMemberCreationFailure(states: CreateReviewerSagaRequestDto) {

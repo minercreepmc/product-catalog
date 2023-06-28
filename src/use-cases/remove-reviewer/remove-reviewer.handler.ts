@@ -1,5 +1,5 @@
 import { HandlerBase } from '@base/use-cases';
-import { Injectable } from '@nestjs/common';
+import { RequestHandler } from 'nestjs-mediator';
 import {
   RemoveReviewerMapper,
   RemoveReviewerProcess,
@@ -7,7 +7,7 @@ import {
 } from './application-services';
 import { RemoveReviewerRequestDto, RemoveReviewerResponseDto } from './dtos';
 
-@Injectable()
+@RequestHandler(RemoveReviewerRequestDto)
 export class RemoveReviewerHandler extends HandlerBase<
   RemoveReviewerRequestDto,
   RemoveReviewerResponseDto

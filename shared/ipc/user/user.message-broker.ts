@@ -1,4 +1,4 @@
-import { clientProxyDiToken, UserMessageBrokerPort } from '@domain-interfaces';
+import { userClientProxy, UserMessageBrokerPort } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
@@ -9,7 +9,7 @@ import { Services } from '@shared/microservices/services';
 @Injectable()
 export class UserMessageBroker implements UserMessageBrokerPort {
   constructor(
-    @Inject(clientProxyDiToken)
+    @Inject(userClientProxy)
     private readonly clientProxy: ClientProxy,
   ) {}
 

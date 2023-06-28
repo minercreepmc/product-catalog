@@ -7,6 +7,7 @@ import { CreateProductModule } from './create-product.module';
 import { CreateReviewerModule } from './create-reviewer.module';
 import { CreateReviewerSagaModule } from './create-reviewer.saga.module';
 import { RejectProductModule } from './reject-product.module';
+import { RemoveReviewerModule } from './remove-reviewer.module';
 import { SubmitForApprovalModule } from './submit-for-approval.module';
 import { UpdateProductModule } from './update-product.module';
 
@@ -14,8 +15,9 @@ import { UpdateProductModule } from './update-product.module';
   imports: [
     CreateProductModule,
     UpdateProductModule,
-    //CreateReviewerSagaModule,
     CreateReviewerModule,
+    CreateReviewerSagaModule,
+    RemoveReviewerModule,
     SubmitForApprovalModule,
     ApproveProductModule,
     RejectProductModule,

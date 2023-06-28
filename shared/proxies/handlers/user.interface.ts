@@ -3,6 +3,33 @@ import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "";
 
+export enum V1UserPattern {
+  REGISTER_MEMBER = 0,
+  UNRECOGNIZED = -1,
+}
+
+export function v1UserPatternFromJSON(object: any): V1UserPattern {
+  switch (object) {
+    case 0:
+    case "REGISTER_MEMBER":
+      return V1UserPattern.REGISTER_MEMBER;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return V1UserPattern.UNRECOGNIZED;
+  }
+}
+
+export function v1UserPatternToJSON(object: V1UserPattern): string {
+  switch (object) {
+    case V1UserPattern.REGISTER_MEMBER:
+      return "REGISTER_MEMBER";
+    case V1UserPattern.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface V1RegisterMemberRequestDto {
   username: string;
   email: string;
@@ -12,9 +39,6 @@ export interface V1RegisterMemberRequestDto {
 export interface V1RegisterMemberResponseDto {
   username: string;
   email: string;
-}
-
-export interface V1RegisterMemberPattern {
 }
 
 function createBaseV1RegisterMemberRequestDto(): V1RegisterMemberRequestDto {
@@ -172,59 +196,15 @@ export const V1RegisterMemberResponseDto = {
   },
 };
 
-function createBaseV1RegisterMemberPattern(): V1RegisterMemberPattern {
-  return {};
-}
-
-export const V1RegisterMemberPattern = {
-  encode(_: V1RegisterMemberPattern, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): V1RegisterMemberPattern {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseV1RegisterMemberPattern();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(_: any): V1RegisterMemberPattern {
-    return {};
-  },
-
-  toJSON(_: V1RegisterMemberPattern): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<V1RegisterMemberPattern>, I>>(base?: I): V1RegisterMemberPattern {
-    return V1RegisterMemberPattern.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<V1RegisterMemberPattern>, I>>(_: I): V1RegisterMemberPattern {
-    const message = createBaseV1RegisterMemberPattern();
-    return message;
-  },
-};
-
-export interface V1UserServiceInterface {
+export interface V1UserInterface {
   registerMember(request: V1RegisterMemberRequestDto): Promise<V1RegisterMemberResponseDto>;
 }
 
-export class V1UserServiceInterfaceClientImpl implements V1UserServiceInterface {
+export class V1UserInterfaceClientImpl implements V1UserInterface {
   private readonly rpc: Rpc;
   private readonly service: string;
   constructor(rpc: Rpc, opts?: { service?: string }) {
-    this.service = opts?.service || "V1UserServiceInterface";
+    this.service = opts?.service || "V1UserInterface";
     this.rpc = rpc;
     this.registerMember = this.registerMember.bind(this);
   }

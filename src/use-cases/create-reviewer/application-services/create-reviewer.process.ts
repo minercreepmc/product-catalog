@@ -41,24 +41,4 @@ export class CreateReviewerProcess extends ProcessBase<
       businessEnforcer: reviewerEnforcer,
     });
   }
-
-  // async executeSaga(sagaStates: CreateReviewerSagaStates) {
-  //   try {
-  //     const result = await this.commandBus.execute(sagaStates);
-  //     console.log(result);
-  //   } catch (e) {
-  //     if (e instanceof SagaInvocationError) {
-  //       console.log('SagaInvocationError');
-  //       console.log(e.originalError);
-  //       console.log(e.step);
-  //
-  //       throw e.originalError;
-  //     } else if (e instanceof SagaCompensationError) {
-  //       console.log('SagaCompensationError');
-  //       console.log(e.originalError);
-  //       console.log(e.step);
-  //       throw e.originalError;
-  //     }
-  //   }
-  //}
 }

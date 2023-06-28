@@ -29,14 +29,14 @@ async function bootstrap() {
   );
   app.enableCors();
 
-  //const rmqService = app.get<RmqService>(RmqService);
-  //app.connectMicroservice(rmqService.getOptions());
+  const rmqService = app.get<RmqService>(RmqService);
+  app.connectMicroservice(rmqService.getOptions());
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT');
 
   await app.listen(port);
-  //await app.startAllMicroservices();
+  await app.startAllMicroservices();
 }
 
 bootstrap();

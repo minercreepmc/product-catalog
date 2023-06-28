@@ -12,7 +12,7 @@ export type RemoveReviewerResponseDtoOptions = Pick<
 
 export class RemoveReviewerRequestDto extends RequestDtoBase<RemoveReviewerResponseDto> {
   id: string;
-  constructor(options: RemoveReviewerRequestDtoOptions) {
+  constructor(options: any) {
     super();
     Object.assign(this, options);
   }

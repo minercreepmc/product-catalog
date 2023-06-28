@@ -12,8 +12,8 @@ export interface Save<Entity> {
 export interface SaveMany<Entity> {
   saveMany(entities: Entity[]): Promise<Entity[]>;
 }
-export interface Delete<EntityDetails> {
-  delete(params: QueryParams<EntityDetails>): Promise<boolean>;
+export interface Delete<Entity, EntityDetails> {
+  delete(params: QueryParams<EntityDetails>): Promise<Entity>;
 }
 export interface Update<Entity, EntityDetails> {
   update(params: QueryParams<EntityDetails>, newState: Entity): Promise<Entity>;

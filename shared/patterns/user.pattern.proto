@@ -1,5 +1,0 @@
-syntax = "proto3";
-
-enum V1UserPattern {
-  CREATE_MEMBER = 0;
-}

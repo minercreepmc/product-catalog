@@ -1,7 +1,7 @@
 import {
   HandlerException,
   ResponseResult,
-  UseCaseCommandValidationExceptions,
+  UseCaseRequestValidationExceptions,
   UseCaseProcessExceptions,
 } from '@utils/base/use-cases';
 import { IRequestHandler, RequestHandler } from 'nestjs-mediator';
@@ -34,7 +34,7 @@ export class CreateReviewerHandler
 
     if (!dtoValidated.isValid) {
       return Err(
-        new UseCaseCommandValidationExceptions(dtoValidated.exceptions),
+        new UseCaseRequestValidationExceptions(dtoValidated.exceptions),
       );
     }
 

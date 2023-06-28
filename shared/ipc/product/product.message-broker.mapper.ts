@@ -1,8 +1,8 @@
-import { Message } from '@shared/gateways/message.interface';
 import { MessageTypes } from '@shared/microservices/message-types';
 import { Services } from '@shared/microservices/services';
+import { Message } from '@shared/proxies/dtos/message.interface';
 
-export class UserMessagerBrokerMapper {
+export class ProductMessagerBrokerMapper {
   constructor(private readonly destination: string) {}
 
   mapToMessage(request: any) {

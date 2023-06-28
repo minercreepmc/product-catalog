@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as _m0 from "protobufjs/minimal";
-import { Struct } from "../../google/protobuf/struct";
-import { Timestamp } from "../../google/protobuf/timestamp";
+import { Struct } from "../../../google/protobuf/struct";
+import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "";
 

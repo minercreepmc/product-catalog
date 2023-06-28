@@ -1,12 +1,12 @@
+import { Injectable } from '@nestjs/common';
 import { ReviewerRequestValidator } from '@use-cases/application-services/validators';
-import { ValidationResponse } from 'common-base-classes';
 import { RemoveReviewerRequestDto } from '../dtos';
 
+@Injectable()
 export class RemoveReviewerRequestValidator extends ReviewerRequestValidator {
-  validate(dto: RemoveReviewerRequestDto): ValidationResponse {
-    super.validate(dto);
+  _validate(dto: RemoveReviewerRequestDto): void {
     const { id } = dto;
+
     this.validateReviewerId(id);
-    return this.getValidationResponse();
   }
 }

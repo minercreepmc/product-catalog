@@ -55,9 +55,6 @@ describe('V1RejectProductHttpController (PUT)', () => {
 
     const createRegularReviewerRequest: V1CreateReviewerHttpRequest = {
       name: generateRandomReviewerName(),
-      email: generateRandomReviewerEmail(),
-      password: generateRandomReviewerPassword(),
-      username: generateRandomReviewerUsername(),
       role: ReviewerRoleEnum.Regular,
     };
 
@@ -80,9 +77,6 @@ describe('V1RejectProductHttpController (PUT)', () => {
 
     const createAdminReviewerRequest: V1CreateReviewerHttpRequest = {
       name: generateRandomReviewerName(),
-      email: generateRandomReviewerEmail(),
-      password: generateRandomReviewerPassword(),
-      username: generateRandomReviewerUsername(),
       role: ReviewerRoleEnum.Admin,
     };
 
@@ -98,8 +92,8 @@ describe('V1RejectProductHttpController (PUT)', () => {
       createAdminReviewerResponse.body;
 
     validProductId = productId;
-    regularReviewerId = regularResponseBody.reviewerId;
-    adminReviewerId = adminResponseBody.reviewerId;
+    regularReviewerId = regularResponseBody.id;
+    adminReviewerId = adminResponseBody.id;
   });
 
   afterAll(async () => {

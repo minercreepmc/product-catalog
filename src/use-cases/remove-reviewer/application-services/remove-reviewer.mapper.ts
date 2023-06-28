@@ -1,9 +1,11 @@
 import { UseCaseMapperBase } from '@base/use-cases';
 import { RemoveReviewerCommand } from '@commands';
 import { ReviewerRemovedDomainEvent } from '@domain-events/reviewer';
+import { Injectable } from '@nestjs/common';
 import { ReviewerIdValueObject } from '@value-objects/reviewer';
 import { RemoveReviewerRequestDto, RemoveReviewerResponseDto } from '../dtos';
 
+@Injectable()
 export class RemoveReviewerMapper extends UseCaseMapperBase<RemoveReviewerResponseDto> {
   toCommand(dto: RemoveReviewerRequestDto): RemoveReviewerCommand {
     return new RemoveReviewerCommand({

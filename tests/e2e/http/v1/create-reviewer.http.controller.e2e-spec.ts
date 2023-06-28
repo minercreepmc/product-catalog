@@ -7,10 +7,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import {
-  generateRandomReviewerEmail,
   generateRandomReviewerName,
-  generateRandomReviewerPassword,
-  generateRandomReviewerUsername,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
@@ -38,9 +35,6 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
     it('should create a reviewer and return the new reviewer information', async () => {
       const createReviewerRequest: V1CreateReviewerHttpRequest = {
         name: generateRandomReviewerName(),
-        email: generateRandomReviewerEmail(),
-        password: generateRandomReviewerPassword(),
-        username: generateRandomReviewerUsername(),
         role: ReviewerRoleEnum.Regular,
       };
       const response = await request(app.getHttpServer())
@@ -49,21 +43,16 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
         .send(createReviewerRequest)
         .expect(HttpStatus.CREATED);
 
-      const { name, /**email,**/ reviewerId, role } =
-        response.body as V1CreateReviewerHttpResponse;
+      const { name, id, role } = response.body as V1CreateReviewerHttpResponse;
 
       expect(name).toEqual(createReviewerRequest.name);
-      //expect(email).toEqual(createReviewerRequest.email);
       expect(role).toEqual(createReviewerRequest.role);
-      expect(reviewerId).toBeDefined();
+      expect(id).toBeDefined();
     });
 
     it('should not create a reviewer if name already exists', async () => {
       const existNameRequest: V1CreateReviewerHttpRequest = {
         name: generateRandomReviewerName(),
-        email: generateRandomReviewerEmail(),
-        password: generateRandomReviewerPassword(),
-        username: generateRandomReviewerUsername(),
         role: ReviewerRoleEnum.Regular,
       };
 
@@ -90,9 +79,6 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
       // TODO: It should return other domain exceptions too, since it belong to other microservices
       const invalidProductRequest: V1CreateReviewerHttpRequest = {
         name: '',
-        email: 'WTF@##@#@ple.com',
-        username: '',
-        password: '',
         role: '' as ReviewerRoleEnum,
       };
 

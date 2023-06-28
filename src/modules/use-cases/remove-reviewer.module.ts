@@ -1,3 +1,5 @@
+import { V1RemoveReviewerHttpController } from '@controllers/http/v1/remove-reviewer';
+import { V1RemoveReviewerRmqMessageHandler } from '@message-handlers/rmq/v1';
 import { Module, Provider } from '@nestjs/common';
 import { RemoveReviewerHandler } from '@use-cases/remove-reviewer';
 import {
@@ -17,7 +19,8 @@ const useCases: Provider[] = [
   RemoveReviewerMapper,
 ];
 
-//const controllers = [V1CreateReviewerHttpController];
+const controllers = [V1RemoveReviewerHttpController];
+const messageHandlers = [V1RemoveReviewerRmqMessageHandler];
 const sharedModules = [
   MediatorModule,
   DatabaseModule,
@@ -27,7 +30,8 @@ const sharedModules = [
 
 @Module({
   imports: [...sharedModules],
-  controllers: [],
+  controllers: [...controllers, ...messageHandlers],
   providers: [...useCases],
+  exports: [RemoveReviewerHandler],
 })
 export class RemoveReviewerModule {}

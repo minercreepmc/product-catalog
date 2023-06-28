@@ -1,19 +1,21 @@
 import { ProcessBase } from '@base/use-cases';
-import { CreateReviewerCommand, RemoveReviewerCommand } from '@commands';
+import { RemoveReviewerCommand } from '@commands';
 import { ReviewerRemovedDomainEvent } from '@domain-events/reviewer';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
 import { ReviewerManagementDomainService } from '@domain-services';
+import { Injectable } from '@nestjs/common';
 import { ReviewerBusinessEnforcer } from '@use-cases/application-services/process';
 
 export type RemoveReviewerProcessSuccess = ReviewerRemovedDomainEvent;
 export type RemoveReviewerProcessFailure =
   Array<ReviewerDomainExceptions.DoesNotExist>;
 
+@Injectable()
 export class RemoveReviewerProcess extends ProcessBase<
   RemoveReviewerProcessSuccess,
   RemoveReviewerProcessFailure
 > {
-  execute(command: CreateReviewerCommand) {
+  execute(command: RemoveReviewerCommand) {
     return super.execute(command);
   }
 
@@ -27,19 +29,12 @@ export class RemoveReviewerProcess extends ProcessBase<
   protected async executeMainTask(
     command: RemoveReviewerCommand,
   ): Promise<RemoveReviewerProcessSuccess> {
-    return this.removeReviewer(command);
-  }
-
-  private removeReviewer(command: RemoveReviewerCommand) {
-    const { id } = command;
-    return this.reviewerManagementService.removeReviewer({
-      id,
-    });
+    return this.reviewerManagementService.removeReviewer(command);
   }
 
   constructor(
     private readonly reviewerManagementService: ReviewerManagementDomainService,
-    protected readonly reviewerEnforcer: ReviewerBusinessEnforcer<RemoveReviewerProcessFailure>,
+    private readonly reviewerEnforcer: ReviewerBusinessEnforcer<RemoveReviewerProcessFailure>,
   ) {
     super({
       businessEnforcer: reviewerEnforcer,

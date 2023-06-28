@@ -1,7 +1,7 @@
 import { Request } from 'nestjs-mediator';
 import { Result } from 'oxide.ts';
 import {
-  UseCaseCommandValidationExceptions,
+  UseCaseRequestValidationExceptions,
   UseCaseProcessExceptions,
 } from './use-case-exceptions.base';
 
@@ -11,7 +11,7 @@ export abstract class RequestDtoBase<ResponseDto> extends Request<
 
 export type ResponseResult<ResponseDto> = Result<
   ResponseDto,
-  UseCaseProcessExceptions | UseCaseCommandValidationExceptions
+  UseCaseProcessExceptions | UseCaseRequestValidationExceptions
 >;
 
 export abstract class ResponseDtoBase {

@@ -23,7 +23,7 @@ export class CreateReviewerMapper extends UseCaseMapperBase<CreateReviewerRespon
     return new CreateReviewerResponseDto({
       role: role.unpack(),
       name: name.unpack(),
-      reviewerId: event.reviewerId.unpack(),
+      id: event.reviewerId.unpack(),
     });
   }
   //

@@ -11,9 +11,11 @@ message V1RegisterMemberResponseDto {
   string email = 2;
 }
 
-message V1RegisterMemberPattern {}
+enum V1UserPattern {
+  REGISTER_MEMBER = 0;
+}
 
-service V1UserServiceInterface {
+service V1UserInterface {
   rpc registerMember(V1RegisterMemberRequestDto)
       returns (V1RegisterMemberResponseDto);
 }

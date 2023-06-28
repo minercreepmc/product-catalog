@@ -4,7 +4,7 @@ import { ReviewerRoleEnum } from '@value-objects/reviewer';
 export class CreateReviewerRequestDto extends RequestDtoBase<CreateReviewerResponseDto> {
   readonly name: string;
   readonly role: ReviewerRoleEnum;
-  constructor(dtos: Omit<CreateReviewerRequestDto, 'returnType'>) {
+  constructor(dtos: any) {
     super();
     this.name = dtos.name;
     this.role = dtos.role;
@@ -12,12 +12,12 @@ export class CreateReviewerRequestDto extends RequestDtoBase<CreateReviewerRespo
 }
 
 export class CreateReviewerResponseDto extends ResponseDtoBase {
-  readonly reviewerId: string;
+  readonly id: string;
   readonly name: string;
   readonly role: string;
   constructor(dtos: CreateReviewerResponseDto) {
     super();
-    this.reviewerId = dtos.reviewerId;
+    this.id = dtos.id;
     this.name = dtos.name;
     this.role = dtos.role;
   }

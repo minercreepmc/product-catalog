@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+message V1RegisterMemberRequestDto {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message V1RegisterMemberResponseDto {
+  string username = 1;
+  string email = 2;
+}
+
+enum V1UserPattern {
+  REGISTER_MEMBER = 0;
+}
+
+service V1UserInterface {
+  rpc registerMember(V1RegisterMemberRequestDto)
+      returns (V1RegisterMemberResponseDto);
+}

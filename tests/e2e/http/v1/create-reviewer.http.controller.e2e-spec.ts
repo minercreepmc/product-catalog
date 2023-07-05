@@ -16,6 +16,7 @@ import * as request from 'supertest';
 describe('V1CreateReviewerHttpController (e2e)', () => {
   let app: INestApplication;
   const reviewersUrl = `reviewers`;
+  const createReviewerUrl = 'create';
   const apiPrefix = `api/v1`;
 
   beforeAll(async () => {
@@ -38,7 +39,7 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
         role: ReviewerRoleEnum.Regular,
       };
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${reviewersUrl}`)
+        .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
         .set('Accept', 'application/json')
         .send(createReviewerRequest)
         .expect(HttpStatus.CREATED);
@@ -57,13 +58,13 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
       };
 
       await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${reviewersUrl}`)
+        .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
         .set('Accept', 'application/json')
         .send(existNameRequest)
         .expect(HttpStatus.CREATED);
 
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${reviewersUrl}`)
+        .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
         .set('Accept', 'application/json')
         .send(existNameRequest)
         .expect(HttpStatus.CONFLICT);
@@ -83,7 +84,7 @@ describe('V1CreateReviewerHttpController (e2e)', () => {
       };
 
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${reviewersUrl}`)
+        .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
         .set('Accept', 'application/json')
         .send(invalidProductRequest)
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);

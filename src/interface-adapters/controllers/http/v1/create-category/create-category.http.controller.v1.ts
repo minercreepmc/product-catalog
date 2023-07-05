@@ -8,7 +8,7 @@ import { Mediator } from 'nestjs-mediator';
 import { V1CreateCategoryHttpRequest } from './create-category.http.request.v1';
 import { V1CreateCategoryHttpResponse } from './create-category.http.response.v1';
 
-@Controller('/api/v1/categories')
+@Controller('/api/v1/categories/create')
 export class V1CreateCategoryHttpController extends HttpPostControllerBase<
   V1CreateCategoryHttpRequest,
   V1CreateCategoryHttpResponse

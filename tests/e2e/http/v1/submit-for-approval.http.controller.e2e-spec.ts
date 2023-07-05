@@ -29,6 +29,7 @@ describe('V1SubmitForApprovalHttpController (e2e)', () => {
   const productSubmitUrl = 'submit';
 
   const reviewersUrl = `reviewers`;
+  const createReviewerUrl = 'create';
 
   const apiPrefix = `api/v1`;
 
@@ -64,7 +65,7 @@ describe('V1SubmitForApprovalHttpController (e2e)', () => {
         role: ReviewerRoleEnum.Regular,
       };
       const reviewerResponse = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${reviewersUrl}`)
+        .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
         .set('Accept', 'application/json')
         .send(createReviewerRequest);
 

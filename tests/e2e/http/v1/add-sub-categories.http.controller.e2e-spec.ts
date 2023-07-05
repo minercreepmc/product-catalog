@@ -18,6 +18,7 @@ import { AppModule } from '@src/app.module';
 describe('V1AddSubCategoriesHttpController (e2e)', () => {
   let app: INestApplication;
   const categoriesUrl = `categories`;
+  const createCategorysUrl = 'create';
   const addSubCategoriesUrl = 'add-sub-categories';
   const apiPrefix = 'api/v1';
 
@@ -92,13 +93,13 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
       };
 
       const firstResponse = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategorysUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryFirstRequest)
         .expect(HttpStatus.CREATED);
 
       const secondResponse = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategorysUrl}`)
         .set('Accept', 'application/json')
         .send(createCategorySecondRequest)
         .expect(HttpStatus.CREATED);

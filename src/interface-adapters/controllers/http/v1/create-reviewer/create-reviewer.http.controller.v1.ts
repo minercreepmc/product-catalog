@@ -8,7 +8,7 @@ import { Mediator } from 'nestjs-mediator';
 import { V1CreateReviewerHttpRequest } from './create-reviewer.http.request.v1';
 import { V1CreateReviewerHttpResponse } from './create-reviewer.http.response.v1';
 
-@Controller('/api/v1/reviewers')
+@Controller('/api/v1/reviewers/create')
 export class V1CreateReviewerHttpController extends HttpPostControllerBase<
   V1CreateReviewerHttpRequest,
   V1CreateReviewerHttpResponse

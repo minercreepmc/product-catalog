@@ -29,6 +29,7 @@ describe('V1RejectProductHttpController (PUT)', () => {
   const productRejectUrl = 'reject';
   const productSubmitUrl = 'submit';
   const reviewersUrl = `reviewers`;
+  const createReviewerUrl = 'create';
   const apiPrefix = `api/v1`;
 
   let validProductId: string;
@@ -64,7 +65,7 @@ describe('V1RejectProductHttpController (PUT)', () => {
     expect(createProductResponse.status).toBe(HttpStatus.CREATED);
 
     const createRegularReviewerResponse = await request(app.getHttpServer())
-      .post(`/${apiPrefix}/${reviewersUrl}`)
+      .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
       .set('Accept', 'application/json')
       .send(createRegularReviewerRequest);
 
@@ -79,7 +80,7 @@ describe('V1RejectProductHttpController (PUT)', () => {
     };
 
     const createAdminReviewerResponse = await request(app.getHttpServer())
-      .post(`/${apiPrefix}/${reviewersUrl}`)
+      .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
       .set('Accept', 'application/json')
       .send(createAdminReviewerRequest);
 

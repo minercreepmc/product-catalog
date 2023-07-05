@@ -8,7 +8,7 @@ import { Mediator } from 'nestjs-mediator';
 import { V1RemoveReviewerHttpRequest } from './remove-reviewer.http.request.v1';
 import { V1RemoveReviewerHttpResponse } from './remove-reviewer.http.response.v1';
 
-@Controller('/api/v1/reviewers')
+@Controller('/api/v1/reviewers/:id/remove')
 export class V1RemoveReviewerHttpController extends HttpPutControllerBase<
   V1RemoveReviewerHttpRequest,
   V1RemoveReviewerHttpResponse
@@ -17,7 +17,7 @@ export class V1RemoveReviewerHttpController extends HttpPutControllerBase<
     super(mediator);
   }
 
-  @Put(':id')
+  @Put()
   execute(
     httpRequest: V1RemoveReviewerHttpRequest,
     id: string,

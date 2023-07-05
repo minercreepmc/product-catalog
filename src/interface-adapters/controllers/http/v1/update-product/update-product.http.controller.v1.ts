@@ -8,7 +8,7 @@ import { Mediator } from 'nestjs-mediator';
 import { V1UpdateProductHttpRequest } from './update-product.http.request.v1';
 import { V1UpdateProductHttpResponse } from './update-product.http.response.v1';
 
-@Controller('/api/v1/products/:id')
+@Controller('/api/v1/products/:id/update')
 export class V1UpdateProductHttpController extends HttpFilePutController<
   V1UpdateProductHttpRequest,
   V1UpdateProductHttpResponse

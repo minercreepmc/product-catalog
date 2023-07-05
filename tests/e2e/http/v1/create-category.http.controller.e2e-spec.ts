@@ -19,6 +19,7 @@ import { ProductDomainExceptions } from '@domain-exceptions/product';
 describe('V1CreateCategoryHttpController (e2e)', () => {
   let app: INestApplication;
   const categoriesUrl = `categories`;
+  const createCategoryUrl = 'create';
   const apiPrefix = 'api/v1';
 
   beforeAll(async () => {
@@ -44,7 +45,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
         description: '',
       };
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryRequest);
 
@@ -65,13 +66,13 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
       };
 
       await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryRequest)
         .expect(HttpStatus.CREATED);
 
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryRequest)
         .expect(HttpStatus.CONFLICT);
@@ -92,7 +93,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
       };
 
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryRequest)
         .expect(HttpStatus.CONFLICT);
@@ -115,7 +116,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
       };
 
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryRequest)
         .expect(HttpStatus.CONFLICT);
@@ -136,7 +137,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
       };
 
       const responseOne = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryOneRequest)
         .expect(HttpStatus.CREATED);
@@ -144,7 +145,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
       const bodyOne: V1CreateCategoryHttpResponse = responseOne.body;
 
       const responseTwo = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryTwoRequest)
         .expect(HttpStatus.CREATED);
@@ -158,7 +159,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
       };
 
       const response = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${categoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${createCategoryUrl}`)
         .set('Accept', 'application/json')
         .send(createCategoryRequest)
         .expect(HttpStatus.CREATED);

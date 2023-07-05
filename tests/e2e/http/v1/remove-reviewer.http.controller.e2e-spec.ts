@@ -8,11 +8,8 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import {
-  generateRandomReviewerEmail,
   generateRandomReviewerId,
   generateRandomReviewerName,
-  generateRandomReviewerPassword,
-  generateRandomReviewerUsername,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
@@ -21,6 +18,8 @@ import * as request from 'supertest';
 describe('V1RemoveReviewerHttpController (e2e)', () => {
   let app: INestApplication;
   const reviewersUrl = `reviewers`;
+  const createReviewerUrl = 'create';
+  const removeReviewerUrl = 'remove';
   const apiPrefix = `api/v1`;
 
   beforeAll(async () => {
@@ -42,7 +41,9 @@ describe('V1RemoveReviewerHttpController (e2e)', () => {
       const removeReviewerRequest: V1RemoveReviewerHttpRequest = {};
 
       const response = await request(app.getHttpServer())
-        .put(`/${apiPrefix}/${reviewersUrl}/${nonExistReviewerId}`)
+        .put(
+          `/${apiPrefix}/${reviewersUrl}/${nonExistReviewerId}/${removeReviewerUrl}`,
+        )
         .send(removeReviewerRequest)
         .set('Accept', 'application/json')
         .expect(HttpStatus.CONFLICT);
@@ -61,7 +62,7 @@ describe('V1RemoveReviewerHttpController (e2e)', () => {
       };
 
       const createReviewerResponse = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${reviewersUrl}`)
+        .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
         .send(createReviewerRequest)
         .expect(HttpStatus.CREATED);
 
@@ -71,7 +72,7 @@ describe('V1RemoveReviewerHttpController (e2e)', () => {
       const removeReviewerRequest: V1RemoveReviewerHttpRequest = {};
 
       await request(app.getHttpServer())
-        .put(`/${apiPrefix}/${reviewersUrl}/${reviewerId}`)
+        .put(`/${apiPrefix}/${reviewersUrl}/${reviewerId}/${removeReviewerUrl}`)
         .send(removeReviewerRequest)
         .set('Accept', 'application/json')
         .expect(HttpStatus.OK);

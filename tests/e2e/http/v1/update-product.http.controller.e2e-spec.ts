@@ -18,6 +18,7 @@ describe('V1UpdateProductHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `products`;
   const createProductUrl = 'create';
+  const updateProductUrl = 'update';
   const apiPrefix = `api/v1`;
 
   const createProductRequest: V1CreateProductHttpRequest = {
@@ -60,7 +61,7 @@ describe('V1UpdateProductHttpController (e2e)', () => {
 
       // Attempt to create the product again
       const updateResponse = await request(app.getHttpServer())
-        .put(`/${apiPrefix}/${productsUrl}/${productId}`)
+        .put(`/${apiPrefix}/${productsUrl}/${productId}/${updateProductUrl}`)
         .set('Accept', 'application/json')
         .send(updateProductRequest)
         .expect(HttpStatus.OK);
@@ -76,7 +77,9 @@ describe('V1UpdateProductHttpController (e2e)', () => {
       // Attempt to create the product again
       const productIdDidNotExist = '123';
       const response = await request(app.getHttpServer())
-        .put(`/${apiPrefix}/${productsUrl}/${productIdDidNotExist}`)
+        .put(
+          `/${apiPrefix}/${productsUrl}/${productIdDidNotExist}/${updateProductUrl}`,
+        )
         .set('Accept', 'application/json')
         .send(updateProductRequest)
         .expect(HttpStatus.CONFLICT);
@@ -99,7 +102,9 @@ describe('V1UpdateProductHttpController (e2e)', () => {
         description: '',
       };
       const response = await request(app.getHttpServer())
-        .put(`/${apiPrefix}/${productsUrl}/${productIdDidNotExist}`)
+        .put(
+          `/${apiPrefix}/${productsUrl}/${productIdDidNotExist}/${updateProductUrl}`,
+        )
         .set('Accept', 'application/json')
         .send(invalidUpdateProductRequest)
         .expect(HttpStatus.UNPROCESSABLE_ENTITY);

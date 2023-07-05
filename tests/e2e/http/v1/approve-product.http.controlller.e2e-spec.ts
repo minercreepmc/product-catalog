@@ -27,6 +27,7 @@ describe('V1ApproveProductHttpController (e2e)', () => {
   const createProductUrl = 'create';
   const productApproveUrl = 'approve';
   const reviewersUrl = `reviewers`;
+  const createReviewerUrl = 'create';
   const apiPrefix = `api/v1`;
 
   let validProductId: string;
@@ -63,7 +64,7 @@ describe('V1ApproveProductHttpController (e2e)', () => {
     expect(createProductResponse.status).toBe(HttpStatus.CREATED);
 
     const createRegularReviewerResponse = await request(app.getHttpServer())
-      .post(`/${apiPrefix}/${reviewersUrl}`)
+      .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
       .set('Accept', 'application/json')
       .send(createRegularReviewerRequest)
       .expect(HttpStatus.CREATED);
@@ -79,7 +80,7 @@ describe('V1ApproveProductHttpController (e2e)', () => {
     };
 
     const createAdminReviewerResponse = await request(app.getHttpServer())
-      .post(`/${apiPrefix}/${reviewersUrl}`)
+      .post(`/${apiPrefix}/${reviewersUrl}/${createReviewerUrl}`)
       .set('Accept', 'application/json')
       .send(createAdminReviewerRequest)
       .expect(HttpStatus.CREATED);

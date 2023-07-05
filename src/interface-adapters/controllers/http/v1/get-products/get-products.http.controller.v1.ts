@@ -5,7 +5,7 @@ import { ProductQuery } from '@use-cases/query/product';
 import { V1GetProductsHttpRequest } from './get-products.http.request.v1';
 import { V1GetProductsHttpResponse } from './get-products.http.response.v1';
 
-@Controller('/api/v1/products/search')
+@Controller('/api/v1/products/get')
 export class V1GetProductsHttpController extends HttpGetControllerBase<V1GetProductsHttpRequest> {
   @Post()
   execute(

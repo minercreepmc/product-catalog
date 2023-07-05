@@ -1,4 +1,4 @@
-import { HttpPostControllerBase } from '@base/interface-adapters/http';
+import { HttpPutControllerBase } from '@base/interface-adapters/http';
 import { Controller } from '@nestjs/common';
 import {
   AddParentCategoriesRequestDto,
@@ -8,8 +8,8 @@ import { Mediator } from 'nestjs-mediator';
 import { V1AddParentCategoriesHttpRequest } from './add-parent-categories.http.request.v1';
 import { V1AddParentCategoriesHttpResponse } from './add-parent-categories.http.response.v1';
 
-@Controller('/api/v1/categories/parent')
-export class V1AddParentCategoriesHttpController extends HttpPostControllerBase<
+@Controller('/api/v1/categories/:id/add-parent-categories')
+export class V1AddParentCategoriesHttpController extends HttpPutControllerBase<
   V1AddParentCategoriesHttpRequest,
   V1AddParentCategoriesHttpResponse
 > {
@@ -19,8 +19,12 @@ export class V1AddParentCategoriesHttpController extends HttpPostControllerBase<
 
   createDto(
     httpRequest: V1AddParentCategoriesHttpRequest,
+    id: string,
   ): AddParentCategoriesRequestDto {
-    return new AddParentCategoriesRequestDto(httpRequest);
+    return new AddParentCategoriesRequestDto({
+      categoryId: id,
+      parentIds: httpRequest.parentIds,
+    });
   }
   createHttpResponse(
     response: AddParentCategoriesResponseDto,

@@ -1,15 +1,16 @@
 import { Module, Provider } from '@nestjs/common';
 import { DomainServicesModule } from '@modules/domains';
+import { UploadService } from '@infrastructures/cloud';
 import {
   CategoryRequestValidator,
   ProductRequestValidator,
   ReviewerRequestValidator,
-} from '@use-cases/application-services/validators';
+} from '@use-cases/shared/application-services/validators';
 import {
   CategoryBusinessEnforcer,
   ProductBusinessEnforcer,
   ReviewerBusinessEnforcer,
-} from '@use-cases/application-services/process';
+} from '@use-cases/shared/application-services/process';
 
 const requestValidator: Provider[] = [
   ReviewerRequestValidator,
@@ -23,9 +24,11 @@ const businessEnforcers: Provider[] = [
   CategoryBusinessEnforcer,
 ];
 
+const others: Provider[] = [UploadService];
+
 @Module({
   imports: [DomainServicesModule],
-  providers: [...requestValidator, ...businessEnforcers],
-  exports: [...requestValidator, ...businessEnforcers],
+  providers: [...requestValidator, ...businessEnforcers, ...others],
+  exports: [...requestValidator, ...businessEnforcers, ...others],
 })
 export class ApplicationServicesModule {}

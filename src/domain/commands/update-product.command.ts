@@ -1,7 +1,7 @@
+import { FileValueObject } from '@value-objects/common';
 import {
   ProductDescriptionValueObject,
   ProductIdValueObject,
-  ProductImageValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
@@ -11,7 +11,7 @@ export class UpdateProductCommand {
   name?: ProductNameValueObject;
   price?: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
-  image?: ProductImageValueObject;
+  image?: FileValueObject;
 
   constructor(options: UpdateProductCommand) {
     this.productId = options.productId;

@@ -3,3 +3,4 @@ export * from './replace-exception-code.util';
 export * from './exception-mapper.util';
 export * from './random-string-generator.util';
 export * from './get-variable-name.util';
+export * from './temp-file.util';

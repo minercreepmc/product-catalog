@@ -17,6 +17,7 @@ import * as request from 'supertest';
 describe('V1UpdateProductHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `products`;
+  const createProductUrl = 'create';
   const apiPrefix = `api/v1`;
 
   const createProductRequest: V1CreateProductHttpRequest = {
@@ -33,7 +34,6 @@ describe('V1UpdateProductHttpController (e2e)', () => {
       currency: 'USD',
     },
     description: 'Sample description',
-    image: 'https://example.com/image.png',
   };
 
   beforeAll(async () => {
@@ -52,7 +52,7 @@ describe('V1UpdateProductHttpController (e2e)', () => {
   describe(`${productsUrl} (PUT)`, () => {
     it('should update a product and return the new product information', async () => {
       const createResponse = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${productsUrl}`)
+        .post(`/${apiPrefix}/${productsUrl}/${createProductUrl}`)
         .set('Accept', 'application/json')
         .send(createProductRequest);
 
@@ -65,12 +65,11 @@ describe('V1UpdateProductHttpController (e2e)', () => {
         .send(updateProductRequest)
         .expect(HttpStatus.OK);
 
-      const { name, price, description, image } =
+      const { name, price, description } =
         updateResponse.body as V1UpdateProductHttpResponse;
       expect(name).toEqual(updateProductRequest.name);
       expect(price).toEqual(updateProductRequest.price);
       expect(description).toEqual(updateProductRequest.description);
-      expect(image).toEqual(updateProductRequest.image);
     });
 
     it('should not update a product if it not exists', async () => {
@@ -98,7 +97,6 @@ describe('V1UpdateProductHttpController (e2e)', () => {
           currency: 'USD',
         },
         description: '',
-        image: '',
       };
       const response = await request(app.getHttpServer())
         .put(`/${apiPrefix}/${productsUrl}/${productIdDidNotExist}`)
@@ -111,7 +109,7 @@ describe('V1UpdateProductHttpController (e2e)', () => {
           new ProductDomainExceptions.NameDoesNotValid(),
           new ProductDomainExceptions.PriceDoesNotValid(),
           new ProductDomainExceptions.DescriptionDoesNotValid(),
-          new ProductDomainExceptions.ImageDoesNotValid(),
+          //new ProductDomainExceptions.ImageDoesNotValid(),
         ]),
       );
     });

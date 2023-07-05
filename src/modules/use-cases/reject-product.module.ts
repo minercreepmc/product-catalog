@@ -1,12 +1,12 @@
 import { V1RejectProductHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
-import { RejectProductHandler } from '@use-cases/reject-product';
 import {
+  RejectProductHandler,
   RejectProductMapper,
   RejectProductProcess,
   RejectProductRequestValidator,
-} from '@use-cases/reject-product/application-services';
+} from '@use-cases/command/reject-product';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
 import { ApplicationServicesModule } from './application-services';

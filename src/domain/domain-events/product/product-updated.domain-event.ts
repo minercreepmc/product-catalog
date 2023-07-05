@@ -2,7 +2,7 @@ import { ProductAggregate } from '@aggregates/product';
 import type {
   ProductDescriptionValueObject,
   ProductIdValueObject,
-  ProductImageValueObject,
+  ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
@@ -12,7 +12,7 @@ export interface ProductUpdatedDomainEventDetails {
   name?: ProductNameValueObject;
   price?: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
-  image?: ProductImageValueObject;
+  image?: ProductImageUrlValueObject;
 }
 
 export interface ProductUpdatedDomainEventOptions {

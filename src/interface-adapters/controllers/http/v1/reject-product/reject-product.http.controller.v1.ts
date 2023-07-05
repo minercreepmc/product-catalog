@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import {
   RejectProductRequestDto,
   RejectProductResponseDto,
-} from '@use-cases/reject-product/dtos';
+} from '@use-cases/command/reject-product/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1RejectProductHttpRequest } from './reject-product.http.request.v1';
 import { V1RejectProductHttpResponse } from './reject-product.http.response.v1';

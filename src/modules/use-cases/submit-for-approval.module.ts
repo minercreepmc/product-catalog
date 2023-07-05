@@ -1,12 +1,12 @@
 import { V1SubmitForApprovalHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
-import { SubmitForApprovalHandler } from '@use-cases/submit-for-approval';
 import {
+  SubmitForApprovalHandler,
   SubmitForApprovalMapper,
   SubmitForApprovalProcess,
   SubmitForApprovalRequestValidator,
-} from '@use-cases/submit-for-approval/application-services';
+} from '@use-cases/command/submit-for-approval';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
 import { ApplicationServicesModule } from './application-services';

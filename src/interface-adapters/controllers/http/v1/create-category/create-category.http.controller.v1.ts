@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import {
   CreateCategoryRequestDto,
   CreateCategoryResponseDto,
-} from '@use-cases/create-category/dtos';
+} from '@use-cases/command/create-category/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1CreateCategoryHttpRequest } from './create-category.http.request.v1';
 import { V1CreateCategoryHttpResponse } from './create-category.http.response.v1';

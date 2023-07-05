@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import {
   AddParentCategoriesRequestDto,
   AddParentCategoriesResponseDto,
-} from '@use-cases/add-parent-categories/dtos';
+} from '@use-cases/command/add-parent-categories/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1AddParentCategoriesHttpRequest } from './add-parent-categories.http.request.v1';
 import { V1AddParentCategoriesHttpResponse } from './add-parent-categories.http.response.v1';

@@ -1,14 +1,10 @@
-import {
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-} from '@domain-services';
 import { Module, Provider } from '@nestjs/common';
-import { AddParentCategoriesHandler } from '@use-cases/add-parent-categories';
 import {
   AddParentCategoriesMapper,
   AddParentCategoriesProcess,
   AddParentCategoriesRequestValidator,
-} from '@use-cases/add-parent-categories/application-services';
+  AddParentCategoriesHandler,
+} from '@use-cases/command/add-parent-categories';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { V1AddParentCategoriesHttpController } from '@controllers/http/v1/add-parent-categories';
 import { MediatorModule } from 'nestjs-mediator';

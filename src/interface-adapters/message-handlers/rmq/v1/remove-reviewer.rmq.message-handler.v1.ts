@@ -13,7 +13,7 @@ import { V1ProductPattern } from '@shared/proxies/handlers/product.interface';
 import {
   RemoveReviewerRequestDto,
   RemoveReviewerResponseDto,
-} from '@use-cases/remove-reviewer/dtos';
+} from '@use-cases/command/remove-reviewer/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { match } from 'oxide.ts';
 

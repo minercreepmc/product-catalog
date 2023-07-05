@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { SubmitForApprovalResponseDto } from '@use-cases/submit-for-approval/dtos';
 
 export class V1SubmitForApprovalHttpResponse {
   @ApiProperty()
@@ -11,7 +10,7 @@ export class V1SubmitForApprovalHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(dto: Omit<SubmitForApprovalResponseDto, 'message'>) {
+  constructor(dto: Omit<V1SubmitForApprovalHttpResponse, 'message'>) {
     this.productId = dto.productId;
     this.reviewerId = dto.reviewerId;
     this.productStatus = dto.productStatus;

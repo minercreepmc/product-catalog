@@ -1,13 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class V1CreateProductHttpRequest {
-  @ApiProperty({
-    description: 'The name of the product',
-    example: 'Sample Product',
-  })
+  @ApiProperty()
   name: string;
   @ApiProperty({
-    description: 'The price of the product',
     type: 'object',
     properties: {
       amount: {
@@ -28,14 +24,14 @@ export class V1CreateProductHttpRequest {
   };
 
   @ApiProperty({
-    description: 'The description of the product',
-    example: 'Sample description',
+    required: false,
   })
   description?: string;
 
   @ApiProperty({
-    description: 'The image of the product',
-    example: 'https://example.com/image.png',
+    type: 'string',
+    format: 'binary',
+    required: false,
   })
-  image?: string;
+  image?: Express.Multer.File;
 }

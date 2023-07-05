@@ -42,7 +42,7 @@ export class V1CreateProductHttpResponse {
     description: 'The image of the product',
     example: 'https://example.com/image.png',
   })
-  readonly image?: string;
+  readonly imageUrl?: string;
 
   readonly message: string;
 
@@ -51,7 +51,7 @@ export class V1CreateProductHttpResponse {
     this.name = options.name;
     this.price = options.price;
     this.description = options.description;
-    this.image = options.image;
+    this.imageUrl = options.imageUrl;
     this.message = 'Product created successfully';
   }
 }

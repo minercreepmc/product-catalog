@@ -1,7 +1,7 @@
 import {
   ProductAttributesValueObject,
   ProductDescriptionValueObject,
-  ProductImageValueObject,
+  ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
   ProductStatusValueObject,
@@ -13,7 +13,7 @@ export interface ProductAggregateDetails {
   name: ProductNameValueObject;
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
-  image?: ProductImageValueObject;
+  image?: ProductImageUrlValueObject;
   attributes?: ProductAttributesValueObject;
   status?: ProductStatusValueObject;
   submittedBy?: ReviewerIdValueObject;
@@ -26,7 +26,7 @@ export interface CreateProductAggregateOptions {
   name: ProductNameValueObject;
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
-  image?: ProductImageValueObject;
+  image?: ProductImageUrlValueObject;
   attributes?: ProductAttributesValueObject;
 }
 
@@ -34,6 +34,6 @@ export interface UpdateProductAggregateOptions {
   name?: ProductNameValueObject;
   description?: ProductDescriptionValueObject;
   price?: ProductPriceValueObject;
-  image?: ProductImageValueObject;
+  image?: ProductImageUrlValueObject;
   attributes?: ProductAttributesValueObject;
 }

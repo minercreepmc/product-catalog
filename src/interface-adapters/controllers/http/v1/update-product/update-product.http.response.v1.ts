@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UpdateProductResponseDto } from '@use-cases/update-product/dtos';
 
 export class V1UpdateProductHttpResponse {
   @ApiProperty({
     description: 'The id of the product',
     example: '123',
   })
-  productId: string;
+  id: string;
 
   @ApiProperty({
     description: 'The name of the product',
@@ -33,14 +32,14 @@ export class V1UpdateProductHttpResponse {
     description: 'The image of the product',
     example: 'https://example.com/image.png',
   })
-  image?: string;
+  imageUrl?: string;
 
   @ApiProperty()
   message: string;
 
-  constructor(options: Omit<UpdateProductResponseDto, 'message'>) {
-    const { id: id, name, price, description, image } = options;
-    this.productId = id;
+  constructor(options: Omit<V1UpdateProductHttpResponse, 'message'>) {
+    const { id, name, price, description, imageUrl } = options;
+    this.id = id;
     if (name) {
       this.name = name;
     }
@@ -53,8 +52,8 @@ export class V1UpdateProductHttpResponse {
       this.description = description;
     }
 
-    if (image) {
-      this.image = image;
+    if (imageUrl) {
+      this.imageUrl = imageUrl;
     }
 
     this.message = 'Product updated successfully';

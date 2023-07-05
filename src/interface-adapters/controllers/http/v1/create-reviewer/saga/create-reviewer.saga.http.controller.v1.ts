@@ -1,10 +1,10 @@
 import { Body, Controller, Post, ConflictException } from '@nestjs/common';
-import { CreateReviewerRequestDto } from '@use-cases/create-reviewer/dtos';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateReviewerRequestDto } from '@use-cases/command/create-reviewer/dtos';
 import {
   CreateReviewerSagaRequestDto,
   CreateReviewerSagaResponseDto,
-} from '@use-cases/create-reviewer/sagas';
-import { CommandBus } from '@nestjs/cqrs';
+} from '@use-cases/command/create-reviewer/sagas';
 import { SagaInvocationError, SagaCompensationError } from 'nestjs-saga';
 import { V1CreateReviewerSagaHttpRequest } from './create-reviewer.saga.http.request.v1';
 import { V1CreateReviewerSagaHttpResponse } from './create-reviewer.saga.http.response.v1';

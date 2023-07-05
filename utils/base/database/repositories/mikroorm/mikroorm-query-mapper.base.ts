@@ -1,4 +1,9 @@
-import { MikroOrmModelDetails, QueryParams } from './common-type';
+import {
+  FilterOptions,
+  FilterParams,
+  MikroOrmModelDetails,
+  QueryParams,
+} from './common-type';
 import { MikroOrmModelBase } from './mikroorm-model.base';
 
 export abstract class MikroOrmQueryMapper<
@@ -28,5 +33,22 @@ export abstract class MikroOrmQueryMapper<
       ...query,
       ...this.toQueryDetails(params),
     };
+  }
+
+  toOptions(filterParams: FilterParams): FilterOptions {
+    const options: FilterOptions = {};
+    if (!filterParams) {
+      return {};
+    }
+
+    if (filterParams.limit) {
+      options.limit = filterParams.limit;
+    }
+
+    if (filterParams.offset) {
+      options.offset = filterParams.offset;
+    }
+
+    return options;
   }
 }

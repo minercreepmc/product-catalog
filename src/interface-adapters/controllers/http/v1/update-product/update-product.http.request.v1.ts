@@ -18,15 +18,13 @@ export class V1UpdateProductHttpRequest {
     currency: string;
   };
 
-  @ApiProperty({
-    description: 'The description of the product',
-    example: 'Sample description',
-  })
+  @ApiProperty({ required: false })
   description?: string;
 
   @ApiProperty({
-    description: 'The image of the product',
-    example: 'https://example.com/image.png',
+    type: 'string',
+    format: 'binary',
+    required: false,
   })
-  image?: string;
+  image?: Express.Multer.File;
 }

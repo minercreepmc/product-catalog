@@ -24,6 +24,7 @@ import {
 describe('V1ApproveProductHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `products`;
+  const createProductUrl = 'create';
   const productApproveUrl = 'approve';
   const reviewersUrl = `reviewers`;
   const apiPrefix = `api/v1`;
@@ -54,7 +55,7 @@ describe('V1ApproveProductHttpController (e2e)', () => {
     };
 
     const createProductResponse = await request(app.getHttpServer())
-      .post(`/${apiPrefix}/${productsUrl}`)
+      .post(`/${apiPrefix}/${productsUrl}/${createProductUrl}`)
       .set('Accept', 'application/json')
       .send(createProductRequest)
       .expect(HttpStatus.CREATED);

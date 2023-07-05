@@ -1,3 +1,4 @@
+import { FilterOptions } from '@base/database/repositories/mikroorm';
 import { ID, QueryParams } from 'common-base-classes';
 
 export interface FindOne<Entity, EntityDetails> {
@@ -20,4 +21,17 @@ export interface Update<Entity, EntityDetails> {
 }
 export interface Transaction {
   runInTransaction<T>(fn: () => Promise<T>): Promise<T>;
+}
+
+export interface FindManyOptions<DomainModelDetails> {
+  params: QueryParams<DomainModelDetails>;
+  filter?: FilterOptions;
+}
+
+export interface FindMany<Entity, EntityDetails> {
+  findMany(options?: FindManyOptions<EntityDetails>): Promise<Entity[]>;
+}
+
+export interface FindManyRaw<OrmEntity> {
+  findManyRaw(options?: FindManyOptions<OrmEntity>): Promise<OrmEntity[]>;
 }

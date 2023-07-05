@@ -6,12 +6,17 @@ import {
 } from './use-case-exceptions.base';
 
 export abstract class RequestDtoBase<ResponseDto> extends Request<
-  ResponseResult<ResponseDto>
+  CommandResponseResult<ResponseDto> | QueryResponseResult<ResponseDto>
 > {}
 
-export type ResponseResult<ResponseDto> = Result<
+export type CommandResponseResult<ResponseDto> = Result<
   ResponseDto,
   UseCaseProcessExceptions | UseCaseRequestValidationExceptions
+>;
+
+export type QueryResponseResult<ResponseDto> = Result<
+  ResponseDto,
+  UseCaseRequestValidationExceptions
 >;
 
 export abstract class ResponseDtoBase {

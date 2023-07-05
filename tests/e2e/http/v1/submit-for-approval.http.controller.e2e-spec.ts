@@ -10,23 +10,22 @@ import {
   V1CreateReviewerHttpResponse,
   V1SubmitForApprovalHttpRequest,
 } from '@controllers/http/v1';
-import { SubmitForApprovalResponseDto } from '@use-cases/submit-for-approval/dtos';
 import {
   generateRandomProductId,
   generateRandomProductName,
-  generateRandomReviewerEmail,
   generateRandomReviewerId,
   generateRandomReviewerName,
-  generateRandomReviewerPassword,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { MoneyCurrencyEnum } from '@value-objects/common/money';
 import { ReviewerRoleEnum } from '@value-objects/reviewer';
 import * as request from 'supertest';
+import { SubmitForApprovalResponseDto } from '@use-cases/command/submit-for-approval/dtos';
 
 describe('V1SubmitForApprovalHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `products`;
+  const createProductUrl = 'create';
   const productSubmitUrl = 'submit';
 
   const reviewersUrl = `reviewers`;
@@ -56,7 +55,7 @@ describe('V1SubmitForApprovalHttpController (e2e)', () => {
         },
       };
       const productResponse = await request(app.getHttpServer())
-        .post(`/${apiPrefix}/${productsUrl}`)
+        .post(`/${apiPrefix}/${productsUrl}/${createProductUrl}`)
         .set('Accept', 'application/json')
         .send(createProductRequest);
 

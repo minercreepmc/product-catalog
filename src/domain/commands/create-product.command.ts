@@ -1,6 +1,6 @@
+import { FileValueObject } from '@value-objects/common';
 import {
   ProductDescriptionValueObject,
-  ProductImageValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
@@ -9,7 +9,7 @@ export class CreateProductCommand {
   name: ProductNameValueObject;
   price: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
-  image?: ProductImageValueObject;
+  image?: FileValueObject;
   constructor(dto: CreateProductCommand) {
     this.name = dto.name;
     this.price = dto.price;

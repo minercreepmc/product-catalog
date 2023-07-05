@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ApproveProductResponseDto } from '@use-cases/approve-product/dtos';
 
 export class V1ApproveProductHttpResponse {
   @ApiProperty()
@@ -11,7 +10,7 @@ export class V1ApproveProductHttpResponse {
   @ApiProperty()
   message: string;
 
-  constructor(dto: Omit<ApproveProductResponseDto, 'message'>) {
+  constructor(dto: Omit<V1ApproveProductHttpResponse, 'message'>) {
     const { reviewerId, productId, productStatus } = dto;
     this.reviewerId = reviewerId;
     this.productId = productId;

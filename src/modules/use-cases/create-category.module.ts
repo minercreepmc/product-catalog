@@ -1,15 +1,15 @@
 import { V1CreateCategoryHttpController } from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
-import { CreateCategoryHandler } from '@use-cases/create-category';
-import {
-  CreateCategoryMapper,
-  CreateCategoryProcess,
-  CreateCategoryRequestValidator,
-} from '@use-cases/create-category/application-services';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { MediatorModule } from 'nestjs-mediator';
 import { ApplicationServicesModule } from './application-services';
 import { DomainServicesModule } from '@modules/domains';
+import {
+  CreateCategoryHandler,
+  CreateCategoryMapper,
+  CreateCategoryProcess,
+  CreateCategoryRequestValidator,
+} from '@use-cases/command/create-category';
 
 const useCase: Provider[] = [
   CreateCategoryHandler,

@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import {
   ApproveProductRequestDto,
   ApproveProductResponseDto,
-} from '@use-cases/approve-product/dtos';
+} from '@use-cases/command/approve-product/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1ApproveProductHttpRequest } from './approve-product.http.request.v1';
 import { V1ApproveProductHttpResponse } from './approve-product.http.response.v1';

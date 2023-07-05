@@ -1,12 +1,12 @@
 import { V1UpdateProductHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
-import { UpdateProductHandler } from '@use-cases/update-product';
 import {
+  UpdateProductHandler,
   UpdateProductMapper,
   UpdateProductProcess,
   UpdateProductRequestValidator,
-} from '@use-cases/update-product/application-services';
+} from '@use-cases/command/update-product';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
 import { ApplicationServicesModule } from './application-services';

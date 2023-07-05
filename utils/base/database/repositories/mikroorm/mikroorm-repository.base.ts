@@ -96,4 +96,31 @@ export abstract class MikroOrmRepositoryBase<
 
     return updated ? this.mapper.toDomain(updated) : null;
   }
+  //
+  // async findMany(
+  //   options?: FindManyOptions<DomainModelDetails>,
+  // ): Promise<DomainModel[]> {
+  //   const { params = {}, filter = {} } = options;
+  //   let query: OrmModel;
+  //   let filterOptions: FilterOptions;
+  //
+  //   if (params) {
+  //     query = this.queryMapper.toQuery(params);
+  //   }
+  //
+  //   if (filter) {
+  //     filterOptions = this.queryMapper.toOptions(filter);
+  //   }
+  //
+  //   const ormEntities = await this.entityManager.find<OrmModel>(
+  //     this.mikroEntityName,
+  //     query,
+  //     filterOptions,
+  //   );
+  //
+  //   const promises = ormEntities.map((ormEntity) =>
+  //     this.mapper.toDomain(ormEntity),
+  //   );
+  //   return Promise.all(promises);
+  // }
 }

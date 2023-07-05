@@ -6,10 +6,12 @@ import { CreateCategoryModule } from './create-category.module';
 import { CreateProductModule } from './create-product.module';
 import { CreateReviewerModule } from './create-reviewer.module';
 import { CreateReviewerSagaModule } from './create-reviewer.saga.module';
+import { GetProductsModule } from './get-products.module';
 import { RejectProductModule } from './reject-product.module';
 import { RemoveReviewerModule } from './remove-reviewer.module';
 import { SubmitForApprovalModule } from './submit-for-approval.module';
 import { UpdateProductModule } from './update-product.module';
+import { UploadModule } from './upload.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { UpdateProductModule } from './update-product.module';
     CreateCategoryModule,
     AddSubCategoryModule,
     AddParentCategoryModule,
+    GetProductsModule,
+    UploadModule,
   ],
 })
 export class UseCaseModule {}

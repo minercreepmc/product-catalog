@@ -1,28 +1,52 @@
-import { HttpPostControllerBase } from '@base/interface-adapters/http';
-import { Controller } from '@nestjs/common';
+import { HttpFilePostController } from '@base/interface-adapters/http/post-file-controller.base';
+import {
+  Body,
+  Controller,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes } from '@nestjs/swagger';
 import {
   CreateProductRequestDto,
   CreateProductResponseDto,
-} from '@use-cases/create-product/dtos';
+} from '@use-cases/command/create-product/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1CreateProductHttpRequest } from './create-product.http.request.v1';
 import { V1CreateProductHttpResponse } from './create-product.http.response.v1';
 
-@Controller('/api/v1/products')
-export class V1CreateProductHttpController extends HttpPostControllerBase<
+@Controller('/api/v1/products/create')
+export class V1CreateProductHttpController extends HttpFilePostController<
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse
 > {
-  constructor(mediator: Mediator) {
-    super(mediator);
+  @Post()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  async execute(
+    @Body() httpRequest: V1CreateProductHttpRequest,
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<any> {
+    return super.execute(httpRequest, image);
   }
 
-  createDto(httpRequest: V1CreateProductHttpRequest): CreateProductRequestDto {
-    return new CreateProductRequestDto(httpRequest);
+  createDto(
+    httpRequest: V1CreateProductHttpRequest,
+    image: Express.Multer.File,
+  ): CreateProductRequestDto {
+    return new CreateProductRequestDto({
+      ...httpRequest,
+      image,
+    });
   }
+
   createHttpResponse(
     response: CreateProductResponseDto,
   ): V1CreateProductHttpResponse {
     return new V1CreateProductHttpResponse(response);
+  }
+  constructor(mediator: Mediator) {
+    super(mediator);
   }
 }

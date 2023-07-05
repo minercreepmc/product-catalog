@@ -2,12 +2,12 @@ import { V1CreateReviewerHttpController } from '@controllers/http/v1';
 import { V1CreateReviewerRmqMessageHandler } from '@message-handlers/rmq/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { CreateReviewerHandler } from '@use-cases/create-reviewer';
 import {
+  CreateReviewerHandler,
   CreateReviewerMapper,
   CreateReviewerProcess,
   CreateReviewerRequestValidator,
-} from '@use-cases/create-reviewer/application-services';
+} from '@use-cases/command/create-reviewer';
 import { MediatorModule } from 'nestjs-mediator';
 import { DomainServicesModule } from '../domains';
 import { DatabaseModule } from '../infrastructures/database';

@@ -3,7 +3,7 @@ import { Controller, Put } from '@nestjs/common';
 import {
   RemoveReviewerRequestDto,
   RemoveReviewerResponseDto,
-} from '@use-cases/remove-reviewer/dtos';
+} from '@use-cases/command/remove-reviewer/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1RemoveReviewerHttpRequest } from './remove-reviewer.http.request.v1';
 import { V1RemoveReviewerHttpResponse } from './remove-reviewer.http.response.v1';

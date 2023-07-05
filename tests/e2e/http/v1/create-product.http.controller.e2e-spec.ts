@@ -1,5 +1,6 @@
 import {
   generateRandomProductName,
+  generateRandomProductPrice,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { HttpStatus, INestApplication } from '@nestjs/common';
@@ -14,18 +15,11 @@ import {
 
 describe('V1CreateProductHttpController (e2e)', () => {
   let app: INestApplication;
-  const productsUrl = `products`;
+  const productsUrl = `products/create`;
   const apiPrefix = `api/v1`;
-
-  const createProductRequest: V1CreateProductHttpRequest = {
-    name: generateRandomProductName(),
-    price: {
-      amount: 25.99,
-      currency: 'USD',
-    },
-    description: 'Sample description',
-    image: 'https://example.com/image.png',
-  };
+  //let uploadService: UploadService;
+  //let tempFilePath: string;
+  //let uploadedTempFilePath: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -33,18 +27,37 @@ describe('V1CreateProductHttpController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    //uploadService = moduleFixture.get<UploadService>(UploadService);
+
+    //tempFilePath = TempFileUtil.createTempFileFromBuffer();
     await app.init();
   });
 
   afterAll(async () => {
+    //await uploadService.delete(uploadedTempFilePath);
+    //TempFileUtil.deleteFile(tempFilePath);
     await app.close();
   });
 
   describe(`${productsUrl} (POST)`, () => {
     it('should create a product and return the new product information', async () => {
+      const createProductRequest: V1CreateProductHttpRequest = {
+        name: generateRandomProductName(),
+        price: {
+          amount: 25.99,
+          currency: 'USD',
+        },
+        description: 'Sample description',
+      };
+
       const response = await request(app.getHttpServer())
         .post(`/${apiPrefix}/${productsUrl}`)
         .set('Accept', 'application/json')
+        //.attach('image', tempFilePath)
+        //.field('name', createProductRequest.name)
+        //.field('price.amount', createProductRequest.price.amount)
+        //.field('price.currency', createProductRequest.price.currency)
+        //.field('description', createProductRequest.description)
         .send(createProductRequest)
         .expect(HttpStatus.CREATED);
 
@@ -53,15 +66,26 @@ describe('V1CreateProductHttpController (e2e)', () => {
       expect(body.name).toEqual(createProductRequest.name);
       expect(body.price).toEqual(createProductRequest.price);
       expect(body.description).toEqual(createProductRequest.description);
-      expect(body.image).toEqual(createProductRequest.image);
+      //expect(body.imageUrl).toEqual(createProductRequest.image);
+
+      //uploadedTempFilePath = body.imageUrl;
     });
 
     it('should not create a product if it already exists', async () => {
+      const createProductRequest: V1CreateProductHttpRequest = {
+        name: generateRandomProductName(),
+        price: {
+          amount: generateRandomProductPrice(),
+          currency: 'USD',
+        },
+        description: 'asdasdasdasdasd',
+      };
       // First, create the product
       await request(app.getHttpServer())
         .post(`/${apiPrefix}/${productsUrl}`)
         .set('Accept', 'application/json')
-        .send(createProductRequest);
+        .send(createProductRequest)
+        .expect(HttpStatus.CREATED);
 
       // Attempt to create the product again
       const response = await request(app.getHttpServer())
@@ -83,7 +107,6 @@ describe('V1CreateProductHttpController (e2e)', () => {
           currency: 'USD',
         },
         description: '',
-        image: 'wtf',
       };
 
       const response = await request(app.getHttpServer())
@@ -96,7 +119,7 @@ describe('V1CreateProductHttpController (e2e)', () => {
         mapDomainExceptionsToObjects([
           new ProductDomainExceptions.PriceDoesNotValid(),
           new ProductDomainExceptions.DescriptionDoesNotValid(),
-          new ProductDomainExceptions.ImageDoesNotValid(),
+          //new ProductDomainExceptions.ImageDoesNotValid(),
           new ProductDomainExceptions.NameDoesNotValid(),
         ]),
       );

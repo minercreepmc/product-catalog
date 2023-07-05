@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import {
   CreateReviewerRequestDto,
   CreateReviewerResponseDto,
-} from '@use-cases/create-reviewer/dtos';
+} from '@use-cases/command/create-reviewer/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1CreateReviewerHttpRequest } from './create-reviewer.http.request.v1';
 import { V1CreateReviewerHttpResponse } from './create-reviewer.http.response.v1';

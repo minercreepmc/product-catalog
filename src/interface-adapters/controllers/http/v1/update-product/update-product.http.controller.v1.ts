@@ -1,15 +1,15 @@
-import { HttpPutControllerBase } from '@base/interface-adapters/http';
+import { HttpFilePutController } from '@base/interface-adapters/http/put-file.controller.base';
 import { Controller } from '@nestjs/common';
 import {
   UpdateProductRequestDto,
   UpdateProductResponseDto,
-} from '@use-cases/update-product/dtos';
+} from '@use-cases/command/update-product/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1UpdateProductHttpRequest } from './update-product.http.request.v1';
 import { V1UpdateProductHttpResponse } from './update-product.http.response.v1';
 
 @Controller('/api/v1/products/:id')
-export class V1UpdateProductHttpController extends HttpPutControllerBase<
+export class V1UpdateProductHttpController extends HttpFilePutController<
   V1UpdateProductHttpRequest,
   V1UpdateProductHttpResponse
 > {
@@ -18,6 +18,7 @@ export class V1UpdateProductHttpController extends HttpPutControllerBase<
   }
   createDto(
     httpRequest: V1UpdateProductHttpRequest,
+    file: Express.Multer.File,
     id?: string,
   ): UpdateProductRequestDto {
     return new UpdateProductRequestDto({
@@ -25,7 +26,7 @@ export class V1UpdateProductHttpController extends HttpPutControllerBase<
       name: httpRequest.name,
       description: httpRequest.description,
       price: httpRequest.price,
-      image: httpRequest.image,
+      image: file,
     });
   }
   createHttpResponse(

@@ -1,12 +1,12 @@
 import { V1CreateProductHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
-import { CreateProductHandler } from '@use-cases/create-product';
 import {
+  CreateProductHandler,
   CreateProductMapper,
   CreateProductProcess,
   CreateProductRequestValidator,
-} from '@use-cases/create-product/application-services';
+} from '@use-cases/command/create-product';
 import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
 import { ApplicationServicesModule } from './application-services';

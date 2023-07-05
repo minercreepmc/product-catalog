@@ -10,6 +10,15 @@ export type EventConstructorDocuments<
 > = Record<DomainEventName, DomainEventClass>;
 
 export type QueryParams<EntityDetails> = Partial<IBaseEntity & EntityDetails>;
+export interface FilterParams {
+  limit?: number;
+  offset?: number;
+}
+
+export interface FilterOptions {
+  limit?: number;
+  offset?: number;
+}
 
 export type WhereClause<OrmModel> =
   | FindOptionsWhere<OrmModel>

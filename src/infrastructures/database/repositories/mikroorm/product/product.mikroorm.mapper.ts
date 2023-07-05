@@ -6,7 +6,7 @@ import {
 import {
   ProductAttributesValueObject,
   ProductDescriptionValueObject,
-  ProductImageValueObject,
+  ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
   ProductStatusValueObject,
@@ -54,7 +54,7 @@ export class ProductMikroOrmMapper extends MikroOrmMapperBase<
     let name: ProductNameValueObject | undefined;
     let price: ProductPriceValueObject | undefined;
     let description: ProductDescriptionValueObject | undefined;
-    let image: ProductImageValueObject | undefined;
+    let image: ProductImageUrlValueObject | undefined;
     let attributes: ProductAttributesValueObject | undefined;
     let status: ProductStatusValueObject | undefined;
     let submittedBy: ReviewerIdValueObject | undefined;
@@ -75,7 +75,7 @@ export class ProductMikroOrmMapper extends MikroOrmMapperBase<
     }
 
     if (ormModel.image) {
-      image = new ProductImageValueObject(ormModel?.image);
+      image = new ProductImageUrlValueObject(ormModel?.image);
     }
 
     if (ormModel.attributes) {

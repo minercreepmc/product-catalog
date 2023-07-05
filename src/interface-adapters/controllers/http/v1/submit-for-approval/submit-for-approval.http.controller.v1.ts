@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import {
   SubmitForApprovalRequestDto,
   SubmitForApprovalResponseDto,
-} from '@use-cases/submit-for-approval/dtos';
+} from '@use-cases/command/submit-for-approval/dtos';
 import { Mediator } from 'nestjs-mediator';
 import { V1SubmitForApprovalHttpRequest } from './submit-for-approval.http.request.v1';
 import { V1SubmitForApprovalHttpResponse } from './submit-for-approval.http.response.v1';

@@ -14,7 +14,7 @@ import { Mediator } from 'nestjs-mediator';
 import { match } from 'oxide.ts';
 
 export abstract class HttpPostControllerBase<THttpRequest, THttpResponse> {
-  constructor(private readonly mediator: Mediator) {}
+  constructor(protected readonly mediator: Mediator) {}
 
   @Post()
   async execute(@Body() httpRequest: any): Promise<any> {

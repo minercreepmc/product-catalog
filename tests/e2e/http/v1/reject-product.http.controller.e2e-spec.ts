@@ -15,11 +15,8 @@ import {
   generateRandomProductId,
   generateRandomProductName,
   generateRandomProductPrice,
-  generateRandomReviewerEmail,
   generateRandomReviewerId,
   generateRandomReviewerName,
-  generateRandomReviewerPassword,
-  generateRandomReviewerUsername,
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import { ReviewerDomainExceptions } from '@domain-exceptions/reviewer';
@@ -28,6 +25,7 @@ import { ProductDomainExceptions } from '@domain-exceptions/product';
 describe('V1RejectProductHttpController (PUT)', () => {
   let app: INestApplication;
   const productsUrl = `products`;
+  const createProductUrl = 'create';
   const productRejectUrl = 'reject';
   const productSubmitUrl = 'submit';
   const reviewersUrl = `reviewers`;
@@ -59,7 +57,7 @@ describe('V1RejectProductHttpController (PUT)', () => {
     };
 
     const createProductResponse = await request(app.getHttpServer())
-      .post(`/${apiPrefix}/${productsUrl}`)
+      .post(`/${apiPrefix}/${productsUrl}/${createProductUrl}`)
       .set('Accept', 'application/json')
       .send(createProductRequest);
 

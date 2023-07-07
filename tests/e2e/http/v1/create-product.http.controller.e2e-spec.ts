@@ -2,6 +2,7 @@ import {
   generateRandomProductName,
   generateRandomProductPrice,
   mapDomainExceptionsToObjects,
+  TempFileUtil,
 } from '@utils/functions';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -17,9 +18,6 @@ describe('V1CreateProductHttpController (e2e)', () => {
   let app: INestApplication;
   const productsUrl = `products/create`;
   const apiPrefix = `api/v1`;
-  //let uploadService: UploadService;
-  //let tempFilePath: string;
-  //let uploadedTempFilePath: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -54,11 +52,10 @@ describe('V1CreateProductHttpController (e2e)', () => {
         .post(`/${apiPrefix}/${productsUrl}`)
         .set('Accept', 'application/json')
         //.attach('image', tempFilePath)
-        //.field('name', createProductRequest.name)
-        //.field('price.amount', createProductRequest.price.amount)
-        //.field('price.currency', createProductRequest.price.currency)
-        //.field('description', createProductRequest.description)
-        .send(createProductRequest)
+        .field('name', createProductRequest.name)
+        .field('price[amount]', createProductRequest.price.amount)
+        .field('price[currency]', createProductRequest.price.currency)
+        .field('description', createProductRequest.description)
         .expect(HttpStatus.CREATED);
 
       const body: V1CreateProductHttpResponse = response.body;
@@ -66,7 +63,7 @@ describe('V1CreateProductHttpController (e2e)', () => {
       expect(body.name).toEqual(createProductRequest.name);
       expect(body.price).toEqual(createProductRequest.price);
       expect(body.description).toEqual(createProductRequest.description);
-      //expect(body.imageUrl).toEqual(createProductRequest.image);
+      //expect(body.imageUrl).toBeDefined();
 
       //uploadedTempFilePath = body.imageUrl;
     });

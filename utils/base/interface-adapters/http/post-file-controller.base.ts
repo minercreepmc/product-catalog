@@ -24,10 +24,10 @@ export abstract class HttpFilePostController<THttpRequest, THttpResponse> {
 
   @Post()
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   async execute(
-    @Body() httpRequest: any,
     @UploadedFile() file: Express.Multer.File,
+    @Body() httpRequest: any,
   ): Promise<any> {
     const dto = this.createDto(httpRequest, file);
 

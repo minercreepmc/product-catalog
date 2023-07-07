@@ -2,6 +2,7 @@ import { TranslateOptions, RequestValidatorBase } from '@base/use-cases';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { Injectable } from '@nestjs/common';
 import { CreateProductRequestDto } from '@use-cases/command/create-product/dtos';
+import { RemoveProductsRequestDto } from '@use-cases/command/remove-products/dtos';
 import { UpdateProductRequestDto } from '@use-cases/command/update-product/dtos';
 import { FileValueObject } from '@value-objects/common';
 import {
@@ -18,7 +19,8 @@ import { ValidationExceptionBase } from 'common-base-classes';
 
 export type ProductRequestDto =
   | CreateProductRequestDto
-  | UpdateProductRequestDto;
+  | UpdateProductRequestDto
+  | RemoveProductsRequestDto;
 
 @Injectable()
 export class ProductRequestValidator extends RequestValidatorBase {

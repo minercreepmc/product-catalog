@@ -8,6 +8,7 @@ import { CreateReviewerModule } from './create-reviewer.module';
 import { CreateReviewerSagaModule } from './create-reviewer.saga.module';
 import { GetProductsModule } from './get-products.module';
 import { RejectProductModule } from './reject-product.module';
+import { RemoveProductsModule } from './remove-products.module';
 import { RemoveReviewerModule } from './remove-reviewer.module';
 import { SubmitForApprovalModule } from './submit-for-approval.module';
 import { UpdateProductModule } from './update-product.module';
@@ -27,6 +28,7 @@ import { UploadModule } from './upload.module';
     AddSubCategoryModule,
     AddParentCategoryModule,
     GetProductsModule,
+    RemoveProductsModule,
     UploadModule,
   ],
 })

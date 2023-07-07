@@ -25,10 +25,11 @@ export class V1CreateProductHttpController extends HttpFilePostController<
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   async execute(
-    @Body() httpRequest: V1CreateProductHttpRequest,
     @UploadedFile() image: Express.Multer.File,
+    @Body() httpRequest: V1CreateProductHttpRequest,
   ): Promise<any> {
-    return super.execute(httpRequest, image);
+    console.log(image, httpRequest);
+    return super.execute(image, httpRequest);
   }
 
   createDto(

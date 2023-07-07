@@ -5,6 +5,7 @@ import {
 } from '@aggregates/product';
 import {
   ProductCreatedDomainEvent,
+  ProductRemovedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
@@ -86,6 +87,22 @@ export class ProductManagementDomainService {
       const productUpdatedEvent = product.updateProduct(options.payload);
       await this.productRepository.save(product);
       return productUpdatedEvent;
+    });
+  }
+
+  async removeProduct(
+    id: ProductIdValueObject,
+  ): Promise<ProductRemovedDomainEvent> {
+    return this.unitOfWork.runInTransaction(async () => {
+      const product = await this.productRepository.findOneById(id);
+      if (!product) {
+        throw new ProductDomainExceptions.DoesNotExist();
+      }
+      await this.productRepository.delete(product);
+
+      return new ProductRemovedDomainEvent({
+        productId: id,
+      });
     });
   }
 }

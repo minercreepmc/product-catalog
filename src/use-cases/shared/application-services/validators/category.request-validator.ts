@@ -4,6 +4,7 @@ import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { AddParentCategoriesRequestDto } from '@use-cases/command/add-parent-categories/dtos';
 import { AddSubCategoriesRequestDto } from '@use-cases/command/add-sub-categories/dtos';
 import { CreateCategoryRequestDto } from '@use-cases/command/create-category/dtos';
+import { RemoveCategoriesRequestDto } from '@use-cases/command/remove-categories/dtos/remove-category.dto';
 import {
   CategoryDescriptionValueObject,
   CategoryIdValueObject,
@@ -16,7 +17,8 @@ import { ValidationExceptionBase } from 'common-base-classes';
 
 export type CategoryRequestDto = CreateCategoryRequestDto &
   AddParentCategoriesRequestDto &
-  AddSubCategoriesRequestDto;
+  AddSubCategoriesRequestDto &
+  RemoveCategoriesRequestDto;
 
 export class CategoryRequestValidator extends RequestValidatorBase {
   _validate(requestDto: CategoryRequestDto): void {

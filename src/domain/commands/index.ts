@@ -8,3 +8,4 @@ export * from './submit-for-approval.command';
 export * from './update-product.command';
 export * from './approve-product.command';
 export * from './remove-reviewer.command';
+export * from './remove-categories.command';

@@ -2,6 +2,7 @@ import {
   CategoryAggregate,
   CreateCategoryAggregateOptions,
 } from '@aggregates/category';
+import { CategoryRemovedDomainEvent } from '@domain-events/category';
 import {
   categoryRepositoryDiToken,
   CategoryRepositoryPort,
@@ -24,6 +25,10 @@ export interface AddSubCategoriesServiceOptions {
 export interface AddParentCategoriesServiceOptions {
   categoryId: CategoryIdValueObject;
   parentIds: SubCategoryIdValueObject[];
+}
+
+export interface RemoveCategoryServiceOptions {
+  categoryId: CategoryIdValueObject;
 }
 
 @Injectable()
@@ -80,6 +85,22 @@ export class CategoryManagementDomainService {
 
       await this.categoryRepository.save(categoryAggregate);
       return parentCategoryAdded;
+    });
+  }
+
+  async removeCategory(options: RemoveCategoryServiceOptions) {
+    return this.unitOfWork.runInTransaction(async () => {
+      await this.categoryVerification.verifyCategoryRemovalOptions(options);
+
+      const { categoryId } = options;
+
+      await this.categoryRepository.delete({
+        id: categoryId,
+      });
+
+      return new CategoryRemovedDomainEvent({
+        id: categoryId,
+      });
     });
   }
 }

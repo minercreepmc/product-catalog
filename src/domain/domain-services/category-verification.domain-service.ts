@@ -18,6 +18,7 @@ import {
   AddParentCategoriesServiceOptions,
   AddSubCategoriesServiceOptions,
   CreateCategoryOptions,
+  RemoveCategoryServiceOptions,
 } from './category-management.domain-service';
 
 export interface DoesParentIdsAndCategoryIdsOverlapServiceOptions {
@@ -43,6 +44,16 @@ export class CategoryVerificationDomainService {
     @Inject(productRepositoryDiToken)
     private readonly productRepository: ProductRepositoryPort,
   ) {}
+
+  async verifyCategoryRemovalOptions(options: RemoveCategoryServiceOptions) {
+    const { categoryId } = options;
+
+    await Promise.all([
+      this.checkCategoryIdMustExist({
+        id: categoryId,
+      }),
+    ]);
+  }
 
   async verifyCategoryCreationOptions(options: CreateCategoryOptions) {
     const { name, parentIds, productIds, subCategoryIds } = options;
@@ -153,6 +164,14 @@ export class CategoryVerificationDomainService {
   }
 
   // Check Methods
+
+  private async checkCategoryIdMustExist({ id }) {
+    const exist = await this.categoryRepository.findOneById(id);
+    if (!exist) {
+      throw new CategoryDomainExceptions.DoesNotExist();
+    }
+  }
+
   private async checkCategoryMustNotExist({
     name,
   }: {

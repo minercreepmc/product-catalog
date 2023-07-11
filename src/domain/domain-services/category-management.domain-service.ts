@@ -89,18 +89,17 @@ export class CategoryManagementDomainService {
   }
 
   async removeCategory(options: RemoveCategoryServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyCategoryRemovalOptions(options);
+    // TODO: run in transaction but with bulk delete not work
+    await this.categoryVerification.verifyCategoryRemovalOptions(options);
 
-      const { categoryId } = options;
+    const { categoryId } = options;
 
-      await this.categoryRepository.delete({
-        id: categoryId,
-      });
+    await this.categoryRepository.delete({
+      id: categoryId,
+    });
 
-      return new CategoryRemovedDomainEvent({
-        id: categoryId,
-      });
+    return new CategoryRemovedDomainEvent({
+      id: categoryId,
     });
   }
 }

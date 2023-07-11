@@ -15,7 +15,7 @@ services:
       - postgres
     env_file:
       - .env
-    command: sh -c 'npm run schema:drop && npm run migration:create && npm run migration:up && npm run test -- $E2E_TEST'
+    command: sh -c 'npm run migration:create && npm run migration:up && npm run test -- $E2E_TEST && npm run schema:drop '
     ports:
       - 3999:3002
 
@@ -25,5 +25,7 @@ services:
     restart: always
     env_file:
       - .env
+    volumes:
+      - ./data/db_test:/var/lib/postgresql/data
     ports:
       - 8999:5432

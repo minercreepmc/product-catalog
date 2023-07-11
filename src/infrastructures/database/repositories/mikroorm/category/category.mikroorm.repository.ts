@@ -12,6 +12,7 @@ import { CategoryMikroOrmMapper } from './category.mikroorm.mapper';
 import { CategoryMikroOrmModel } from './category.mikroorm.model';
 import { CategoryMikroOrmQueryMapper } from './category.mikroorm.query-mapper';
 
+
 @Injectable()
 export class CategoryMikroOrmRepository
   extends MikroOrmRepositoryBase<

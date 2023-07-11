@@ -24,4 +24,5 @@ export class CategoryMikroOrmModel extends MikroOrmModelBase {
 
   @Property({ type: ArrayType, nullable: true })
   productIds: string[];
+
 }

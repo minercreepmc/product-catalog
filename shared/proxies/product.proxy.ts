@@ -33,7 +33,6 @@ export class ProductProxy implements V1ProductInterface {
       );
       return response;
     } catch (exceptions) {
-      console.log(exceptions);
       throw new HandlerExceptions(exceptions);
     }
   }

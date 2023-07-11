@@ -15,11 +15,11 @@ async function bootstrap() {
   // Set up Swagger documentation
   const document = SwaggerModule.createDocument(app, swaggerOption);
   SwaggerModule.setup('docs', app, document);
-  const swaggerSpecPath = path.join(
-    process.cwd(),
-    'config/swagger/swagger.json',
-  );
-  fs.writeFileSync(swaggerSpecPath, JSON.stringify(document));
+  //const swaggerSpecPath = path.join(
+  //  process.cwd(),
+  // 'config/swagger/swagger.json',
+  //);
+  //fs.writeFileSync(swaggerSpecPath, JSON.stringify(document));
 
   // Configure global pipes and enable CORS
   app.useGlobalPipes(

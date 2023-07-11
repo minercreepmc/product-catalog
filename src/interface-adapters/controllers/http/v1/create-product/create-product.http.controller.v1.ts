@@ -28,7 +28,6 @@ export class V1CreateProductHttpController extends HttpFilePostController<
     @UploadedFile() image: Express.Multer.File,
     @Body() httpRequest: V1CreateProductHttpRequest,
   ): Promise<any> {
-    console.log(image, httpRequest);
     return super.execute(image, httpRequest);
   }
 

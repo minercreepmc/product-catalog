@@ -6,7 +6,6 @@ import { CreateProductRequestDto } from '../dtos';
 export class CreateProductRequestValidator extends ProductRequestValidator {
   _validate(dto: CreateProductRequestDto): void {
     const { name, price, description, image } = dto;
-    console.log(dto);
     this.validateName(name);
     this.validatePrice(price);
     if (description !== undefined) {

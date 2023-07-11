@@ -1,5 +1,5 @@
 import { HttpPostControllerBase } from '@base/interface-adapters/http';
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   RemoveCategoriesRequestDto,
   RemoveCategoriesResponseDto,
@@ -15,7 +15,7 @@ export class V1RemoveCategoriesHttpController extends HttpPostControllerBase<
 > {
   @Post()
   @HttpCode(HttpStatus.OK)
-  execute(request: V1RemoveCategoriesHttpRequest): Promise<any> {
+  execute(@Body() request: V1RemoveCategoriesHttpRequest): Promise<any> {
     return super.execute(request);
   }
 

@@ -7,6 +7,7 @@ import { CreateProductModule } from './create-product.module';
 import { CreateReviewerModule } from './create-reviewer.module';
 import { CreateReviewerSagaModule } from './create-reviewer.saga.module';
 import { GetCategoriesModule } from './get-categories.module';
+import { GetCategoryModule } from './get-category.module';
 import { GetProductsModule } from './get-products.module';
 import { GetSubCategoriesModule } from './get-sub-categories.module';
 import { RejectProductModule } from './reject-product.module';
@@ -33,6 +34,7 @@ import { UploadModule } from './upload.module';
     GetProductsModule,
     GetCategoriesModule,
     GetSubCategoriesModule,
+    GetCategoryModule,
     RemoveProductsModule,
     RemoveCategoriesModule,
     UploadModule,

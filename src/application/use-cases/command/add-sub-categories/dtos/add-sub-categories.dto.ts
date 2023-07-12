@@ -14,10 +14,12 @@ export class AddSubCategoriesRequestDto extends RequestDtoBase<AddSubCategoriesR
 export class AddSubCategoriesResponseDto extends ResponseDtoBase {
   categoryId: string;
   subCategoryIds: string[];
+  parentIds?: string[];
 
   constructor(options: Omit<AddSubCategoriesResponseDto, 'message'>) {
     super('Sub categories added successfully');
     this.categoryId = options.categoryId;
     this.subCategoryIds = options.subCategoryIds;
+    this.parentIds = options.parentIds;
   }
 }

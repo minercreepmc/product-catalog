@@ -18,6 +18,7 @@ import {
   AddParentCategoriesServiceOptions,
   AddSubCategoriesServiceOptions,
   CreateCategoryOptions,
+  RemoveCategoriesServiceOptions,
   RemoveCategoryServiceOptions,
 } from './category-management.domain-service';
 
@@ -53,6 +54,18 @@ export class CategoryVerificationDomainService {
         id: categoryId,
       }),
     ]);
+  }
+
+  async verifyCategoriesRemovalOptions(
+    options: RemoveCategoriesServiceOptions,
+  ) {
+    const { categoryIds } = options;
+
+    const promises = categoryIds.map((id: CategoryIdValueObject) => {
+      this.checkCategoryIdMustExist({ id });
+    });
+
+    await Promise.all(promises);
   }
 
   async verifyCategoryCreationOptions(options: CreateCategoryOptions) {

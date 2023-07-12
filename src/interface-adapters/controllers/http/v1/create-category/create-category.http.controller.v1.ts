@@ -1,5 +1,5 @@
 import { HttpPostControllerBase } from '@base/interface-adapters/http';
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import {
   CreateCategoryRequestDto,
   CreateCategoryResponseDto,
@@ -13,6 +13,11 @@ export class V1CreateCategoryHttpController extends HttpPostControllerBase<
   V1CreateCategoryHttpRequest,
   V1CreateCategoryHttpResponse
 > {
+  @Post()
+  execute(@Body() request: V1CreateCategoryHttpRequest) {
+    return super.execute(request);
+  }
+
   constructor(mediator: Mediator) {
     super(mediator);
   }

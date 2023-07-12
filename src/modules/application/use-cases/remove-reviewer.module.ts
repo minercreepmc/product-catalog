@@ -1,5 +1,7 @@
 import { V1RemoveReviewerHttpController } from '@controllers/http/v1/remove-reviewer';
 import { V1RemoveReviewerRmqMessageHandler } from '@message-handlers/rmq/v1';
+import { DomainServicesModule } from '@modules/domains';
+import { DatabaseModule } from '@modules/infrastructures/database';
 import { Module, Provider } from '@nestjs/common';
 import {
   RemoveReviewerHandler,
@@ -8,8 +10,6 @@ import {
   RemoveReviewerRequestValidator,
 } from '@use-cases/command/remove-reviewer';
 import { MediatorModule } from 'nestjs-mediator';
-import { DomainServicesModule } from '../domains';
-import { DatabaseModule } from '../infrastructures/database';
 import { ApplicationServicesModule } from './application-services';
 
 const useCases: Provider[] = [

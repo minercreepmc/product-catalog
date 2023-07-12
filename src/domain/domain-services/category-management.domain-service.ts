@@ -8,6 +8,7 @@ import {
   CategoryRepositoryPort,
 } from '@domain-interfaces';
 import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
+import { eventBusDiToken, EventBusPort } from '@domain-interfaces/events';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
@@ -21,7 +22,6 @@ export interface AddSubCategoriesServiceOptions {
   categoryId: CategoryIdValueObject;
   subCategoryIds: SubCategoryIdValueObject[];
 }
-
 export interface AddParentCategoriesServiceOptions {
   categoryId: CategoryIdValueObject;
   parentIds: SubCategoryIdValueObject[];
@@ -29,6 +29,10 @@ export interface AddParentCategoriesServiceOptions {
 
 export interface RemoveCategoryServiceOptions {
   categoryId: CategoryIdValueObject;
+}
+
+export interface RemoveCategoriesServiceOptions {
+  categoryIds: CategoryIdValueObject[];
 }
 
 @Injectable()
@@ -39,53 +43,52 @@ export class CategoryManagementDomainService {
     @Inject(categoryRepositoryDiToken)
     private readonly categoryRepository: CategoryRepositoryPort,
     private readonly categoryVerification: CategoryVerificationDomainService,
+    @Inject(eventBusDiToken)
+    private readonly eventBus: EventBusPort,
   ) {}
 
   async createCategory(options: CreateCategoryOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyCategoryCreationOptions(options);
+    await this.categoryVerification.verifyCategoryCreationOptions(options);
 
-      const categoryAggregate = new CategoryAggregate();
+    const categoryAggregate = new CategoryAggregate();
 
-      const categoryCreated = categoryAggregate.createCategory(options);
-      await this.categoryRepository.save(categoryAggregate);
+    const categoryCreated = categoryAggregate.createCategory(options);
+    await this.categoryRepository.save(categoryAggregate);
 
-      return categoryCreated;
-    });
+    return categoryCreated;
   }
 
   async addSubCategories(options: AddSubCategoriesServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyAddSubCategoriesOptions(options);
+    await this.categoryVerification.verifyAddSubCategoriesOptions(options);
 
-      const categoryAggregate = await this.categoryRepository.findOneById(
-        options.categoryId,
-      );
+    const categoryAggregate = await this.categoryRepository.findOneById(
+      options.categoryId,
+    );
 
-      const subCategoryAdded = categoryAggregate.addSubCategories(
-        options.subCategoryIds,
-      );
-      await this.categoryRepository.save(categoryAggregate);
+    const subCategoryAdded = categoryAggregate.addSubCategories(
+      options.subCategoryIds,
+    );
 
-      return subCategoryAdded;
-    });
+    await this.categoryRepository.save(categoryAggregate);
+
+    this.eventBus.publish(subCategoryAdded);
+
+    return subCategoryAdded;
   }
 
   async addParentCategories(options: AddParentCategoriesServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyAddParentCategoriesOptions(options);
+    await this.categoryVerification.verifyAddParentCategoriesOptions(options);
 
-      const categoryAggregate = await this.categoryRepository.findOneById(
-        options.categoryId,
-      );
+    const categoryAggregate = await this.categoryRepository.findOneById(
+      options.categoryId,
+    );
 
-      const parentCategoryAdded = categoryAggregate.addParentCategories(
-        options.parentIds,
-      );
+    const parentCategoryAdded = categoryAggregate.addParentCategories(
+      options.parentIds,
+    );
 
-      await this.categoryRepository.save(categoryAggregate);
-      return parentCategoryAdded;
-    });
+    await this.categoryRepository.save(categoryAggregate);
+    return parentCategoryAdded;
   }
 
   async removeCategory(options: RemoveCategoryServiceOptions) {
@@ -101,5 +104,26 @@ export class CategoryManagementDomainService {
     return new CategoryRemovedDomainEvent({
       id: categoryId,
     });
+  }
+
+  // not test
+  async removeCategories(options: RemoveCategoriesServiceOptions) {
+    await this.categoryVerification.verifyCategoriesRemovalOptions(options);
+
+    const promises = options.categoryIds.map((id: CategoryIdValueObject) => {
+      this.categoryRepository.delete({
+        id: id,
+      });
+    });
+
+    await Promise.all(promises);
+
+    const events = options.categoryIds.map((id: CategoryIdValueObject) => {
+      return new CategoryRemovedDomainEvent({
+        id: id,
+      });
+    });
+
+    return events;
   }
 }

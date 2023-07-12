@@ -1,5 +1,5 @@
 import { HttpPutControllerBase } from '@base/interface-adapters/http';
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Param, Put } from '@nestjs/common';
 import {
   AddSubCategoriesRequestDto,
   AddSubCategoriesResponseDto,
@@ -13,6 +13,14 @@ export class V1AddSubCategoriesHttpController extends HttpPutControllerBase<
   V1AddSubCategoriesHttpRequest,
   V1AddSubCategoriesHttpResponse
 > {
+  @Put()
+  execute(
+    @Body() httpRequest: V1AddSubCategoriesHttpRequest,
+    @Param('id') id: string,
+  ): Promise<any> {
+    return super.execute(httpRequest, id);
+  }
+
   constructor(mediator: Mediator) {
     super(mediator);
   }

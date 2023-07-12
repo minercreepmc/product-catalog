@@ -1,5 +1,6 @@
 import { V1CreateProductHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
+import { DatabaseModule } from '@modules/infrastructures/database';
 import { Module, Provider } from '@nestjs/common';
 import {
   CreateProductHandler,
@@ -8,7 +9,6 @@ import {
   CreateProductRequestValidator,
 } from '@use-cases/command/create-product';
 import { MediatorModule } from 'nestjs-mediator';
-import { DatabaseModule } from '../infrastructures/database';
 import { ApplicationServicesModule } from './application-services';
 
 const useCase: Provider[] = [

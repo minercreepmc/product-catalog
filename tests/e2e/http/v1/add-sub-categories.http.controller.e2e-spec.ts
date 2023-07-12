@@ -14,12 +14,17 @@ import {
 } from '@utils/functions';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { AppModule } from '@src/app.module';
+import {
+  V1GetCategoryHttpRequest,
+  V1GetCategoryHttpResponse,
+} from '@controllers/http/v1/get-category';
 
 describe('V1AddSubCategoriesHttpController (e2e)', () => {
   let app: INestApplication;
   const categoriesUrl = `categories`;
   const createCategorysUrl = 'create';
   const addSubCategoriesUrl = 'add-sub-categories';
+  const getSubCategoryUrl = 'get';
   const apiPrefix = 'api/v1';
 
   beforeAll(async () => {
@@ -104,16 +109,16 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
         .send(createCategorySecondRequest)
         .expect(HttpStatus.CREATED);
 
-      const firstBody: V1CreateCategoryHttpResponse = firstResponse.body;
-      const secondBody: V1CreateCategoryHttpResponse = secondResponse.body;
+      const wannaBeSub: V1CreateCategoryHttpResponse = firstResponse.body;
+      const wannaBeParent: V1CreateCategoryHttpResponse = secondResponse.body;
 
       const addSubCategoriesRequest: V1AddSubCategoriesHttpRequest = {
-        subCategoryIds: [firstBody.id],
+        subCategoryIds: [wannaBeSub.id],
       };
 
       const response = await request(app.getHttpServer())
         .put(
-          `/${apiPrefix}/${categoriesUrl}/${secondBody.id}/${addSubCategoriesUrl}`,
+          `/${apiPrefix}/${categoriesUrl}/${wannaBeParent.id}/${addSubCategoriesUrl}`,
         )
         .set('Accept', 'application/json')
         .send(addSubCategoriesRequest)
@@ -122,8 +127,21 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
       // Assert the response
       const resultBody: V1AddSubCategoriesHttpResponse = response.body;
 
-      expect(resultBody.categoryId).toBe(secondBody.id);
-      expect(resultBody.subCategoryIds[0]).toEqual(firstBody.id);
+      expect(resultBody.categoryId).toBe(wannaBeParent.id);
+      expect(resultBody.subCategoryIds[0]).toEqual(wannaBeSub.id);
+      const wannaBeSubRequest: V1GetCategoryHttpRequest = {};
+      const wannaBeSubResponse = await request(app.getHttpServer())
+        .put(
+          `/${apiPrefix}/${categoriesUrl}/${wannaBeSub.id}/${getSubCategoryUrl}`,
+        )
+        .set('Accept', 'application/json')
+        .send(wannaBeSubRequest)
+        .expect(HttpStatus.OK);
+
+      const wannaBeSubBody =
+        wannaBeSubResponse.body as V1GetCategoryHttpResponse;
+
+      expect(wannaBeSubBody.parentIds[0]).toEqual(wannaBeParent.id);
     });
   });
 

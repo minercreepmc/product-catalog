@@ -18,8 +18,11 @@ import {
   AddParentCategoriesServiceOptions,
   AddSubCategoriesServiceOptions,
   CreateCategoryOptions,
+  DetachSubCategoriesServiceOptions,
   RemoveCategoriesServiceOptions,
   RemoveCategoryServiceOptions,
+  RemoveParentCategoriesServiceOptions,
+  RemoveSubCategoriesServiceOptions,
 } from './category-management.domain-service';
 
 export interface DoesParentIdsAndCategoryIdsOverlapServiceOptions {
@@ -103,6 +106,32 @@ export class CategoryVerificationDomainService {
         categoryId,
         parentIds,
       }),
+    ]);
+  }
+
+  async verifyRemoveSubCategoriesOptions(
+    options: RemoveSubCategoriesServiceOptions,
+  ) {
+    const { subCategoryIds, categoryId } = options;
+
+    await Promise.all([
+      this.checkCategoryIdMustExist({
+        id: categoryId,
+      }),
+      this.checkSubCategoryIdsMustExist(subCategoryIds),
+    ]);
+  }
+
+  async verifyRemoveParentCategoriesOptiosn(
+    options: RemoveParentCategoriesServiceOptions,
+  ) {
+    const { parentIds, categoryId } = options;
+
+    await Promise.all([
+      this.checkCategoryIdMustExist({
+        id: categoryId,
+      }),
+      this.checkParentIdsMustExist(parentIds),
     ]);
   }
 

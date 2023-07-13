@@ -31,11 +31,10 @@ export class RemoveCategoriesProcess extends ProcessBase<
   ): Promise<RemoveCategoriesProcessSuccess> {
     const { ids } = command;
     try {
-      const promises = ids.map((id) =>
-        this.categoryManagementService.removeCategory({ categoryId: id }),
-      );
-
-      return Promise.all(promises);
+      const events = await this.categoryManagementService.removeCategories({
+        categoryIds: ids
+      })
+      return events;
     } catch (err) {
       this.exceptions.push(err);
     }

@@ -1,6 +1,7 @@
 import { CategoryMikroOrmModel } from '@database/repositories/mikroorm/category';
 import { ProductMikroOrmModel } from '@database/repositories/mikroorm/product';
 import { ReviewerMikroOrmModel } from '@database/repositories/mikroorm/reviewer';
+import { OutboxModel } from '@infrastructures/events';
 import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs';
 import { ConfigService } from '@nestjs/config';
 
@@ -18,6 +19,7 @@ const mikroOrmConfig: MikroOrmModuleSyncOptions = {
     ProductMikroOrmModel,
     ReviewerMikroOrmModel,
     CategoryMikroOrmModel,
+    OutboxModel,
   ],
   migrations: {
     path: './src/infrastructures/database/migrations',

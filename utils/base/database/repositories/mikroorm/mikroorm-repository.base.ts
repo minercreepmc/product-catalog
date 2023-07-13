@@ -97,7 +97,6 @@ export abstract class MikroOrmRepositoryBase<
     return updated ? this.mapper.toDomain(updated) : null;
   }
 
-  //
   // async findMany(
   //   options?: FindManyOptions<DomainModelDetails>,
   // ): Promise<DomainModel[]> {

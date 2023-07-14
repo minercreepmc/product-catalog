@@ -4,6 +4,7 @@ import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { AddParentCategoriesRequestDto } from '@use-cases/command/add-parent-categories/dtos';
 import { AddSubCategoriesRequestDto } from '@use-cases/command/add-sub-categories/dtos';
 import { CreateCategoryRequestDto } from '@use-cases/command/create-category/dtos';
+import { DetachSubCategoriesRequestDto } from '@use-cases/command/detach-sub-categories/dtos/detach-sub-categories.dto';
 import { RemoveCategoriesRequestDto } from '@use-cases/command/remove-categories/dtos/remove-category.dto';
 import {
   CategoryDescriptionValueObject,
@@ -18,11 +19,12 @@ import { ValidationExceptionBase } from 'common-base-classes';
 export type CategoryRequestDto = CreateCategoryRequestDto &
   AddParentCategoriesRequestDto &
   AddSubCategoriesRequestDto &
-  RemoveCategoriesRequestDto;
+  RemoveCategoriesRequestDto &
+  DetachSubCategoriesRequestDto;
 
 export class CategoryRequestValidator extends RequestValidatorBase {
   _validate(requestDto: CategoryRequestDto): void {
-    const { name, description, parentIds, subCategoryIds, productIds } =
+    const { name, description, parentIds, subIds: subCategoryIds, productIds } =
       requestDto;
 
     if (name !== undefined) {

@@ -6,6 +6,7 @@ import { CreateCategoryModule } from './create-category.module';
 import { CreateProductModule } from './create-product.module';
 import { CreateReviewerModule } from './create-reviewer.module';
 import { CreateReviewerSagaModule } from './create-reviewer.saga.module';
+import { DetachSubCategoriesModule } from './detach-sub-categories.module';
 import { GetCategoriesModule } from './get-categories.module';
 import { GetCategoryModule } from './get-category.module';
 import { GetProductsModule } from './get-products.module';
@@ -35,6 +36,7 @@ import { UploadModule } from './upload.module';
     GetCategoriesModule,
     GetSubCategoriesModule,
     GetCategoryModule,
+    DetachSubCategoriesModule,
     RemoveProductsModule,
     RemoveCategoriesModule,
     UploadModule,

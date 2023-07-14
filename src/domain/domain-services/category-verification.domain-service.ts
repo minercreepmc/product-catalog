@@ -18,7 +18,6 @@ import {
   AddParentCategoriesServiceOptions,
   AddSubCategoriesServiceOptions,
   CreateCategoryOptions,
-  DetachSubCategoriesServiceOptions,
   RemoveCategoriesServiceOptions,
   RemoveCategoryServiceOptions,
   RemoveParentCategoriesServiceOptions,

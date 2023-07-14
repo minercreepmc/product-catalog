@@ -5,20 +5,20 @@ import {
 } from '@value-objects/category';
 import { DomainEvent } from 'common-base-classes';
 
-export interface SubCategoriesRemovedDetails {
+export interface SubCategoriesDetachedDetails {
   subCategoryIds: SubCategoryIdValueObject[];
 }
 
-export interface SubCategoriesRemovedOptions {
+export interface SubCategoriesDetachedOptions {
   id: CategoryIdValueObject;
-  details: SubCategoriesRemovedDetails;
+  details: SubCategoriesDetachedDetails;
 }
 
-export class SubCategoriesRemovedDomainEvent extends DomainEvent<SubCategoriesRemovedDetails> {
-  constructor(options: SubCategoriesRemovedOptions) {
+export class SubCategoriesDetachedDomainEvent extends DomainEvent<SubCategoriesDetachedDetails> {
+  constructor(options: SubCategoriesDetachedOptions) {
     super({
       entityId: options.id,
-      eventName: SubCategoriesRemovedDomainEvent.name,
+      eventName: SubCategoriesDetachedDomainEvent.name,
       entityType: CategoryAggregate.name,
       eventDetails: options.details,
     });

@@ -32,8 +32,8 @@ export class RemoveCategoriesProcess extends ProcessBase<
     const { ids } = command;
     try {
       const events = await this.categoryManagementService.removeCategories({
-        categoryIds: ids
-      })
+        categoryIds: ids,
+      });
       return events;
     } catch (err) {
       this.exceptions.push(err);

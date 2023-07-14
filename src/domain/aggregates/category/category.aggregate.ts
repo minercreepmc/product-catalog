@@ -15,11 +15,11 @@ import { CategoryCreatedDomainEvent } from '@domain-events/category/category-cre
 import { ProductIdValueObject } from '@value-objects/product';
 import {
   CategoryRemovedDomainEvent,
+  ParentCategoriesDetachedDomainEvent,
   ParentCategoryAddedDomainEvent,
+  SubCategoriesDetachedDomainEvent,
   SubCategoryAddedDomainEvent,
 } from '@domain-events/category';
-import { SubCategoriesRemovedDomainEvent } from '@domain-events/category/sub-categories-removed.domain-event';
-import { ParentCategoriesRemovedDomainEvent } from '@domain-events/category/parent-categories-removed.domain-event';
 
 export class CategoryAggregate extends AbstractAggregateRoot<
   Partial<CategoryAggregateDetails>
@@ -81,11 +81,11 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     });
   }
 
-  removeSubCategories(subCategoryIds: SubCategoryIdValueObject[]) {
+  detachSubCategories(subCategoryIds: SubCategoryIdValueObject[]) {
     this.subCategoryIds = this.subCategoryIds.filter(
       (id) => !subCategoryIds.includes(id),
     );
-    return new SubCategoriesRemovedDomainEvent({
+    return new SubCategoriesDetachedDomainEvent({
       id: this.id,
       details: {
         subCategoryIds: this.subCategoryIds,
@@ -93,9 +93,9 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     });
   }
 
-  removeParentCategories(parentIds: ParentCategoryIdValueObject[]) {
+  detachParentCategories(parentIds: ParentCategoryIdValueObject[]) {
     this.parentIds = this.parentIds.filter((id) => !parentIds.includes(id));
-    return new ParentCategoriesRemovedDomainEvent({
+    return new ParentCategoriesDetachedDomainEvent({
       id: this.id,
       details: {
         parentIds: this.parentIds,

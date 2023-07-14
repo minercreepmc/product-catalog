@@ -161,7 +161,7 @@ export class CategoryManagementDomainService {
     return events;
   }
 
-  async removeSubCategories(options: RemoveSubCategoriesServiceOptions) {
+  async detachSubCategories(options: RemoveSubCategoriesServiceOptions) {
     return this.unitOfWork.runInTransaction(async () => {
       const { categoryId, subCategoryIds } = options;
 
@@ -170,16 +170,16 @@ export class CategoryManagementDomainService {
       const categoryAggregate = await this.categoryRepository.findOneById(
         categoryId,
       );
-      const subCategogiesRemoved =
-        categoryAggregate.removeSubCategories(subCategoryIds);
+      const subCategogiesDetached =
+        categoryAggregate.detachSubCategories(subCategoryIds);
 
       await this.categoryRepository.save(categoryAggregate);
 
-      return subCategogiesRemoved;
+      return subCategogiesDetached;
     });
   }
 
-  async removeParentCategories(options: RemoveParentCategoriesServiceOptions) {
+  async detachParentCategories(options: RemoveParentCategoriesServiceOptions) {
     return this.unitOfWork.runInTransaction(async () => {
       const { categoryId, parentIds } = options;
 
@@ -191,12 +191,12 @@ export class CategoryManagementDomainService {
         categoryId,
       );
 
-      const parentCategoriesRemoved =
-        categoryAggregate.removeParentCategories(parentIds);
+      const parentCategoriesDetached =
+        categoryAggregate.detachParentCategories(parentIds);
 
       await this.categoryRepository.save(categoryAggregate);
 
-      return parentCategoriesRemoved;
+      return parentCategoriesDetached;
     });
   }
 }

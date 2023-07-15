@@ -15,7 +15,7 @@ export namespace CategoryDomainExceptions {
     readonly code = CategoryDomainExceptionCodes.ParentIdDoesNotExist;
   }
 
-  export class SubCategoryIdDoesNotExist extends CategoryValidationException {
+  export class SubIdDoesNotExist extends CategoryValidationException {
     readonly message = 'Category sub category id does not exist';
     readonly code = CategoryDomainExceptionCodes.SubCategoryIdDoesNotExist;
   }
@@ -40,7 +40,7 @@ export namespace CategoryDomainExceptions {
     readonly code = CategoryDomainExceptionCodes.ParentIdDoesNotValid;
   }
 
-  export class SubCategoryIdsDoesNotValid extends CategoryValidationException {
+  export class SubIdsDoesNotValid extends CategoryValidationException {
     readonly message = 'Category sub category id does not valid';
     readonly code = CategoryDomainExceptionCodes.SubCategoryIdsDoesNotValid;
   }
@@ -50,13 +50,13 @@ export namespace CategoryDomainExceptions {
     readonly code = CategoryDomainExceptionCodes.DescriptionDoesNotValid;
   }
 
-  export class ParentIdAndSubCategoryIdOverlap extends CategoryValidationException {
+  export class ParentIdAndSubIdOverlap extends CategoryValidationException {
     readonly message = 'Category parent id and sub category id overlap';
     readonly code =
       CategoryDomainExceptionCodes.ParentIdAndSubCategoryIdOverlap;
   }
 
-  export class OverlapWithSubCategoryId extends CategoryValidationException {
+  export class OverlapWithSubId extends CategoryValidationException {
     readonly message = 'Category overlap with sub category id';
     readonly code = CategoryDomainExceptionCodes.OverlapWithSubCategoryId;
   }

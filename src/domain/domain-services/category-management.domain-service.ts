@@ -11,6 +11,7 @@ import { eventBusDiToken, EventBusPort } from '@domain-interfaces/events';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
+  ParentCategoryIdValueObject,
   SubCategoryIdValueObject,
 } from '@value-objects/category';
 import { CategoryVerificationDomainService } from './category-verification.domain-service';
@@ -19,11 +20,11 @@ export interface CreateCategoryOptions extends CreateCategoryAggregateOptions {}
 
 export interface AddSubCategoriesServiceOptions {
   categoryId: CategoryIdValueObject;
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
 }
 export interface AddParentCategoriesServiceOptions {
   categoryId: CategoryIdValueObject;
-  parentIds: SubCategoryIdValueObject[];
+  parentIds: ParentCategoryIdValueObject[];
 }
 
 export interface RemoveCategoryServiceOptions {
@@ -36,7 +37,7 @@ export interface RemoveCategoriesServiceOptions {
 
 export interface RemoveSubCategoriesServiceOptions {
   categoryId: CategoryIdValueObject;
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
 }
 
 export interface RemoveParentCategoriesServiceOptions {
@@ -78,7 +79,7 @@ export class CategoryManagementDomainService {
       );
 
       const subCategoryAdded = categoryAggregate.addSubCategories(
-        options.subCategoryIds,
+        options.subIds,
       );
 
       await this.categoryRepository.save(categoryAggregate);
@@ -90,7 +91,7 @@ export class CategoryManagementDomainService {
   }
 
   async addParentCategories(options: AddParentCategoriesServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
+    const event = await this.unitOfWork.runInTransaction(async () => {
       await this.categoryVerification.verifyAddParentCategoriesOptions(options);
 
       const categoryAggregate = await this.categoryRepository.findOneById(
@@ -104,6 +105,9 @@ export class CategoryManagementDomainService {
       await this.categoryRepository.save(categoryAggregate);
       return parentCategoryAdded;
     });
+
+    await this.eventBus.addToOutBoxAndPublish(event);
+    return event;
   }
 
   async removeCategory(options: RemoveCategoryServiceOptions) {
@@ -163,15 +167,15 @@ export class CategoryManagementDomainService {
 
   async detachSubCategories(options: RemoveSubCategoriesServiceOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      const { categoryId, subCategoryIds } = options;
+      const { categoryId, subIds } = options;
 
-      await this.categoryVerification.verifyRemoveSubCategoriesOptions(options);
+      await this.categoryVerification.verifyDetachSubCategoriesOptions(options);
 
       const categoryAggregate = await this.categoryRepository.findOneById(
         categoryId,
       );
       const subCategogiesDetached =
-        categoryAggregate.detachSubCategories(subCategoryIds);
+        categoryAggregate.detachSubCategories(subIds);
 
       await this.categoryRepository.save(categoryAggregate);
 
@@ -183,7 +187,7 @@ export class CategoryManagementDomainService {
     return this.unitOfWork.runInTransaction(async () => {
       const { categoryId, parentIds } = options;
 
-      await this.categoryVerification.verifyRemoveParentCategoriesOptiosn(
+      await this.categoryVerification.verifyDetachParentCategoriesOptiosn(
         options,
       );
 

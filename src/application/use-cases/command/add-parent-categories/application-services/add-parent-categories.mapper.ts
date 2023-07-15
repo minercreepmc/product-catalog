@@ -1,6 +1,6 @@
 import { CommandMapperBase } from '@base/use-cases';
 import { AddParentCategoriesCommand } from '@commands';
-import { ParentCategoryAddedDomainEvent } from '@domain-events/category';
+import { ParentCategoriesAddedDomainEvent } from '@domain-events/category';
 import { Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
@@ -21,7 +21,7 @@ export class AddParentCategoriesMapper extends CommandMapperBase<AddParentCatego
   }
 
   toResponseDto(
-    event: ParentCategoryAddedDomainEvent,
+    event: ParentCategoriesAddedDomainEvent,
   ): AddParentCategoriesResponseDto {
     return new AddParentCategoriesResponseDto({
       parentIds: event.parentIds.map((id) => id.unpack()),

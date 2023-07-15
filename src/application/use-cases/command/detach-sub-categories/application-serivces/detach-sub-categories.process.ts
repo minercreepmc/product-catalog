@@ -10,7 +10,7 @@ export type DetachSubCategoriesProcessSuccess =
   SubCategoriesDetachedDomainEvent;
 export type DetachSubCategoriesProcessFailure = Array<
   | CategoryDomainExceptions.DoesNotExist
-  | CategoryDomainExceptions.SubCategoryIdDoesNotExist
+  | CategoryDomainExceptions.SubIdDoesNotExist
 >;
 
 @Injectable()
@@ -21,11 +21,12 @@ export class DetachSubCategoriesProcess extends ProcessBase<
   protected async enforceBusinessRules(
     command: DetachSubCategoriesCommand,
   ): Promise<void> {
-    const { categoryId, subCategoryIds } = command;
+    const { categoryId, subIds: subCategoryIds } = command;
 
     const promises = [
       this.categoryEnforcer.categordIdMustExist(categoryId),
       this.categoryEnforcer.subCategoriesIdMustExist(subCategoryIds),
+      this.categoryEnforcer.notOverlapWithSub(categoryId, subCategoryIds),
     ];
 
     await Promise.all(promises);
@@ -35,7 +36,7 @@ export class DetachSubCategoriesProcess extends ProcessBase<
   ): Promise<SubCategoriesDetachedDomainEvent> {
     return this.categorymanagement.detachSubCategories({
       categoryId: command.categoryId,
-      subCategoryIds: command.subCategoryIds,
+      subIds: command.subIds,
     });
   }
 

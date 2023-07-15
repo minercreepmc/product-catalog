@@ -11,8 +11,8 @@ export type CreateCategoryProcessSuccess = CategoryCreatedDomainEvent;
 export type CreateCategoryProcessFailure = Array<
   | CategoryDomainExceptions.AlreadyExist
   | CategoryDomainExceptions.ParentIdDoesNotExist
-  | CategoryDomainExceptions.SubCategoryIdDoesNotExist
-  | CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap
+  | CategoryDomainExceptions.SubIdDoesNotExist
+  | CategoryDomainExceptions.ParentIdAndSubIdOverlap
   | ProductDomainExceptions.DoesNotExist
 >;
 
@@ -35,7 +35,7 @@ export class CreateCategoryProcess extends ProcessBase<
       this.categoryEnforcer.parentCategoryIdMustExistIfProvided(parentIds),
       this.categoryEnforcer.subCategoryIdMustExistIfProvided(subCategoryIds),
       this.categoryEnforcer.productIdsMustExistIfProvided(productIds),
-      this.categoryEnforcer.parentIdsAndSubCategoryIdsNotOverlap(
+      this.categoryEnforcer.parentIdsAndSubIdsNotOverlap(
         parentIds,
         subCategoryIds,
       ),

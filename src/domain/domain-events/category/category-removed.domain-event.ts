@@ -1,11 +1,13 @@
 import {
   CategoryIdValueObject,
+  ParentCategoryIdValueObject,
   SubCategoryIdValueObject,
 } from '@value-objects/category';
 import { DomainEvent } from 'common-base-classes';
 
 export interface CategoryRemovedDomainEventDetails {
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
+  parentIds: ParentCategoryIdValueObject[];
 }
 
 export interface CategoryRemovedDomainEventOptions {
@@ -28,7 +30,11 @@ export class CategoryRemovedDomainEvent extends DomainEvent<CategoryRemovedDomai
     return this.entityId;
   }
 
-  get subCategoryIds() {
-    return this.details.subCategoryIds;
+  get subIds() {
+    return this.details.subIds;
+  }
+
+  get parentIds() {
+    return this.details.parentIds;
   }
 }

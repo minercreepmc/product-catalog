@@ -58,7 +58,7 @@ describe('V1GetSubCategoriesHttpController (e2e)', () => {
       const body2: V1CreateCategoryHttpResponse = createResponse2.body;
 
       const addSubCategoryRequest: V1AddSubCategoriesHttpRequest = {
-        subCategoryIds: [body2.id],
+        subIds: [body2.id],
       };
       await request(app.getHttpServer())
         .put(

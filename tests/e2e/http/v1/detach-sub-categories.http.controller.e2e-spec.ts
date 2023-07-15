@@ -57,7 +57,7 @@ describe('V1DetachSubCategoriesHttpController (PUT)', () => {
 
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
-          new CategoryDomainExceptions.SubCategoryIdsDoesNotValid(),
+          new CategoryDomainExceptions.SubIdsDoesNotValid(),
         ]),
       );
     });
@@ -79,7 +79,7 @@ describe('V1DetachSubCategoriesHttpController (PUT)', () => {
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
           new CategoryDomainExceptions.DoesNotExist(),
-          new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
+          new CategoryDomainExceptions.SubIdDoesNotExist(),
         ]),
       );
     });
@@ -110,7 +110,7 @@ describe('V1DetachSubCategoriesHttpController (PUT)', () => {
         wannaBeSubResponse.body as V1CreateCategoryHttpResponse;
 
       const addSubCategoriesRequest: V1AddSubCategoriesHttpRequest = {
-        subCategoryIds: [wannaBeSubBody.id],
+        subIds: [wannaBeSubBody.id],
       };
 
       await request(app.getHttpServer())

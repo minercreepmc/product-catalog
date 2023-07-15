@@ -6,7 +6,7 @@ import {
 import { DomainEvent } from 'common-base-classes';
 
 export interface SubCategoriesDetachedDetails {
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
 }
 
 export interface SubCategoriesDetachedOptions {
@@ -24,8 +24,8 @@ export class SubCategoriesDetachedDomainEvent extends DomainEvent<SubCategoriesD
     });
   }
 
-  get subCategoryIds(): SubCategoryIdValueObject[] {
-    return this.details.subCategoryIds;
+  get subIds(): SubCategoryIdValueObject[] {
+    return this.details.subIds;
   }
 
   get categoryId(): CategoryIdValueObject {

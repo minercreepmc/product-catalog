@@ -5,22 +5,22 @@ import {
 } from '@value-objects/category';
 import { DomainEvent } from 'common-base-classes';
 
-export interface SubCategoryCreatedDetails {
-  subCategoryIds: SubCategoryIdValueObject[];
+export interface SubCategoryAddedDetails {
+  subIds: SubCategoryIdValueObject[];
 }
 
-export interface SubCategoryCreatedOptions {
+export interface SubCategoryAddedOptions {
   id?: CategoryIdValueObject;
-  details?: SubCategoryCreatedDetails;
+  details?: SubCategoryAddedDetails;
 }
 
-export class SubCategoryAddedDomainEvent extends DomainEvent<SubCategoryCreatedDetails> {
-  constructor(options: SubCategoryCreatedOptions) {
+export class SubCategoriesAddedDomainEvent extends DomainEvent<SubCategoryAddedDetails> {
+  constructor(options: SubCategoryAddedOptions) {
     const { id, details } = options;
 
     super({
       entityId: id,
-      eventName: SubCategoryAddedDomainEvent.name,
+      eventName: SubCategoriesAddedDomainEvent.name,
       eventDetails: details,
       entityType: CategoryAggregate.name,
     });
@@ -30,7 +30,7 @@ export class SubCategoryAddedDomainEvent extends DomainEvent<SubCategoryCreatedD
     return this.entityId;
   }
 
-  get subCategoryIds(): SubCategoryIdValueObject[] {
-    return this.details.subCategoryIds;
+  get subIds(): SubCategoryIdValueObject[] {
+    return this.details.subIds;
   }
 }

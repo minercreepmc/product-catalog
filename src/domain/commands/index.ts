@@ -10,3 +10,4 @@ export * from './approve-product.command';
 export * from './remove-reviewer.command';
 export * from './remove-categories.command';
 export * from './detach-sub-categories.command';
+export * from './detach-parent-categories.command';

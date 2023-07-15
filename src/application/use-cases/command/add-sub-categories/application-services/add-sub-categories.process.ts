@@ -1,16 +1,16 @@
 import { ProcessBase } from '@base/use-cases';
 import { AddSubCategoriesCommand } from '@commands';
-import { SubCategoryAddedDomainEvent } from '@domain-events/category';
+import { SubCategoriesAddedDomainEvent } from '@domain-events/category';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { CategoryManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { CategoryBusinessEnforcer } from '@use-cases/shared/application-services/process';
 
-export type AddSubCategoriesProcessSuccess = SubCategoryAddedDomainEvent;
+export type AddSubCategoriesProcessSuccess = SubCategoriesAddedDomainEvent;
 export type AddSubCategoriesProcessFailure = Array<
-  | CategoryDomainExceptions.SubCategoryIdDoesNotExist
+  | CategoryDomainExceptions.SubIdDoesNotExist
   | CategoryDomainExceptions.DoesNotExist
-  | CategoryDomainExceptions.OverlapWithSubCategoryId
+  | CategoryDomainExceptions.OverlapWithSubId
 >;
 
 @Injectable()
@@ -25,20 +25,24 @@ export class AddSubCategoriesProcess extends ProcessBase<
   protected async enforceBusinessRules(
     command: AddSubCategoriesCommand,
   ): Promise<void> {
-    const { categoryId, subCategoryIds } = command;
+    const { categoryId, subIds: subCategoryIds } = command;
 
     const businessRules = [
       this.categoryEnforcer.categordIdMustExist(categoryId),
       this.categoryEnforcer.subCategoriesIdMustExist(subCategoryIds),
-      this.categoryEnforcer.distinctSubCategories(categoryId, subCategoryIds),
+      this.categoryEnforcer.notOverlapWithSub(categoryId, subCategoryIds),
     ];
 
     await Promise.all(businessRules);
   }
   protected executeMainTask(
-    command: any,
-  ): Promise<SubCategoryAddedDomainEvent> {
-    return this.categoryManagementService.addSubCategories(command);
+    command: AddSubCategoriesCommand,
+  ): Promise<SubCategoriesAddedDomainEvent> {
+    const { categoryId, subIds } = command;
+    return this.categoryManagementService.addSubCategories({
+      categoryId,
+      subIds,
+    });
   }
 
   constructor(

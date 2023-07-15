@@ -4,6 +4,7 @@ import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { AddParentCategoriesRequestDto } from '@use-cases/command/add-parent-categories/dtos';
 import { AddSubCategoriesRequestDto } from '@use-cases/command/add-sub-categories/dtos';
 import { CreateCategoryRequestDto } from '@use-cases/command/create-category/dtos';
+import { DetachParentCategoriesRequestDto } from '@use-cases/command/detach-parent-categories/dtos';
 import { DetachSubCategoriesRequestDto } from '@use-cases/command/detach-sub-categories/dtos/detach-sub-categories.dto';
 import { RemoveCategoriesRequestDto } from '@use-cases/command/remove-categories/dtos/remove-category.dto';
 import {
@@ -20,12 +21,18 @@ export type CategoryRequestDto = CreateCategoryRequestDto &
   AddParentCategoriesRequestDto &
   AddSubCategoriesRequestDto &
   RemoveCategoriesRequestDto &
-  DetachSubCategoriesRequestDto;
+  DetachSubCategoriesRequestDto &
+  DetachParentCategoriesRequestDto;
 
 export class CategoryRequestValidator extends RequestValidatorBase {
   _validate(requestDto: CategoryRequestDto): void {
-    const { name, description, parentIds, subIds: subCategoryIds, productIds } =
-      requestDto;
+    const {
+      name,
+      description,
+      parentIds,
+      subIds: subCategoryIds,
+      productIds,
+    } = requestDto;
 
     if (name !== undefined) {
       this.validateName(name);
@@ -55,7 +62,7 @@ export class CategoryRequestValidator extends RequestValidatorBase {
       case CategoryIdValueObject.name:
         return new CategoryDomainExceptions.IdDoesNotValid();
       case SubCategoryIdValueObject.name:
-        return new CategoryDomainExceptions.SubCategoryIdsDoesNotValid();
+        return new CategoryDomainExceptions.SubIdsDoesNotValid();
       case ParentCategoryIdValueObject.name:
         return new CategoryDomainExceptions.ParentIdDoesNotValid();
       case CategoryNameValueObject.name:

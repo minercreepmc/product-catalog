@@ -19,9 +19,20 @@ export class RemoveCategoriesMapper extends CommandMapperBase<RemoveCategoriesRe
     events: CategoryRemovedDomainEvent[],
   ): RemoveCategoriesResponseDto {
     const ids = events.map((event) => event.categoryId.unpack());
+    const parentIds = events.reduce(
+      (allIds, event) =>
+        allIds.concat(event.parentIds.map((id) => id.unpack())),
+      [],
+    );
+    const subIds = events.reduce(
+      (allIds, event) => allIds.concat(event.subIds.map((id) => id.unpack())),
+      [],
+    );
 
     return new RemoveCategoriesResponseDto({
       ids,
+      parentIds,
+      subIds,
     });
   }
 }

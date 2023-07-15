@@ -62,8 +62,8 @@
           "nullable": true,
           "mappedType": "array"
         },
-        "sub_category_ids": {
-          "name": "sub_category_ids",
+        "sub_ids": {
+          "name": "sub_ids",
           "type": "text[]",
           "unsigned": false,
           "autoincrement": false,

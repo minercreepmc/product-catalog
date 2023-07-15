@@ -31,7 +31,7 @@ export class V1AddSubCategoriesHttpController extends HttpPutControllerBase<
   ): AddSubCategoriesRequestDto {
     return new AddSubCategoriesRequestDto({
       categoryId: id,
-      subCategoryIds: httpRequest.subCategoryIds,
+      subIds: httpRequest.subIds,
     });
   }
   createHttpResponse(

@@ -19,7 +19,7 @@ export class CategoryMikroOrmQueryMapper extends MikroOrmQueryMapper<
 > {
   toQueryDetails(params: CategoryQueryParams): CategoryMikroOrmModelDetails {
     const where: CategoryMikroOrmModelDetails = {};
-    const { name, parentIds, productIds, description, subCategoryIds } = params;
+    const { name, parentIds, productIds, description, subIds: subCategoryIds } = params;
 
     if (name) {
       where.name = name.unpack();
@@ -38,7 +38,7 @@ export class CategoryMikroOrmQueryMapper extends MikroOrmQueryMapper<
     }
 
     if (subCategoryIds) {
-      where.subCategoryIds = subCategoryIds.map((subCategoryId) =>
+      where.subIds = subCategoryIds.map((subCategoryId) =>
         subCategoryId.unpack(),
       );
     }

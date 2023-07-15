@@ -18,6 +18,8 @@ import {
   V1GetCategoryHttpRequest,
   V1GetCategoryHttpResponse,
 } from '@controllers/http/v1/get-category';
+import { promisify } from 'util';
+const sleep = promisify(setTimeout);
 
 describe('V1AddSubCategoriesHttpController (e2e)', () => {
   let app: INestApplication;
@@ -47,7 +49,7 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
   describe(`${categoriesUrl} (PUT)`, () => {
     it('Should not add subcategories if the request is invalid', async () => {
       const addSubCategoriesRequest: V1AddSubCategoriesHttpRequest = {
-        subCategoryIds: [''],
+        subIds: [''],
       };
 
       const invalidCategoryId = generateRandomCategoryId();
@@ -62,14 +64,14 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
 
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
-          new CategoryDomainExceptions.SubCategoryIdsDoesNotValid(),
+          new CategoryDomainExceptions.SubIdsDoesNotValid(),
         ]),
       );
     });
 
     it('Should not add subcategories if the category or subcategories do not exist', async () => {
       const addSubCategoriesRequest: V1AddSubCategoriesHttpRequest = {
-        subCategoryIds: [generateRandomCategoryId()],
+        subIds: [generateRandomCategoryId()],
       };
 
       const invalidCategoryId = generateRandomCategoryId();
@@ -84,7 +86,7 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
           new CategoryDomainExceptions.DoesNotExist(),
-          new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
+          new CategoryDomainExceptions.SubIdDoesNotExist(),
         ]),
       );
     });
@@ -113,7 +115,7 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
       const wannaBeParent: V1CreateCategoryHttpResponse = secondResponse.body;
 
       const addSubCategoriesRequest: V1AddSubCategoriesHttpRequest = {
-        subCategoryIds: [wannaBeSub.id],
+        subIds: [wannaBeSub.id],
       };
 
       const response = await request(app.getHttpServer())
@@ -128,21 +130,31 @@ describe('V1AddSubCategoriesHttpController (e2e)', () => {
       const resultBody: V1AddSubCategoriesHttpResponse = response.body;
 
       expect(resultBody.categoryId).toBe(wannaBeParent.id);
-      expect(resultBody.subCategoryIds[0]).toEqual(wannaBeSub.id);
+      expect(resultBody.subIds[0]).toEqual(wannaBeSub.id);
       const wannaBeSubRequest: V1GetCategoryHttpRequest = {};
-      const wannaBeSubResponse = await request(app.getHttpServer())
-        .put(
-          `/${apiPrefix}/${categoriesUrl}/${wannaBeSub.id}/${getSubCategoryUrl}`,
-        )
-        .set('Accept', 'application/json')
-        .send(wannaBeSubRequest)
-        .expect(HttpStatus.OK);
 
-      const wannaBeSubBody =
-        wannaBeSubResponse.body as V1GetCategoryHttpResponse;
+      // Poll method
+      let wannaBeSubBody: V1GetCategoryHttpResponse;
+      for (let i = 0; i < 10; i++) {
+        const wannaBeSubResponse = await request(app.getHttpServer())
+          .put(
+            `/${apiPrefix}/${categoriesUrl}/${wannaBeSub.id}/${getSubCategoryUrl}`,
+          )
+          .set('Accept', 'application/json')
+          .send(wannaBeSubRequest)
+          .expect(HttpStatus.OK);
+
+        wannaBeSubBody = wannaBeSubResponse.body as V1GetCategoryHttpResponse;
+
+        if (wannaBeSubBody.parentIds[0] === wannaBeParent.id) {
+          break;
+        }
+
+        await sleep(1000);
+      }
 
       expect(wannaBeSubBody.parentIds[0]).toEqual(wannaBeParent.id);
-    });
+    }, 10000);
   });
 
   // Add more test cases for other routes, if needed.

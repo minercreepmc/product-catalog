@@ -1,26 +1,26 @@
 import { CategoryAggregate } from '@aggregates/category';
 import {
   CategoryIdValueObject,
-  SubCategoryIdValueObject,
+  ParentCategoryIdValueObject,
 } from '@value-objects/category';
 import { DomainEvent } from 'common-base-classes';
 
-export interface ParentCategoryCreatedDetails {
-  parentIds: SubCategoryIdValueObject[];
+export interface ParentCategoriesAddedDetails {
+  parentIds: ParentCategoryIdValueObject[];
 }
 
-export interface ParentCategoryCreatedOptions {
+export interface ParentCategoriesAddedOptions {
   id?: CategoryIdValueObject;
-  details?: ParentCategoryCreatedDetails;
+  details?: ParentCategoriesAddedDetails;
 }
 
-export class ParentCategoryAddedDomainEvent extends DomainEvent<ParentCategoryCreatedDetails> {
-  constructor(options: ParentCategoryCreatedOptions) {
+export class ParentCategoriesAddedDomainEvent extends DomainEvent<ParentCategoriesAddedDetails> {
+  constructor(options: ParentCategoriesAddedOptions) {
     const { id, details } = options;
 
     super({
       entityId: id,
-      eventName: ParentCategoryAddedDomainEvent.name,
+      eventName: ParentCategoriesAddedDomainEvent.name,
       eventDetails: details,
       entityType: CategoryAggregate.name,
     });
@@ -30,7 +30,7 @@ export class ParentCategoryAddedDomainEvent extends DomainEvent<ParentCategoryCr
     return this.entityId;
   }
 
-  get parentIds(): SubCategoryIdValueObject[] {
+  get parentIds(): ParentCategoryIdValueObject[] {
     return this.details.parentIds;
   }
 }

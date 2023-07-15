@@ -16,9 +16,9 @@ import { ProductIdValueObject } from '@value-objects/product';
 import {
   CategoryRemovedDomainEvent,
   ParentCategoriesDetachedDomainEvent,
-  ParentCategoryAddedDomainEvent,
+  ParentCategoriesAddedDomainEvent,
   SubCategoriesDetachedDomainEvent,
-  SubCategoryAddedDomainEvent,
+  SubCategoriesAddedDomainEvent,
 } from '@domain-events/category';
 
 export class CategoryAggregate extends AbstractAggregateRoot<
@@ -30,7 +30,7 @@ export class CategoryAggregate extends AbstractAggregateRoot<
       name: new CategoryNameValueObject('some-name'),
       description: new CategoryDescriptionValueObject('some-description'),
       parentIds: [],
-      subCategoryIds: [],
+      subIds: [],
       productIds: [],
     };
     const { id = defaultId, details = defaultDetails } = options ?? {};
@@ -39,8 +39,13 @@ export class CategoryAggregate extends AbstractAggregateRoot<
   }
 
   createCategory(options: CreateCategoryAggregateOptions) {
-    const { name, parentIds, productIds, description, subCategoryIds } =
-      options;
+    const {
+      name,
+      parentIds,
+      productIds,
+      description,
+      subIds: subCategoryIds,
+    } = options;
     this.name = name;
 
     if (parentIds && parentIds.length > 0) {
@@ -56,7 +61,7 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     }
 
     if (subCategoryIds && subCategoryIds.length > 0) {
-      this.subCategoryIds = subCategoryIds;
+      this.subIds = subCategoryIds;
     }
 
     return new CategoryCreatedDomainEvent({
@@ -71,44 +76,55 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     });
   }
 
-  addSubCategories(subCategoryIds: SubCategoryIdValueObject[]) {
-    this.subCategoryIds.push(...subCategoryIds);
-    return new SubCategoryAddedDomainEvent({
+  addSubCategories(subIds: SubCategoryIdValueObject[]) {
+    this.subIds.push(...subIds);
+    return new SubCategoriesAddedDomainEvent({
       id: this.id,
       details: {
-        subCategoryIds: this.subCategoryIds,
-      },
-    });
-  }
-
-  detachSubCategories(subCategoryIds: SubCategoryIdValueObject[]) {
-    this.subCategoryIds = this.subCategoryIds.filter(
-      (id) => !subCategoryIds.includes(id),
-    );
-    return new SubCategoriesDetachedDomainEvent({
-      id: this.id,
-      details: {
-        subCategoryIds: this.subCategoryIds,
-      },
-    });
-  }
-
-  detachParentCategories(parentIds: ParentCategoryIdValueObject[]) {
-    this.parentIds = this.parentIds.filter((id) => !parentIds.includes(id));
-    return new ParentCategoriesDetachedDomainEvent({
-      id: this.id,
-      details: {
-        parentIds: this.parentIds,
+        subIds: this.subIds,
       },
     });
   }
 
   addParentCategories(parentIds: ParentCategoryIdValueObject[]) {
     this.parentIds.push(...parentIds);
-    return new ParentCategoryAddedDomainEvent({
+    return new ParentCategoriesAddedDomainEvent({
       id: this.id,
       details: {
         parentIds: this.parentIds,
+      },
+    });
+  }
+  detachSubCategories(subCategoryIds: SubCategoryIdValueObject[]) {
+    const subIdsRaw = subCategoryIds.map((id) => id.unpack());
+    const thisSubIdsRaw = this.subIds.map((id) => id.unpack());
+
+    const newSubIdsRaw = subIdsRaw.filter((id) => !thisSubIdsRaw.includes(id));
+
+    this.subIds = newSubIdsRaw.map((id) => new SubCategoryIdValueObject(id));
+    return new SubCategoriesDetachedDomainEvent({
+      id: this.id,
+      details: {
+        subIds: subCategoryIds,
+      },
+    });
+  }
+
+  detachParentCategories(parentIds: ParentCategoryIdValueObject[]) {
+    const parentIdsRaw = parentIds.map((id) => id.unpack());
+    const thisParentIdsRaw = this.parentIds.map((id) => id.unpack());
+
+    const newParentIdsRaw = parentIdsRaw.filter(
+      (id) => !thisParentIdsRaw.includes(id),
+    );
+
+    this.parentIds = newParentIdsRaw.map(
+      (id) => new ParentCategoryIdValueObject(id),
+    );
+    return new ParentCategoriesDetachedDomainEvent({
+      id: this.id,
+      details: {
+        parentIds: parentIds,
       },
     });
   }
@@ -117,7 +133,8 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     return new CategoryRemovedDomainEvent({
       id: this.id,
       details: {
-        subCategoryIds: this.subCategoryIds,
+        subIds: this.subIds,
+        parentIds: this.parentIds,
       },
     });
   }
@@ -166,11 +183,11 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     this.details.description = newDescription;
   }
 
-  get subCategoryIds(): SubCategoryIdValueObject[] {
-    return this.details.subCategoryIds;
+  get subIds(): SubCategoryIdValueObject[] {
+    return this.details.subIds;
   }
 
-  set subCategoryIds(newSubCategoryIds: SubCategoryIdValueObject[]) {
-    this.details.subCategoryIds = newSubCategoryIds;
+  set subIds(newSubCategoryIds: SubCategoryIdValueObject[]) {
+    this.details.subIds = newSubCategoryIds;
   }
 }

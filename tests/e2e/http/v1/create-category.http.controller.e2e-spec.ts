@@ -53,7 +53,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
         mapDomainExceptionsToObjects([
           new CategoryDomainExceptions.NameDoesNotValid(),
           new ProductDomainExceptions.IdDoesNotValid(),
-          new CategoryDomainExceptions.SubCategoryIdsDoesNotValid(),
+          new CategoryDomainExceptions.SubIdsDoesNotValid(),
           new CategoryDomainExceptions.ParentIdDoesNotValid(),
           new CategoryDomainExceptions.DescriptionDoesNotValid(),
         ]),
@@ -101,7 +101,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
           new CategoryDomainExceptions.ParentIdDoesNotExist(),
-          new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
+          new CategoryDomainExceptions.SubIdDoesNotExist(),
           new ProductDomainExceptions.DoesNotExist(),
         ]),
       );
@@ -123,7 +123,7 @@ describe('V1CreateCategoryHttpController (e2e)', () => {
 
       expect(response.body.message).toIncludeAllMembers(
         mapDomainExceptionsToObjects([
-          new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap(),
+          new CategoryDomainExceptions.ParentIdAndSubIdOverlap(),
         ]),
       );
     });

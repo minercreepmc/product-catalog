@@ -1,12 +1,12 @@
 import { ProcessBase } from '@base/use-cases';
 import { AddParentCategoriesCommand } from '@commands';
-import { ParentCategoryAddedDomainEvent } from '@domain-events/category';
+import { ParentCategoriesAddedDomainEvent } from '@domain-events/category';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { CategoryManagementDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { CategoryBusinessEnforcer } from '@use-cases/shared/application-services/process';
 
-export type AddParentCategoriesProcessSuccess = ParentCategoryAddedDomainEvent;
+export type AddParentCategoriesProcessSuccess = ParentCategoriesAddedDomainEvent;
 export type AddParentCategoriesProcessFailure = Array<
   | CategoryDomainExceptions.ParentIdDoesNotExist
   | CategoryDomainExceptions.DoesNotExist
@@ -29,14 +29,14 @@ export class AddParentCategoriesProcess extends ProcessBase<
     const businessRules = [
       this.categoryEnforcer.parentCategoriesIdMustExist(parentIds),
       this.categoryEnforcer.categordIdMustExist(categoryId),
-      this.categoryEnforcer.distinctParentCategories(categoryId, parentIds),
+      this.categoryEnforcer.notOverlapWithParent(categoryId, parentIds),
     ];
 
     await Promise.all(businessRules);
   }
   protected executeMainTask(
     command: AddParentCategoriesCommand,
-  ): Promise<ParentCategoryAddedDomainEvent> {
+  ): Promise<ParentCategoriesAddedDomainEvent> {
     return this.categoryManagementService.addParentCategories(command);
   }
 

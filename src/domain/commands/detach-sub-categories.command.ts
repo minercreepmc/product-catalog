@@ -5,10 +5,10 @@ import {
 
 export class DetachSubCategoriesCommand {
   categoryId: CategoryIdValueObject;
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
 
   constructor(optiosn: DetachSubCategoriesCommand) {
     this.categoryId = optiosn.categoryId;
-    this.subCategoryIds = optiosn.subCategoryIds;
+    this.subIds = optiosn.subIds;
   }
 }

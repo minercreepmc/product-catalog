@@ -1,6 +1,6 @@
 import { CommandMapperBase } from '@base/use-cases';
 import { AddSubCategoriesCommand } from '@commands';
-import { SubCategoryAddedDomainEvent } from '@domain-events/category';
+import { SubCategoriesAddedDomainEvent } from '@domain-events/category';
 import { Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
@@ -14,23 +14,21 @@ import {
 @Injectable()
 export class AddSubCategoriesMapper extends CommandMapperBase<AddSubCategoriesResponseDto> {
   toCommand(dto: AddSubCategoriesRequestDto): AddSubCategoriesCommand {
-    const { categoryId, subCategoryIds } = dto;
+    const { categoryId, subIds: subCategoryIds } = dto;
     return {
-      subCategoryIds: subCategoryIds.map(
-        (id) => new SubCategoryIdValueObject(id),
-      ),
+      subIds: subCategoryIds.map((id) => new SubCategoryIdValueObject(id)),
       categoryId: new CategoryIdValueObject(categoryId),
     };
   }
 
   toResponseDto(
-    event: SubCategoryAddedDomainEvent,
+    event: SubCategoriesAddedDomainEvent,
   ): AddSubCategoriesResponseDto {
-    const { subCategoryIds, categoryId } = event;
+    const { subIds, categoryId } = event;
 
     return new AddSubCategoriesResponseDto({
       categoryId: categoryId.unpack(),
-      subCategoryIds: subCategoryIds.map((id) => id.unpack()),
+      subIds: subIds.map((id) => id.unpack()),
     });
   }
 }

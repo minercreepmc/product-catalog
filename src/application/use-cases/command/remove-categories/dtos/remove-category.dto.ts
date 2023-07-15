@@ -11,9 +11,13 @@ export class RemoveCategoriesRequestDto extends RequestDtoBase<RemoveCategoriesR
 
 export class RemoveCategoriesResponseDto extends ResponseDtoBase {
   readonly ids: string[];
+  readonly parentIds: string[];
+  readonly subIds: string[];
 
   constructor(options: RemoveCategoriesResponseDto) {
     super();
     this.ids = options.ids;
+    this.parentIds = options.parentIds;
+    this.subIds = options.subIds;
   }
 }

@@ -5,10 +5,10 @@ import {
 
 export class AddSubCategoriesCommand {
   categoryId: CategoryIdValueObject;
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
 
   constructor(options: AddSubCategoriesCommand) {
     this.categoryId = options.categoryId;
-    this.subCategoryIds = options.subCategoryIds;
+    this.subIds = options.subIds;
   }
 }

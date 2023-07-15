@@ -24,14 +24,14 @@ import {
   RemoveSubCategoriesServiceOptions,
 } from './category-management.domain-service';
 
-export interface DoesParentIdsAndCategoryIdsOverlapServiceOptions {
+export interface DoesParentIdsAndSubIdsOverlapServiceOptions {
   parentIds: ParentCategoryIdValueObject[];
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
 }
 
 export interface DoesSubCategoryIdsOverlapOptions {
   categoryId: CategoryIdValueObject;
-  subCategoryIds: SubCategoryIdValueObject[];
+  subIds: SubCategoryIdValueObject[];
 }
 
 export interface DoesParentIdsOverlapOptions {
@@ -71,25 +71,28 @@ export class CategoryVerificationDomainService {
   }
 
   async verifyCategoryCreationOptions(options: CreateCategoryOptions) {
-    const { name, parentIds, productIds, subCategoryIds } = options;
+    const { name, parentIds, productIds, subIds: subCategoryIds } = options;
 
     await Promise.all([
       this.checkCategoryMustNotExist({ name }),
       this.checkParentIdsMustExist(parentIds),
       this.checkProductIdsMustExist(productIds),
       this.checkSubCategoryIdsMustExist(subCategoryIds),
-      this.checkDistinctParentAndSubCategoryIds({ parentIds, subCategoryIds }),
+      this.checkDistinctParentAndSubCategoryIds({
+        parentIds,
+        subIds: subCategoryIds,
+      }),
     ]);
   }
 
   async verifyAddSubCategoriesOptions(options: AddSubCategoriesServiceOptions) {
-    const { subCategoryIds, categoryId } = options;
+    const { subIds: subCategoryIds, categoryId } = options;
 
     await Promise.all([
       this.checkSubCategoryIdsMustExist(subCategoryIds),
       this.checkDistinctSubCategoryIds({
         categoryId,
-        subCategoryIds,
+        subIds: subCategoryIds,
       }),
     ]);
   }
@@ -108,20 +111,24 @@ export class CategoryVerificationDomainService {
     ]);
   }
 
-  async verifyRemoveSubCategoriesOptions(
+  async verifyDetachSubCategoriesOptions(
     options: RemoveSubCategoriesServiceOptions,
   ) {
-    const { subCategoryIds, categoryId } = options;
+    const { subIds: subCategoryIds, categoryId } = options;
 
     await Promise.all([
       this.checkCategoryIdMustExist({
         id: categoryId,
       }),
       this.checkSubCategoryIdsMustExist(subCategoryIds),
+      this.checkDistinctSubCategoryIds({
+        categoryId,
+        subIds: subCategoryIds,
+      }),
     ]);
   }
 
-  async verifyRemoveParentCategoriesOptiosn(
+  async verifyDetachParentCategoriesOptiosn(
     options: RemoveParentCategoriesServiceOptions,
   ) {
     const { parentIds, categoryId } = options;
@@ -131,14 +138,18 @@ export class CategoryVerificationDomainService {
         id: categoryId,
       }),
       this.checkParentIdsMustExist(parentIds),
+      this.checkDistinctParentIds({
+        categoryId,
+        parentIds,
+      }),
     ]);
   }
 
   // Utility Methods
-  doesParentIdsAndSubCategoryIdsOverlap(
-    options: DoesParentIdsAndCategoryIdsOverlapServiceOptions,
+  doesParentIdsAndSubIdsOverlap(
+    options: DoesParentIdsAndSubIdsOverlapServiceOptions,
   ): boolean {
-    const { parentIds, subCategoryIds } = options;
+    const { parentIds, subIds: subCategoryIds } = options;
 
     if (
       parentIds &&
@@ -159,7 +170,7 @@ export class CategoryVerificationDomainService {
   }
 
   doesSubCategoryIdsOverlap(options: DoesSubCategoryIdsOverlapOptions) {
-    const { categoryId, subCategoryIds } = options;
+    const { categoryId, subIds: subCategoryIds } = options;
     if (subCategoryIds && subCategoryIds.length > 0) {
       const subCategoryIdsArray = subCategoryIds.map((id) => id.unpack());
 
@@ -236,7 +247,7 @@ export class CategoryVerificationDomainService {
   ) {
     const exist = await this.doesCategoryIdsExist(subCategoryIds);
     if (!exist) {
-      throw new CategoryDomainExceptions.SubCategoryIdDoesNotExist();
+      throw new CategoryDomainExceptions.SubIdDoesNotExist();
     }
   }
 
@@ -254,11 +265,11 @@ export class CategoryVerificationDomainService {
   }
 
   private async checkDistinctParentAndSubCategoryIds(
-    options: DoesParentIdsAndCategoryIdsOverlapServiceOptions,
+    options: DoesParentIdsAndSubIdsOverlapServiceOptions,
   ) {
-    const doesOverlap = this.doesParentIdsAndSubCategoryIdsOverlap(options);
+    const doesOverlap = this.doesParentIdsAndSubIdsOverlap(options);
     if (doesOverlap) {
-      throw new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap();
+      throw new CategoryDomainExceptions.ParentIdAndSubIdOverlap();
     }
   }
 
@@ -267,7 +278,7 @@ export class CategoryVerificationDomainService {
   ) {
     const doesOverlap = this.doesSubCategoryIdsOverlap(options);
     if (doesOverlap) {
-      throw new CategoryDomainExceptions.OverlapWithSubCategoryId();
+      throw new CategoryDomainExceptions.OverlapWithSubId();
     }
   }
 

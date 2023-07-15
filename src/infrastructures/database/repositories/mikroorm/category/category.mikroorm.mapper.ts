@@ -25,13 +25,13 @@ export class CategoryMikroOrmMapper extends MikroOrmMapperBase<
   protected async toPersistanceDetails(
     entity: CategoryAggregate,
   ): Promise<CategoryOrmModelDetails> {
-    const { name, description, parentIds, subCategoryIds, productIds } =
+    const { name, description, parentIds, subIds: subCategoryIds, productIds } =
       entity.details;
     return {
       name: name?.unpack(),
       description: description?.unpack(),
       parentIds: parentIds?.map((id) => id.unpack()),
-      subCategoryIds: subCategoryIds?.map((id) => id.unpack()),
+      subIds: subCategoryIds?.map((id) => id.unpack()),
       productIds: productIds?.map((id) => id.unpack()),
     };
   }
@@ -59,8 +59,8 @@ export class CategoryMikroOrmMapper extends MikroOrmMapperBase<
       );
     }
 
-    if (ormModel.subCategoryIds) {
-      subCategoryIds = ormModel?.subCategoryIds.map(
+    if (ormModel.subIds) {
+      subCategoryIds = ormModel?.subIds.map(
         (id) => new SubCategoryIdValueObject(id),
       );
     }
@@ -75,7 +75,7 @@ export class CategoryMikroOrmMapper extends MikroOrmMapperBase<
       name,
       description,
       parentIds,
-      subCategoryIds,
+      subIds: subCategoryIds,
       productIds,
     };
   }

@@ -17,18 +17,16 @@ export class DetachSubCategoriesMapper extends CommandMapperBase<DetachSubCatego
     const { categoryId, subIds: subCategoryIds } = dto;
     return new DetachSubCategoriesCommand({
       categoryId: new CategoryIdValueObject(categoryId),
-      subCategoryIds: subCategoryIds.map(
-        (id) => new SubCategoryIdValueObject(id),
-      ),
+      subIds: subCategoryIds.map((id) => new SubCategoryIdValueObject(id)),
     });
   }
   toResponseDto(
     event: SubCategoriesDetachedDomainEvent,
   ): DetachSubCategoriesResponseDto {
-    const { subCategoryIds, categoryId } = event;
+    const { subIds, categoryId } = event;
     return new DetachSubCategoriesResponseDto({
       categoryId: categoryId.unpack(),
-      subIds: subCategoryIds.map((id) => id.unpack()),
+      subIds: subIds.map((id) => id.unpack()),
     });
   }
 }

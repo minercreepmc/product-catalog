@@ -29,12 +29,12 @@ export class GetSubCategoriesHandler
       where,
     );
 
-    const subCategoryIds = category.subCategoryIds;
+    const subCategoryIds = category.subIds;
     let subCategories = [];
 
     if (subCategoryIds && subCategoryIds.length > 0) {
       subCategories = await this.entityManager.find(CategoryMikroOrmModel, {
-        id: { $in: category.subCategoryIds },
+        id: { $in: category.subIds },
       });
     }
 

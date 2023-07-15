@@ -20,9 +20,8 @@ export class CategoryMikroOrmModel extends MikroOrmModelBase {
   parentIds: string[];
 
   @Property({ type: ArrayType, nullable: true })
-  subCategoryIds: string[];
+  subIds: string[];
 
   @Property({ type: ArrayType, nullable: true })
   productIds: string[];
-
 }

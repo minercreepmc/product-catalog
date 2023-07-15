@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AddParentCategoryModule } from './add-parent-category.module';
-import { AddSubCategoryModule } from './add-sub-category.module';
+import { AddParentCategoriesModule } from './add-parent-categories.module';
+import { AddSubCategoriesModule } from './add-sub-categories.module';
 import { ApproveProductModule } from './approve-product.module';
 import { CreateCategoryModule } from './create-category.module';
 import { CreateProductModule } from './create-product.module';
 import { CreateReviewerModule } from './create-reviewer.module';
 import { CreateReviewerSagaModule } from './create-reviewer.saga.module';
+import { DetachParentCategoriesModule } from './detach-parent-categories.module';
 import { DetachSubCategoriesModule } from './detach-sub-categories.module';
 import { GetCategoriesModule } from './get-categories.module';
 import { GetCategoryModule } from './get-category.module';
@@ -30,13 +31,14 @@ import { UploadModule } from './upload.module';
     ApproveProductModule,
     RejectProductModule,
     CreateCategoryModule,
-    AddSubCategoryModule,
-    AddParentCategoryModule,
+    AddSubCategoriesModule,
+    AddParentCategoriesModule,
     GetProductsModule,
     GetCategoriesModule,
     GetSubCategoriesModule,
     GetCategoryModule,
     DetachSubCategoriesModule,
+    DetachParentCategoriesModule,
     RemoveProductsModule,
     RemoveCategoriesModule,
     UploadModule,

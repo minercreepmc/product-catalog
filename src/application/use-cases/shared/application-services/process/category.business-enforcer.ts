@@ -18,9 +18,9 @@ export type CategoryProcessFailure = Array<
   | CategoryDomainExceptions.AlreadyExist
   | CategoryDomainExceptions.DoesNotExist
   | CategoryDomainExceptions.OverlapWithParentId
-  | CategoryDomainExceptions.SubCategoryIdDoesNotExist
-  | CategoryDomainExceptions.OverlapWithSubCategoryId
-  | CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap
+  | CategoryDomainExceptions.SubIdDoesNotExist
+  | CategoryDomainExceptions.OverlapWithSubId
+  | CategoryDomainExceptions.ParentIdAndSubIdOverlap
   | ProductDomainExceptions.DoesNotExist
 >;
 
@@ -79,7 +79,7 @@ export class CategoryBusinessEnforcer<
     }
   }
 
-  async distinctParentCategories(
+  async notOverlapWithParent(
     categoryId: CategoryIdValueObject,
     parentIds: CategoryIdValueObject[],
   ) {
@@ -99,9 +99,7 @@ export class CategoryBusinessEnforcer<
     );
 
     if (!exist) {
-      this.exceptions.push(
-        new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
-      );
+      this.exceptions.push(new CategoryDomainExceptions.SubIdDoesNotExist());
     }
   }
 
@@ -116,9 +114,7 @@ export class CategoryBusinessEnforcer<
     );
 
     if (!exist) {
-      this.exceptions.push(
-        new CategoryDomainExceptions.SubCategoryIdDoesNotExist(),
-      );
+      this.exceptions.push(new CategoryDomainExceptions.SubIdDoesNotExist());
     }
   }
 
@@ -135,35 +131,33 @@ export class CategoryBusinessEnforcer<
     }
   }
 
-  async distinctSubCategories(
+  async notOverlapWithSub(
     categoryId: CategoryIdValueObject,
     subCategoryIds: CategoryIdValueObject[],
   ) {
     const doesOverlap =
       this.categoryVerificationService.doesSubCategoryIdsOverlap({
         categoryId,
-        subCategoryIds,
+        subIds: subCategoryIds,
       });
 
     if (doesOverlap) {
-      this.exceptions.push(
-        new CategoryDomainExceptions.OverlapWithSubCategoryId(),
-      );
+      this.exceptions.push(new CategoryDomainExceptions.OverlapWithSubId());
     }
   }
 
-  async parentIdsAndSubCategoryIdsNotOverlap(
+  async parentIdsAndSubIdsNotOverlap(
     parentIds: ParentCategoryIdValueObject[],
     subCategoryIds: SubCategoryIdValueObject[],
   ) {
     const doesOverlap =
-      this.categoryVerificationService.doesParentIdsAndSubCategoryIdsOverlap({
+      this.categoryVerificationService.doesParentIdsAndSubIdsOverlap({
         parentIds,
-        subCategoryIds,
+        subIds: subCategoryIds,
       });
     if (doesOverlap) {
       this.exceptions.push(
-        new CategoryDomainExceptions.ParentIdAndSubCategoryIdOverlap(),
+        new CategoryDomainExceptions.ParentIdAndSubIdOverlap(),
       );
     }
   }

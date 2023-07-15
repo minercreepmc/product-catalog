@@ -8,14 +8,14 @@ import {
 } from '@domain-services';
 import { EventBusAdapter } from '@infrastructures/events';
 import { Module, Provider } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
+import { MediatorModule } from 'nestjs-mediator';
 import { DatabaseModule } from '../infrastructures/database';
 
 const eventBus: Provider = {
   provide: eventBusDiToken,
   useClass: EventBusAdapter,
 };
-const sharedModules = [DatabaseModule, CqrsModule];
+const sharedModules = [DatabaseModule, MediatorModule];
 
 @Module({
   imports: [...sharedModules],

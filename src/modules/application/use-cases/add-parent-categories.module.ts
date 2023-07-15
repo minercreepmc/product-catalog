@@ -32,4 +32,4 @@ const sharedModules = [
   controllers,
   providers: [...useCase],
 })
-export class AddParentCategoryModule {}
+export class AddParentCategoriesModule {}

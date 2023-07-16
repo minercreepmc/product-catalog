@@ -86,7 +86,7 @@ export class CategoryManagementDomainService {
       return subCategoryAdded;
     });
 
-    await this.eventBus.addToOutBoxAndPublish(event);
+    this.eventBus.publish(event);
     return event;
   }
 
@@ -106,7 +106,7 @@ export class CategoryManagementDomainService {
       return parentCategoryAdded;
     });
 
-    await this.eventBus.addToOutBoxAndPublish(event);
+    this.eventBus.publish(event);
     return event;
   }
 
@@ -130,37 +130,28 @@ export class CategoryManagementDomainService {
   }
 
   async removeCategories(options: RemoveCategoriesServiceOptions) {
+    await this.categoryVerification.verifyCategoriesRemovalOptions(options);
+
     const events = await this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyCategoriesRemovalOptions(options);
-
-      const findingCategories = options.categoryIds.map((id) =>
-        this.categoryRepository.findOneById(id),
-      );
-
-      const categories = await Promise.all(findingCategories);
+      const categories = [];
+      for (const id of options.categoryIds) {
+        categories.push(await this.categoryRepository.findOneById(id));
+      }
 
       const categoriesRemoved = categories.map((category) =>
         category.removeCategory(),
       );
 
-      const deletingCategories = options.categoryIds.map(
-        (id: CategoryIdValueObject) => {
-          this.categoryRepository.delete({
-            id: id,
-          });
-        },
-      );
-
-      await Promise.all(deletingCategories);
+      for (const id of options.categoryIds) {
+        await this.categoryRepository.delete({ id });
+      }
 
       return categoriesRemoved;
     });
 
-    const promises = events.map((event) =>
-      this.eventBus.addToOutBoxAndPublish(event),
-    );
-
-    await Promise.all(promises);
+    for (const event of events) {
+      this.eventBus.publish(event);
+    }
 
     return events;
   }

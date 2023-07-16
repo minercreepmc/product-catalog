@@ -171,7 +171,7 @@ describe('V1RemoveCategoriesHttpController (e2e)', () => {
       };
 
       await request(app.getHttpServer())
-        .put(`/${apiPrefix}/${categoriesUrl}/${removeCategoriesUrl}`)
+        .post(`/${apiPrefix}/${categoriesUrl}/${removeCategoriesUrl}`)
         .set('Accept', 'application/json')
         .send(removeMainCategoriesRequest)
         .expect(HttpStatus.OK);

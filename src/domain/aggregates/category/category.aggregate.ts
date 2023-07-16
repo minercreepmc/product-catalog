@@ -5,7 +5,11 @@ import {
   SubCategoryIdValueObject,
 } from '@value-objects/category';
 import { CategoryNameValueObject } from '@value-objects/category';
-import { AbstractAggregateRoot, UUID } from 'common-base-classes';
+import {
+  AbstractAggregateRoot,
+  AbstractValueObject,
+  UUID,
+} from 'common-base-classes';
 import {
   CategoryAggregateDetails,
   CategoryAggregateOptions,
@@ -96,12 +100,10 @@ export class CategoryAggregate extends AbstractAggregateRoot<
     });
   }
   detachSubCategories(subCategoryIds: SubCategoryIdValueObject[]) {
-    const subIdsRaw = subCategoryIds.map((id) => id.unpack());
-    const thisSubIdsRaw = this.subIds.map((id) => id.unpack());
-
-    const newSubIdsRaw = subIdsRaw.filter((id) => !thisSubIdsRaw.includes(id));
-
-    this.subIds = newSubIdsRaw.map((id) => new SubCategoryIdValueObject(id));
+    this.subIds = AbstractValueObject.filter(
+      this.subIds,
+      (id) => !id.isIncludedIn(subCategoryIds),
+    );
     return new SubCategoriesDetachedDomainEvent({
       id: this.id,
       details: {
@@ -111,15 +113,9 @@ export class CategoryAggregate extends AbstractAggregateRoot<
   }
 
   detachParentCategories(parentIds: ParentCategoryIdValueObject[]) {
-    const parentIdsRaw = parentIds.map((id) => id.unpack());
-    const thisParentIdsRaw = this.parentIds.map((id) => id.unpack());
-
-    const newParentIdsRaw = parentIdsRaw.filter(
-      (id) => !thisParentIdsRaw.includes(id),
-    );
-
-    this.parentIds = newParentIdsRaw.map(
-      (id) => new ParentCategoryIdValueObject(id),
+    this.parentIds = AbstractValueObject.filter(
+      this.parentIds,
+      (id) => !id.isIncludedIn(parentIds),
     );
     return new ParentCategoriesDetachedDomainEvent({
       id: this.id,

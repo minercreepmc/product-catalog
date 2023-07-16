@@ -1,7 +1,7 @@
 import { EventHandlerBase } from '@base/use-cases/event-handler';
 import { CategoryRemovedDomainEvent } from '@domain-events/category';
 import { DetachParentCategoriesRequestDto } from '@use-cases/command/detach-parent-categories/dtos';
-import { DetachSubCategoriesRequestDto } from '@use-cases/command/detach-sub-categories/dtos/detach-sub-categories.dto';
+import { DetachSubCategoriesRequestDto } from '@use-cases/command/detach-sub-categories/dtos';
 import { Mediator, NotificationHandler } from 'nestjs-mediator';
 
 @NotificationHandler(CategoryRemovedDomainEvent)
@@ -9,25 +9,29 @@ export class CategoryRemovedEventHandler extends EventHandlerBase<CategoryRemove
   async handle(event: CategoryRemovedDomainEvent) {
     const { categoryId, parentIds, subIds } = event;
 
-    const detachSubDtos = parentIds.map(
-      (parentId) =>
-        new DetachSubCategoriesRequestDto({
-          subIds: [categoryId.unpack()],
-          categoryId: parentId.unpack(),
-        }),
-    );
+    if (parentIds.length > 0) {
+      const detachSubDtos = parentIds.map(
+        (parentId) =>
+          new DetachSubCategoriesRequestDto({
+            subIds: [categoryId.unpack()],
+            categoryId: parentId.unpack(),
+          }),
+      );
 
-    await this.detachSubCategories(detachSubDtos);
+      await this.detachSubCategories(detachSubDtos);
+    }
 
-    const detachParentDtos = subIds.map(
-      (subId) =>
-        new DetachParentCategoriesRequestDto({
-          parentIds: [categoryId.unpack()],
-          categoryId: subId.unpack(),
-        }),
-    );
+    if (subIds.length > 0) {
+      const detachParentDtos = subIds.map(
+        (subId) =>
+          new DetachParentCategoriesRequestDto({
+            parentIds: [categoryId.unpack()],
+            categoryId: subId.unpack(),
+          }),
+      );
 
-    await this.detachParentCategories(detachParentDtos);
+      await this.detachParentCategories(detachParentDtos);
+    }
   }
 
   async detachSubCategories(dtos: DetachSubCategoriesRequestDto[]) {

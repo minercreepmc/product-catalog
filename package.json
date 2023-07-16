@@ -64,7 +64,7 @@
     "amqplib": "^0.10.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "common-base-classes": "0.21.18",
+    "common-base-classes": "0.21.21",
     "nest-typeorm-common-classes": "0.0.21",
     "nestjs-mediator": "^0.0.5",
     "nestjs-saga": "^0.1.3",

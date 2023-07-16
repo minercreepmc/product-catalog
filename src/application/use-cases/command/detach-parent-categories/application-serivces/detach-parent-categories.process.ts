@@ -25,7 +25,6 @@ export class DetachParentCategoriesProcess extends ProcessBase<
 
     const promises = [
       this.categoryEnforcer.categordIdMustExist(categoryId),
-      this.categoryEnforcer.parentCategoriesIdMustExist(parentIds),
       this.categoryEnforcer.notOverlapWithParent(categoryId, parentIds),
     ];
 

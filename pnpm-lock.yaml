@@ -62,11 +62,11 @@ dependencies:
     specifier: ^0.14.0
     version: 0.14.0
   common-base-classes:
-    specifier: 0.21.18
-    version: 0.21.18(typescript@4.9.5)
+    specifier: 0.21.21
+    version: 0.21.21(typescript@4.9.5)
   nest-typeorm-common-classes:
     specifier: 0.0.21
-    version: 0.0.21(@nestjs/typeorm@9.0.1)(common-base-classes@0.21.18)(typeorm@0.3.16)
+    version: 0.0.21(@nestjs/typeorm@9.0.1)(common-base-classes@0.21.21)(typeorm@0.3.16)
   nestjs-mediator:
     specifier: ^0.0.5
     version: 0.0.5(@nestjs/microservices@9.4.3)
@@ -4916,8 +4916,8 @@ packages:
     engines: {node: ^12.20.0 || >=14}
     dev: false
 
-  /common-base-classes@0.21.18(typescript@4.9.5):
-    resolution: {integrity: sha512-atdt7k0q3K3YQdHdbwkZyBuS3xw5VK4qWav1qJbzA+k1xJd0PRHMHmJgET4y7X6kpW/3IjJzI6qP1l5W+Q6Qmw==}
+  /common-base-classes@0.21.21(typescript@4.9.5):
+    resolution: {integrity: sha512-71HxPhOg+ixc5nrabi237aglPHlHK1RtOFHrzeMlWIZJroQx2OFJWQBHxd3w/cUvit+xcZijjNRiKy9BlF4PUQ==}
     dependencies:
       ts-common-exceptions: 3.0.1(typescript@4.9.5)
       uuid: 9.0.0
@@ -7079,7 +7079,7 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /nest-typeorm-common-classes@0.0.21(@nestjs/typeorm@9.0.1)(common-base-classes@0.21.18)(typeorm@0.3.16):
+  /nest-typeorm-common-classes@0.0.21(@nestjs/typeorm@9.0.1)(common-base-classes@0.21.21)(typeorm@0.3.16):
     resolution: {integrity: sha512-U1I4eSayj+PWVyfC2CqCqpZE/tZXD8FglWjUdMO2ShRZRn46u8G1Vj26/IE9s6m++XmUUfPQKYx9NjVVCjoUyQ==}
     peerDependencies:
       '@nestjs/typeorm': ^9.0.1
@@ -7087,7 +7087,7 @@ packages:
       typeorm: ^0.3.12
     dependencies:
       '@nestjs/typeorm': 9.0.1(@nestjs/common@9.4.3)(@nestjs/core@9.4.3)(reflect-metadata@0.1.13)(rxjs@7.8.1)(typeorm@0.3.16)
-      common-base-classes: 0.21.18(typescript@4.9.5)
+      common-base-classes: 0.21.21(typescript@4.9.5)
       tslib: 2.4.1
       typeorm: 0.3.16(pg@8.11.0)(ts-node@10.9.1)
     dev: false

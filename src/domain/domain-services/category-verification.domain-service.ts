@@ -103,7 +103,9 @@ export class CategoryVerificationDomainService {
     const { parentIds, categoryId } = options;
 
     await Promise.all([
-      this.checkParentIdsMustExist(parentIds),
+      this.checkCategoryIdMustExist({
+        id: categoryId,
+      }),
       this.checkDistinctParentIds({
         categoryId,
         parentIds,
@@ -120,7 +122,6 @@ export class CategoryVerificationDomainService {
       this.checkCategoryIdMustExist({
         id: categoryId,
       }),
-      this.checkSubCategoryIdsMustExist(subCategoryIds),
       this.checkDistinctSubCategoryIds({
         categoryId,
         subIds: subCategoryIds,
@@ -137,7 +138,6 @@ export class CategoryVerificationDomainService {
       this.checkCategoryIdMustExist({
         id: categoryId,
       }),
-      this.checkParentIdsMustExist(parentIds),
       this.checkDistinctParentIds({
         categoryId,
         parentIds,

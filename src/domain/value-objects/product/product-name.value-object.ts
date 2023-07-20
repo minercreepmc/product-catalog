@@ -1,25 +1,24 @@
-import {
-  TextValueObject,
-  TextValueObjectOptions,
-  ValidationResponse,
-} from 'common-base-classes';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { IsDefined, IsString, Length, validate } from 'class-validator';
 
-export class ProductNameValueObject extends TextValueObject {
-  private static readonly OPTIONS: TextValueObjectOptions = {
-    minLength: 2,
-    maxLength: 30,
-    allowNumber: true,
-    allowSymbols: true,
-    allowLowercase: true,
-    allowUppercase: true,
-    allowWhitespace: true,
-  };
+export class ProductNameValueObject {
+  @IsDefined()
+  @IsString()
+  @Length(2, 30)
+  readonly value: string;
 
-  static validate(value: string): ValidationResponse {
-    return super.validate(value, this.OPTIONS);
+  static async create(value: string) {
+    const name = new ProductNameValueObject(value);
+    const exceptions = await validate(name);
+
+    if (exceptions.length > 0) {
+      throw new ProductDomainExceptions.NameDoesNotValid();
+    }
+
+    return name;
   }
 
   constructor(value: string) {
-    super(value, ProductNameValueObject.OPTIONS);
+    this.value = value;
   }
 }

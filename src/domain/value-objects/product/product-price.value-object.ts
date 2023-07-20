@@ -1,24 +1,23 @@
-import {
-  CreateMoneyValueObjectOptions,
-  MoneyValueObject,
-  MoneyValueObjectDetails,
-} from '@value-objects/common/money';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { IsDefined, IsNumber, validate } from 'class-validator';
 
-export interface CreateProductPriceValueObjectOptions
-  extends CreateMoneyValueObjectOptions {}
+export class ProductPriceValueObject {
+  @IsDefined()
+  @IsNumber({ maxDecimalPlaces: 2, allowInfinity: false, allowNaN: false })
+  readonly value: number;
 
-export class ProductPriceValueObject extends MoneyValueObject {
-  constructor(details: MoneyValueObjectDetails) {
-    super(details);
+  static async create(value: number) {
+    const price = new ProductPriceValueObject(value);
+    const exceptions = await validate(price);
+
+    if (exceptions.length > 0) {
+      throw new ProductDomainExceptions.PriceDoesNotValid();
+    }
+
+    return price;
   }
 
-  static create(
-    options: CreateProductPriceValueObjectOptions,
-  ): ProductPriceValueObject {
-    const moneyValueObject = super.create(options);
-    return new ProductPriceValueObject({
-      amount: moneyValueObject.details.amount,
-      currency: moneyValueObject.details.currency,
-    });
+  constructor(value: number) {
+    this.value = value;
   }
 }

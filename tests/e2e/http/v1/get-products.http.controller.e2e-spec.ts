@@ -1,6 +1,6 @@
 import { V1CreateProductHttpRequest } from '@controllers/http/v1';
 import {
-  V1GetProductsHttpRequest,
+  V1GetProductsHttpQuery,
   V1GetProductsHttpResponse,
 } from '@controllers/http/v1/get-products';
 import { HttpStatus, INestApplication } from '@nestjs/common';
@@ -74,7 +74,7 @@ describe('V1GetProductsHttpController (e2e)', () => {
         .send(createProductRequest)
         .expect(HttpStatus.CREATED);
 
-      const getProductRequest: V1GetProductsHttpRequest = {
+      const getProductRequest: V1GetProductsHttpQuery = {
         fields: ['price', 'name'],
       };
 
@@ -105,7 +105,7 @@ describe('V1GetProductsHttpController (e2e)', () => {
         .send(createProductRequest)
         .expect(HttpStatus.CREATED);
 
-      const getProductRequest: V1GetProductsHttpRequest = {
+      const getProductRequest: V1GetProductsHttpQuery = {
         fields: ['price', 'name'],
         limit: 1,
         offset: 1,

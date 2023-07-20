@@ -1,68 +1,29 @@
-import { DomainExceptionBase } from 'common-base-classes';
+import { DomainExceptionBase } from '@base/domain';
 import { CategoryDomainExceptionCodes } from './category.domain-exception-code';
 
-export abstract class CategoryValidationException extends DomainExceptionBase {}
-export abstract class CategoryBusinessException extends DomainExceptionBase {}
-
 export namespace CategoryDomainExceptions {
-  export class DoesNotExist extends CategoryBusinessException {
+  export class DoesNotExist extends DomainExceptionBase {
     readonly message = 'Category does not exist';
     readonly code = CategoryDomainExceptionCodes.DoesNotExist;
   }
 
-  export class ParentIdDoesNotExist extends CategoryValidationException {
-    readonly message = 'Category parent id does not exist';
-    readonly code = CategoryDomainExceptionCodes.ParentIdDoesNotExist;
-  }
-
-  export class SubIdDoesNotExist extends CategoryValidationException {
-    readonly message = 'Category sub category id does not exist';
-    readonly code = CategoryDomainExceptionCodes.SubCategoryIdDoesNotExist;
-  }
-
-  export class AlreadyExist extends CategoryBusinessException {
+  export class AlreadyExist extends DomainExceptionBase {
     readonly message = 'Category already exist';
     readonly code = CategoryDomainExceptionCodes.AlreadyExist;
   }
 
-  export class IdDoesNotValid extends CategoryValidationException {
+  export class IdDoesNotValid extends DomainExceptionBase {
     readonly message = 'Category id does not valid';
     readonly code = CategoryDomainExceptionCodes.IdDoesNotValid;
   }
 
-  export class NameDoesNotValid extends CategoryValidationException {
+  export class NameDoesNotValid extends DomainExceptionBase {
     readonly message = 'Category name does not valid';
     readonly code = CategoryDomainExceptionCodes.NameDoesNotValid;
   }
 
-  export class ParentIdDoesNotValid extends CategoryValidationException {
-    readonly message = 'Category parent id does not valid';
-    readonly code = CategoryDomainExceptionCodes.ParentIdDoesNotValid;
-  }
-
-  export class SubIdsDoesNotValid extends CategoryValidationException {
-    readonly message = 'Category sub category id does not valid';
-    readonly code = CategoryDomainExceptionCodes.SubCategoryIdsDoesNotValid;
-  }
-
-  export class DescriptionDoesNotValid extends CategoryValidationException {
+  export class DescriptionDoesNotValid extends DomainExceptionBase {
     readonly message = 'Category description does not valid';
     readonly code = CategoryDomainExceptionCodes.DescriptionDoesNotValid;
-  }
-
-  export class ParentIdAndSubIdOverlap extends CategoryValidationException {
-    readonly message = 'Category parent id and sub category id overlap';
-    readonly code =
-      CategoryDomainExceptionCodes.ParentIdAndSubCategoryIdOverlap;
-  }
-
-  export class OverlapWithSubId extends CategoryValidationException {
-    readonly message = 'Category overlap with sub category id';
-    readonly code = CategoryDomainExceptionCodes.OverlapWithSubCategoryId;
-  }
-
-  export class OverlapWithParentId extends CategoryValidationException {
-    readonly message = 'Category overlap with parent id';
-    readonly code = CategoryDomainExceptionCodes.OverlapWithParentId;
   }
 }

@@ -19,6 +19,7 @@ import {
   ProductIdValueObject,
   ProductNameValueObject,
 } from '@value-objects/product';
+import { DefaultCatch } from 'catch-decorator-ts';
 
 export type CreateProductDomainServiceOptions = CreateProductAggregateOptions;
 export type UpdateProductDomainServiceOptions = {
@@ -35,15 +36,15 @@ export class ProductManagementDomainService {
     private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 
-  async isProductExistByName(name: ProductNameValueObject): Promise<boolean> {
+  async doesProductExistByName(name: ProductNameValueObject): Promise<boolean> {
     return Boolean(await this.productRepository.findOneByName(name));
   }
 
-  async isProductExistById(id: ProductIdValueObject): Promise<boolean> {
+  async doesProductExistById(id: ProductIdValueObject): Promise<boolean> {
     return Boolean(await this.productRepository.findOneById(id));
   }
 
-  async isProductIdsExist(ids: ProductIdValueObject[]): Promise<boolean> {
+  async doesProductIdsExist(ids: ProductIdValueObject[]): Promise<boolean> {
     if (!ids || ids.length === 0) {
       return true;
     }
@@ -62,47 +63,65 @@ export class ProductManagementDomainService {
   async createProduct(
     options: CreateProductDomainServiceOptions,
   ): Promise<ProductCreatedDomainEvent> {
-    return this.unitOfWork.runInTransaction(async () => {
-      let product = await this.productRepository.findOneByName(options.name);
-      if (product) {
-        throw new ProductDomainExceptions.DoesExist();
-      }
-      product = new ProductAggregate();
-      const productCreatedEvent = product.createProduct(options);
-      await this.productRepository.save(product);
-      return productCreatedEvent;
-    });
+    let product = await this.productRepository.findOneByName(options.name);
+    if (product) {
+      throw new ProductDomainExceptions.AlreadyExist();
+    }
+    product = new ProductAggregate();
+    const productCreatedEvent = product.createProduct(options);
+    await this.productRepository.create(product);
+    return productCreatedEvent;
   }
 
   async updateProduct(
     options: UpdateProductDomainServiceOptions,
   ): Promise<ProductUpdatedDomainEvent> {
-    return this.unitOfWork.runInTransaction(async () => {
-      const product = await this.productRepository.findOneById(options.id);
+    const product = await this.productRepository.findOneById(options.id);
 
-      if (!product) {
-        throw new ProductDomainExceptions.DoesNotExist();
-      }
+    if (!product) {
+      throw new ProductDomainExceptions.DoesNotExist();
+    }
 
-      const productUpdatedEvent = product.updateProduct(options.payload);
-      await this.productRepository.save(product);
-      return productUpdatedEvent;
-    });
+    const productUpdatedEvent = product.updateProduct(options.payload);
+    await this.productRepository.updateOneById(options.id, product);
+    return productUpdatedEvent;
   }
 
   async removeProduct(
     id: ProductIdValueObject,
   ): Promise<ProductRemovedDomainEvent> {
-    return this.unitOfWork.runInTransaction(async () => {
-      const product = await this.productRepository.findOneById(id);
-      if (!product) {
-        throw new ProductDomainExceptions.DoesNotExist();
-      }
-      await this.productRepository.delete(product);
+    const product = await this.productRepository.findOneById(id);
+    if (!product) {
+      throw new ProductDomainExceptions.DoesNotExist();
+    }
+    await this.productRepository.deleteOneById(id);
 
-      return new ProductRemovedDomainEvent({
-        productId: id,
-      });
+    return new ProductRemovedDomainEvent({
+      id: id,
     });
+  }
+
+  async removeProducts(
+    ids: ProductIdValueObject[],
+  ): Promise<ProductRemovedDomainEvent[]> {
+    const products: ProductAggregate[] = [];
+
+    const isExist = await this.doesProductIdsExist(ids);
+
+    if (!isExist) {
+      throw new ProductDomainExceptions.DoesNotExist();
+    }
+
+    for (const id of ids) {
+      products.push(await this.productRepository.findOneById(id));
+    }
+
+    const productsRemoved = products.map((product) => product.removeProduct());
+
+    for (const id of ids) {
+      await this.productRepository.deleteOneById(id);
+    }
+
+    return productsRemoved;
   }
 }

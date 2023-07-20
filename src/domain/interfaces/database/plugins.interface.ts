@@ -1,37 +1,29 @@
-import { FilterOptions } from '@base/database/repositories/mikroorm';
-import { ID, QueryParams } from 'common-base-classes';
+import { EntityBase, ID } from '@base/domain';
+import { PaginationParams } from '@base/use-cases/query-handler';
 
-export interface FindOne<Entity, EntityDetails> {
-  findOne(params: QueryParams<EntityDetails>): Promise<Entity | undefined>;
-}
+export type Query<Details> = Partial<EntityBase & Details>;
+
 export interface FindOneById<Entity> {
   findOneById(id: ID): Promise<Entity | undefined>;
 }
-export interface Save<Entity> {
-  save(entity: Entity): Promise<Entity>;
+export interface Create<Entity> {
+  create(entity: Entity): Promise<Entity>;
 }
 export interface SaveMany<Entity> {
   saveMany(entities: Entity[]): Promise<Entity[]>;
 }
-export interface Delete<Entity, EntityDetails> {
-  delete(params: QueryParams<EntityDetails>): Promise<Entity>;
+
+export interface DeleteOneById<Entity> {
+  deleteOneById(id: any): Promise<Entity>;
 }
-export interface Update<Entity, EntityDetails> {
-  update(params: QueryParams<EntityDetails>, newState: Entity): Promise<Entity>;
+
+export interface UpdateOneById<Entity> {
+  updateOneById(id: any, newState: Entity): Promise<Entity>;
 }
 export interface Transaction {
   runInTransaction<T>(fn: () => Promise<T>): Promise<T>;
 }
 
-export interface FindManyOptions<DomainModelDetails> {
-  params: QueryParams<DomainModelDetails>;
-  filter?: FilterOptions;
-}
-
-export interface FindMany<Entity, EntityDetails> {
-  findMany(options?: FindManyOptions<EntityDetails>): Promise<Entity[]>;
-}
-
-export interface FindManyRaw<OrmEntity> {
-  findManyRaw(options?: FindManyOptions<OrmEntity>): Promise<OrmEntity[]>;
+export interface FindMany<Entity> {
+  findMany(options?: Entity & PaginationParams): Promise<Entity[]>;
 }

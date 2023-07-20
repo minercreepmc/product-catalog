@@ -1,22 +1,21 @@
 import { ProductAggregate } from '@aggregates/product';
+import { DomainEventBase } from '@base/domain';
 import { ProductIdValueObject } from '@value-objects/product';
-import { DomainEvent } from 'common-base-classes';
 
-export interface ProductRemovedDomainEventOptions {
-  productId: ProductIdValueObject;
+export interface ProductRemovedDomainEventDetails {
+  id: ProductIdValueObject;
 }
 
-export class ProductRemovedDomainEvent extends DomainEvent<ProductRemovedDomainEventOptions> {
-  constructor(options: ProductRemovedDomainEventOptions) {
+export class ProductRemovedDomainEvent
+  extends DomainEventBase
+  implements ProductRemovedDomainEventDetails
+{
+  constructor(options: ProductRemovedDomainEventDetails) {
     super({
       eventName: ProductRemovedDomainEvent.name,
       entityType: ProductAggregate.name,
-      eventDetails: options,
-      entityId: options.productId,
     });
+    this.id = options.id;
   }
-
-  get productId() {
-    return this.entityId;
-  }
+  readonly id: ProductIdValueObject;
 }

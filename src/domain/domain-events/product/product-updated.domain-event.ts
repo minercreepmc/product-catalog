@@ -1,4 +1,5 @@
 import { ProductAggregate } from '@aggregates/product';
+import { DomainEventBase } from '@base/domain';
 import type {
   ProductDescriptionValueObject,
   ProductIdValueObject,
@@ -6,32 +7,33 @@ import type {
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
-import { DomainEvent } from 'common-base-classes';
 
 export interface ProductUpdatedDomainEventDetails {
-  name?: ProductNameValueObject;
-  price?: ProductPriceValueObject;
-  description?: ProductDescriptionValueObject;
-  image?: ProductImageUrlValueObject;
+  readonly id: ProductIdValueObject;
+  readonly name?: ProductNameValueObject;
+  readonly price?: ProductPriceValueObject;
+  readonly description?: ProductDescriptionValueObject;
+  readonly image?: ProductImageUrlValueObject;
 }
 
-export interface ProductUpdatedDomainEventOptions {
-  productId: ProductIdValueObject;
-  details: ProductUpdatedDomainEventDetails;
-}
-
-export class ProductUpdatedDomainEvent extends DomainEvent<ProductUpdatedDomainEventDetails> {
-  constructor(options: ProductUpdatedDomainEventOptions) {
-    const { productId, details } = options;
+export class ProductUpdatedDomainEvent
+  extends DomainEventBase
+  implements ProductUpdatedDomainEventDetails
+{
+  constructor(options: ProductUpdatedDomainEventDetails) {
     super({
       eventName: ProductUpdatedDomainEvent.name,
       entityType: ProductAggregate.name,
-      eventDetails: details,
-      entityId: productId,
     });
+    this.id = options.id;
+    this.name = options.name;
+    this.price = options.price;
+    this.description = options.description;
+    this.image = options.image;
   }
-
-  get productId() {
-    return this.entityId;
-  }
+  readonly id: ProductIdValueObject;
+  readonly name?: ProductNameValueObject;
+  readonly price?: ProductPriceValueObject;
+  readonly description?: ProductDescriptionValueObject;
+  readonly image?: ProductImageUrlValueObject;
 }

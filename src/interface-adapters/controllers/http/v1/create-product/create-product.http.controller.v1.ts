@@ -1,52 +1,74 @@
-import { HttpFilePostController } from '@base/interface-adapters/http/post-file-controller.base';
 import {
   Body,
+  ConflictException,
   Controller,
+  InternalServerErrorException,
   Post,
+  UnprocessableEntityException,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
-import {
-  CreateProductRequestDto,
-  CreateProductResponseDto,
-} from '@use-cases/command/create-product/dtos';
-import { Mediator } from 'nestjs-mediator';
 import { V1CreateProductHttpRequest } from './create-product.http.request.v1';
+import { Express } from 'express';
+import { Multer } from 'multer';
+import {
+  CreateProductCommand,
+  CreateProductResponseDto,
+} from '@use-cases/command/create-product';
+import {
+  ProductDescriptionValueObject,
+  ProductNameValueObject,
+  ProductPriceValueObject,
+} from '@value-objects/product';
+import { FileValueObject } from '@value-objects/file.value-object';
+import { validate } from 'class-validator';
+import { match } from 'oxide.ts';
 import { V1CreateProductHttpResponse } from './create-product.http.response.v1';
+import { DomainExceptionBase } from '@base/domain';
 
 @Controller('/api/v1/products/create')
-export class V1CreateProductHttpController extends HttpFilePostController<
-  V1CreateProductHttpRequest,
-  V1CreateProductHttpResponse
-> {
+export class V1CreateProductHttpController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   async execute(
     @UploadedFile() image: Express.Multer.File,
-    @Body() httpRequest: V1CreateProductHttpRequest,
+    @Body() request: V1CreateProductHttpRequest,
   ): Promise<any> {
-    return super.execute(image, httpRequest);
-  }
+    const { name, description, price } = request;
+    const command = new CreateProductCommand({
+      name: new ProductNameValueObject(name),
+      description: new ProductDescriptionValueObject(description),
+      image: new FileValueObject({
+        name: image.originalname,
+        value: image.buffer,
+      }),
+      price: new ProductPriceValueObject(price),
+    });
 
-  createDto(
-    httpRequest: V1CreateProductHttpRequest,
-    image: Express.Multer.File,
-  ): CreateProductRequestDto {
-    return new CreateProductRequestDto({
-      ...httpRequest,
-      image,
+    const exceptions = await validate(command);
+
+    if (exceptions.length > 0) {
+      throw new UnprocessableEntityException(exceptions);
+    }
+
+    const result = await this.commandBus.execute(command);
+
+    return match(result, {
+      Ok: (response: CreateProductResponseDto) =>
+        new V1CreateProductHttpResponse(response),
+      Err: (exception: Error) => {
+        if (exception instanceof DomainExceptionBase) {
+          throw new ConflictException(exception.message);
+        }
+
+        throw new InternalServerErrorException(exception.message);
+      },
     });
   }
 
-  createHttpResponse(
-    response: CreateProductResponseDto,
-  ): V1CreateProductHttpResponse {
-    return new V1CreateProductHttpResponse(response);
-  }
-  constructor(mediator: Mediator) {
-    super(mediator);
-  }
+  constructor(private readonly commandBus: CommandBus) {}
 }

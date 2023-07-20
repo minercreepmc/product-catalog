@@ -1,25 +1,44 @@
-import { CommandHandlerBase } from '@base/use-cases';
-import { RequestHandler } from 'nestjs-mediator';
+import { CategoryManagementDomainService } from '@domain-services';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { DefaultCatch } from 'catch-decorator-ts';
+import { Err, Ok } from 'oxide.ts';
 import {
-  RemoveCategoriesMapper,
-  RemoveCategoriesProcess,
-  RemoveCategoriesRequestValidator,
-} from './application-services';
-import {
-  RemoveCategoriesRequestDto,
+  RemoveCategoriesCommand,
   RemoveCategoriesResponseDto,
-} from './dtos/remove-category.dto';
+} from './remove-categories.dto';
+import {
+  RemoveCategoriesResult,
+  RemoveCategoriesValidator,
+} from './remove-categories.validator';
 
-@RequestHandler(RemoveCategoriesRequestDto)
-export class RemoveCategoriesHandler extends CommandHandlerBase<
-  RemoveCategoriesRequestDto,
-  RemoveCategoriesResponseDto
-> {
-  constructor(
-    validator: RemoveCategoriesRequestValidator,
-    mapper: RemoveCategoriesMapper,
-    process: RemoveCategoriesProcess,
-  ) {
-    super(validator, mapper, process);
+@CommandHandler(RemoveCategoriesCommand)
+export class RemoveCategoriesHandler
+  implements ICommandHandler<RemoveCategoriesCommand, RemoveCategoriesResult>
+{
+  @DefaultCatch((err) => Err(err))
+  async execute(
+    command: RemoveCategoriesCommand,
+  ): Promise<RemoveCategoriesResult> {
+    const result = await this.validator.validate(command);
+
+    if (result.hasExceptions()) {
+      return Err(result.getExceptions());
+    }
+
+    const categoriesRemoved =
+      await this.categoryManagementService.removeCategories({
+        categoryIds: command.ids,
+      });
+
+    return Ok(
+      new RemoveCategoriesResponseDto({
+        ids: categoriesRemoved.map((event) => event.id.value),
+      }),
+    );
   }
+
+  constructor(
+    private readonly validator: RemoveCategoriesValidator,
+    private readonly categoryManagementService: CategoryManagementDomainService,
+  ) {}
 }

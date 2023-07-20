@@ -1,6 +1,6 @@
 export enum ProductDomainExceptionCodes {
   DoesNotExist = 'PRODUCT.DOES_NOT_EXIST',
-  DoesExist = 'PRODUCT.DOES_EXIST',
+  AlreadyExist = 'PRODUCT.ALREADY_EXIST',
   IdDoesNotValid = 'PRODUCT.ID.DOES_NOT_VALID',
   PriceDoesNotValid = 'PRODUCT.PRICE_DOES_NOT_VALID',
   NameDoesNotValid = 'PRODUCT.NAME_DOES_NOT_VALID',

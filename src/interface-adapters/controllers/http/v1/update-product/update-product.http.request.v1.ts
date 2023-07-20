@@ -6,17 +6,8 @@ export class V1UpdateProductHttpRequest {
     example: 'Sample Product',
   })
   name?: string;
-  @ApiProperty({
-    description: 'The price of the product',
-    example: {
-      amount: 100,
-      currency: 'USD',
-    },
-  })
-  price?: {
-    amount: number;
-    currency: string;
-  };
+  @ApiProperty()
+  price?: number;
 
   @ApiProperty({ required: false })
   description?: string;

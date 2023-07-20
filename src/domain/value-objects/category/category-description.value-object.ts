@@ -1,26 +1,25 @@
-import {
-  TextValueObject,
-  TextValueObjectOptions,
-  ValidationResponse,
-} from 'common-base-classes';
+import { ValueObjectBase } from '@base/domain/value-object.base';
+import { CategoryDomainExceptions } from '@domain-exceptions/category';
+import { IsDefined, IsString, Length, validate } from 'class-validator';
 
-export class CategoryDescriptionValueObject extends TextValueObject {
-  constructor(value: string) {
-    super(value, CategoryDescriptionValueObject.OPTIONS);
+export class CategoryDescriptionValueObject implements ValueObjectBase {
+  @IsDefined()
+  @IsString()
+  @Length(5, 100)
+  readonly value: string;
+
+  static async create(value: string) {
+    const description = new CategoryDescriptionValueObject(value);
+    const exceptions = await validate(description);
+
+    if (exceptions.length > 0) {
+      throw new CategoryDomainExceptions.DescriptionDoesNotValid();
+    }
+
+    return description;
   }
 
-  private static readonly OPTIONS: TextValueObjectOptions = {
-    minLength: 5,
-    maxLength: 100,
-    allowEmpty: false,
-    allowNumber: true,
-    allowSymbols: true,
-    allowUppercase: true,
-    allowLowercase: true,
-    allowWhitespace: true,
-  };
-
-  static validate(value: string): ValidationResponse {
-    return super.validate(value, this.OPTIONS);
+  constructor(value: string) {
+    this.value = value;
   }
 }

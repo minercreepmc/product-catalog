@@ -1,39 +1,64 @@
-import mikroOrmConfig from '@config/mikroorm/mikrorm.config';
-import { CategoryMikroOrmRepository } from '@database/repositories/mikroorm/category';
-import { ProductMikroOrmRepository } from '@database/repositories/mikroorm/product';
-import { ReviewerMikroOrmRepository } from '@database/repositories/mikroorm/reviewer';
+import { UnitOfWork } from '@base/database/unit-of-work';
+import {
+  ConfigurableDatabaseModule,
+  CONNECTION_POOL,
+  DatabaseConfigOptions,
+  DatabaseService,
+  DATABASE_OPTIONS,
+} from '@config/pg';
+import {
+  CategoryRepository,
+  CategorySchemaMapper,
+} from '@database/repositories/pg/category';
+import {
+  ProductRepository,
+  ProductSchemaMapper,
+} from '@database/repositories/pg/product';
 import {
   categoryRepositoryDiToken,
   productRepositoryDiToken,
-  reviewerRepositoryDiToken,
 } from '@domain-interfaces';
 import { unitOfWorkDiToken } from '@domain-interfaces';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { Module, Provider } from '@nestjs/common';
-import { MikroOrmUnitOfWork } from '@utils/base/database/unit-of-work';
+import { Global, Module, Provider } from '@nestjs/common';
+import { Pool } from 'pg';
+
+export class FakeRepository {}
 
 const repositories: Provider[] = [
   {
     provide: categoryRepositoryDiToken,
-    useClass: CategoryMikroOrmRepository,
+    useClass: CategoryRepository,
   },
   {
     provide: productRepositoryDiToken,
-    useClass: ProductMikroOrmRepository,
-  },
-  {
-    provide: reviewerRepositoryDiToken,
-    useClass: ReviewerMikroOrmRepository,
+    useClass: ProductRepository,
   },
   {
     provide: unitOfWorkDiToken,
-    useClass: MikroOrmUnitOfWork,
+    useClass: UnitOfWork,
   },
 ];
 
+const poolProvider: Provider = {
+  provide: CONNECTION_POOL,
+  inject: [DATABASE_OPTIONS],
+  useFactory: (databaseOptions: DatabaseConfigOptions) => {
+    return new Pool({
+      host: databaseOptions.host,
+      port: databaseOptions.port,
+      user: databaseOptions.user,
+      password: databaseOptions.password,
+      database: databaseOptions.database,
+    });
+  },
+};
+
+const mappers: Provider[] = [ProductSchemaMapper, CategorySchemaMapper];
+
+@Global()
 @Module({
-  imports: [MikroOrmModule.forRoot(mikroOrmConfig)],
-  providers: [...repositories],
-  exports: [...repositories],
+  imports: [],
+  providers: [...repositories, DatabaseService, poolProvider, ...mappers],
+  exports: [...repositories, DatabaseService],
 })
-export class DatabaseModule {}
+export class DatabaseModule extends ConfigurableDatabaseModule {}

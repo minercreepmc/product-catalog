@@ -1,34 +1,55 @@
-import { HttpPostControllerBase } from '@base/interface-adapters/http';
-import { Body, Controller, Post } from '@nestjs/common';
 import {
-  CreateCategoryRequestDto,
+  Body,
+  ConflictException,
+  Controller,
+  InternalServerErrorException,
+  Post,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
+import {
+  CreateCategoryCommand,
   CreateCategoryResponseDto,
-} from '@use-cases/command/create-category/dtos';
-import { Mediator } from 'nestjs-mediator';
+} from '@use-cases/command/create-category';
+import {
+  CategoryDescriptionValueObject,
+  CategoryNameValueObject,
+} from '@value-objects/category';
+import { validate } from 'class-validator';
+import { DomainExceptionBase } from '@base/domain';
+import { match } from 'oxide.ts';
 import { V1CreateCategoryHttpRequest } from './create-category.http.request.v1';
 import { V1CreateCategoryHttpResponse } from './create-category.http.response.v1';
 
 @Controller('/api/v1/categories/create')
-export class V1CreateCategoryHttpController extends HttpPostControllerBase<
-  V1CreateCategoryHttpRequest,
-  V1CreateCategoryHttpResponse
-> {
+export class V1CreateCategoryHttpController {
   @Post()
-  execute(@Body() request: V1CreateCategoryHttpRequest) {
-    return super.execute(request);
+  async execute(@Body() request: V1CreateCategoryHttpRequest) {
+    const command = new CreateCategoryCommand({
+      name: new CategoryNameValueObject(request.name),
+      description: new CategoryDescriptionValueObject(request.description),
+    });
+
+    const exceptions = await validate(command);
+
+    if (exceptions.length > 0) {
+      throw new UnprocessableEntityException(exceptions);
+    }
+
+    const result = await this.commandBus.execute(command);
+
+    return match(result, {
+      Ok: (response: CreateCategoryResponseDto) =>
+        new V1CreateCategoryHttpResponse(response),
+      Err: (exception: Error) => {
+        if (exception instanceof DomainExceptionBase) {
+          throw new ConflictException(exception.message);
+        }
+
+        throw new InternalServerErrorException(exception.message);
+      },
+    });
   }
 
-  constructor(mediator: Mediator) {
-    super(mediator);
-  }
-  createDto(
-    httpRequest: V1CreateCategoryHttpRequest,
-  ): CreateCategoryRequestDto {
-    return new CreateCategoryRequestDto(httpRequest);
-  }
-  createHttpResponse(
-    response: CreateCategoryResponseDto,
-  ): V1CreateCategoryHttpResponse {
-    return new V1CreateCategoryHttpResponse(response);
-  }
+  constructor(private readonly commandBus: CommandBus) {}
 }

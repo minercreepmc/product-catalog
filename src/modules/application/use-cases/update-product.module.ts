@@ -1,35 +1,22 @@
 import { V1UpdateProductHttpController } from '@controllers/http/v1';
+import { UploadService } from '@infrastructures/cloud';
 import { DomainServicesModule } from '@modules/domains';
-import { DatabaseModule } from '@modules/infrastructures/database';
 import { Module, Provider } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import {
   UpdateProductHandler,
-  UpdateProductMapper,
-  UpdateProductProcess,
-  UpdateProductRequestValidator,
+  UpdateProductValidator,
 } from '@use-cases/command/update-product';
-import { MediatorModule } from 'nestjs-mediator';
-import { ApplicationServicesModule } from './application-services';
 
-const useCase: Provider[] = [
-  UpdateProductHandler,
-  UpdateProductMapper,
-  UpdateProductRequestValidator,
-  UpdateProductProcess,
-];
+const useCase: Provider[] = [UpdateProductHandler, UpdateProductValidator];
 
 const controllers = [V1UpdateProductHttpController];
 
-const sharedModules = [
-  MediatorModule,
-  DatabaseModule,
-  DomainServicesModule,
-  ApplicationServicesModule,
-];
+const sharedModules = [CqrsModule, DomainServicesModule];
 
 @Module({
   imports: [...sharedModules],
   controllers,
-  providers: [...useCase],
+  providers: [...useCase, UploadService],
 })
 export class UpdateProductModule {}

@@ -1,13 +1,13 @@
-export class QueryBase<Fields> {
-  where?: Fields;
-  fields: (keyof Fields)[];
-  offset?: number;
-  limit?: number;
+import { IsNumber, IsOptional, Min } from 'class-validator';
 
-  constructor(options?: any) {
-    this.where = options?.where;
-    this.fields = options?.fields;
-    this.offset = options?.offset;
-    this.limit = options?.limit;
-  }
+export class PaginationParams {
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  offset?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  limit?: number;
 }

@@ -1,35 +1,24 @@
 import { V1RemoveProductsHttpController } from '@controllers/http/v1/remove-products';
 import { DomainServicesModule } from '@modules/domains';
-import { DatabaseModule } from '@modules/infrastructures/database';
 import { Module, Provider } from '@nestjs/common';
-import { RemoveProductsHandler } from '@use-cases/command/remove-products';
+import { CqrsModule } from '@nestjs/cqrs';
 import {
-  RemoveProductsMapper,
-  RemoveProductsProcess,
-  RemoveProductsRequestValidator,
-} from '@use-cases/command/remove-products/application-services';
-import { MediatorModule } from 'nestjs-mediator';
-import { ApplicationServicesModule } from './application-services';
-
-const useCase: Provider[] = [
   RemoveProductsHandler,
-  RemoveProductsRequestValidator,
-  RemoveProductsMapper,
-  RemoveProductsProcess,
+  RemoveProductsValidator,
+} from '@use-cases/command/remove-products';
+
+const commandHandler: Provider[] = [
+  RemoveProductsHandler,
+  RemoveProductsValidator,
 ];
 
 const controllers = [V1RemoveProductsHttpController];
 
-const sharedModules = [
-  MediatorModule,
-  DatabaseModule,
-  DomainServicesModule,
-  ApplicationServicesModule,
-];
+const sharedModules = [CqrsModule, DomainServicesModule];
 
 @Module({
   imports: [...sharedModules],
   controllers: [...controllers],
-  providers: [...useCase],
+  providers: [...commandHandler],
 })
 export class RemoveProductsModule {}

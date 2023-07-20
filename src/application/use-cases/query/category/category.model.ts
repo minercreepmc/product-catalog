@@ -1,3 +1,3 @@
-import { CategoryMikroOrmModel } from '@database/repositories/mikroorm/category';
+import { CategorySchema } from '@database/repositories/pg/category';
 
-export type CategoryViewModel = CategoryMikroOrmModel;
+export type CategoryViewModel = CategorySchema;

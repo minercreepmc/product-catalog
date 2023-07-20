@@ -1,15 +1,11 @@
 import { EventBusPort } from '@domain-interfaces/events';
-import { EntityManager } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { DomainEvent } from 'common-base-classes';
 import { Mediator } from 'nestjs-mediator';
 
 @Injectable()
 export class EventBusAdapter implements EventBusPort {
-  constructor(
-    private readonly mediator: Mediator,
-    private readonly entityManager: EntityManager,
-  ) {}
+  constructor(private readonly mediator: Mediator) {}
   async publish(domainEvent: DomainEvent<any>): Promise<void> {
     return this.mediator.publish(domainEvent);
   }

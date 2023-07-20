@@ -1,9 +1,9 @@
-import { ProductAggregate, ProductAggregateDetails } from '@aggregates/product';
+import { ProductAggregate } from '@aggregates/product';
 import { ProductNameValueObject } from '@value-objects/product';
 import { RepositoryPort } from '@domain-interfaces';
 
 export interface ProductRepositoryPort
-  extends RepositoryPort<ProductAggregate, ProductAggregateDetails> {
+  extends RepositoryPort<ProductAggregate> {
   findOneByName(name: ProductNameValueObject): Promise<ProductAggregate>;
 }
 

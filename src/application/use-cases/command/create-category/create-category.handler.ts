@@ -1,22 +1,46 @@
-import { CommandHandlerBase } from '@base/use-cases';
-import { RequestHandler } from 'nestjs-mediator';
+import { CategoryManagementDomainService } from '@domain-services';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { DefaultCatch } from 'catch-decorator-ts';
+import { Err, Ok } from 'oxide.ts';
 import {
-  CreateCategoryMapper,
-  CreateCategoryProcess,
-  CreateCategoryRequestValidator,
-} from './application-services';
-import { CreateCategoryRequestDto, CreateCategoryResponseDto } from './dtos';
+  CreateCategoryCommand,
+  CreateCategoryResponseDto,
+} from './create-category.dto';
+import {
+  CreateCategoryResult,
+  CreateCategoryValidator,
+} from './create-category.validator';
 
-@RequestHandler(CreateCategoryRequestDto)
-export class CreateCategoryHandler extends CommandHandlerBase<
-  CreateCategoryRequestDto,
-  CreateCategoryResponseDto
-> {
-  constructor(
-    validator: CreateCategoryRequestValidator,
-    mapper: CreateCategoryMapper,
-    process: CreateCategoryProcess,
-  ) {
-    super(validator, mapper, process);
+@CommandHandler(CreateCategoryCommand)
+export class CreateCategoryHandler
+  implements ICommandHandler<CreateCategoryCommand, CreateCategoryResult>
+{
+  @DefaultCatch((err) => Err(err))
+  async execute(command: CreateCategoryCommand): Promise<CreateCategoryResult> {
+    const result = await this.validator.validate(command);
+
+    if (result.hasExceptions()) {
+      return Err(result.getExceptions());
+    }
+
+    const categoryCreated = await this.categoryManagementService.createCategory(
+      {
+        name: command.name,
+        description: command.description,
+      },
+    );
+
+    return Ok(
+      new CreateCategoryResponseDto({
+        id: categoryCreated.id.value,
+        name: categoryCreated.name.value,
+        description: categoryCreated.description.value,
+      }),
+    );
   }
+
+  constructor(
+    private readonly validator: CreateCategoryValidator,
+    private readonly categoryManagementService: CategoryManagementDomainService,
+  ) {}
 }

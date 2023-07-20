@@ -1,2 +1,3 @@
 export * from './update-product.handler';
-export * from './application-services';
+export * from './update-product.dto';
+export * from './update-product.validator';

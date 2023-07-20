@@ -1,42 +1,24 @@
-import { HttpGetControllerBase } from '@base/interface-adapters/http';
-import { Body, Controller, Param, Put } from '@nestjs/common';
+import { PaginationParams } from '@base/use-cases/query-handler';
+import { Controller, Get, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  GetCategoryQuery,
-  GetCategoryResponseDto,
-} from '@use-cases/query/category/get-category';
+import { GetCategoryQuery } from '@use-cases/query/category/get-category';
+import { V1GetCategoryHttpQuery } from './get-category.http.query.v1';
+import { V1GetCategoryHttpResponse } from './get-category.http.response.v1';
 
-export class V1GetCategoryHttpRequest {
-  @ApiProperty()
-  fields?: string[];
-}
-
-export type V1GetCategoryHttpResponse = GetCategoryResponseDto;
-
-@Controller('/api/v1/categories/:id/get')
-export class V1GetCategoryHttpController extends HttpGetControllerBase<V1GetCategoryHttpRequest> {
-  @Put()
+@Controller('/api/v1/categories')
+export class V1GetCategoryHttpController {
+  @Get()
   execute(
-    @Body()
-    httpRequest: V1GetCategoryHttpRequest,
-    @Param('id')
-    id: string,
-  ): Promise<any> {
-    return super.execute(httpRequest, id);
+    @Query() { id }: V1GetCategoryHttpQuery,
+    @Query() { limit, offset }: PaginationParams,
+  ): Promise<V1GetCategoryHttpResponse> {
+    return this.queryBus.execute(
+      new GetCategoryQuery({
+        id,
+        limit,
+        offset,
+      }),
+    );
   }
-
-  createQuery(
-    httpRequest: V1GetCategoryHttpRequest,
-    id: string,
-  ): GetCategoryQuery {
-    return new GetCategoryQuery({
-      where: { id },
-      ...httpRequest,
-    });
-  }
-
-  constructor(queryBus: QueryBus) {
-    super(queryBus);
-  }
+  constructor(private readonly queryBus: QueryBus) {}
 }

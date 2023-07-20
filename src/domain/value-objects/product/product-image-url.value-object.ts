@@ -1,24 +1,24 @@
-import {
-  TextValueObject,
-  TextValueObjectOptions,
-  ValidationResponse,
-} from 'common-base-classes';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { IsDefined, IsString, IsUrl, validate } from 'class-validator';
 
-export class ProductImageUrlValueObject extends TextValueObject {
-  constructor(value: string) {
-    super(value, ProductImageUrlValueObject.OPTIONS);
+export class ProductImageUrlValueObject {
+  @IsDefined()
+  @IsString()
+  @IsUrl()
+  readonly value: string;
+
+  static async create(value: string) {
+    const image = new ProductImageUrlValueObject(value);
+    const exceptions = await validate(image);
+
+    if (exceptions.length > 0) {
+      throw new ProductDomainExceptions.ImageDoesNotValid();
+    }
+
+    return image;
   }
 
-  private static readonly OPTIONS: TextValueObjectOptions = {
-    allowNumber: true,
-    allowSymbols: true,
-    allowLowercase: true,
-    allowUppercase: true,
-    allowWhitespace: true,
-    regex: /^https?:\/\/[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
-  };
-
-  static validate(value: string): ValidationResponse {
-    return super.validate(value, this.OPTIONS);
+  constructor(value: string) {
+    this.value = value;
   }
 }

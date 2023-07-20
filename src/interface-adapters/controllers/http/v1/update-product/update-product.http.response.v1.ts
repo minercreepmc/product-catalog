@@ -15,12 +15,9 @@ export class V1UpdateProductHttpResponse {
 
   @ApiProperty({
     description: 'The price of the product',
-    example: {
-      amount: 100,
-      currency: 'USD',
-    },
+    example: 100,
   })
-  price?: { amount: number; currency: string };
+  price?: number;
 
   @ApiProperty({
     description: 'The description of the product',

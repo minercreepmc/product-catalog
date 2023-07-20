@@ -6,8 +6,8 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
-import { FileValueObject } from '@value-objects/common';
 import { v4 as uuidv4 } from 'uuid';
+import { FileValueObject } from '@value-objects/file.value-object';
 
 export interface UploadOptions {
   fileName: string;
@@ -24,13 +24,13 @@ export class UploadService {
   constructor(private readonly configService: ConfigService) {}
 
   async upload(file: FileValueObject): Promise<string> {
-    const { name, buffer } = file.details;
+    const { name, value } = file;
     const bucket = this.configService.getOrThrow('AWS_S3_BUCKET');
     const key = `${uuidv4()}${name}`;
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: key,
-      Body: buffer,
+      Body: value,
       ACL: 'public-read',
     });
 

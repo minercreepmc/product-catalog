@@ -1,22 +1,39 @@
-import { CommandHandlerBase } from '@base/use-cases';
-import { RequestHandler } from 'nestjs-mediator';
+import { ProductManagementDomainService } from '@domain-services';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Err, Ok } from 'oxide.ts';
 import {
-  RemoveProductsMapper,
-  RemoveProductsProcess,
-  RemoveProductsRequestValidator,
-} from './application-services';
-import { RemoveProductsRequestDto, RemoveProductsResponseDto } from './dtos';
+  RemoveProductsCommand,
+  RemoveProductsResponseDto,
+} from './remove-products.dto';
+import {
+  RemoveProductsResult,
+  RemoveProductsValidator,
+} from './remove-products.validator';
 
-@RequestHandler(RemoveProductsRequestDto)
-export class RemoveProductsHandler extends CommandHandlerBase<
-  RemoveProductsRequestDto,
-  RemoveProductsResponseDto
-> {
-  constructor(
-    validator: RemoveProductsRequestValidator,
-    mapper: RemoveProductsMapper,
-    process: RemoveProductsProcess,
-  ) {
-    super(validator, mapper, process);
+@CommandHandler(RemoveProductsCommand)
+export class RemoveProductsHandler
+  implements ICommandHandler<RemoveProductsCommand, RemoveProductsResult>
+{
+  async execute(command: RemoveProductsCommand): Promise<RemoveProductsResult> {
+    const result = await this.validator.validate(command);
+
+    if (result.hasExceptions()) {
+      return Err(result.getExceptions());
+    }
+
+    const productsRemoved = await this.productManagementService.removeProducts(
+      command.ids,
+    );
+
+    return Ok(
+      new RemoveProductsResponseDto({
+        ids: productsRemoved.map((event) => event.id.value),
+      }),
+    );
   }
+
+  constructor(
+    private readonly validator: RemoveProductsValidator,
+    private readonly productManagementService: ProductManagementDomainService,
+  ) {}
 }

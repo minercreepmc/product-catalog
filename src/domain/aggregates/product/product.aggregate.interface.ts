@@ -1,25 +1,20 @@
+import { CategoryIdValueObject } from '@value-objects/category';
 import {
-  ProductAttributesValueObject,
   ProductDescriptionValueObject,
+  ProductIdValueObject,
   ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
-  ProductStatusValueObject,
-  RejectionReasonValueObject,
 } from '@value-objects/product';
-import { ReviewerIdValueObject } from '@value-objects/reviewer';
 
 export interface ProductAggregateDetails {
+  id: ProductIdValueObject;
   name: ProductNameValueObject;
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
-  attributes?: ProductAttributesValueObject;
-  status?: ProductStatusValueObject;
-  submittedBy?: ReviewerIdValueObject;
-  approvedBy?: ReviewerIdValueObject;
-  rejectedBy?: ReviewerIdValueObject;
-  rejectionReason?: RejectionReasonValueObject;
+  categoryId?: CategoryIdValueObject;
+  //discountId?: DiscountIdValueObject;
 }
 
 export interface CreateProductAggregateOptions {
@@ -27,7 +22,6 @@ export interface CreateProductAggregateOptions {
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
-  attributes?: ProductAttributesValueObject;
 }
 
 export interface UpdateProductAggregateOptions {
@@ -35,5 +29,4 @@ export interface UpdateProductAggregateOptions {
   description?: ProductDescriptionValueObject;
   price?: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
-  attributes?: ProductAttributesValueObject;
 }

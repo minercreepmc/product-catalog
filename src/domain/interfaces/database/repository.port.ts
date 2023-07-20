@@ -1,14 +1,12 @@
 import {
-  Delete,
-  FindOne,
+  DeleteOneById,
   FindOneById,
-  Save,
-  Update,
+  Create,
+  UpdateOneById,
 } from './plugins.interface';
 
-export interface RepositoryPort<DomainEntity, DomainEntityDetails>
-  extends Save<DomainEntity>,
-    Delete<DomainEntity, DomainEntityDetails>,
+export interface RepositoryPort<DomainEntity>
+  extends Create<DomainEntity>,
+    DeleteOneById<DomainEntity>,
     FindOneById<DomainEntity>,
-    FindOne<DomainEntity, DomainEntityDetails>,
-    Update<DomainEntity, DomainEntityDetails> {}
+    UpdateOneById<DomainEntity> {}

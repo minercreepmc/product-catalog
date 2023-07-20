@@ -1,36 +1,54 @@
-import { HttpPostControllerBase } from '@base/interface-adapters/http';
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { DomainExceptionBase } from '@base/domain';
 import {
-  RemoveProductsRequestDto,
+  Body,
+  ConflictException,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  Post,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
+import {
+  RemoveProductsCommand,
   RemoveProductsResponseDto,
-} from '@use-cases/command/remove-products/dtos';
-import { Mediator } from 'nestjs-mediator';
+} from '@use-cases/command/remove-products';
+import { ProductIdValueObject } from '@value-objects/product';
+import { validate } from 'class-validator';
+import { match } from 'oxide.ts';
 import { V1RemoveProductsHttpRequest } from './remove-products.http.request.v1';
 import { V1RemoveProductsHttpResponse } from './remove-products.http.response.v1';
 
 @Controller('/api/v1/products/remove')
-export class V1RemoveProductsHttpController extends HttpPostControllerBase<
-  V1RemoveProductsHttpRequest,
-  V1RemoveProductsHttpResponse
-> {
+export class V1RemoveProductsHttpController {
   @Post()
   @HttpCode(HttpStatus.OK)
-  execute(httpRequest: V1RemoveProductsHttpRequest): Promise<any> {
-    return super.execute(httpRequest);
+  async execute(@Body() request: V1RemoveProductsHttpRequest): Promise<any> {
+    const command = new RemoveProductsCommand({
+      ids: request.ids.map((id) => new ProductIdValueObject(id)),
+    });
+
+    const exceptions = await validate(command);
+
+    if (exceptions.length > 0) {
+      throw new UnprocessableEntityException(exceptions);
+    }
+
+    const result = await this.commandBus.execute(command);
+
+    return match(result, {
+      Ok: (response: RemoveProductsResponseDto) =>
+        new V1RemoveProductsHttpResponse(response),
+      Err: (exception: Error) => {
+        if (exception instanceof DomainExceptionBase) {
+          throw new ConflictException(exception.message);
+        }
+
+        throw new InternalServerErrorException(exception.message);
+      },
+    });
   }
 
-  createDto(
-    httpRequest: V1RemoveProductsHttpRequest,
-  ): RemoveProductsRequestDto {
-    return new RemoveProductsRequestDto(httpRequest);
-  }
-  createHttpResponse(
-    response: RemoveProductsResponseDto,
-  ): V1RemoveProductsHttpResponse {
-    return new V1RemoveProductsHttpResponse(response);
-  }
-
-  constructor(mediator: Mediator) {
-    super(mediator);
-  }
+  constructor(private readonly commandBus: CommandBus) {}
 }

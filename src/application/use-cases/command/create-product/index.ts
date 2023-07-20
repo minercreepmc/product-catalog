@@ -1,2 +1,3 @@
 export * from './create-product.handler';
-export * from './application-services';
+export * from './create-product.dto';
+export * from './create-product.validator';

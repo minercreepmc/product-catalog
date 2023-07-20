@@ -4,6 +4,7 @@
 /data
 .env
 google
+temp
 
 # Logs
 logs

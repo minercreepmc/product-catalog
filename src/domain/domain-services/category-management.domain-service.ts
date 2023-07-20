@@ -2,6 +2,7 @@ import {
   CategoryAggregate,
   CreateCategoryAggregateOptions,
 } from '@aggregates/category';
+import { CategoryRemovedDomainEvent } from '@domain-events/category';
 import {
   categoryRepositoryDiToken,
   CategoryRepositoryPort,
@@ -11,21 +12,11 @@ import { eventBusDiToken, EventBusPort } from '@domain-interfaces/events';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
-  ParentCategoryIdValueObject,
-  SubCategoryIdValueObject,
+  CategoryNameValueObject,
 } from '@value-objects/category';
 import { CategoryVerificationDomainService } from './category-verification.domain-service';
 
 export interface CreateCategoryOptions extends CreateCategoryAggregateOptions {}
-
-export interface AddSubCategoriesServiceOptions {
-  categoryId: CategoryIdValueObject;
-  subIds: SubCategoryIdValueObject[];
-}
-export interface AddParentCategoriesServiceOptions {
-  categoryId: CategoryIdValueObject;
-  parentIds: ParentCategoryIdValueObject[];
-}
 
 export interface RemoveCategoryServiceOptions {
   categoryId: CategoryIdValueObject;
@@ -33,16 +24,6 @@ export interface RemoveCategoryServiceOptions {
 
 export interface RemoveCategoriesServiceOptions {
   categoryIds: CategoryIdValueObject[];
-}
-
-export interface RemoveSubCategoriesServiceOptions {
-  categoryId: CategoryIdValueObject;
-  subIds: SubCategoryIdValueObject[];
-}
-
-export interface RemoveParentCategoriesServiceOptions {
-  categoryId: CategoryIdValueObject;
-  parentIds: SubCategoryIdValueObject[];
 }
 
 @Injectable()
@@ -57,6 +38,14 @@ export class CategoryManagementDomainService {
     private readonly eventBus: EventBusPort,
   ) {}
 
+  async doesCategoryExistByName(name: CategoryNameValueObject) {
+    return this.categoryVerification.doesCategoryNameExist(name);
+  }
+
+  async doesCategoryExistById(id: CategoryIdValueObject) {
+    return this.categoryVerification.doesCategoryIdExist(id);
+  }
+
   async createCategory(options: CreateCategoryOptions) {
     return this.unitOfWork.runInTransaction(async () => {
       await this.categoryVerification.verifyCategoryCreationOptions(options);
@@ -64,50 +53,10 @@ export class CategoryManagementDomainService {
       const categoryAggregate = new CategoryAggregate();
 
       const categoryCreated = categoryAggregate.createCategory(options);
-      await this.categoryRepository.save(categoryAggregate);
+      await this.categoryRepository.create(categoryAggregate);
 
       return categoryCreated;
     });
-  }
-
-  async addSubCategories(options: AddSubCategoriesServiceOptions) {
-    const event = await this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyAddSubCategoriesOptions(options);
-
-      const categoryAggregate = await this.categoryRepository.findOneById(
-        options.categoryId,
-      );
-
-      const subCategoryAdded = categoryAggregate.addSubCategories(
-        options.subIds,
-      );
-
-      await this.categoryRepository.save(categoryAggregate);
-      return subCategoryAdded;
-    });
-
-    this.eventBus.publish(event);
-    return event;
-  }
-
-  async addParentCategories(options: AddParentCategoriesServiceOptions) {
-    const event = await this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyAddParentCategoriesOptions(options);
-
-      const categoryAggregate = await this.categoryRepository.findOneById(
-        options.categoryId,
-      );
-
-      const parentCategoryAdded = categoryAggregate.addParentCategories(
-        options.parentIds,
-      );
-
-      await this.categoryRepository.save(categoryAggregate);
-      return parentCategoryAdded;
-    });
-
-    this.eventBus.publish(event);
-    return event;
   }
 
   async removeCategory(options: RemoveCategoryServiceOptions) {
@@ -122,16 +71,14 @@ export class CategoryManagementDomainService {
 
     const categoryRemoved = categoryAggregate.removeCategory();
 
-    await this.categoryRepository.delete({
-      id: categoryId,
-    });
+    await this.categoryRepository.deleteOneById(categoryId);
 
     return categoryRemoved;
   }
 
-  async removeCategories(options: RemoveCategoriesServiceOptions) {
-    await this.categoryVerification.verifyCategoriesRemovalOptions(options);
-
+  async removeCategories(
+    options: RemoveCategoriesServiceOptions,
+  ): Promise<CategoryRemovedDomainEvent[]> {
     const events = await this.unitOfWork.runInTransaction(async () => {
       const categories = [];
       for (const id of options.categoryIds) {
@@ -143,7 +90,7 @@ export class CategoryManagementDomainService {
       );
 
       for (const id of options.categoryIds) {
-        await this.categoryRepository.delete({ id });
+        await this.categoryRepository.deleteOneById(id);
       }
 
       return categoriesRemoved;
@@ -154,44 +101,5 @@ export class CategoryManagementDomainService {
     }
 
     return events;
-  }
-
-  async detachSubCategories(options: RemoveSubCategoriesServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      const { categoryId, subIds } = options;
-
-      await this.categoryVerification.verifyDetachSubCategoriesOptions(options);
-
-      const categoryAggregate = await this.categoryRepository.findOneById(
-        categoryId,
-      );
-      const subCategogiesDetached =
-        categoryAggregate.detachSubCategories(subIds);
-
-      await this.categoryRepository.save(categoryAggregate);
-
-      return subCategogiesDetached;
-    });
-  }
-
-  async detachParentCategories(options: RemoveParentCategoriesServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      const { categoryId, parentIds } = options;
-
-      await this.categoryVerification.verifyDetachParentCategoriesOptiosn(
-        options,
-      );
-
-      const categoryAggregate = await this.categoryRepository.findOneById(
-        categoryId,
-      );
-
-      const parentCategoriesDetached =
-        categoryAggregate.detachParentCategories(parentIds);
-
-      await this.categoryRepository.save(categoryAggregate);
-
-      return parentCategoriesDetached;
-    });
   }
 }

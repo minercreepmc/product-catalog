@@ -1,33 +1,24 @@
-import { replaceExceptionCode } from '@utils/functions';
-import {
-  TextValueObject,
-  TextValueObjectOptions,
-  ValidationResponse,
-} from 'common-base-classes';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { IsDefined, IsString, Length, validate } from 'class-validator';
 
-export class ProductDescriptionValueObject extends TextValueObject {
-  private static readonly OPTIONS: TextValueObjectOptions = {
-    minLength: 5,
-    maxLength: 500,
-    allowNumber: true,
-    allowWhitespace: true,
-    allowUppercase: true,
-    allowLowercase: true,
-    allowSymbols: true,
-  };
-  static validate(value: string): ValidationResponse {
-    const response = super.validate(
-      value,
-      ProductDescriptionValueObject.OPTIONS,
-    );
-    return replaceExceptionCode({
-      response,
-      superClass: 'TEXT',
-      targetClass: 'PRODUCT.DESCRIPTION',
-    });
+export class ProductDescriptionValueObject {
+  @IsDefined()
+  @IsString()
+  @Length(5, 500)
+  readonly value: string;
+
+  static async create(value?: string) {
+    const description = new ProductDescriptionValueObject(value);
+    const exceptions = await validate(description);
+
+    if (exceptions.length > 0) {
+      throw new ProductDomainExceptions.DescriptionDoesNotValid();
+    }
+
+    return description;
   }
 
   constructor(value: string) {
-    super(value, ProductDescriptionValueObject.OPTIONS);
+    this.value = value;
   }
 }

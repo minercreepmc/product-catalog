@@ -1,34 +1,24 @@
 import { V1CreateProductHttpController } from '@controllers/http/v1';
+import { UploadService } from '@infrastructures/cloud';
 import { DomainServicesModule } from '@modules/domains';
-import { DatabaseModule } from '@modules/infrastructures/database';
 import { Module, Provider } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import {
   CreateProductHandler,
-  CreateProductMapper,
-  CreateProductProcess,
-  CreateProductRequestValidator,
+  CreateProductValidator,
 } from '@use-cases/command/create-product';
-import { MediatorModule } from 'nestjs-mediator';
-import { ApplicationServicesModule } from './application-services';
 
-const useCase: Provider[] = [
+const commandHandler: Provider[] = [
   CreateProductHandler,
-  CreateProductMapper,
-  CreateProductRequestValidator,
-  CreateProductProcess,
+  CreateProductValidator,
 ];
 
 const controllers = [V1CreateProductHttpController];
-const sharedModules = [
-  MediatorModule,
-  DatabaseModule,
-  DomainServicesModule,
-  ApplicationServicesModule,
-];
+const sharedModules = [CqrsModule, DomainServicesModule];
 
 @Module({
   imports: [...sharedModules],
   controllers,
-  providers: [...useCase],
+  providers: [...commandHandler, UploadService],
 })
 export class CreateProductModule {}

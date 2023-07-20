@@ -1,19 +1,13 @@
-import { CategoryMikroOrmModel } from '@database/repositories/mikroorm/category';
-import { EntityManager } from '@mikro-orm/postgresql';
+import { CategorySchema } from '@database/repositories/pg/category';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetCategoryQuery } from './get-category.query';
 
-export type GetCategoryResponseDto = CategoryMikroOrmModel;
+export type GetCategoryResponseDto = CategorySchema;
 
 @QueryHandler(GetCategoryQuery)
 export class GetCategoryHandler implements IQueryHandler<GetCategoryQuery> {
   execute(query: GetCategoryQuery): Promise<GetCategoryResponseDto> {
-    const { where, fields, offset } = query;
-    return this.entityManager.findOne(CategoryMikroOrmModel, where, {
-      fields,
-      offset,
-    });
+    // TODO: Pool
+    throw new Error('Method not implemented.');
   }
-
-  constructor(private readonly entityManager: EntityManager) {}
 }

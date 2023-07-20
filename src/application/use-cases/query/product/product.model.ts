@@ -1,3 +1,3 @@
-import { ProductMikroOrmModel } from '@database/repositories/mikroorm/product';
+import { ProductSchema } from '@database/repositories/pg/product';
 
-export type ProductViewModel = ProductMikroOrmModel;
+export type ProductViewModel = ProductSchema;

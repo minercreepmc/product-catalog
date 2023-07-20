@@ -1,12 +1,9 @@
-import {
-  CategoryAggregate,
-  CategoryAggregateDetails,
-} from '@aggregates/category';
+import { CategoryAggregate } from '@aggregates/category';
 import { CategoryNameValueObject } from '@value-objects/category';
 import { RepositoryPort } from '@domain-interfaces';
 
 export interface CategoryRepositoryPort
-  extends RepositoryPort<CategoryAggregate, CategoryAggregateDetails> {
+  extends RepositoryPort<CategoryAggregate> {
   findOneByName(name: CategoryNameValueObject): Promise<CategoryAggregate>;
 }
 

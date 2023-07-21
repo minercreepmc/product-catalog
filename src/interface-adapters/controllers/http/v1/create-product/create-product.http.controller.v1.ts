@@ -26,10 +26,13 @@ import {
 import { FileValueObject } from '@value-objects/file.value-object';
 import { match } from 'oxide.ts';
 import { V1CreateProductHttpResponse } from './create-product.http.response.v1';
-import { PostHttpControllerBase } from '@base/inteface-adapters/post-http-controller.base';
+import {
+  HttpControllerBase,
+  HttpControllerBaseOption,
+} from '@base/inteface-adapters/post-http-controller.base';
 
 @Controller('/api/v1/products/create')
-export class V1CreateProductHttpController extends PostHttpControllerBase<
+export class V1CreateProductHttpController extends HttpControllerBase<
   V1CreateProductHttpRequest,
   CreateProductCommand,
   CreateProductResponseDto
@@ -41,13 +44,16 @@ export class V1CreateProductHttpController extends PostHttpControllerBase<
     @Body() request: V1CreateProductHttpRequest,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    return super.execute(request, image);
+    return super._execute({
+      request,
+      image,
+    });
   }
 
   toCommand(
-    request: V1CreateProductHttpRequest,
-    image: Express.Multer.File,
+    options: HttpControllerBaseOption<V1CreateProductHttpRequest>,
   ): CreateProductCommand {
+    const { request, image } = options;
     const { name, description, price } = request;
     return new CreateProductCommand({
       name: new ProductNameValueObject(name),
@@ -78,7 +84,7 @@ export class V1CreateProductHttpController extends PostHttpControllerBase<
           throw new ConflictException(exception);
         }
 
-        throw new InternalServerErrorException(exception.message);
+        throw exception;
       },
     });
   }

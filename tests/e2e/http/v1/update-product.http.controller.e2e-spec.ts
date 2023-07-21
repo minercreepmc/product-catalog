@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import {
   V1CreateProductHttpRequest,
+  V1CreateProductHttpResponse,
   V1UpdateProductHttpRequest,
   V1UpdateProductHttpResponse,
 } from '@controllers/http/v1';
@@ -23,17 +24,11 @@ describe('V1UpdateProductHttpController (e2e)', () => {
 
   const createProductRequest: V1CreateProductHttpRequest = {
     name: generateRandomProductName(),
-    price: {
-      amount: generateRandomProductPrice(),
-      currency: 'USD',
-    },
+    price: generateRandomProductPrice(),
   };
   const updateProductRequest: V1UpdateProductHttpRequest = {
     name: generateRandomProductName(),
-    price: {
-      amount: generateRandomProductPrice(),
-      currency: 'USD',
-    },
+    price: generateRandomProductPrice(),
     description: 'Sample description',
   };
 
@@ -55,9 +50,11 @@ describe('V1UpdateProductHttpController (e2e)', () => {
       const createResponse = await request(app.getHttpServer())
         .post(`/${apiPrefix}/${productsUrl}/${createProductUrl}`)
         .set('Accept', 'application/json')
-        .send(createProductRequest);
+        .send(createProductRequest)
+        .expect(HttpStatus.CREATED);
 
-      const productId = createResponse.body.productId;
+      const createBody: V1CreateProductHttpResponse = createResponse.body;
+      const productId = createBody.id;
 
       // Attempt to create the product again
       const updateResponse = await request(app.getHttpServer())
@@ -94,12 +91,9 @@ describe('V1UpdateProductHttpController (e2e)', () => {
     it('should not update a product if the request format is not valid', async () => {
       const productIdDidNotExist = '123';
       const invalidUpdateProductRequest: V1UpdateProductHttpRequest = {
-        name: '',
-        price: {
-          amount: -123,
-          currency: 'USD',
-        },
-        description: '',
+        name: '1',
+        price: -123,
+        description: '1',
       };
       const response = await request(app.getHttpServer())
         .put(

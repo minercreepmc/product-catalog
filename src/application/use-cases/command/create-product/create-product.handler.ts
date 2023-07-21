@@ -18,9 +18,7 @@ import {
 export class CreateProductHandler
   implements ICommandHandler<CreateProductCommand, CreateProductResult>
 {
-  @DefaultCatch((err) => {
-    throw err;
-  })
+  @DefaultCatch((err) => Err(err))
   async execute(command: CreateProductCommand): Promise<CreateProductResult> {
     this.command = command;
     const result = await this.validator.validate(command);

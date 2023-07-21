@@ -1,5 +1,6 @@
 import { ProductManagementDomainService } from '@domain-services';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { DefaultCatch } from 'catch-decorator-ts';
 import { Err, Ok } from 'oxide.ts';
 import {
   RemoveProductsCommand,
@@ -14,6 +15,7 @@ import {
 export class RemoveProductsHandler
   implements ICommandHandler<RemoveProductsCommand, RemoveProductsResult>
 {
+  @DefaultCatch((err) => Err(err))
   async execute(command: RemoveProductsCommand): Promise<RemoveProductsResult> {
     const result = await this.validator.validate(command);
 

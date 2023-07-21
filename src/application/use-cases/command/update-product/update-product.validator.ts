@@ -28,18 +28,18 @@ export class UpdateProductValidator
 
     const note = new Notification<UpdateProductFailure>();
 
-    await this.nameMustBeUnique(note);
+    await this.productIdMustExist(note);
 
     return note;
   }
 
-  private async nameMustBeUnique(note: Notification<UpdateProductFailure>) {
-    const isExist = await this.productManagementService.doesProductExistByName(
-      this.command.name,
+  private async productIdMustExist(note: Notification<UpdateProductFailure>) {
+    const isExist = await this.productManagementService.doesProductExistById(
+      this.command.id,
     );
 
-    if (isExist) {
-      note.addException(new ProductDomainExceptions.AlreadyExist());
+    if (!isExist) {
+      note.addException(new ProductDomainExceptions.DoesNotExist());
     }
   }
 

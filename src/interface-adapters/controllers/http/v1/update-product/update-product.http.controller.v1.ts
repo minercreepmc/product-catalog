@@ -1,4 +1,8 @@
 import {
+  HttpControllerBase,
+  HttpControllerBaseOption,
+} from '@base/inteface-adapters/post-http-controller.base';
+import {
   Body,
   ConflictException,
   Controller,
@@ -12,8 +16,10 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
-import { RemoveProductsResponseDto } from '@use-cases/command/remove-products';
-import { UpdateProductCommand } from '@use-cases/command/update-product';
+import {
+  UpdateProductCommand,
+  UpdateProductResponseDto,
+} from '@use-cases/command/update-product';
 import { FileValueObject } from '@value-objects/file.value-object';
 import {
   ProductDescriptionValueObject,
@@ -21,14 +27,59 @@ import {
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
-import { validate } from 'class-validator';
-import { DomainExceptionBase } from 'common-base-classes';
 import { match } from 'oxide.ts';
-import { V1RemoveProductsHttpResponse } from '../remove-products';
 import { V1UpdateProductHttpRequest } from './update-product.http.request.v1';
+import { V1UpdateProductHttpResponse } from './update-product.http.response.v1';
 
 @Controller('/api/v1/products/:id/update')
-export class V1UpdateProductHttpController {
+export class V1UpdateProductHttpController extends HttpControllerBase<
+  V1UpdateProductHttpRequest,
+  UpdateProductCommand,
+  V1UpdateProductHttpResponse
+> {
+  toCommand(
+    options: HttpControllerBaseOption<V1UpdateProductHttpRequest>,
+  ): UpdateProductCommand {
+    const { image, request, param } = options;
+
+    const { id } = param;
+    const { name, description, price } = request;
+
+    const command = new UpdateProductCommand({
+      id: new ProductIdValueObject(id),
+      name: name && new ProductNameValueObject(name),
+      description:
+        description && new ProductDescriptionValueObject(description),
+      image:
+        image &&
+        new FileValueObject({
+          name: image?.originalname,
+          value: image?.buffer,
+        }),
+      price: price && new ProductPriceValueObject(price),
+    });
+
+    return command;
+  }
+  validate(command: UpdateProductCommand): void {
+    const exceptions = command.validate();
+    if (exceptions.length > 0) {
+      throw new UnprocessableEntityException(exceptions);
+    }
+  }
+  extractResult(result: any): V1UpdateProductHttpResponse {
+    return match(result, {
+      Ok: (response: UpdateProductResponseDto) =>
+        new V1UpdateProductHttpResponse(response),
+      Err: (exception: Error) => {
+        if ((exception as any).length > 0) {
+          throw new ConflictException(exception);
+        }
+
+        throw exception;
+      },
+    });
+  }
   @Put()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
@@ -37,38 +88,16 @@ export class V1UpdateProductHttpController {
     @Body() request: V1UpdateProductHttpRequest,
     @Param('id') id: string,
   ): Promise<any> {
-    const { name, description, price } = request;
-    const command = new UpdateProductCommand({
-      id: new ProductIdValueObject(id),
-      name: new ProductNameValueObject(name),
-      description: new ProductDescriptionValueObject(description),
-      image: new FileValueObject({
-        name: image.originalname,
-        value: image.buffer,
-      }),
-      price: new ProductPriceValueObject(price),
-    });
-
-    const exceptions = await validate(command);
-
-    if (exceptions.length > 0) {
-      throw new UnprocessableEntityException(exceptions);
-    }
-
-    const result = await this.commandBus.execute(command);
-
-    return match(result, {
-      Ok: (response: RemoveProductsResponseDto) =>
-        new V1RemoveProductsHttpResponse(response),
-      Err: (exception: Error) => {
-        if (exception instanceof DomainExceptionBase) {
-          throw new ConflictException(exception.message);
-        }
-
-        throw new InternalServerErrorException(exception.message);
+    return super._execute({
+      request,
+      image,
+      param: {
+        id,
       },
     });
   }
 
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(commandBus: CommandBus) {
+    super(commandBus);
+  }
 }

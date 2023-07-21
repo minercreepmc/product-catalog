@@ -1,3 +1,5 @@
+import { DomainExceptionBase } from '@base/domain';
+import { CommandBase } from '@base/use-cases/command-handler/command.base';
 import { FileValueObject } from '@value-objects/file.value-object';
 import {
   ProductDescriptionValueObject,
@@ -5,19 +7,23 @@ import {
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
-import { ValidateNested } from 'class-validator';
 
-export class UpdateProductCommand {
-  @ValidateNested()
+export class UpdateProductCommand implements CommandBase {
   id: ProductIdValueObject;
-  @ValidateNested()
   name?: ProductNameValueObject;
-  @ValidateNested()
   price?: ProductPriceValueObject;
-  @ValidateNested()
   description?: ProductDescriptionValueObject;
-  @ValidateNested()
   image?: FileValueObject;
+
+  validate?(): DomainExceptionBase[] {
+    return [
+      this.id.validate(),
+      this.name?.validate?.(),
+      this.price?.validate?.(),
+      this.description?.validate?.(),
+      this.image?.validate?.(),
+    ].filter((e) => e);
+  }
 
   constructor(options: UpdateProductCommand) {
     this.id = options.id;

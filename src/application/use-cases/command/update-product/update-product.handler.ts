@@ -27,21 +27,12 @@ export class UpdateProductHandler
     }
 
     let imageUrl: ProductImageUrlValueObject;
-
     if (command.image) {
       imageUrl = await this.uploadImage();
     }
     const productUpdated = await this.updateProduct(imageUrl);
 
-    return Ok(
-      new UpdateProductResponseDto({
-        id: productUpdated.id.value,
-        name: productUpdated.name.value,
-        price: productUpdated.price.value,
-        imageUrl: productUpdated.image.value,
-        description: productUpdated.description.value,
-      }),
-    );
+    return Ok(this.toResponseDto(productUpdated));
   }
 
   @DefaultCatch((err) => {
@@ -64,6 +55,18 @@ export class UpdateProductHandler
         image: imageUrl,
         description: this.command.description,
       },
+    });
+  }
+
+  private toResponseDto(
+    event: ProductUpdatedDomainEvent,
+  ): UpdateProductResponseDto {
+    return new UpdateProductResponseDto({
+      id: event.id?.value,
+      name: event.name?.value,
+      price: event.price?.value,
+      imageUrl: event.image?.value,
+      description: event.description?.value,
     });
   }
 

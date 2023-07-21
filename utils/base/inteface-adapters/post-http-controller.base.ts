@@ -1,11 +1,16 @@
 import { ICommandBus } from '@nestjs/cqrs';
 
-export abstract class PostHttpControllerBase<Request, Command, Response> {
-  async execute(
-    request: Request,
-    image?: Express.Multer.File,
+export interface HttpControllerBaseOption<Request> {
+  request: Request;
+  image?: Express.Multer.File;
+  param?: any;
+}
+
+export abstract class HttpControllerBase<Request, Command, Response> {
+  async _execute(
+    options: HttpControllerBaseOption<Request>,
   ): Promise<Response> {
-    const command = this.toCommand(request, image);
+    const command = this.toCommand(options);
 
     this.validate(command);
 
@@ -14,7 +19,7 @@ export abstract class PostHttpControllerBase<Request, Command, Response> {
     return this.extractResult(result);
   }
 
-  abstract toCommand(request: Request, image?: Express.Multer.File): Command;
+  abstract toCommand(options: HttpControllerBaseOption<Request>): Command;
   abstract validate(command: Command): void;
   abstract extractResult(result: any): Response;
 

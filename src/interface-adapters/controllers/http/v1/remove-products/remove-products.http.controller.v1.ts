@@ -1,4 +1,7 @@
-import { PostHttpControllerBase } from '@base/inteface-adapters/post-http-controller.base';
+import {
+  HttpControllerBase,
+  HttpControllerBaseOption,
+} from '@base/inteface-adapters/post-http-controller.base';
 import {
   Body,
   ConflictException,
@@ -20,7 +23,7 @@ import { V1RemoveProductsHttpRequest } from './remove-products.http.request.v1';
 import { V1RemoveProductsHttpResponse } from './remove-products.http.response.v1';
 
 @Controller('/api/v1/products/remove')
-export class V1RemoveProductsHttpController extends PostHttpControllerBase<
+export class V1RemoveProductsHttpController extends HttpControllerBase<
   V1RemoveProductsHttpRequest,
   RemoveProductsCommand,
   V1RemoveProductsHttpResponse
@@ -28,10 +31,12 @@ export class V1RemoveProductsHttpController extends PostHttpControllerBase<
   @Post()
   @HttpCode(HttpStatus.OK)
   async execute(@Body() request: V1RemoveProductsHttpRequest): Promise<any> {
-    return super.execute(request);
+    return super._execute({ request });
   }
 
-  toCommand(request: V1RemoveProductsHttpRequest): RemoveProductsCommand {
+  toCommand({
+    request,
+  }: HttpControllerBaseOption<V1RemoveProductsHttpRequest>): RemoveProductsCommand {
     const { ids } = request;
 
     const command = new RemoveProductsCommand({
@@ -57,7 +62,7 @@ export class V1RemoveProductsHttpController extends PostHttpControllerBase<
           throw new ConflictException(exception);
         }
 
-        throw new InternalServerErrorException(exception);
+        throw exception;
       },
     });
   }

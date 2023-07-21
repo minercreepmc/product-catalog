@@ -1,4 +1,4 @@
-import { DomainExceptionBase } from 'common-base-classes';
+import { DomainExceptionBase } from '@base/domain';
 
 export const mapDomainExceptionsToObjects = (errors: DomainExceptionBase[]) => {
   return errors.map((error) => ({

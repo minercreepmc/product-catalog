@@ -1,20 +1,26 @@
+import { DomainExceptionBase } from '@base/domain';
 import type { FileValueObject } from '@value-objects/file.value-object';
 import type {
   ProductDescriptionValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
-import { ValidateNested } from 'class-validator';
 
 export class CreateProductCommand {
-  @ValidateNested()
   name: ProductNameValueObject;
-  @ValidateNested()
   price: ProductPriceValueObject;
-  @ValidateNested()
   description?: ProductDescriptionValueObject;
-  @ValidateNested()
   image?: FileValueObject;
+
+  validate?(): DomainExceptionBase[] {
+    return [
+      this.name.validate(),
+      this.price.validate(),
+      this.description?.validate?.(),
+      this.image?.validate?.(),
+    ].filter((e) => e);
+  }
+
   constructor(dto: CreateProductCommand) {
     this.name = dto.name;
     this.price = dto.price;

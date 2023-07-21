@@ -1,21 +1,29 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { IsDefined, IsString, Length, validate } from 'class-validator';
+import { IsOptional, IsString, Length, validateSync } from 'class-validator';
 
 export class ProductDescriptionValueObject {
-  @IsDefined()
+  @IsOptional()
   @IsString()
   @Length(5, 500)
   readonly value: string;
 
-  static async create(value?: string) {
+  static create(value?: string) {
     const description = new ProductDescriptionValueObject(value);
-    const exceptions = await validate(description);
 
-    if (exceptions.length > 0) {
-      throw new ProductDomainExceptions.DescriptionDoesNotValid();
+    const exception = description.validate();
+    if (exception) {
+      throw exception;
     }
 
     return description;
+  }
+
+  validate() {
+    const exceptions = validateSync(this);
+
+    if (exceptions.length > 0) {
+      return new ProductDomainExceptions.DescriptionDoesNotValid();
+    }
   }
 
   constructor(value: string) {

@@ -27,7 +27,6 @@ import { FileValueObject } from '@value-objects/file.value-object';
 import { validate } from 'class-validator';
 import { match } from 'oxide.ts';
 import { V1CreateProductHttpResponse } from './create-product.http.response.v1';
-import { DomainExceptionBase } from '@base/domain';
 
 @Controller('/api/v1/products/create')
 export class V1CreateProductHttpController {
@@ -41,15 +40,18 @@ export class V1CreateProductHttpController {
     const { name, description, price } = request;
     const command = new CreateProductCommand({
       name: new ProductNameValueObject(name),
-      description: new ProductDescriptionValueObject(description),
-      image: new FileValueObject({
-        name: image.originalname,
-        value: image.buffer,
-      }),
-      price: new ProductPriceValueObject(price),
+      description:
+        description && new ProductDescriptionValueObject(description),
+      image:
+        image &&
+        new FileValueObject({
+          name: image?.originalname,
+          value: image?.buffer,
+        }),
+      price: new ProductPriceValueObject(Number(price)),
     });
 
-    const exceptions = await validate(command);
+    const exceptions = command.validate();
 
     if (exceptions.length > 0) {
       throw new UnprocessableEntityException(exceptions);
@@ -61,8 +63,8 @@ export class V1CreateProductHttpController {
       Ok: (response: CreateProductResponseDto) =>
         new V1CreateProductHttpResponse(response),
       Err: (exception: Error) => {
-        if (exception instanceof DomainExceptionBase) {
-          throw new ConflictException(exception.message);
+        if ((exception as any)?.length > 0) {
+          throw new ConflictException(exception);
         }
 
         throw new InternalServerErrorException(exception.message);

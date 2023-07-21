@@ -1,5 +1,5 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { IsDefined, IsString, validate } from 'class-validator';
+import { IsDefined, IsString, validateSync } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ProductIdValueObject {
@@ -9,13 +9,21 @@ export class ProductIdValueObject {
 
   static async create(value?: string) {
     const id = new ProductIdValueObject(value);
-    const exceptions = await validate(id);
 
-    if (exceptions.length > 0) {
-      throw new ProductDomainExceptions.IdDoesNotValid();
+    const exception = id.validate();
+    if (exception) {
+      throw exception;
     }
 
     return id;
+  }
+
+  validate() {
+    const exceptions = validateSync(this);
+
+    if (exceptions.length > 0) {
+      return new ProductDomainExceptions.IdDoesNotValid();
+    }
   }
 
   constructor(value?: string) {

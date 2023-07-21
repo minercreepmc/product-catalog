@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
       description varchar(500),
       image_url varchar(255),
       created_at timestamp without time zone not null default now(),
-      updated_at timestamp without time zone not null default now()
+      updated_at timestamp without time zone not null default now(),
       deleted_at timestamp without time zone
     );`,
   );

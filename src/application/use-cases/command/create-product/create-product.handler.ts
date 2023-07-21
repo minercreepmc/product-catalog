@@ -18,7 +18,9 @@ import {
 export class CreateProductHandler
   implements ICommandHandler<CreateProductCommand, CreateProductResult>
 {
-  @DefaultCatch((err) => Err(err))
+  @DefaultCatch((err) => {
+    throw err;
+  })
   async execute(command: CreateProductCommand): Promise<CreateProductResult> {
     this.command = command;
     const result = await this.validator.validate(command);
@@ -36,11 +38,11 @@ export class CreateProductHandler
 
     return Ok(
       new CreateProductResponseDto({
-        id: productCreated.id.value,
-        price: productCreated.price.value,
-        name: productCreated.name.value,
-        description: productCreated.description.value,
-        imageUrl: productCreated.image.value,
+        id: productCreated.id?.value,
+        price: productCreated.price?.value,
+        name: productCreated.name?.value,
+        description: productCreated.description?.value,
+        imageUrl: productCreated.image?.value,
       }),
     );
   }

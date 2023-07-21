@@ -1,6 +1,6 @@
 import { ValueObjectBase } from '@base/domain/value-object.base';
-import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import { IsDefined, IsString, Length, validate } from 'class-validator';
+import { GenericDomainExceptions } from '@domain-exceptions';
+import { IsDefined, IsString, Length, validateSync } from 'class-validator';
 
 export class FileValueObject implements ValueObjectBase {
   @IsDefined()
@@ -13,13 +13,21 @@ export class FileValueObject implements ValueObjectBase {
 
   static async create(options: FileValueObject) {
     const file = new FileValueObject(options);
-    const exceptions = await validate(file);
+    const exception = validateSync(file);
 
-    if (exceptions.length > 0) {
-      throw new CategoryDomainExceptions.NameDoesNotValid();
+    if (exception) {
+      throw exception;
     }
 
     return file;
+  }
+
+  validate?() {
+    const exceptions = validateSync(this);
+
+    if (exceptions.length > 0) {
+      return new GenericDomainExceptions.FileDoesNotValid();
+    }
   }
 
   constructor(options: FileValueObject) {

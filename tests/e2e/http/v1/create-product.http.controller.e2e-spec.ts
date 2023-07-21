@@ -40,10 +40,7 @@ describe('V1CreateProductHttpController (e2e)', () => {
     it('should create a product and return the new product information', async () => {
       const createProductRequest: V1CreateProductHttpRequest = {
         name: generateRandomProductName(),
-        price: {
-          amount: 25.99,
-          currency: 'USD',
-        },
+        price: 25.99,
         description: 'Sample description',
       };
 
@@ -52,8 +49,7 @@ describe('V1CreateProductHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         //.attach('image', tempFilePath)
         .field('name', createProductRequest.name)
-        .field('price[amount]', createProductRequest.price.amount)
-        .field('price[currency]', createProductRequest.price.currency)
+        .field('price', createProductRequest.price)
         .field('description', createProductRequest.description)
         .expect(HttpStatus.CREATED);
 
@@ -70,10 +66,7 @@ describe('V1CreateProductHttpController (e2e)', () => {
     it('should not create a product if it already exists', async () => {
       const createProductRequest: V1CreateProductHttpRequest = {
         name: generateRandomProductName(),
-        price: {
-          amount: generateRandomProductPrice(),
-          currency: 'USD',
-        },
+        price: generateRandomProductPrice(),
         description: 'asdasdasdasdasd',
       };
       // First, create the product
@@ -91,18 +84,17 @@ describe('V1CreateProductHttpController (e2e)', () => {
         .expect(HttpStatus.CONFLICT);
 
       expect(response.body.message).toIncludeAllMembers(
-        mapDomainExceptionsToObjects([new ProductDomainExceptions.AlreadyExist()]),
+        mapDomainExceptionsToObjects([
+          new ProductDomainExceptions.AlreadyExist(),
+        ]),
       );
     });
 
     it('should not create a product if the request format is not valid', async () => {
       const invalidProductRequest: V1CreateProductHttpRequest = {
-        name: '',
-        price: {
-          amount: -25.99,
-          currency: 'USD',
-        },
-        description: '',
+        name: 'a',
+        price: -25.99,
+        description: 'wtf',
       };
 
       const response = await request(app.getHttpServer())

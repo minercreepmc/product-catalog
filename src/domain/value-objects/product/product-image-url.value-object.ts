@@ -1,5 +1,5 @@
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { IsDefined, IsString, IsUrl, validate } from 'class-validator';
+import { IsDefined, IsString, IsUrl, validateSync } from 'class-validator';
 
 export class ProductImageUrlValueObject {
   @IsDefined()
@@ -7,15 +7,22 @@ export class ProductImageUrlValueObject {
   @IsUrl()
   readonly value: string;
 
-  static async create(value: string) {
+  static create(value: string) {
     const image = new ProductImageUrlValueObject(value);
-    const exceptions = await validate(image);
 
-    if (exceptions.length > 0) {
-      throw new ProductDomainExceptions.ImageDoesNotValid();
+    const exception = image.validate();
+    if (exception) {
+      throw exception;
     }
 
     return image;
+  }
+
+  validate() {
+    const exceptions = validateSync(this);
+    if (exceptions.length > 0) {
+      return new ProductDomainExceptions.ImageDoesNotValid();
+    }
   }
 
   constructor(value: string) {

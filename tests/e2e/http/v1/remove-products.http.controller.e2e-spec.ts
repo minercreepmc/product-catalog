@@ -40,8 +40,9 @@ describe('V1RemoveProductsHttpController (e2e)', () => {
 
   describe(`${productsUrl}/${removeProductUrl} (POST)`, () => {
     it('should not remove product if request is invalid', async () => {
+      console.log('first');
       const removeProductRequest: V1RemoveProductsHttpRequest = {
-        ids: ['', '', ''],
+        ids: [2, 2, 2] as unknown as string[],
       };
 
       await request(app.getHttpServer())
@@ -52,9 +53,11 @@ describe('V1RemoveProductsHttpController (e2e)', () => {
     });
 
     it('should not remove products if it not exist', async () => {
+      console.log('second');
       const removeProductRequest: V1RemoveProductsHttpRequest = {
         ids: Array.from({ length: 3 }, () => generateRandomProductId()),
       };
+      console.log(removeProductRequest);
 
       const response = await request(app.getHttpServer())
         .post(`/${apiPrefix}/${productsUrl}/${removeProductUrl}`)
@@ -70,12 +73,10 @@ describe('V1RemoveProductsHttpController (e2e)', () => {
     });
 
     it('should remove products', async () => {
+      console.log('third');
       const createProductRequest: V1CreateProductHttpRequest = {
         name: generateRandomProductName(),
-        price: {
-          amount: generateRandomProductPrice(),
-          currency: 'USD',
-        },
+        price: generateRandomProductPrice(),
       };
 
       const createResponse = await request(app.getHttpServer())
@@ -83,7 +84,8 @@ describe('V1RemoveProductsHttpController (e2e)', () => {
         .set('Accept', 'application/json')
         .send(createProductRequest)
         .expect(HttpStatus.CREATED);
-      const { id: productId } = createResponse.body as V1CreateProductHttpResponse;
+      const { id: productId } =
+        createResponse.body as V1CreateProductHttpResponse;
 
       const removeProductRequest: V1RemoveProductsHttpRequest = {
         ids: [productId],

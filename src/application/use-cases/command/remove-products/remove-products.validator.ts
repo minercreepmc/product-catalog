@@ -30,7 +30,7 @@ export class RemoveProductsValidator
   }
 
   async productsMustExist(note: Notification<RemoveProductsFailure>) {
-    const exist = this.productManagementService.doesProductIdsExist(
+    const exist = await this.productManagementService.doesProductIdsExist(
       this.command.ids,
     );
 

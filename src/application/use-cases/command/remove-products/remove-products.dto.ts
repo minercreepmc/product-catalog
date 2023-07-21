@@ -1,13 +1,37 @@
+import { DomainExceptionBase } from '@base/domain';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { ProductIdValueObject } from '@value-objects/product';
-import { ArrayMinSize, IsArray, ValidateNested } from 'class-validator';
+import { ArrayMinSize, IsArray, validateSync } from 'class-validator';
 
 export class RemoveProductsCommand {
   @IsArray()
-  @ValidateNested({ each: true })
   @ArrayMinSize(1)
   readonly ids: ProductIdValueObject[];
+
+  validate?(): DomainExceptionBase[] {
+    let isValid: boolean;
+    if (validateSync(this).length > 0) {
+      isValid = false;
+    }
+
+    let exception: DomainExceptionBase;
+
+    isValid = this.ids.some((id) => {
+      exception = id.validate();
+      if (exception) return true;
+      return false;
+    });
+
+    if (isValid) {
+      return [new ProductDomainExceptions.IdDoesNotValid()];
+    } else {
+      return [];
+    }
+  }
+
   constructor(options: RemoveProductsCommand) {
     this.ids = options.ids;
+    console.log(this.ids);
   }
 }
 

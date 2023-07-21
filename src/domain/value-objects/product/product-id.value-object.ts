@@ -7,7 +7,7 @@ export class ProductIdValueObject {
   @IsString()
   readonly value: string;
 
-  static async create(value?: string) {
+  static create(value?: string) {
     const id = new ProductIdValueObject(value);
 
     const exception = id.validate();

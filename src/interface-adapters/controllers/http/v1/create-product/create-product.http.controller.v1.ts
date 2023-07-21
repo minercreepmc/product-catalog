@@ -24,21 +24,32 @@ import {
   ProductPriceValueObject,
 } from '@value-objects/product';
 import { FileValueObject } from '@value-objects/file.value-object';
-import { validate } from 'class-validator';
 import { match } from 'oxide.ts';
 import { V1CreateProductHttpResponse } from './create-product.http.response.v1';
+import { PostHttpControllerBase } from '@base/inteface-adapters/post-http-controller.base';
 
 @Controller('/api/v1/products/create')
-export class V1CreateProductHttpController {
+export class V1CreateProductHttpController extends PostHttpControllerBase<
+  V1CreateProductHttpRequest,
+  CreateProductCommand,
+  CreateProductResponseDto
+> {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
-  async execute(
-    @UploadedFile() image: Express.Multer.File,
+  execute(
     @Body() request: V1CreateProductHttpRequest,
-  ): Promise<any> {
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return super.execute(request, image);
+  }
+
+  toCommand(
+    request: V1CreateProductHttpRequest,
+    image: Express.Multer.File,
+  ): CreateProductCommand {
     const { name, description, price } = request;
-    const command = new CreateProductCommand({
+    return new CreateProductCommand({
       name: new ProductNameValueObject(name),
       description:
         description && new ProductDescriptionValueObject(description),
@@ -50,15 +61,15 @@ export class V1CreateProductHttpController {
         }),
       price: new ProductPriceValueObject(Number(price)),
     });
-
+  }
+  validate(command: CreateProductCommand): void {
     const exceptions = command.validate();
 
     if (exceptions.length > 0) {
       throw new UnprocessableEntityException(exceptions);
     }
-
-    const result = await this.commandBus.execute(command);
-
+  }
+  extractResult(result: any): CreateProductResponseDto {
     return match(result, {
       Ok: (response: CreateProductResponseDto) =>
         new V1CreateProductHttpResponse(response),
@@ -72,5 +83,7 @@ export class V1CreateProductHttpController {
     });
   }
 
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(commandBus: CommandBus) {
+    super(commandBus);
+  }
 }

@@ -1,3 +1,8 @@
+import {
+  readOnlyProductRepositoryDiToken,
+  ReadonlyProductRepositoryPort,
+} from '@application@/interface/product';
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ProductViewModel } from '../product.model';
 import { GetProductsQuery } from './get-products.query';
@@ -11,8 +16,14 @@ export class GetProductsQueryHandler
   implements IQueryHandler<GetProductsQuery, GetProductsResponseDto>
 {
   async execute(query: GetProductsQuery): Promise<GetProductsResponseDto> {
-    throw new Error('Method not implemented.');
+    const products = await this.repository.findAll(query);
+    return {
+      products,
+    };
   }
 
-  //constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    @Inject(readOnlyProductRepositoryDiToken)
+    private readonly repository: ReadonlyProductRepositoryPort,
+  ) {}
 }

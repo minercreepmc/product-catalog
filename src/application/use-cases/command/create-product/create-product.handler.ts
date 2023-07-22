@@ -2,7 +2,6 @@ import { CommandHandlerBase } from '@base/use-cases/command-handler/command-hand
 import { ProductCreatedDomainEvent } from '@domain-events/product';
 import { ProductManagementDomainService } from '@domain-services';
 import { UploadService } from '@infrastructures/cloud';
-import { Logger } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { ProductImageUrlValueObject } from '@value-objects/product';
 import { DefaultCatch } from 'catch-decorator-ts';

@@ -2,7 +2,6 @@ import {
   Body,
   ConflictException,
   Controller,
-  InternalServerErrorException,
   Post,
   UnprocessableEntityException,
   UploadedFile,
@@ -58,6 +57,7 @@ export class V1CreateProductHttpController extends HttpControllerBase<
     const { name, description, price } = request;
     return new CreateProductCommand({
       name: new ProductNameValueObject(name),
+      price: new ProductPriceValueObject(Number(price)),
       description:
         description && new ProductDescriptionValueObject(description),
       image:
@@ -66,7 +66,6 @@ export class V1CreateProductHttpController extends HttpControllerBase<
           name: image?.originalname,
           value: image?.buffer,
         }),
-      price: new ProductPriceValueObject(Number(price)),
     });
   }
   validate(command: CreateProductCommand): void {

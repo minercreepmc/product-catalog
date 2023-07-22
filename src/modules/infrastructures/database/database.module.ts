@@ -1,3 +1,4 @@
+import { readOnlyProductRepositoryDiToken } from '@application@/interface/product';
 import { UnitOfWork } from '@base/database/unit-of-work';
 import {
   ConfigurableDatabaseModule,
@@ -13,6 +14,7 @@ import {
 import {
   ProductRepository,
   ProductSchemaMapper,
+  ReadOnlyProductRepository,
 } from '@database/repositories/pg/product';
 import {
   categoryRepositoryDiToken,
@@ -32,6 +34,10 @@ const repositories: Provider[] = [
   {
     provide: productRepositoryDiToken,
     useClass: ProductRepository,
+  },
+  {
+    provide: readOnlyProductRepositoryDiToken,
+    useClass: ReadOnlyProductRepository,
   },
   {
     provide: unitOfWorkDiToken,

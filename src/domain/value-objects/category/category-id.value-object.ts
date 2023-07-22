@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ID, ValueObjectBase } from '@base/domain';
-import { IsDefined, IsString, validateSync } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString, validateSync } from 'class-validator';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 
 export class CategoryIdValueObject implements ID, ValueObjectBase {
   @IsDefined()
   @IsString()
+  @IsNotEmpty()
   readonly value: string;
 
   static create(value?: string) {

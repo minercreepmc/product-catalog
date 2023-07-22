@@ -16,13 +16,13 @@ export class RemoveProductsCommand {
 
     let exception: DomainExceptionBase;
 
-    isValid = this.ids.some((id) => {
+    isValid = !this.ids.some((id) => {
       exception = id.validate();
       if (exception) return true;
       return false;
     });
 
-    if (isValid) {
+    if (!isValid) {
       return [new ProductDomainExceptions.IdDoesNotValid()];
     } else {
       return [];

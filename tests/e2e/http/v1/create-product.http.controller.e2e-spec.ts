@@ -1,8 +1,4 @@
-import {
-  generateRandomProductName,
-  generateRandomProductPrice,
-  mapDomainExceptionsToObjects,
-} from '@utils/functions';
+import { mapDomainExceptionsToObjects, randomString } from '@utils/functions';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -39,7 +35,7 @@ describe('V1CreateProductHttpController (e2e)', () => {
   describe(`${productsUrl} (POST)`, () => {
     it('should create a product and return the new product information', async () => {
       const createProductRequest: V1CreateProductHttpRequest = {
-        name: generateRandomProductName(),
+        name: randomString(),
         price: 25.99,
         description: 'Sample description',
       };
@@ -65,8 +61,8 @@ describe('V1CreateProductHttpController (e2e)', () => {
 
     it('should not create a product if it already exists', async () => {
       const createProductRequest: V1CreateProductHttpRequest = {
-        name: generateRandomProductName(),
-        price: generateRandomProductPrice(),
+        name: randomString(),
+        price: 25.99,
         description: 'asdasdasdasdasd',
       };
       // First, create the product

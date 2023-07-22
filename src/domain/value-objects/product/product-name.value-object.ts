@@ -4,7 +4,7 @@ import { IsDefined, IsString, Length, validateSync } from 'class-validator';
 export class ProductNameValueObject {
   @IsDefined()
   @IsString()
-  @Length(2, 30)
+  @Length(2, 250)
   readonly value: string;
 
   static create(value: string) {

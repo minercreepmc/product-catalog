@@ -9,11 +9,12 @@ import {
   V1UpdateProductHttpResponse,
 } from '@controllers/http/v1';
 import {
-  generateRandomProductName,
   generateRandomProductPrice,
   mapDomainExceptionsToObjects,
+  randomString,
 } from '@utils/functions';
 import * as request from 'supertest';
+import { v5 as uuid } from 'uuid';
 
 describe('V1UpdateProductHttpController (e2e)', () => {
   let app: INestApplication;
@@ -23,11 +24,11 @@ describe('V1UpdateProductHttpController (e2e)', () => {
   const apiPrefix = `api/v1`;
 
   const createProductRequest: V1CreateProductHttpRequest = {
-    name: generateRandomProductName(),
+    name: randomString(),
     price: generateRandomProductPrice(),
   };
   const updateProductRequest: V1UpdateProductHttpRequest = {
-    name: generateRandomProductName(),
+    name: randomString(),
     price: generateRandomProductPrice(),
     description: 'Sample description',
   };

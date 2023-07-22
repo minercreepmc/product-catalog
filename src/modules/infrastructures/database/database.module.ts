@@ -1,3 +1,4 @@
+import { readonlyCategoryRepositoryDiToken } from '@application@/interface/category';
 import { readOnlyProductRepositoryDiToken } from '@application@/interface/product';
 import { UnitOfWork } from '@base/database/unit-of-work';
 import {
@@ -10,6 +11,7 @@ import {
 import {
   CategoryRepository,
   CategorySchemaMapper,
+  ReadOnlyCategoryRepository,
 } from '@database/repositories/pg/category';
 import {
   ProductRepository,
@@ -24,8 +26,6 @@ import { unitOfWorkDiToken } from '@domain-interfaces';
 import { Global, Module, Provider } from '@nestjs/common';
 import { Pool } from 'pg';
 
-export class FakeRepository {}
-
 const repositories: Provider[] = [
   {
     provide: categoryRepositoryDiToken,
@@ -38,6 +38,10 @@ const repositories: Provider[] = [
   {
     provide: readOnlyProductRepositoryDiToken,
     useClass: ReadOnlyProductRepository,
+  },
+  {
+    provide: readonlyCategoryRepositoryDiToken,
+    useClass: ReadOnlyCategoryRepository,
   },
   {
     provide: unitOfWorkDiToken,

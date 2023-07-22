@@ -8,6 +8,6 @@ export interface ApplicationRepositoryPort<Schema> {
 }
 
 export interface ReadOnlyRepositoryPort<Schema> {
-  findOneById(name: string): Promise<Schema>;
+  findOneById(id: string): Promise<Schema>;
   findAll(filter: PaginationParams): Promise<Schema[]>;
 }

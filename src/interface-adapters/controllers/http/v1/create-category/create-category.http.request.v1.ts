@@ -5,10 +5,4 @@ export class V1CreateCategoryHttpRequest {
   name: string;
   @ApiProperty()
   description?: string;
-  @ApiProperty()
-  parentIds?: string[];
-  @ApiProperty()
-  subCategoryIds?: string[];
-  @ApiProperty()
-  productIds?: string[];
 }

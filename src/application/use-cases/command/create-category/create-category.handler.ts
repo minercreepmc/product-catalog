@@ -1,46 +1,49 @@
+import { CommandHandlerBase } from '@base/use-cases/command-handler/command-handler.base';
+import { CategoryCreatedDomainEvent } from '@domain-events/category';
 import { CategoryManagementDomainService } from '@domain-services';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { Err, Ok } from 'oxide.ts';
+import { CommandHandler } from '@nestjs/cqrs';
 import {
   CreateCategoryCommand,
   CreateCategoryResponseDto,
 } from './create-category.dto';
 import {
-  CreateCategoryResult,
+  CreateCategoryFailure,
+  CreateCategorySuccess,
   CreateCategoryValidator,
 } from './create-category.validator';
 
 @CommandHandler(CreateCategoryCommand)
-export class CreateCategoryHandler
-  implements ICommandHandler<CreateCategoryCommand, CreateCategoryResult>
-{
-  @DefaultCatch((err) => Err(err))
-  async execute(command: CreateCategoryCommand): Promise<CreateCategoryResult> {
-    const result = await this.validator.validate(command);
+export class CreateCategoryHandler extends CommandHandlerBase<
+  CreateCategoryCommand,
+  CreateCategorySuccess,
+  CreateCategoryFailure
+> {
+  handle(): Promise<CategoryCreatedDomainEvent> {
+    return this.categoryManagementService.createCategory({
+      name: this.command.name,
+      description: this.command.description,
+    });
+  }
+  async validate(): Promise<void> {
+    const result = await this.validator.validate(this.command);
 
     if (result.hasExceptions()) {
-      return Err(result.getExceptions());
+      throw result.getExceptions();
     }
-
-    const categoryCreated = await this.categoryManagementService.createCategory(
-      {
-        name: command.name,
-        description: command.description,
-      },
-    );
-
-    return Ok(
-      new CreateCategoryResponseDto({
-        id: categoryCreated.id.value,
-        name: categoryCreated.name.value,
-        description: categoryCreated.description.value,
-      }),
-    );
+  }
+  toResponseDto(data: CategoryCreatedDomainEvent): any {
+    return new CreateCategoryResponseDto({
+      id: data.id?.value,
+      name: data.name?.value,
+      description: data.description?.value,
+    });
   }
 
+  protected command: any;
   constructor(
     private readonly validator: CreateCategoryValidator,
     private readonly categoryManagementService: CategoryManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

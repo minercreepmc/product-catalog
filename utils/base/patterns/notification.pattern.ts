@@ -1,10 +1,10 @@
-import { DomainExceptionBase } from '@base/domain';
+import { DomainExceptionBase, MultipleExceptions } from '@base/domain';
 
 export class Notification<T extends DomainExceptionBase[]> {
   private exceptions: T = [] as T;
 
-  getExceptions(): T {
-    return this.exceptions;
+  getExceptions(): MultipleExceptions<T> {
+    return new MultipleExceptions(this.exceptions);
   }
 
   addException(message: DomainExceptionBase): void {

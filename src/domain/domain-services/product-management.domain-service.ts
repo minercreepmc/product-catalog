@@ -19,7 +19,6 @@ import {
   ProductIdValueObject,
   ProductNameValueObject,
 } from '@value-objects/product';
-import { DefaultCatch } from 'catch-decorator-ts';
 
 export type CreateProductDomainServiceOptions = CreateProductAggregateOptions;
 export type UpdateProductDomainServiceOptions = {

@@ -1,41 +1,45 @@
+import { CommandHandlerBase } from '@base/use-cases/command-handler/command-handler.base';
+import { ProductRemovedDomainEvent } from '@domain-events/product';
 import { ProductManagementDomainService } from '@domain-services';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { Err, Ok } from 'oxide.ts';
+import { CommandHandler } from '@nestjs/cqrs';
 import {
   RemoveProductsCommand,
   RemoveProductsResponseDto,
 } from './remove-products.dto';
 import {
-  RemoveProductsResult,
+  RemoveProductsFailure,
+  RemoveProductsSuccess,
   RemoveProductsValidator,
 } from './remove-products.validator';
 
 @CommandHandler(RemoveProductsCommand)
-export class RemoveProductsHandler
-  implements ICommandHandler<RemoveProductsCommand, RemoveProductsResult>
-{
-  @DefaultCatch((err) => Err(err))
-  async execute(command: RemoveProductsCommand): Promise<RemoveProductsResult> {
-    const result = await this.validator.validate(command);
-
-    if (result.hasExceptions()) {
-      return Err(result.getExceptions());
-    }
-
-    const productsRemoved = await this.productManagementService.removeProducts(
-      command.ids,
-    );
-
-    return Ok(
-      new RemoveProductsResponseDto({
-        ids: productsRemoved.map((event) => event.id.value),
-      }),
-    );
+export class RemoveProductsHandler extends CommandHandlerBase<
+  RemoveProductsCommand,
+  RemoveProductsSuccess,
+  RemoveProductsFailure
+> {
+  handle(): Promise<ProductRemovedDomainEvent[]> {
+    return this.productManagementService.removeProducts(this.command.ids);
   }
 
+  async validate(): Promise<void> {
+    const result = await this.validator.validate(this.command);
+
+    if (result.hasExceptions()) {
+      throw result.getExceptions();
+    }
+  }
+  toResponseDto(data: ProductRemovedDomainEvent[]): RemoveProductsSuccess {
+    return new RemoveProductsResponseDto({
+      ids: data.map((event) => event.id.value),
+    });
+  }
+
+  protected command: RemoveProductsCommand;
   constructor(
     private readonly validator: RemoveProductsValidator,
     private readonly productManagementService: ProductManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

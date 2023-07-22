@@ -1,3 +1,4 @@
+import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
   HttpControllerBaseOption,
@@ -71,12 +72,12 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
     return match(result, {
       Ok: (response: UpdateProductResponseDto) =>
         new V1UpdateProductHttpResponse(response),
-      Err: (exception: Error) => {
-        if ((exception as any).length > 0) {
-          throw new ConflictException(exception);
+      Err: (e: Error) => {
+        if (e instanceof MultipleExceptions) {
+          throw new ConflictException(e.exceptions);
         }
 
-        throw exception;
+        throw e;
       },
     });
   }

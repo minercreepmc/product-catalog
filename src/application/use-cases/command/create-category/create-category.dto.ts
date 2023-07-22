@@ -1,11 +1,19 @@
+import { DomainExceptionBase } from '@base/domain';
+import { CommandBase } from '@base/use-cases';
 import {
   CategoryDescriptionValueObject,
   CategoryNameValueObject,
 } from '@value-objects/category';
 
-export class CreateCategoryCommand {
+export class CreateCategoryCommand implements CommandBase {
   name: CategoryNameValueObject;
   description?: CategoryDescriptionValueObject;
+
+  validate?(): DomainExceptionBase[] {
+    return [this.name?.validate(), this.description?.validate()].filter(
+      (e) => e,
+    );
+  }
 
   constructor(options: CreateCategoryCommand) {
     this.name = options.name;

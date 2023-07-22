@@ -1,10 +1,12 @@
-import { CategoryAggregate } from '@aggregates/category';
+import type { CategoryAggregate } from '@aggregates/category';
 import { RepositoryBase } from '@base/database/repositories/pg';
 import { DatabaseService } from '@config/pg';
 import { CategoryRepositoryPort } from '@domain-interfaces';
 import { Injectable } from '@nestjs/common';
-import { CategoryNameValueObject } from '@value-objects/category';
-import { ID } from '@base/domain';
+import {
+  CategoryIdValueObject,
+  CategoryNameValueObject,
+} from '@value-objects/category';
 import { CategorySchema } from './category.schema';
 import { CategorySchemaMapper } from './category.schema.mapper';
 
@@ -18,25 +20,19 @@ export class CategoryRepository
 
     const res = await this.databaseService.runQuery(
       `INSERT into category
-          (id, created_at, updated_at, name, description)
+          (id, name, description)
       VALUES
-          ($1, $2, $3, $4, $5)
+          ($1, $2, $3)
       RETURNING *`,
-      [
-        model.id,
-        model.created_at,
-        model.updated_at,
-        model.name,
-        model.description,
-      ],
+      [model.id, model.name, model.description],
     );
 
     const saved = res.rows[0];
 
     return saved ? this.mapper.toDomain(saved) : null;
   }
-  async deleteOneById(id: ID): Promise<CategoryAggregate> {
-    const query = this.mapper.toQuery({ id });
+  async deleteOneById(id: CategoryIdValueObject): Promise<CategoryAggregate> {
+    const query = this.mapper.toPersistance({ id });
 
     const res = await this.databaseService.runQuery(
       `DELETE FROM category WHERE id=$1 RETURNING *`,
@@ -48,8 +44,8 @@ export class CategoryRepository
     return deleted ? this.mapper.toDomain(deleted) : null;
   }
 
-  async findOneById(id: ID): Promise<CategoryAggregate> {
-    const query = this.mapper.toQuery({ id });
+  async findOneById(id: CategoryIdValueObject): Promise<CategoryAggregate> {
+    const query = this.mapper.toPersistance({ id });
 
     const res = await this.databaseService.runQuery(
       `SELECT * from category WHERE id=$1`,
@@ -62,10 +58,10 @@ export class CategoryRepository
   }
 
   async updateOneById(
-    id: ID,
+    id: CategoryIdValueObject,
     newState: CategoryAggregate,
   ): Promise<CategoryAggregate> {
-    const query = this.mapper.toQuery({ id });
+    const query = this.mapper.toPersistance({ id });
     const model = this.mapper.toPersistance(newState);
 
     const res = await this.databaseService.runQuery(
@@ -84,7 +80,7 @@ export class CategoryRepository
   async findOneByName(
     name: CategoryNameValueObject,
   ): Promise<CategoryAggregate> {
-    const query = this.mapper.toQuery({ name });
+    const query = this.mapper.toPersistance({ name });
 
     const res = await this.databaseService.runQuery(
       `SELECT * from category WHERE name=$1`,

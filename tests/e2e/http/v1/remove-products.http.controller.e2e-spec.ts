@@ -40,7 +40,6 @@ describe('V1RemoveProductsHttpController (e2e)', () => {
 
   describe(`${productsUrl}/${removeProductUrl} (POST)`, () => {
     it('should not remove product if request is invalid', async () => {
-      console.log('first');
       const removeProductRequest: V1RemoveProductsHttpRequest = {
         ids: [2, 2, 2] as unknown as string[],
       };
@@ -53,11 +52,9 @@ describe('V1RemoveProductsHttpController (e2e)', () => {
     });
 
     it('should not remove products if it not exist', async () => {
-      console.log('second');
       const removeProductRequest: V1RemoveProductsHttpRequest = {
         ids: Array.from({ length: 3 }, () => generateRandomProductId()),
       };
-      console.log(removeProductRequest);
 
       const response = await request(app.getHttpServer())
         .post(`/${apiPrefix}/${productsUrl}/${removeProductUrl}`)
@@ -73,7 +70,6 @@ describe('V1RemoveProductsHttpController (e2e)', () => {
     });
 
     it('should remove products', async () => {
-      console.log('third');
       const createProductRequest: V1CreateProductHttpRequest = {
         name: generateRandomProductName(),
         price: generateRandomProductPrice(),

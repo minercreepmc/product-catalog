@@ -1,48 +1,53 @@
+import { CommandHandlerBase } from '@base/use-cases/command-handler/command-handler.base';
 import { ProductCreatedDomainEvent } from '@domain-events/product';
 import { ProductManagementDomainService } from '@domain-services';
 import { UploadService } from '@infrastructures/cloud';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Logger } from '@nestjs/common';
+import { CommandHandler } from '@nestjs/cqrs';
 import { ProductImageUrlValueObject } from '@value-objects/product';
 import { DefaultCatch } from 'catch-decorator-ts';
-import { Err, Ok } from 'oxide.ts';
 import {
   CreateProductCommand,
   CreateProductResponseDto,
 } from './create-product.dto';
 import {
   CreateProductValidator,
-  CreateProductResult,
+  CreateProductSuccess,
+  CreateProductFailure,
 } from './create-product.validator';
 
 @CommandHandler(CreateProductCommand)
-export class CreateProductHandler
-  implements ICommandHandler<CreateProductCommand, CreateProductResult>
-{
-  @DefaultCatch((err) => Err(err))
-  async execute(command: CreateProductCommand): Promise<CreateProductResult> {
-    this.command = command;
-    const result = await this.validator.validate(command);
-
-    if (result.hasExceptions()) {
-      return Err(result.getExceptions());
-    }
-
+export class CreateProductHandler extends CommandHandlerBase<
+  CreateProductCommand,
+  CreateProductSuccess,
+  CreateProductFailure
+> {
+  async handle(): Promise<ProductCreatedDomainEvent> {
+    const { command } = this;
     let imageUrl: ProductImageUrlValueObject;
 
     if (command.image) {
       imageUrl = await this.uploadImage();
     }
-    const productCreated = await this.createProduct(imageUrl);
 
-    return Ok(
-      new CreateProductResponseDto({
-        id: productCreated.id?.value,
-        price: productCreated.price?.value,
-        name: productCreated.name?.value,
-        description: productCreated.description?.value,
-        imageUrl: productCreated.image?.value,
-      }),
-    );
+    return this.createProduct(imageUrl);
+  }
+
+  async validate(): Promise<void> {
+    const result = await this.validator.validate(this.command);
+
+    if (result.hasExceptions()) {
+      throw result.getExceptions();
+    }
+  }
+  toResponseDto(data: ProductCreatedDomainEvent): CreateProductResponseDto {
+    return new CreateProductResponseDto({
+      id: data.id?.value,
+      price: data.price?.value,
+      name: data.name?.value,
+      description: data.description?.value,
+      imageUrl: data.image?.value,
+    });
   }
 
   @DefaultCatch((err) => {
@@ -65,10 +70,12 @@ export class CreateProductHandler
     });
   }
 
-  private command: CreateProductCommand;
+  protected command: CreateProductCommand;
   constructor(
     private readonly validator: CreateProductValidator,
     private readonly uploadService: UploadService,
     private readonly productManagementService: ProductManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

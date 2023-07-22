@@ -1,6 +1,6 @@
 import { ValueObjectBase } from '@base/domain/value-object.base';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import { IsDefined, IsString, Length, validate } from 'class-validator';
+import { IsDefined, IsString, Length, validateSync } from 'class-validator';
 
 export class CategoryDescriptionValueObject implements ValueObjectBase {
   @IsDefined()
@@ -8,15 +8,23 @@ export class CategoryDescriptionValueObject implements ValueObjectBase {
   @Length(5, 100)
   readonly value: string;
 
-  static async create(value: string) {
+  static create(value: string) {
     const description = new CategoryDescriptionValueObject(value);
-    const exceptions = await validate(description);
 
-    if (exceptions.length > 0) {
-      throw new CategoryDomainExceptions.DescriptionDoesNotValid();
+    const exception = description.validate();
+    if (exception) {
+      throw exception;
     }
 
     return description;
+  }
+
+  validate() {
+    const exceptions = validateSync(this);
+
+    if (exceptions.length > 0) {
+      return new CategoryDomainExceptions.DescriptionDoesNotValid();
+    }
   }
 
   constructor(value: string) {

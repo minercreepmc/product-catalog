@@ -13,8 +13,8 @@ import { UploadModule } from './upload.module';
   imports: [
     CreateProductModule,
     UpdateProductModule,
-    CreateCategoryModule,
     GetProductsModule,
+    CreateCategoryModule,
     GetCategoriesModule,
     GetCategoryModule,
     RemoveProductsModule,

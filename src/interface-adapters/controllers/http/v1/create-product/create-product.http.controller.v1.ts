@@ -30,6 +30,7 @@ import {
   HttpControllerBase,
   HttpControllerBaseOption,
 } from '@base/inteface-adapters/post-http-controller.base';
+import { MultipleExceptions } from '@base/domain';
 
 @Controller('/api/v1/products/create')
 export class V1CreateProductHttpController extends HttpControllerBase<
@@ -79,12 +80,12 @@ export class V1CreateProductHttpController extends HttpControllerBase<
     return match(result, {
       Ok: (response: CreateProductResponseDto) =>
         new V1CreateProductHttpResponse(response),
-      Err: (exception: Error) => {
-        if ((exception as any)?.length > 0) {
-          throw new ConflictException(exception);
+      Err: (e: Error) => {
+        if (e instanceof MultipleExceptions) {
+          throw new ConflictException(e.exceptions);
         }
 
-        throw exception;
+        throw e;
       },
     });
   }

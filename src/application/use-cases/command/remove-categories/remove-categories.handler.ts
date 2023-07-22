@@ -1,44 +1,49 @@
+import { CommandHandlerBase } from '@base/use-cases/command-handler/command-handler.base';
+import { CategoryRemovedDomainEvent } from '@domain-events/category';
 import { CategoryManagementDomainService } from '@domain-services';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { Err, Ok } from 'oxide.ts';
+import { CommandHandler } from '@nestjs/cqrs';
 import {
   RemoveCategoriesCommand,
   RemoveCategoriesResponseDto,
 } from './remove-categories.dto';
 import {
-  RemoveCategoriesResult,
+  RemoveCategoriesSuccess,
   RemoveCategoriesValidator,
+  RemoveCategoriesFailure,
 } from './remove-categories.validator';
 
 @CommandHandler(RemoveCategoriesCommand)
-export class RemoveCategoriesHandler
-  implements ICommandHandler<RemoveCategoriesCommand, RemoveCategoriesResult>
-{
-  @DefaultCatch((err) => Err(err))
-  async execute(
-    command: RemoveCategoriesCommand,
-  ): Promise<RemoveCategoriesResult> {
-    const result = await this.validator.validate(command);
+export class RemoveCategoriesHandler extends CommandHandlerBase<
+  RemoveCategoriesCommand,
+  RemoveCategoriesSuccess,
+  RemoveCategoriesFailure
+> {
+  handle(): Promise<CategoryRemovedDomainEvent[]> {
+    return this.categoryManagementService.removeCategories({
+      categoryIds: this.command.ids,
+    });
+  }
+  async validate(): Promise<void> {
+    const result = await this.validator.validate(this.command);
 
     if (result.hasExceptions()) {
-      return Err(result.getExceptions());
+      throw result.getExceptions();
     }
-
-    const categoriesRemoved =
-      await this.categoryManagementService.removeCategories({
-        categoryIds: command.ids,
-      });
-
-    return Ok(
-      new RemoveCategoriesResponseDto({
-        ids: categoriesRemoved.map((event) => event.id.value),
-      }),
-    );
   }
 
+  toResponseDto(
+    data: CategoryRemovedDomainEvent[],
+  ): RemoveCategoriesResponseDto {
+    return new RemoveCategoriesResponseDto({
+      ids: data.map((event) => event.id.value),
+    });
+  }
+
+  protected command: RemoveCategoriesCommand;
   constructor(
     private readonly validator: RemoveCategoriesValidator,
     private readonly categoryManagementService: CategoryManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

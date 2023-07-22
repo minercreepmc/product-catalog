@@ -31,7 +31,6 @@ export class RemoveProductsCommand {
 
   constructor(options: RemoveProductsCommand) {
     this.ids = options.ids;
-    console.log(this.ids);
   }
 }
 

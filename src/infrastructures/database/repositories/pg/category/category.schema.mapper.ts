@@ -24,18 +24,16 @@ export class CategorySchemaMapper extends SchemaMapperBase<
         description && new CategoryDescriptionValueObject(description),
     });
   }
-  toPersistance(domain: CategoryAggregate): Partial<CategorySchema> {
-    return plainToInstance(CategorySchema, this.toQuery(domain));
-  }
-  toQuery(domainQuery: Partial<CategoryAggregate>): Partial<CategorySchema> {
-    const { id, name, description } = domainQuery;
+  toPersistance(domain: Partial<CategoryAggregate>): Partial<CategorySchema> {
+    const { id, name, description } = domain;
 
-    const plainQuery: Partial<CategorySchema> = {
+    console.log(id, name, description);
+    const model: Partial<CategorySchema> = {
       id: id?.value,
       name: name?.value,
       description: description?.value,
     };
 
-    return plainQuery;
+    return plainToInstance(CategorySchema, model);
   }
 }

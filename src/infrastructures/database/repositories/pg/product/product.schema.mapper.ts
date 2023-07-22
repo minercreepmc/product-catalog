@@ -16,7 +16,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
   ProductAggregate,
   ProductSchema
 > {
-  toPersistance(product: ProductAggregate): Partial<ProductSchema> {
+  toPersistance(product: Partial<ProductAggregate>): Partial<ProductSchema> {
     const { id, name, image, price, description } = product;
 
     const model: Partial<ProductSchema> = {
@@ -25,8 +25,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
       price: price?.value,
       description: description?.value,
       image_url: image?.value,
-      //category_id: categoryId?.value,
-      //discount_id: discountId?.value,
+      //category_id: categoryId?.value, discount_id: discountId?.value,
     };
 
     return plainToInstance(ProductSchema, model);
@@ -43,15 +42,5 @@ export class ProductSchemaMapper extends SchemaMapperBase<
       description:
         description && new ProductDescriptionValueObject(description),
     });
-  }
-
-  toQuery(domainQuery?: Partial<ProductAggregate>): Partial<ProductSchema> {
-    return {
-      id: domainQuery?.id?.value,
-      name: domainQuery?.name?.value,
-      price: domainQuery?.price?.value,
-      description: domainQuery?.description?.value,
-      image_url: domainQuery?.image?.value,
-    };
   }
 }

@@ -8,7 +8,6 @@ import {
   CategoryRepositoryPort,
 } from '@domain-interfaces';
 import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
-import { eventBusDiToken, EventBusPort } from '@domain-interfaces/events';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   CategoryIdValueObject,
@@ -34,8 +33,6 @@ export class CategoryManagementDomainService {
     @Inject(categoryRepositoryDiToken)
     private readonly categoryRepository: CategoryRepositoryPort,
     private readonly categoryVerification: CategoryVerificationDomainService,
-    @Inject(eventBusDiToken)
-    private readonly eventBus: EventBusPort,
   ) {}
 
   async doesCategoryExistByName(name: CategoryNameValueObject) {
@@ -47,16 +44,14 @@ export class CategoryManagementDomainService {
   }
 
   async createCategory(options: CreateCategoryOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyCategoryCreationOptions(options);
+    await this.categoryVerification.verifyCategoryCreationOptions(options);
 
-      const categoryAggregate = new CategoryAggregate();
+    const categoryAggregate = new CategoryAggregate();
 
-      const categoryCreated = categoryAggregate.createCategory(options);
-      await this.categoryRepository.create(categoryAggregate);
+    const categoryCreated = categoryAggregate.createCategory(options);
+    await this.categoryRepository.create(categoryAggregate);
 
-      return categoryCreated;
-    });
+    return categoryCreated;
   }
 
   async removeCategory(options: RemoveCategoryServiceOptions) {
@@ -95,10 +90,6 @@ export class CategoryManagementDomainService {
 
       return categoriesRemoved;
     });
-
-    for (const event of events) {
-      this.eventBus.publish(event);
-    }
 
     return events;
   }

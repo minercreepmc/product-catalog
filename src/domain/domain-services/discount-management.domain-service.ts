@@ -1,4 +1,5 @@
 import { DiscountAggregate } from '@aggregates/discount';
+import { DiscountRemovedDomainEvent } from '@domain-events/discount';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import {
   discountRepositoryDiToken,
@@ -27,6 +28,14 @@ export interface UpdateOptions {
   active?: DiscountActiveValueObject;
 }
 
+export interface RemoveDiscountOptions {
+  id: DiscountIdValueObject;
+}
+
+export interface RemoveDiscountsOptions {
+  ids: DiscountIdValueObject[];
+}
+
 @Injectable()
 export class DiscountManagementDomainService {
   async doesDiscountExistByName(
@@ -42,6 +51,18 @@ export class DiscountManagementDomainService {
     console.log(isExist);
 
     return !!isExist;
+  }
+
+  async doesDiscountExistByIds(ids: DiscountIdValueObject[]) {
+    for (const id of ids) {
+      const isExist = await this.discountRepository.findOneById(id);
+
+      if (!isExist) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   async createDiscount(options: CreateOptions) {
@@ -78,6 +99,40 @@ export class DiscountManagementDomainService {
     await this.discountRepository.updateOneById(options.id, discount);
 
     return discountUpdated;
+  }
+
+  async removeDiscount(options: RemoveDiscountOptions) {
+    const isExist = await this.discountRepository.findOneById(options.id);
+
+    if (!isExist) {
+      throw new DiscountDomainExceptions.DoesNotExist();
+    }
+
+    const discount = await this.discountRepository.findOneById(options.id);
+    const discountRemoved = discount.removeDiscount();
+
+    await this.discountRepository.deleteOneById(options.id);
+
+    return discountRemoved;
+  }
+
+  async removeDiscounts(options: RemoveDiscountsOptions) {
+    const { ids } = options;
+    const isExist = await this.doesDiscountExistByIds(ids);
+
+    if (!isExist) {
+      throw new DiscountDomainExceptions.DoesNotExist();
+    }
+
+    const events: DiscountRemovedDomainEvent[] = [];
+    for (const id of ids) {
+      const discount = await this.discountRepository.findOneById(id);
+      const discountRemoved = discount.removeDiscount();
+      await this.discountRepository.deleteOneById(id);
+      events.push(discountRemoved);
+    }
+
+    return events;
   }
 
   constructor(

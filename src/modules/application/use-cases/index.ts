@@ -6,6 +6,7 @@ import { GetCategoriesModule } from './get-categories.module';
 import { GetCategoryModule } from './get-category.module';
 import { GetProductsModule } from './get-products.module';
 import { RemoveCategoriesModule } from './remove-categories.module';
+import { RemoveDiscountsModule } from './remove-discounts.module';
 import { RemoveProductsModule } from './remove-products.module';
 import { UpdateDiscountModule } from './update-discount.module';
 import { UpdateProductModule } from './update-product.module';
@@ -19,6 +20,7 @@ import { UploadModule } from './upload.module';
     CreateCategoryModule,
     CreateDiscountModule,
     UpdateDiscountModule,
+    RemoveDiscountsModule,
     GetCategoriesModule,
     GetCategoryModule,
     RemoveProductsModule,

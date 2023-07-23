@@ -24,13 +24,6 @@ export class CreateCategoryHandler extends CommandHandlerBase<
       description: this.command.description,
     });
   }
-  async validate(): Promise<void> {
-    const result = await this.validator.validate(this.command);
-
-    if (result.hasExceptions()) {
-      throw result.getExceptions();
-    }
-  }
   toResponseDto(data: CategoryCreatedDomainEvent): any {
     return new CreateCategoryResponseDto({
       id: data.id?.value,
@@ -41,9 +34,9 @@ export class CreateCategoryHandler extends CommandHandlerBase<
 
   protected command: any;
   constructor(
-    private readonly validator: CreateCategoryValidator,
+    validator: CreateCategoryValidator,
     private readonly categoryManagementService: CategoryManagementDomainService,
   ) {
-    super();
+    super(validator);
   }
 }

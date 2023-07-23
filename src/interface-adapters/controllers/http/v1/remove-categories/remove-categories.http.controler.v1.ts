@@ -2,7 +2,7 @@ import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
   HttpControllerBaseOption,
-} from '@base/inteface-adapters/post-http-controller.base';
+} from '@base/inteface-adapters';
 import {
   Body,
   ConflictException,
@@ -36,13 +36,6 @@ export class V1RemoveCategoriesHttpController extends HttpControllerBase<
     return new RemoveCategoriesCommand({
       ids: ids && ids.map((id) => new CategoryIdValueObject(id)),
     });
-  }
-  validate(command: RemoveCategoriesCommand): void {
-    const exceptions = command.validate();
-
-    if (exceptions.length > 0) {
-      throw new UnprocessableEntityException(exceptions);
-    }
   }
   extractResult(result: any): V1RemoveCategoriesHttpResponse {
     return match(result, {

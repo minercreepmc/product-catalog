@@ -19,13 +19,6 @@ export class UpdateDiscountHandler extends CommandHandlerBase<
   UpdateDiscountFailure
 > {
   protected command: UpdateDiscountCommand;
-  async validate(): Promise<void> {
-    const result = await this.validator.validate(this.command);
-
-    if (result.hasExceptions()) {
-      throw result.getExceptions();
-    }
-  }
   handle(): Promise<DiscountUpdatedDomainEvent> {
     return this.discountManagementService.updateDiscount(this.command);
   }
@@ -40,9 +33,9 @@ export class UpdateDiscountHandler extends CommandHandlerBase<
   }
 
   constructor(
-    private readonly validator: UpdateDiscountValidator,
+    validator: UpdateDiscountValidator,
     private readonly discountManagementService: DiscountManagementDomainService,
   ) {
-    super();
+    super(validator);
   }
 }

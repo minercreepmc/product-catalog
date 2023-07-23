@@ -22,12 +22,6 @@ export class CreateDiscountHandler extends CommandHandlerBase<
   handle(): Promise<DiscountCreatedDomainEvent> {
     return this.discountManagementService.createDiscount(this.command);
   }
-  async validate(): Promise<void> {
-    const result = await this.validator.validate(this.command);
-    if (result.hasExceptions()) {
-      throw result.getExceptions();
-    }
-  }
   toResponseDto(data: DiscountCreatedDomainEvent): CreateDiscountResponseDto {
     return new CreateDiscountResponseDto({
       id: data.id.value,
@@ -38,9 +32,9 @@ export class CreateDiscountHandler extends CommandHandlerBase<
   }
 
   constructor(
-    private readonly validator: CreateDiscountValidator,
+    validator: CreateDiscountValidator,
     private readonly discountManagementService: DiscountManagementDomainService,
   ) {
-    super();
+    super(validator);
   }
 }

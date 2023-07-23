@@ -18,17 +18,17 @@ export class RemoveCategoriesHandler extends CommandHandlerBase<
   RemoveCategoriesSuccess,
   RemoveCategoriesFailure
 > {
+  constructor(
+    validator: RemoveCategoriesValidator,
+    private readonly categoryManagementService: CategoryManagementDomainService,
+  ) {
+    super(validator);
+  }
+
   handle(): Promise<CategoryRemovedDomainEvent[]> {
     return this.categoryManagementService.removeCategories({
       categoryIds: this.command.ids,
     });
-  }
-  async validate(): Promise<void> {
-    const result = await this.validator.validate(this.command);
-
-    if (result.hasExceptions()) {
-      throw result.getExceptions();
-    }
   }
 
   toResponseDto(
@@ -40,10 +40,4 @@ export class RemoveCategoriesHandler extends CommandHandlerBase<
   }
 
   protected command: RemoveCategoriesCommand;
-  constructor(
-    private readonly validator: RemoveCategoriesValidator,
-    private readonly categoryManagementService: CategoryManagementDomainService,
-  ) {
-    super();
-  }
 }

@@ -1,3 +1,5 @@
+import { CommandBase } from '@base/use-cases';
+import { UnprocessableEntityException } from '@nestjs/common';
 import { ICommandBus } from '@nestjs/cqrs';
 
 export interface HttpControllerBaseOption<Request> {
@@ -6,7 +8,11 @@ export interface HttpControllerBaseOption<Request> {
   param?: any;
 }
 
-export abstract class HttpControllerBase<Request, Command, Response> {
+export abstract class HttpControllerBase<
+  Request,
+  Command extends CommandBase,
+  Response,
+> {
   async _execute(
     options: HttpControllerBaseOption<Request>,
   ): Promise<Response> {
@@ -20,7 +26,13 @@ export abstract class HttpControllerBase<Request, Command, Response> {
   }
 
   abstract toCommand(options: HttpControllerBaseOption<Request>): Command;
-  abstract validate(command: Command): void;
+  validate(command: Command): void {
+    const exceptions = command.validate();
+
+    if (exceptions.length > 0) {
+      throw new UnprocessableEntityException(exceptions);
+    }
+  }
   abstract extractResult(result: any): Response;
 
   constructor(private readonly commandBus: ICommandBus) {}

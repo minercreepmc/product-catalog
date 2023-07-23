@@ -21,7 +21,7 @@ import { V1CreateCategoryHttpResponse } from './create-category.http.response.v1
 import {
   HttpControllerBase,
   HttpControllerBaseOption,
-} from '@base/inteface-adapters/post-http-controller.base';
+} from '@base/inteface-adapters';
 
 @Controller('/api/v1/categories/create')
 export class V1CreateCategoryHttpController extends HttpControllerBase<

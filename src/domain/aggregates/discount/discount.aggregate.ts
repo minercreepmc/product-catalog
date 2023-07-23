@@ -1,6 +1,7 @@
 import { AggregateRootBase } from '@base/domain';
 import {
   DiscountCreatedDomainEvent,
+  DiscountRemovedDomainEvent,
   DiscountUpdatedDomainEvent,
 } from '@domain-events/discount';
 import {
@@ -96,6 +97,13 @@ export class DiscountAggregate
       description: this.description,
       percentage: this.percentage,
       active: this.active,
+    });
+  }
+
+  removeDiscount() {
+    this.active = new DiscountActiveValueObject(false);
+    return new DiscountRemovedDomainEvent({
+      id: this.id,
     });
   }
 }

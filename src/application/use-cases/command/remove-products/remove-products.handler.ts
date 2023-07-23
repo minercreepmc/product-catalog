@@ -22,13 +22,6 @@ export class RemoveProductsHandler extends CommandHandlerBase<
     return this.productManagementService.removeProducts(this.command.ids);
   }
 
-  async validate(): Promise<void> {
-    const result = await this.validator.validate(this.command);
-
-    if (result.hasExceptions()) {
-      throw result.getExceptions();
-    }
-  }
   toResponseDto(data: ProductRemovedDomainEvent[]): RemoveProductsSuccess {
     return new RemoveProductsResponseDto({
       ids: data.map((event) => event.id.value),
@@ -37,9 +30,9 @@ export class RemoveProductsHandler extends CommandHandlerBase<
 
   protected command: RemoveProductsCommand;
   constructor(
-    private readonly validator: RemoveProductsValidator,
+    validator: RemoveProductsValidator,
     private readonly productManagementService: ProductManagementDomainService,
   ) {
-    super();
+    super(validator);
   }
 }

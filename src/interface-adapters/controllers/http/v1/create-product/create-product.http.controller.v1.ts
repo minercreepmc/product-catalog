@@ -28,7 +28,7 @@ import { V1CreateProductHttpResponse } from './create-product.http.response.v1';
 import {
   HttpControllerBase,
   HttpControllerBaseOption,
-} from '@base/inteface-adapters/post-http-controller.base';
+} from '@base/inteface-adapters';
 import { MultipleExceptions } from '@base/domain';
 
 @Controller('/api/v1/products/create')

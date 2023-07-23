@@ -28,12 +28,6 @@ export class UpdateProductHandler extends CommandHandlerBase<
     }
     return this.updateProduct(imageUrl);
   }
-  async validate(): Promise<void> {
-    const result = await this.validator.validate(this.command);
-    if (result.hasExceptions()) {
-      throw result.getExceptions();
-    }
-  }
 
   toResponseDto(event: ProductUpdatedDomainEvent): UpdateProductResponseDto {
     return new UpdateProductResponseDto({
@@ -72,10 +66,10 @@ export class UpdateProductHandler extends CommandHandlerBase<
 
   protected command: UpdateProductCommand;
   constructor(
-    private readonly validator: UpdateProductValidator,
+    validator: UpdateProductValidator,
     private readonly uploadService: UploadService,
     private readonly productManagementService: ProductManagementDomainService,
   ) {
-    super();
+    super(validator);
   }
 }

@@ -1,11 +1,13 @@
+import { ID } from '@base/domain';
 import { ValueObjectBase } from '@base/domain/value-object.base';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
-import { IsNotEmpty, IsString, validateSync } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString, validateSync } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 
-export class DiscountIdValueObject implements ValueObjectBase {
-  @IsNotEmpty()
+export class DiscountIdValueObject implements ValueObjectBase, ID {
+  @IsDefined()
   @IsString()
+  @IsNotEmpty()
   readonly value: string;
 
   static create(value?: string) {
@@ -21,6 +23,8 @@ export class DiscountIdValueObject implements ValueObjectBase {
 
   validate() {
     const exceptions = validateSync(this);
+    console.log(this.value);
+    console.log(exceptions);
 
     if (exceptions.length > 0) {
       return new DiscountDomainExceptions.IdDoesNotValid();
@@ -28,6 +32,6 @@ export class DiscountIdValueObject implements ValueObjectBase {
   }
 
   constructor(value?: string) {
-    this.value = value || uuidv4();
+    this.value = value ?? uuidv4();
   }
 }

@@ -2,7 +2,7 @@ import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
   HttpControllerBaseOption,
-} from '@base/inteface-adapters/post-http-controller.base';
+} from '@base/inteface-adapters';
 import {
   Body,
   ConflictException,

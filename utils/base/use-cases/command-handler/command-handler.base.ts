@@ -1,7 +1,9 @@
 import { DomainExceptionBase, MultipleExceptions } from '@base/domain';
+import { ConflictException } from '@nestjs/common';
 import { ICommandHandler } from '@nestjs/cqrs';
 import { Catch, DefaultCatch } from 'catch-decorator-ts';
 import { Err, Ok, Result } from 'oxide.ts';
+import { ValidatorBase } from '../validator.base';
 
 export abstract class CommandHandlerBase<
   Command,
@@ -23,6 +25,14 @@ export abstract class CommandHandlerBase<
 
   protected abstract command: Command;
   abstract handle(): Promise<any>;
-  abstract validate(): Promise<void>;
+  async validate(): Promise<void> {
+    const result = await this.validator.validate(this.command);
+
+    if (result.hasExceptions()) {
+      throw result.getExceptions();
+    }
+  }
   abstract toResponseDto(data: any): Success;
+
+  constructor(protected validator: ValidatorBase<Command, Failure>) {}
 }

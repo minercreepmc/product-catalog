@@ -32,13 +32,6 @@ export class CreateProductHandler extends CommandHandlerBase<
     return this.createProduct(imageUrl);
   }
 
-  async validate(): Promise<void> {
-    const result = await this.validator.validate(this.command);
-
-    if (result.hasExceptions()) {
-      throw result.getExceptions();
-    }
-  }
   toResponseDto(data: ProductCreatedDomainEvent): CreateProductResponseDto {
     return new CreateProductResponseDto({
       id: data.id?.value,
@@ -71,10 +64,10 @@ export class CreateProductHandler extends CommandHandlerBase<
 
   protected command: CreateProductCommand;
   constructor(
-    private readonly validator: CreateProductValidator,
+    validator: CreateProductValidator,
     private readonly uploadService: UploadService,
     private readonly productManagementService: ProductManagementDomainService,
   ) {
-    super();
+    super(validator);
   }
 }

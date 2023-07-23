@@ -1,25 +1,8 @@
-import { v4 as uuidv4 } from 'uuid';
-import { ID, ValueObjectBase } from '@base/domain';
-import { IsDefined, IsNotEmpty, IsString, validateSync } from 'class-validator';
+import { ID } from '@base/domain';
+import { validateSync } from 'class-validator';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 
-export class CategoryIdValueObject implements ID, ValueObjectBase {
-  @IsDefined()
-  @IsString()
-  @IsNotEmpty()
-  readonly value: string;
-
-  static create(value?: string) {
-    const id = new CategoryIdValueObject(value);
-
-    const exception = id.validate();
-    if (exception) {
-      throw exception;
-    }
-
-    return id;
-  }
-
+export class CategoryIdValueObject extends ID {
   validate?() {
     const exceptions = validateSync(this);
 
@@ -29,6 +12,6 @@ export class CategoryIdValueObject implements ID, ValueObjectBase {
   }
 
   constructor(value?: string) {
-    this.value = value ?? uuidv4();
+    super(value);
   }
 }

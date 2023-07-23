@@ -1,23 +1,8 @@
+import { ID } from '@base/domain';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { IsDefined, IsString, validateSync } from 'class-validator';
-import { v4 as uuidv4 } from 'uuid';
+import { validateSync } from 'class-validator';
 
-export class ProductIdValueObject {
-  @IsDefined()
-  @IsString()
-  readonly value: string;
-
-  static create(value?: string) {
-    const id = new ProductIdValueObject(value);
-
-    const exception = id.validate();
-    if (exception) {
-      throw exception;
-    }
-
-    return id;
-  }
-
+export class ProductIdValueObject extends ID {
   validate() {
     const exceptions = validateSync(this);
 
@@ -27,6 +12,6 @@ export class ProductIdValueObject {
   }
 
   constructor(value?: string) {
-    this.value = value ?? uuidv4();
+    super(value);
   }
 }

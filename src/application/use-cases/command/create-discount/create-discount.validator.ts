@@ -31,7 +31,7 @@ export class CreateDiscountValidator
   }
 
   private async nameMustBeUnique(note: Notification<CreateDiscountFailure>) {
-    const isExist = await this.discountManagement.isDiscountExistByName(
+    const isExist = await this.discountManagement.doesDiscountExistByName(
       this.command.name,
     );
 

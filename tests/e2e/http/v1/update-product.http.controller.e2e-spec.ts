@@ -14,7 +14,6 @@ import {
   randomString,
 } from '@utils/functions';
 import * as request from 'supertest';
-import { v5 as uuid } from 'uuid';
 
 describe('V1UpdateProductHttpController (e2e)', () => {
   let app: INestApplication;

@@ -26,10 +26,12 @@ export class CreateDiscountCommand implements CommandBase {
   }
 }
 export class CreateDiscountResponseDto {
+  id: string;
   name: string;
   description?: string;
   percentage: number;
   constructor(options: CreateDiscountResponseDto) {
+    this.id = options.id;
     this.name = options.name;
     this.description = options.description;
     this.percentage = options.percentage;

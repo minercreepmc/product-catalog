@@ -30,6 +30,7 @@ export class CreateDiscountHandler extends CommandHandlerBase<
   }
   toResponseDto(data: DiscountCreatedDomainEvent): CreateDiscountResponseDto {
     return new CreateDiscountResponseDto({
+      id: data.id.value,
       name: data.name?.value,
       description: data.description?.value,
       percentage: data.percentage?.value,

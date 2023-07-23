@@ -23,7 +23,6 @@ export class DiscountPercentageValueObject implements ValueObjectBase {
 
   validate?(): DomainExceptionBase {
     const exception = validateSync(this);
-    console.log(exception);
     if (exception.length > 0) {
       return new DiscountDomainExceptions.PercentageDoesNotValid();
     }

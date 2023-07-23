@@ -29,8 +29,17 @@ export interface UpdateOptions {
 
 @Injectable()
 export class DiscountManagementDomainService {
-  async isDiscountExistByName(name: DiscountNameValueObject): Promise<boolean> {
+  async doesDiscountExistByName(
+    name: DiscountNameValueObject,
+  ): Promise<boolean> {
     const isExist = await this.discountRepository.findOneByName(name);
+
+    return !!isExist;
+  }
+
+  async doesDiscountExistById(id: DiscountIdValueObject): Promise<boolean> {
+    const isExist = await this.discountRepository.findOneById(id);
+    console.log(isExist);
 
     return !!isExist;
   }
@@ -56,7 +65,7 @@ export class DiscountManagementDomainService {
   }
 
   async updateDiscount(options: UpdateOptions) {
-    const isExist = await this.discountRepository.findOneByName(options.name);
+    const isExist = await this.discountRepository.findOneById(options.id);
 
     if (!isExist) {
       throw new DiscountDomainExceptions.DoesNotExist();

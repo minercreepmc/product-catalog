@@ -32,10 +32,13 @@ export class V1UpdateProductHttpResponse {
   imageUrl?: string;
 
   @ApiProperty()
+  discountId?: string;
+
+  @ApiProperty()
   message: string;
 
   constructor(options: Omit<V1UpdateProductHttpResponse, 'message'>) {
-    const { id, name, price, description, imageUrl } = options;
+    const { id, name, price, description, imageUrl, discountId } = options;
     this.id = id;
     if (name) {
       this.name = name;
@@ -51,6 +54,10 @@ export class V1UpdateProductHttpResponse {
 
     if (imageUrl) {
       this.imageUrl = imageUrl;
+    }
+
+    if (discountId) {
+      this.discountId = discountId;
     }
 
     this.message = 'Product updated successfully';

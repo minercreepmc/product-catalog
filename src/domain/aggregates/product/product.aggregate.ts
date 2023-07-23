@@ -29,7 +29,7 @@ export class ProductAggregate
       this.price = options.price;
       this.image = options.image;
       this.categoryId = options.categoryId;
-      //this.discountId = options.discountId;
+      this.discountId = options.discountId;
     } else {
       this.id = new ProductIdValueObject();
     }
@@ -77,12 +77,17 @@ export class ProductAggregate
       this.image = options.image;
     }
 
+    if (options.discountId) {
+      this.discountId = options.discountId;
+    }
+
     return new ProductUpdatedDomainEvent({
       id: this.id,
       name: this.name,
       price: this.price,
       description: this.description,
       image: this.image,
+      discountId: this.discountId,
     });
   }
 
@@ -93,6 +98,7 @@ export class ProductAggregate
       price: this.price,
       description: this.description,
       image: this.image,
+      discountId: this.discountId,
     });
   }
 }

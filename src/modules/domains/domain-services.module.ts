@@ -2,6 +2,7 @@ import { eventBusDiToken } from '@domain-interfaces/events';
 import {
   CategoryManagementDomainService,
   CategoryVerificationDomainService,
+  DiscountManagementDomainService,
   ProductManagementDomainService,
 } from '@domain-services';
 import { EventBusAdapter } from '@infrastructures/events';
@@ -20,11 +21,13 @@ const sharedModules = [MediatorModule];
     CategoryManagementDomainService,
     CategoryVerificationDomainService,
     ProductManagementDomainService,
+    DiscountManagementDomainService,
     eventBus,
   ],
   exports: [
     CategoryManagementDomainService,
     CategoryVerificationDomainService,
+    DiscountManagementDomainService,
     ProductManagementDomainService,
   ],
 })

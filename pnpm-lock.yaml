@@ -103,9 +103,6 @@ dependencies:
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
-  sql-template-tag:
-    specifier: ^5.0.3
-    version: 5.0.3
   swagger-ui-express:
     specifier: ^4.6.3
     version: 4.6.3(express@4.18.2)
@@ -8518,11 +8515,6 @@ packages:
 
   /sprintf-js@1.1.2:
     resolution: {integrity: sha512-VE0SOVEHCk7Qc8ulkWw3ntAzXuqf7S2lvwQaDLRnUeIEaKNQJzV6BwmLKhOqT61aGhfUMrXeaBk+oDGCzvhcug==}
-    dev: false
-
-  /sql-template-tag@5.0.3:
-    resolution: {integrity: sha512-LGxasxbVflQlgP5cme4+7zee7LeFGQyILTAnlI6RzxOOPMg/d+n74To0+0TkiYiD+2Hzy8gX6inkgJkQfyNlFQ==}
-    engines: {node: '>=14'}
     dev: false
 
   /sqlstring@2.3.3:

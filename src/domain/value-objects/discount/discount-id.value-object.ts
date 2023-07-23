@@ -1,6 +1,6 @@
 import { ValueObjectBase } from '@base/domain/value-object.base';
-import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import { IsNotEmpty, IsString, validate } from 'class-validator';
+import { DiscountDomainExceptions } from '@domain-exceptions/discount';
+import { IsNotEmpty, IsString, validateSync } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 
 export class DiscountIdValueObject implements ValueObjectBase {
@@ -8,15 +8,23 @@ export class DiscountIdValueObject implements ValueObjectBase {
   @IsString()
   readonly value: string;
 
-  static async create(value?: string) {
+  static create(value?: string) {
     const id = new DiscountIdValueObject(value);
-    const exceptions = await validate(id);
+    const exception = id.validate();
 
-    if (exceptions.length > 0) {
-      throw new CategoryDomainExceptions.IdDoesNotValid();
+    if (exception) {
+      throw exception;
     }
 
     return id;
+  }
+
+  validate() {
+    const exceptions = validateSync(this);
+
+    if (exceptions.length > 0) {
+      return new DiscountDomainExceptions.IdDoesNotValid();
+    }
   }
 
   constructor(value?: string) {

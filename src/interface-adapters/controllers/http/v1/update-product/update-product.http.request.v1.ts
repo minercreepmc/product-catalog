@@ -18,4 +18,7 @@ export class V1UpdateProductHttpRequest {
     required: false,
   })
   image?: Express.Multer.File;
+
+  @ApiProperty()
+  discountId?: string;
 }

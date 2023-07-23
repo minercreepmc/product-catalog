@@ -12,7 +12,6 @@ import {
   V1CreateCategoryHttpRequest,
   V1CreateCategoryHttpResponse,
 } from '@controllers/http/v1';
-import { ProductDomainExceptions } from '@domain-exceptions/product';
 
 describe('V1CreateCategoryHttpController (e2e)', () => {
   let app: INestApplication;

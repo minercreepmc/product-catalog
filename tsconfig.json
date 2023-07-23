@@ -74,7 +74,8 @@
     "./utils/**/*",
     "./shared/**/*",
     "./jest.config.ts",
-    "./tsconfig.json"
+    "./tsconfig.json",
+    "./.eslintrc"
   ],
   "exclude": ["node_modules", "dist"]
 }

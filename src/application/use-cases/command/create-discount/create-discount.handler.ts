@@ -1,42 +1,45 @@
-// import { DiscountManagementDomainService } from '@domain-services';
-// import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-// import { Err, Ok } from 'oxide.ts';
-// import {
-//   CreateDiscountCommand,
-//   CreateDiscountResponseDto,
-// } from './create-discount.dto';
-// import {
-//   CreateDiscountResult,
-//   CreateDiscountValidator,
-// } from './create-discount.validator';
-// import { DefaultCatch } from 'catch-decorator-ts';
-//
-// @CommandHandler(CreateDiscountCommand)
-// export class CreateDiscountHandler
-//   implements ICommandHandler<CreateDiscountCommand, CreateDiscountResult>
-// {
-//   @DefaultCatch((err) => Err(err))
-//   async execute(command: CreateDiscountCommand): Promise<CreateDiscountResult> {
-//     const result = this.validator.validate(command);
-//     if (result.hasExceptions()) {
-//       return Err(result.getExceptions());
-//     }
-//
-//     const discountCreated = await this.discountManagementService.createDiscount(
-//       {
-//         name: command.name,
-//       },
-//     );
-//
-//     return Ok(
-//       new CreateDiscountResponseDto({
-//         name: discountCreated.name.value,
-//       }),
-//     );
-//   }
-//
-//   constructor(
-//     private readonly validator: CreateDiscountValidator,
-//     private readonly discountManagementService: DiscountManagementDomainService,
-//   ) {}
-// }
+import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandlerBase } from '@base/use-cases/command-handler/command-handler.base';
+import {
+  CreateDiscountCommand,
+  CreateDiscountResponseDto,
+} from './create-discount.dto';
+import {
+  CreateDiscountFailure,
+  CreateDiscountSuccess,
+  CreateDiscountValidator,
+} from './create-discount.validator';
+import { DiscountCreatedDomainEvent } from '@domain-events/discount';
+import { DiscountManagementDomainService } from '@domain-services';
+
+@CommandHandler(CreateDiscountCommand)
+export class CreateDiscountHandler extends CommandHandlerBase<
+  CreateDiscountCommand,
+  CreateDiscountSuccess,
+  CreateDiscountFailure
+> {
+  protected command: CreateDiscountCommand;
+  handle(): Promise<DiscountCreatedDomainEvent> {
+    return this.discountManagementService.createDiscount(this.command);
+  }
+  async validate(): Promise<void> {
+    const result = await this.validator.validate(this.command);
+    if (result.hasExceptions()) {
+      throw result.getExceptions();
+    }
+  }
+  toResponseDto(data: DiscountCreatedDomainEvent): CreateDiscountResponseDto {
+    return new CreateDiscountResponseDto({
+      name: data.name?.value,
+      description: data.description?.value,
+      percentage: data.percentage?.value,
+    });
+  }
+
+  constructor(
+    private readonly validator: CreateDiscountValidator,
+    private readonly discountManagementService: DiscountManagementDomainService,
+  ) {
+    super();
+  }
+}

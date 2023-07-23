@@ -42,6 +42,7 @@ export class UpdateProductHandler extends CommandHandlerBase<
       price: event.price?.value,
       imageUrl: event.image?.value,
       description: event.description?.value,
+      discountId: event.discountId?.value,
     });
   }
 
@@ -64,6 +65,7 @@ export class UpdateProductHandler extends CommandHandlerBase<
         price: this.command.price,
         image: imageUrl,
         description: this.command.description,
+        discountId: this.command.discountId,
       },
     });
   }

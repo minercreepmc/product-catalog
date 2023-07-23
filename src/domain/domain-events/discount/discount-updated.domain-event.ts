@@ -1,14 +1,14 @@
 import { DiscountAggregate } from '@aggregates/discount';
 import { DomainEventBase } from '@base/domain';
 import {
+  DiscountActiveValueObject,
   DiscountDescriptionValueObject,
   DiscountIdValueObject,
   DiscountNameValueObject,
   DiscountPercentageValueObject,
 } from '@value-objects/discount';
-import { DiscountActiveValueObject } from '@value-objects/discount/discount-active.value-object';
 
-interface DiscountCreatedDomainEventDetails {
+export interface DiscountUpdatedDomainEventDetails {
   id: DiscountIdValueObject;
   name: DiscountNameValueObject;
   description?: DiscountDescriptionValueObject;
@@ -16,25 +16,21 @@ interface DiscountCreatedDomainEventDetails {
   active: DiscountActiveValueObject;
 }
 
-export class DiscountCreatedDomainEvent
-  extends DomainEventBase
-  implements DiscountCreatedDomainEventDetails
-{
-  constructor(options: DiscountCreatedDomainEventDetails) {
+export class DiscountUpdatedDomainEvent extends DomainEventBase {
+  id: DiscountIdValueObject;
+  name: DiscountNameValueObject;
+  description?: DiscountDescriptionValueObject;
+  percentage: DiscountPercentageValueObject;
+  active: DiscountActiveValueObject;
+  constructor(options: DiscountUpdatedDomainEventDetails) {
     super({
       entityType: DiscountAggregate.name,
-      eventName: DiscountCreatedDomainEvent.name,
+      eventName: DiscountUpdatedDomainEvent.name,
     });
-
     this.id = options.id;
     this.name = options.name;
     this.description = options.description;
     this.percentage = options.percentage;
     this.active = options.active;
   }
-  readonly id: DiscountIdValueObject;
-  readonly name: DiscountNameValueObject;
-  readonly description: DiscountDescriptionValueObject;
-  readonly percentage: DiscountPercentageValueObject;
-  readonly active: DiscountActiveValueObject;
 }

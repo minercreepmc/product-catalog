@@ -1,5 +1,6 @@
 import { DomainExceptionBase } from '@base/domain';
 import { CommandBase } from '@base/use-cases/command-handler/command.base';
+import { DiscountIdValueObject } from '@value-objects/discount';
 import { FileValueObject } from '@value-objects/file.value-object';
 import {
   ProductDescriptionValueObject,
@@ -14,6 +15,7 @@ export class UpdateProductCommand implements CommandBase {
   price?: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
   image?: FileValueObject;
+  discountId?: DiscountIdValueObject;
 
   validate?(): DomainExceptionBase[] {
     return [
@@ -22,6 +24,7 @@ export class UpdateProductCommand implements CommandBase {
       this.price?.validate?.(),
       this.description?.validate?.(),
       this.image?.validate?.(),
+      this.discountId?.validate?.(),
     ].filter((e) => e);
   }
 
@@ -40,6 +43,7 @@ export class UpdateProductResponseDto {
   price?: number;
   description?: string;
   imageUrl?: string;
+  discountId?: string;
 
   constructor(dto: UpdateProductResponseDto) {
     this.id = dto.id;
@@ -54,6 +58,9 @@ export class UpdateProductResponseDto {
     }
     if (dto.imageUrl) {
       this.imageUrl = dto.imageUrl;
+    }
+    if (dto.discountId) {
+      this.discountId = dto.discountId;
     }
   }
 }

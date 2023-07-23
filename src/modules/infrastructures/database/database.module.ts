@@ -14,12 +14,17 @@ import {
   ReadOnlyCategoryRepository,
 } from '@database/repositories/pg/category';
 import {
+  DiscountRepository,
+  DiscountSchemaMapper,
+} from '@database/repositories/pg/discount';
+import {
   ProductRepository,
   ProductSchemaMapper,
   ReadOnlyProductRepository,
 } from '@database/repositories/pg/product';
 import {
   categoryRepositoryDiToken,
+  discountRepositoryDiToken,
   productRepositoryDiToken,
 } from '@domain-interfaces';
 import { unitOfWorkDiToken } from '@domain-interfaces';
@@ -34,6 +39,10 @@ const repositories: Provider[] = [
   {
     provide: productRepositoryDiToken,
     useClass: ProductRepository,
+  },
+  {
+    provide: discountRepositoryDiToken,
+    useClass: DiscountRepository,
   },
   {
     provide: readOnlyProductRepositoryDiToken,
@@ -63,7 +72,11 @@ const poolProvider: Provider = {
   },
 };
 
-const mappers: Provider[] = [ProductSchemaMapper, CategorySchemaMapper];
+const mappers: Provider[] = [
+  ProductSchemaMapper,
+  CategorySchemaMapper,
+  DiscountSchemaMapper,
+];
 
 @Global()
 @Module({

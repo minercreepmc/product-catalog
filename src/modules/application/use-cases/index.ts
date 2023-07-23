@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CreateCategoryModule } from './create-category.module';
+import { CreateDiscountModule } from './create-discount.module';
 import { CreateProductModule } from './create-product.module';
 import { GetCategoriesModule } from './get-categories.module';
 import { GetCategoryModule } from './get-category.module';
@@ -15,6 +16,7 @@ import { UploadModule } from './upload.module';
     UpdateProductModule,
     GetProductsModule,
     CreateCategoryModule,
+    CreateDiscountModule,
     GetCategoriesModule,
     GetCategoryModule,
     RemoveProductsModule,

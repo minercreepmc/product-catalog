@@ -1,35 +1,78 @@
-// import { DiscountAggregate } from '@aggregates/discount';
-// import { DiscountCreatedDomainEvent } from '@domain-events/discount';
-// import { DiscountDomainExceptions } from '@domain-exceptions/discount';
-// import { Inject } from '@nestjs/common';
-// import { DiscountNameValueObject } from '@value-objects/discount';
-//
-// export interface CreateOptions {
-//   name: DiscountNameValueObject;
-// }
-//
-// export class DiscountManagementDomainService {
-//   async createDiscount(
-//     options: CreateOptions,
-//   ): Promise<DiscountCreatedDomainEvent> {
-//     if (this.discountRepository.findOneByName(options.name)) {
-//       throw new DiscountDomainExceptions.AlreadyExist();
-//     }
-//     const aggregate = new DiscountAggregate();
-//
-//     const event = aggregate.createDiscount(options);
-//
-//     await this.discountRepository.create(aggregate);
-//
-//     return event;
-//   }
-//
-//   async isDiscountExistByName(name: DiscountNameValueObject): Promise<boolean> {
-//     return Boolean(this.discountRepository.findOneByName(name));
-//   }
-//
-//   constructor(
-//     @Inject(discountRepositoryDiToken)
-//     private readonly discountRepository: DiscountRepositoryPort,
-//   ) {}
-// }
+import { DiscountAggregate } from '@aggregates/discount';
+import { DiscountDomainExceptions } from '@domain-exceptions/discount';
+import {
+  discountRepositoryDiToken,
+  DiscountRepositoryPort,
+} from '@domain-interfaces';
+import { Inject, Injectable } from '@nestjs/common';
+import {
+  DiscountActiveValueObject,
+  DiscountDescriptionValueObject,
+  DiscountIdValueObject,
+  DiscountNameValueObject,
+  DiscountPercentageValueObject,
+} from '@value-objects/discount';
+
+export interface CreateOptions {
+  name: DiscountNameValueObject;
+  description?: DiscountDescriptionValueObject;
+  percentage: DiscountPercentageValueObject;
+}
+
+export interface UpdateOptions {
+  id: DiscountIdValueObject;
+  name?: DiscountNameValueObject;
+  description?: DiscountDescriptionValueObject;
+  percentage?: DiscountPercentageValueObject;
+  active?: DiscountActiveValueObject;
+}
+
+@Injectable()
+export class DiscountManagementDomainService {
+  async isDiscountExistByName(name: DiscountNameValueObject): Promise<boolean> {
+    const isExist = await this.discountRepository.findOneByName(name);
+
+    return !!isExist;
+  }
+
+  async createDiscount(options: CreateOptions) {
+    const isExist = await this.discountRepository.findOneByName(options.name);
+
+    if (isExist) {
+      throw new DiscountDomainExceptions.AlreadyExist();
+    }
+
+    const discount = new DiscountAggregate();
+
+    const discountCreated = discount.createDiscount({
+      name: options.name,
+      description: options.description,
+      percentage: options.percentage,
+    });
+
+    await this.discountRepository.create(discount);
+
+    return discountCreated;
+  }
+
+  async updateDiscount(options: UpdateOptions) {
+    const isExist = await this.discountRepository.findOneByName(options.name);
+
+    if (!isExist) {
+      throw new DiscountDomainExceptions.DoesNotExist();
+    }
+
+    const discount = await this.discountRepository.findOneById(options.id);
+
+    const discountUpdated = discount.updateDiscount(options);
+
+    await this.discountRepository.updateOneById(options.id, discount);
+
+    return discountUpdated;
+  }
+
+  constructor(
+    @Inject(discountRepositoryDiToken)
+    private readonly discountRepository: DiscountRepositoryPort,
+  ) {}
+}

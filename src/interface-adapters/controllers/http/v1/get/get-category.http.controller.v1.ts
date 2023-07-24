@@ -1,9 +1,12 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { GetCategoryQuery } from '@use-cases/query/category/get-category';
+import {
+  GetCategoryQuery,
+  GetCategoryResponseDto,
+} from '@use-cases/query/category/get-category';
 import { v1ApiEndpoints } from '../endpoint.v1';
-import { V1GetCategoryHttpResponse } from './get-category.http.response.v1';
 
+export type V1GetCategoryHttpResponse = GetCategoryResponseDto;
 @Controller(v1ApiEndpoints.getCategory)
 export class V1GetCategoryHttpController {
   @Get()

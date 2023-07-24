@@ -1,9 +1,9 @@
 import {
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
+  V1GetProductHttpResponse,
 } from '@controllers/http/v1';
 import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
-import { V1GetProductHttpResponse } from '@controllers/http/v1/get-product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';

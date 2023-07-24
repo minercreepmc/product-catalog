@@ -1,5 +1,7 @@
-import { V1GetProductHttpController } from '@controllers/http/v1/get-product';
-import { V1GetProductsHttpController } from '@controllers/http/v1/get-products';
+import {
+  V1GetProductHttpController,
+  V1GetProductsHttpController,
+} from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import {

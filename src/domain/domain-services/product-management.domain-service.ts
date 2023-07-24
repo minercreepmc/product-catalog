@@ -139,7 +139,6 @@ export class ProductManagementDomainService {
 
   private async findDiscountOrThrow(id: DiscountIdValueObject) {
     const discount = await this.discountRepository.findOneById(id);
-    console.log(discount);
     if (!discount) throw new DiscountDomainExceptions.DoesNotExist();
     return discount;
   }

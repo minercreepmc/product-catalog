@@ -27,7 +27,6 @@ export class CategorySchemaMapper extends SchemaMapperBase<
   toPersistance(domain: Partial<CategoryAggregate>): Partial<CategorySchema> {
     const { id, name, description } = domain;
 
-    console.log(id, name, description);
     const model: Partial<CategorySchema> = {
       id: id?.value,
       name: name?.value,

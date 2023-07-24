@@ -15,6 +15,9 @@ const knexConfig: Knex.Config = {
   migrations: {
     directory: '../../src/infrastructures/database/migrations',
   },
+  seeds: {
+    directory: '../../src/infrastructures/database/seeds',
+  },
 };
 
 module.exports = knexConfig;

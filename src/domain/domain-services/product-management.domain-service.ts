@@ -8,13 +8,17 @@ import {
   ProductRemovedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
+import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
+  discountRepositoryDiToken,
+  DiscountRepositoryPort,
   productRepositoryDiToken,
   ProductRepositoryPort,
 } from '@domain-interfaces';
 import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
+import { DiscountIdValueObject } from '@value-objects/discount';
 import {
   ProductIdValueObject,
   ProductNameValueObject,
@@ -31,6 +35,8 @@ export class ProductManagementDomainService {
   constructor(
     @Inject(productRepositoryDiToken)
     private readonly productRepository: ProductRepositoryPort,
+    @Inject(discountRepositoryDiToken)
+    private readonly discountRepository: DiscountRepositoryPort,
     @Inject(unitOfWorkDiToken)
     private readonly unitOfWork: UnitOfWorkPort,
   ) {}
@@ -66,6 +72,7 @@ export class ProductManagementDomainService {
     if (product) {
       throw new ProductDomainExceptions.AlreadyExist();
     }
+
     product = new ProductAggregate();
     const productCreatedEvent = product.createProduct(options);
     await this.productRepository.create(product);
@@ -75,14 +82,14 @@ export class ProductManagementDomainService {
   async updateProduct(
     options: UpdateProductDomainServiceOptions,
   ): Promise<ProductUpdatedDomainEvent> {
-    const product = await this.productRepository.findOneById(options.id);
+    const { id: productId, payload } = options;
+    const { discountId } = payload;
 
-    if (!product) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
+    const product = await this.findProductOrThrow(productId);
+    if (discountId) await this.findDiscountOrThrow(discountId);
 
-    const productUpdatedEvent = product.updateProduct(options.payload);
-    await this.productRepository.updateOneById(options.id, product);
+    const productUpdatedEvent = product.updateProduct(payload);
+    await this.productRepository.updateOneById(productId, product);
     return productUpdatedEvent;
   }
 
@@ -122,5 +129,18 @@ export class ProductManagementDomainService {
     }
 
     return productsRemoved;
+  }
+
+  private async findProductOrThrow(id: ProductIdValueObject) {
+    const product = await this.productRepository.findOneById(id);
+    if (!product) throw new ProductDomainExceptions.DoesNotExist();
+    return product;
+  }
+
+  private async findDiscountOrThrow(id: DiscountIdValueObject) {
+    const discount = await this.discountRepository.findOneById(id);
+    console.log(discount);
+    if (!discount) throw new DiscountDomainExceptions.DoesNotExist();
+    return discount;
   }
 }

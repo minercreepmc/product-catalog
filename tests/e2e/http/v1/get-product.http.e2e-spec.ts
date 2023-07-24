@@ -1,19 +1,19 @@
 import {
-  V1CreateCategoryHttpRequest,
-  V1CreateCategoryHttpResponse,
+  V1CreateProductHttpRequest,
+  V1CreateProductHttpResponse,
 } from '@controllers/http/v1';
 import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
-import { V1GetCategoryHttpResponse } from '@controllers/http/v1/get-category';
+import { V1GetProductHttpResponse } from '@controllers/http/v1/get-product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { generateRandomCategoryName } from '@utils/functions';
+import { randomString } from '@utils/functions';
 import * as request from 'supertest';
 
-describe('Get category', () => {
+describe('Get product', () => {
   let app: INestApplication;
-  const getCategoryUrl = v1ApiEndpoints.getCategory;
-  const createCategoryUrl = v1ApiEndpoints.createCategory;
+  const getProductUrl = v1ApiEndpoints.getProduct;
+  const createProductUrl = v1ApiEndpoints.createProduct;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -28,25 +28,26 @@ describe('Get category', () => {
     await app.close();
   });
 
-  it('should get a category already created', async () => {
-    const createCategoryRequest: V1CreateCategoryHttpRequest = {
-      name: generateRandomCategoryName(),
+  it('should get a product already created', async () => {
+    const createProductRequest: V1CreateProductHttpRequest = {
+      name: randomString(),
+      price: 12,
     };
 
     const createResponse = await request(app.getHttpServer())
-      .post(createCategoryUrl)
+      .post(createProductUrl)
       .set('Accept', 'application/json')
-      .send(createCategoryRequest)
+      .send(createProductRequest)
       .expect(HttpStatus.CREATED);
 
-    const createBody = createResponse.body as V1CreateCategoryHttpResponse;
+    const createBody = createResponse.body as V1CreateProductHttpResponse;
 
     const response = await request(app.getHttpServer())
-      .get(getCategoryUrl.replace(':id', createBody.id))
+      .get(getProductUrl.replace(':id', createBody.id))
       .set('Accept', 'application/json')
       .expect(HttpStatus.OK);
 
-    const body: V1GetCategoryHttpResponse = response.body;
+    const body: V1GetProductHttpResponse = response.body;
 
     expect(body.name).toBe(createBody.name);
   });

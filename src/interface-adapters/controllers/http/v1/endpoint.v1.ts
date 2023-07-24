@@ -5,6 +5,7 @@ export const v1ApiEndpoints = {
   updateProduct: `${prefix}/products/:id`,
   removeProducts: `${prefix}/products/remove`,
   getProducts: `${prefix}/products`,
+  getProduct: `${prefix}/products/:id`,
   createDiscount: `${prefix}/discount`,
   updateDiscount: `${prefix}/discount/:id`,
   removeDiscounts: `${prefix}/discount/remove`,

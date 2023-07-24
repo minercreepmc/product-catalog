@@ -1,4 +1,4 @@
-import { ReadOnlyCategoryRepositoryPort } from '@application@/interface/category';
+import { ReadOnlyCategoryRepositoryPort } from '@application/interface/category';
 import { ReadonlyRepositoryBase } from '@base/database/repositories/pg';
 import { PaginationParams } from '@base/use-cases/query-handler';
 import { DatabaseService } from '@config/pg';

@@ -26,7 +26,20 @@ export class UpdateProductHandler extends CommandHandlerBase<
     if (this.command.image) {
       imageUrl = await this.uploadImage();
     }
-    return this.updateProduct(imageUrl);
+
+    const { command } = this;
+    const { id, name, price, description, discountId } = command;
+
+    return this.productManagementService.updateProduct({
+      id,
+      payload: {
+        name,
+        price,
+        image: imageUrl,
+        description,
+        discountId,
+      },
+    });
   }
 
   toResponseDto(event: ProductUpdatedDomainEvent): UpdateProductResponseDto {
@@ -47,21 +60,6 @@ export class UpdateProductHandler extends CommandHandlerBase<
     const url = await this.uploadService.upload(this.command.image);
     const imageUrl = ProductImageUrlValueObject.create(url);
     return imageUrl;
-  }
-
-  private updateProduct(
-    imageUrl?: ProductImageUrlValueObject,
-  ): Promise<ProductUpdatedDomainEvent> {
-    return this.productManagementService.updateProduct({
-      id: this.command.id,
-      payload: {
-        name: this.command.name,
-        price: this.command.price,
-        image: imageUrl,
-        description: this.command.description,
-        discountId: this.command.discountId,
-      },
-    });
   }
 
   protected command: UpdateProductCommand;

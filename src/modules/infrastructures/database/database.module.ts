@@ -1,5 +1,5 @@
-import { readonlyCategoryRepositoryDiToken } from '@application@/interface/category';
-import { readOnlyProductRepositoryDiToken } from '@application@/interface/product';
+import { readonlyCategoryRepositoryDiToken } from '@application/interface/category';
+import { readOnlyProductRepositoryDiToken } from '@application/interface/product';
 import { UnitOfWork } from '@base/database/unit-of-work';
 import {
   ConfigurableDatabaseModule,

@@ -15,7 +15,7 @@ export interface ProductUpdatedDomainEventDetails {
   readonly price?: ProductPriceValueObject;
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
-  readonly discountId: DiscountIdValueObject;
+  readonly discountId?: DiscountIdValueObject;
 }
 
 export class ProductUpdatedDomainEvent

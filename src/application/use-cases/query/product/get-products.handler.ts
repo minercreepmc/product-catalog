@@ -1,11 +1,17 @@
 import {
   readOnlyProductRepositoryDiToken,
   ReadonlyProductRepositoryPort,
-} from '@application@/interface/product';
+} from '@application/interface/product';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { ProductViewModel } from '../product.model';
-import { GetProductsQuery } from './get-products.query';
+import { ProductViewModel } from './product.model';
+import { ProductQuery } from './product.query';
+
+export class GetProductsQuery extends ProductQuery {
+  constructor(options: GetProductsQuery) {
+    super(options);
+  }
+}
 
 export type GetProductsResponseDto = {
   products: ProductViewModel[];

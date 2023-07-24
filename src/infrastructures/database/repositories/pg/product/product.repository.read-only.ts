@@ -1,4 +1,4 @@
-import { ReadonlyProductRepositoryPort } from '@application@/interface/product';
+import { ReadonlyProductRepositoryPort } from '@application/interface/product';
 import { ReadonlyRepositoryBase } from '@base/database/repositories/pg';
 import { PaginationParams } from '@base/use-cases/query-handler';
 import { DatabaseService } from '@config/pg';

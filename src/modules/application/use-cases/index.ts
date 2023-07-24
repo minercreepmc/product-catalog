@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { CreateCategoryModule } from './create-category.module';
 import { CreateDiscountModule } from './create-discount.module';
 import { CreateProductModule } from './create-product.module';
-import { GetCategoriesModule } from './get-categories.module';
-import { GetCategoryModule } from './get-category.module';
-import { GetProductsModule } from './get-products.module';
+import { CategoryQueryModule, ProductQueryModule } from './query';
 import { RemoveCategoriesModule } from './remove-categories.module';
 import { RemoveDiscountsModule } from './remove-discounts.module';
 import { RemoveProductsModule } from './remove-products.module';
@@ -16,15 +14,14 @@ import { UploadModule } from './upload.module';
   imports: [
     CreateProductModule,
     UpdateProductModule,
-    GetProductsModule,
     CreateCategoryModule,
     CreateDiscountModule,
     UpdateDiscountModule,
     RemoveDiscountsModule,
-    GetCategoriesModule,
-    GetCategoryModule,
     RemoveProductsModule,
     RemoveCategoriesModule,
+    ProductQueryModule,
+    CategoryQueryModule,
     UploadModule,
   ],
 })

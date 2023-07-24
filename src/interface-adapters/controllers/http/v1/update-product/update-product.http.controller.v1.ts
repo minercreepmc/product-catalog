@@ -39,6 +39,23 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
   UpdateProductCommand,
   V1UpdateProductHttpResponse
 > {
+  @Put()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  async execute(
+    @UploadedFile() image: Express.Multer.File,
+    @Body() request: V1UpdateProductHttpRequest,
+    @Param('id') id: string,
+  ): Promise<any> {
+    return super._execute({
+      request,
+      image,
+      param: {
+        id,
+      },
+    });
+  }
+
   toCommand(
     options: HttpControllerBaseOption<V1UpdateProductHttpRequest>,
   ): UpdateProductCommand {
@@ -61,6 +78,7 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
       price: price && new ProductPriceValueObject(price),
       discountId: discountId && new DiscountIdValueObject(discountId),
     });
+    console.log(command);
 
     return command;
   }
@@ -83,23 +101,6 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
       },
     });
   }
-  @Put()
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('image'))
-  async execute(
-    @UploadedFile() image: Express.Multer.File,
-    @Body() request: V1UpdateProductHttpRequest,
-    @Param('id') id: string,
-  ): Promise<any> {
-    return super._execute({
-      request,
-      image,
-      param: {
-        id,
-      },
-    });
-  }
-
   constructor(commandBus: CommandBus) {
     super(commandBus);
   }

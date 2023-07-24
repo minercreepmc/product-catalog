@@ -3,7 +3,7 @@ import { UserAggregate } from '@aggregates/user';
 import {
   userRepositoryDiToken,
   UserRepositoryPort,
-} from '@application@/interface/user';
+} from '@application/interface/user';
 import { Inject } from '@nestjs/common';
 import {
   UserNameValueObject,

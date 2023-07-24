@@ -76,7 +76,6 @@ export class ProductAggregate
     if (options.image) {
       this.image = options.image;
     }
-
     if (options.discountId) {
       this.discountId = options.discountId;
     }

@@ -1,4 +1,4 @@
-import { UserRepositoryPort } from '@application@/interface/user';
+import { UserRepositoryPort } from '@application/interface/user';
 import { ApplicationRepositoryBase } from '@base/database/repositories/pg';
 import { DatabaseService } from '@config/pg';
 import { Injectable } from '@nestjs/common';

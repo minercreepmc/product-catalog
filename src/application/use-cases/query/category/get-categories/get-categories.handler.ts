@@ -1,7 +1,7 @@
 import {
   readonlyCategoryRepositoryDiToken,
   ReadOnlyCategoryRepositoryPort,
-} from '@application@/interface/category';
+} from '@application/interface/category';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { CategoryViewModel } from '../category.model';

@@ -19,10 +19,11 @@ import {
 } from '@use-cases/command/remove-products';
 import { ProductIdValueObject } from '@value-objects/product';
 import { match } from 'oxide.ts';
+import { v1ApiEndpoints } from '../endpoint.v1';
 import { V1RemoveProductsHttpRequest } from './remove-products.http.request.v1';
 import { V1RemoveProductsHttpResponse } from './remove-products.http.response.v1';
 
-@Controller('/api/v1/products/remove')
+@Controller(v1ApiEndpoints.removeProducts)
 export class V1RemoveProductsHttpController extends HttpControllerBase<
   V1RemoveProductsHttpRequest,
   RemoveProductsCommand,

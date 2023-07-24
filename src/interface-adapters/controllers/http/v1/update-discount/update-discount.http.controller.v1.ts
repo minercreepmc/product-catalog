@@ -24,16 +24,17 @@ import {
   DiscountPercentageValueObject,
 } from '@value-objects/discount';
 import { match } from 'oxide.ts';
+import { v1ApiEndpoints } from '../endpoint.v1';
 import { V1UpdateDiscountHttpRequest } from './update-discount.http.request.v1';
 import { V1UpdateDiscountHttpResponse } from './update-discount.http.response.v1';
 
-@Controller('/api/v1/discount')
+@Controller(v1ApiEndpoints.updateDiscount)
 export class V1UpdateDiscountHttpController extends HttpControllerBase<
   V1UpdateDiscountHttpRequest,
   UpdateDiscountCommand,
   V1UpdateDiscountHttpResponse
 > {
-  @Put(':id')
+  @Put()
   execute(
     @Body() request: V1UpdateDiscountHttpRequest,
     @Param('id') id: string,

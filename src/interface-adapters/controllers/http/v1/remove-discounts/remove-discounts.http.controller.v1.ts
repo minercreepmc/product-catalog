@@ -19,10 +19,11 @@ import {
 } from '@use-cases/command/remove-discounts';
 import { DiscountIdValueObject } from '@value-objects/discount';
 import { match } from 'oxide.ts';
+import { v1ApiEndpoints } from '../endpoint.v1';
 import { V1RemoveDiscountsHttpRequest } from './remove-discounts.http.request.v1';
 import { V1RemoveDiscountsHttpResponse } from './remove-discounts.http.response.v1';
 
-@Controller('/api/v1/discount/remove')
+@Controller(v1ApiEndpoints.removeDiscounts)
 export class V1RemoveDiscountsHttpController extends HttpControllerBase<
   V1RemoveDiscountsHttpRequest,
   RemoveDiscountsCommand,

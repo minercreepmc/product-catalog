@@ -30,8 +30,9 @@ import {
   HttpControllerBaseOption,
 } from '@base/inteface-adapters';
 import { MultipleExceptions } from '@base/domain';
+import { v1ApiEndpoints } from '../endpoint.v1';
 
-@Controller('/api/v1/products/create')
+@Controller(v1ApiEndpoints.createProduct)
 export class V1CreateProductHttpController extends HttpControllerBase<
   V1CreateProductHttpRequest,
   CreateProductCommand,

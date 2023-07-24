@@ -21,10 +21,11 @@ import {
   DiscountPercentageValueObject,
 } from '@value-objects/discount';
 import { match } from 'oxide.ts';
+import { v1ApiEndpoints } from '../endpoint.v1';
 import { V1CreateDiscountHttpRequest } from './create-discount.http.request.v1';
 import { V1CreateDiscountHttpResponse } from './create-discount.http.response.v1';
 
-@Controller('/api/v1/discount')
+@Controller(v1ApiEndpoints.createDiscount)
 export class V1CreateDiscountHttpController extends HttpControllerBase<
   V1CreateDiscountHttpRequest,
   CreateDiscountCommand,

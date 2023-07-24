@@ -5,6 +5,6 @@ export class ProductSchema extends SchemaBase {
   price: number;
   description?: string;
   image_url?: string;
+  discount_id?: string;
   //category_id: string;
-  //discount_id: string;
 }

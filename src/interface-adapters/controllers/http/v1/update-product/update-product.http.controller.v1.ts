@@ -29,10 +29,11 @@ import {
   ProductPriceValueObject,
 } from '@value-objects/product';
 import { match } from 'oxide.ts';
+import { v1ApiEndpoints } from '../endpoint.v1';
 import { V1UpdateProductHttpRequest } from './update-product.http.request.v1';
 import { V1UpdateProductHttpResponse } from './update-product.http.response.v1';
 
-@Controller('/api/v1/products/:id/update')
+@Controller(v1ApiEndpoints.updateProduct)
 export class V1UpdateProductHttpController extends HttpControllerBase<
   V1UpdateProductHttpRequest,
   UpdateProductCommand,

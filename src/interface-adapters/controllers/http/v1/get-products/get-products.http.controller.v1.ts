@@ -3,9 +3,10 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { ApiQuery } from '@nestjs/swagger';
 import { GetProductsQuery } from '@use-cases/query/product/get-products';
+import { v1ApiEndpoints } from '../endpoint.v1';
 import { V1GetProductsHttpResponse } from './get-products.http.response.v1';
 
-@Controller('/api/v1/products')
+@Controller(v1ApiEndpoints.getProducts)
 export class V1GetProductsHttpController {
   @Get()
   @ApiQuery({ type: PaginationParams })

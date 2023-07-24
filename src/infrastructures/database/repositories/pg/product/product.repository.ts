@@ -89,9 +89,16 @@ export class ProductRepository
 
     const res = await this.databaseService.runQuery(
       `UPDATE product 
-       SET name=$2, price=$3, description=$4, image_url=$5 
+       SET name=$2, price=$3, description=$4, image_url=$5, discount_id=$6
         WHERE id=$1 AND deleted_at IS NULL RETURNING *`,
-      [query.id, query.name, query.price, query.description, query.image_url],
+      [
+        query.id,
+        query.name,
+        query.price,
+        query.description,
+        query.image_url,
+        query.discount_id,
+      ],
     );
 
     const updated = res.rows[0];

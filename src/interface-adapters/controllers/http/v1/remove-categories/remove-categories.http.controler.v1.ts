@@ -10,7 +10,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
@@ -19,10 +18,11 @@ import {
 } from '@use-cases/command/remove-categories';
 import { CategoryIdValueObject } from '@value-objects/category';
 import { match } from 'oxide.ts';
+import { v1ApiEndpoints } from '../endpoint.v1';
 import { V1RemoveCategoriesHttpRequest } from './remove-categories.http.request.v1';
 import { V1RemoveCategoriesHttpResponse } from './remove-categories.http.response.v1';
 
-@Controller('/api/v1/categories/remove')
+@Controller(v1ApiEndpoints.removeCategories)
 export class V1RemoveCategoriesHttpController extends HttpControllerBase<
   V1RemoveCategoriesHttpRequest,
   RemoveCategoriesCommand,

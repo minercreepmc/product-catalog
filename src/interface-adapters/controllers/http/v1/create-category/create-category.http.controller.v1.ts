@@ -22,8 +22,9 @@ import {
   HttpControllerBase,
   HttpControllerBaseOption,
 } from '@base/inteface-adapters';
+import { v1ApiEndpoints } from '../endpoint.v1';
 
-@Controller('/api/v1/categories/create')
+@Controller(v1ApiEndpoints.createCategory)
 export class V1CreateCategoryHttpController extends HttpControllerBase<
   V1CreateCategoryHttpRequest,
   CreateCategoryCommand,

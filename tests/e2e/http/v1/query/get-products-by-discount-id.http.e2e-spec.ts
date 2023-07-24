@@ -1,21 +1,26 @@
-import { V1CreateProductHttpRequest } from '@controllers/http/v1';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
 import {
+  V1CreateProductHttpRequest,
+  V1CreateProductHttpResponse,
   V1GetProductsHttpQuery,
   V1GetProductsHttpResponse,
-} from '@controllers/http/v1/get-products';
+  V1UpdateProductHttpRequest,
+} from '@controllers/http/v1';
+import {
+  V1CreateDiscountHttpRequest,
+  V1CreateDiscountHttpResponse,
+} from '@controllers/http/v1/create-discount';
+import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import {
-  generateRandomProductName,
-  generateRandomProductPrice,
-} from '@utils/functions';
+import { randomString } from '@utils/functions';
 import * as request from 'supertest';
 
-describe('V1GetProductsHttpController (e2e)', () => {
+describe('Get products by discount id', () => {
   let app: INestApplication;
   const createProductUrl = v1ApiEndpoints.createProduct;
+  const updateProductUrl = v1ApiEndpoints.updateProduct;
+  const createDiscountUrl = v1ApiEndpoints.createDiscount;
   const getProductsUrl = v1ApiEndpoints.getProducts;
 
   beforeAll(async () => {
@@ -31,42 +36,46 @@ describe('V1GetProductsHttpController (e2e)', () => {
     await app.close();
   });
 
-  it('should get something if it not empty', async () => {
+  it('should work', async () => {
     const createProductRequest: V1CreateProductHttpRequest = {
-      name: generateRandomProductName(),
-      price: generateRandomProductPrice(),
+      name: randomString(),
+      price: 12,
+    };
+    const createDiscountRequest: V1CreateDiscountHttpRequest = {
+      name: randomString(),
+      percentage: 12,
     };
 
-    await request(app.getHttpServer())
+    const createProductResponse = await request(app.getHttpServer())
       .post(createProductUrl)
       .set('Accept', 'application/json')
       .send(createProductRequest)
       .expect(HttpStatus.CREATED);
 
-    const response = await request(app.getHttpServer())
-      .get(getProductsUrl)
+    const createDiscountResponse = await request(app.getHttpServer())
+      .post(createDiscountUrl)
       .set('Accept', 'application/json')
+      .send(createDiscountRequest)
+      .expect(HttpStatus.CREATED);
+
+    const { id: discountId } =
+      createDiscountResponse.body as V1CreateDiscountHttpResponse;
+    const { id: productId } =
+      createProductResponse.body as V1CreateProductHttpResponse;
+
+    const updateProductRequest: V1UpdateProductHttpRequest = {
+      discountId,
+    };
+
+    await request(app.getHttpServer())
+      .put(updateProductUrl.replace(':id', productId))
+      .set('Accept', 'application/json')
+      .send(updateProductRequest)
       .expect(HttpStatus.OK);
-
-    const body: V1GetProductsHttpResponse = response.body;
-
-    expect(body.products.length).toBeGreaterThan(0);
-  });
-
-  it('should get fields with limit', async () => {
-    const createProductRequest: V1CreateProductHttpRequest = {
-      name: generateRandomProductName(),
-      price: generateRandomProductPrice(),
-    };
-
-    await request(app.getHttpServer())
-      .post(createProductUrl)
-      .set('Accept', 'application/json')
-      .send(createProductRequest)
-      .expect(HttpStatus.CREATED);
 
     const getProductQuery: V1GetProductsHttpQuery = {
       limit: 1,
+      discount_id: discountId,
     };
 
     const response = await request(app.getHttpServer())
@@ -78,6 +87,7 @@ describe('V1GetProductsHttpController (e2e)', () => {
     const body: V1GetProductsHttpResponse = response.body;
 
     expect(body.products.length).toEqual(1);
+    expect(body.products[0].discount_id).toEqual(discountId);
   });
 
   // Add more test cases for other routes, if needed.

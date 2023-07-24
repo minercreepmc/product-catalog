@@ -78,7 +78,6 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
       price: price && new ProductPriceValueObject(price),
       discountId: discountId && new DiscountIdValueObject(discountId),
     });
-    console.log(command);
 
     return command;
   }

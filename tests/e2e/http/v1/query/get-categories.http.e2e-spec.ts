@@ -3,7 +3,7 @@ import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
 import {
   V1GetCategoriesHttpQuery,
   V1GetCategoriesHttpResponse,
-} from '@controllers/http/v1/get-categories';
+} from '@controllers/http/v1';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';

@@ -1,5 +1,7 @@
-import { V1GetCategoriesHttpController } from '@controllers/http/v1/get-categories';
-import { V1GetCategoryHttpController } from '@controllers/http/v1/get-category';
+import {
+  V1GetCategoriesHttpController,
+  V1GetCategoryHttpController,
+} from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { GetCategoriesHandler } from '@use-cases/query/category/get-categories';

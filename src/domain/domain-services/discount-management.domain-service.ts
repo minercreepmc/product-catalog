@@ -48,7 +48,6 @@ export class DiscountManagementDomainService {
 
   async doesDiscountExistById(id: DiscountIdValueObject): Promise<boolean> {
     const isExist = await this.discountRepository.findOneById(id);
-    console.log(isExist);
 
     return !!isExist;
   }

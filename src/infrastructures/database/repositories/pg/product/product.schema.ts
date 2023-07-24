@@ -8,3 +8,12 @@ export class ProductSchema extends SchemaBase {
   discount_id?: string;
   //category_id: string;
 }
+
+export class ProductWithDiscountSchema extends ProductSchema {
+  discount_id: string;
+  discount_name: string;
+  discount_description?: string;
+  discount_percentage: number;
+  discount_active?: boolean;
+  //category_id: string;
+}

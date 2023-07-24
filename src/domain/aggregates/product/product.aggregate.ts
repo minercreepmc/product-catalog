@@ -79,6 +79,9 @@ export class ProductAggregate
     if (options.discountId) {
       this.discountId = options.discountId;
     }
+    if (options.categoryId) {
+      this.categoryId = options.categoryId;
+    }
 
     return new ProductUpdatedDomainEvent({
       id: this.id,

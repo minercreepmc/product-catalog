@@ -8,9 +8,12 @@ import {
   ProductRemovedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
+import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
+  categoryRepositoryDiToken,
+  CategoryRepositoryPort,
   discountRepositoryDiToken,
   DiscountRepositoryPort,
   productRepositoryDiToken,
@@ -18,6 +21,7 @@ import {
 } from '@domain-interfaces';
 import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
+import { CategoryIdValueObject } from '@value-objects/category';
 import { DiscountIdValueObject } from '@value-objects/discount';
 import {
   ProductIdValueObject,
@@ -37,6 +41,8 @@ export class ProductManagementDomainService {
     private readonly productRepository: ProductRepositoryPort,
     @Inject(discountRepositoryDiToken)
     private readonly discountRepository: DiscountRepositoryPort,
+    @Inject(categoryRepositoryDiToken)
+    private readonly categoryRepository: CategoryRepositoryPort,
     @Inject(unitOfWorkDiToken)
     private readonly unitOfWork: UnitOfWorkPort,
   ) {}
@@ -83,10 +89,11 @@ export class ProductManagementDomainService {
     options: UpdateProductDomainServiceOptions,
   ): Promise<ProductUpdatedDomainEvent> {
     const { id: productId, payload } = options;
-    const { discountId } = payload;
+    const { discountId, categoryId } = payload;
 
     const product = await this.findProductOrThrow(productId);
     if (discountId) await this.findDiscountOrThrow(discountId);
+    if (categoryId) await this.findCategoryOrThrow(categoryId);
 
     const productUpdatedEvent = product.updateProduct(payload);
     await this.productRepository.updateOneById(productId, product);
@@ -139,8 +146,13 @@ export class ProductManagementDomainService {
 
   private async findDiscountOrThrow(id: DiscountIdValueObject) {
     const discount = await this.discountRepository.findOneById(id);
-    console.log(discount);
     if (!discount) throw new DiscountDomainExceptions.DoesNotExist();
     return discount;
+  }
+
+  private async findCategoryOrThrow(id: CategoryIdValueObject) {
+    const category = await this.categoryRepository.findOneById(id);
+    if (!category) throw new CategoryDomainExceptions.DoesNotExist();
+    return category;
   }
 }

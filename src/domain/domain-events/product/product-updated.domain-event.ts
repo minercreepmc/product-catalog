@@ -16,6 +16,7 @@ export interface ProductUpdatedDomainEventDetails {
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
   readonly discountId?: DiscountIdValueObject;
+  readonly categoryId?: ProductIdValueObject;
 }
 
 export class ProductUpdatedDomainEvent
@@ -33,6 +34,7 @@ export class ProductUpdatedDomainEvent
     this.description = options.description;
     this.image = options.image;
     this.discountId = options.discountId;
+    this.categoryId = options.categoryId;
   }
   readonly id: ProductIdValueObject;
   readonly name?: ProductNameValueObject;
@@ -40,4 +42,5 @@ export class ProductUpdatedDomainEvent
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
   readonly discountId: DiscountIdValueObject;
+  readonly categoryId?: ProductIdValueObject;
 }

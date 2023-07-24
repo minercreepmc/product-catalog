@@ -31,4 +31,5 @@ export interface UpdateProductAggregateOptions {
   price?: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
   discountId?: DiscountIdValueObject;
+  categoryId?: CategoryIdValueObject;
 }

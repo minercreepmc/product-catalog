@@ -33,6 +33,7 @@ export class CreateProductHandler extends CommandHandlerBase<
       name: this.command.name,
       price: this.command.price,
       description: this.command.description,
+      discountId: this.command.discountId,
       categoryIds: this.command.categoryIds,
       image: imageUrl,
     });

@@ -1,7 +1,7 @@
 import { ReadOnlyRepositoryPort } from '@base/use-cases';
 import {
   ProductSchema,
-  ProductWithDiscountSchema,
+  ProductWithDetailsSchema,
 } from '@database/repositories/pg/product';
 
 export const readOnlyProductRepositoryDiToken = Symbol(
@@ -12,5 +12,6 @@ export interface ReadonlyProductRepositoryPort
   extends ReadOnlyRepositoryPort<ProductSchema> {
   findOneByName(name: string): Promise<ProductSchema>;
   findByDiscountId(id: string): Promise<ProductSchema[]>;
-  findByIdWithDiscount(id: string): Promise<ProductWithDiscountSchema>;
+  findByIdWithDiscount(id: string): Promise<ProductWithDetailsSchema>;
+  findByIdWithDetails(id: string): Promise<ProductWithDetailsSchema>;
 }

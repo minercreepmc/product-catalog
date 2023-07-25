@@ -21,4 +21,7 @@ export class V1CreateProductHttpRequest {
 
   @ApiProperty()
   categoryIds?: string[];
+
+  @ApiProperty()
+  discountId?: string;
 }

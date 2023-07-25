@@ -9,14 +9,14 @@ import {
   V1CreateDiscountHttpResponse,
 } from '@controllers/http/v1/create-discount';
 import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
-import { ProductWithDiscountSchema } from '@database/repositories/pg/product';
+import { ProductWithDetailsSchema } from '@database/repositories/pg/product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { randomString } from '@utils/functions';
 import * as request from 'supertest';
 
-describe('Get products by discount id', () => {
+describe('Get product with discount', () => {
   let app: INestApplication;
   const createProductUrl = v1ApiEndpoints.createProduct;
   const updateProductUrl = v1ApiEndpoints.updateProduct;
@@ -83,7 +83,7 @@ describe('Get products by discount id', () => {
       .set('Accept', 'application/json')
       .expect(HttpStatus.OK);
 
-    const body: ProductWithDiscountSchema = response.body;
+    const body: ProductWithDetailsSchema = response.body;
 
     expect(body.id).toEqual(productId);
     expect(body.discount_id).toEqual(discountId);

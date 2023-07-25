@@ -57,6 +57,10 @@ export class ProductAggregate
       this.categoryIds = options.categoryIds;
     }
 
+    if (options.discountId) {
+      this.discountId = options.discountId;
+    }
+
     return new ProductCreatedDomainEvent({
       id: this.id,
       name: this.name,
@@ -64,6 +68,7 @@ export class ProductAggregate
       description: this.description,
       image: this.image,
       categoryIds: this.categoryIds,
+      discountId: this.discountId,
     });
   }
 

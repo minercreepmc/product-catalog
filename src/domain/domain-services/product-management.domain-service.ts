@@ -75,10 +75,11 @@ export class ProductManagementDomainService {
   async createProduct(
     options: CreateProductDomainServiceOptions,
   ): Promise<ProductCreatedDomainEvent> {
-    const { categoryIds, name } = options;
+    const { categoryIds, name, discountId } = options;
 
     await this.findProductByNameOrThrowIfExist(name);
     if (categoryIds) await this.findCategoriesOrThrow(categoryIds);
+    if (discountId) await this.findDiscountOrThrow(discountId);
 
     const product = new ProductAggregate();
     const productCreatedEvent = product.createProduct(options);

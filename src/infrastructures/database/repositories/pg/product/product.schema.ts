@@ -9,7 +9,7 @@ export class ProductSchema extends SchemaBase {
   category_ids?: string[];
 }
 
-export class ProductWithDiscountSchema extends ProductSchema {
+export class ProductWithDetailsSchema extends ProductSchema {
   discount_id: string;
   discount_name: string;
   discount_description?: string;

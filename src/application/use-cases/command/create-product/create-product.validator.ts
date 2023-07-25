@@ -1,9 +1,11 @@
 import { Notification } from '@base/patterns';
 import { ValidatorBase } from '@base/use-cases';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
+import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
   CategoryManagementDomainService,
+  DiscountManagementDomainService,
   ProductManagementDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
@@ -27,12 +29,13 @@ export class CreateProductValidator
   implements ValidatorBase<CreateProductCommand, CreateProductFailure>
 {
   async validate(command: CreateProductCommand) {
-    const { categoryIds } = command;
+    const { categoryIds, discountId } = command;
     this.command = command;
 
     const note = new Notification<CreateProductFailure>();
     await this.nameMustBeUnique(note);
     categoryIds && (await this.categoryIdsMustExist(note));
+    discountId && (await this.discountIdMustExist(note));
     return note;
   }
 
@@ -58,9 +61,20 @@ export class CreateProductValidator
     }
   }
 
+  private async discountIdMustExist(note: Notification<CreateProductFailure>) {
+    const isExist = await this.discountManagementService.doesDiscountExistById(
+      this.command.discountId,
+    );
+
+    if (!isExist) {
+      note.addException(new DiscountDomainExceptions.DoesNotExist());
+    }
+  }
+
   protected command: CreateProductCommand;
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
     private readonly categoryManagementService: CategoryManagementDomainService,
+    private readonly discountManagementService: DiscountManagementDomainService,
   ) {}
 }

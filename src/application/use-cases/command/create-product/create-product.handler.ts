@@ -29,7 +29,13 @@ export class CreateProductHandler extends CommandHandlerBase<
       imageUrl = await this.uploadImage();
     }
 
-    return this.createProduct(imageUrl);
+    return this.productManagementService.createProduct({
+      name: this.command.name,
+      price: this.command.price,
+      description: this.command.description,
+      categoryIds: this.command.categoryIds,
+      image: imageUrl,
+    });
   }
 
   toResponseDto(data: ProductCreatedDomainEvent): CreateProductResponseDto {
@@ -40,6 +46,7 @@ export class CreateProductHandler extends CommandHandlerBase<
       description: data.description?.value,
       imageUrl: data.image?.value,
       categoryIds: data.categoryIds?.map((id) => id?.value),
+      discountId: data.discountId?.value,
     });
   }
 
@@ -50,18 +57,6 @@ export class CreateProductHandler extends CommandHandlerBase<
     const url = await this.uploadService.upload(this.command.image);
     const imageUrl = ProductImageUrlValueObject.create(url);
     return imageUrl;
-  }
-
-  private createProduct(
-    imageUrl?: ProductImageUrlValueObject,
-  ): Promise<ProductCreatedDomainEvent> {
-    return this.productManagementService.createProduct({
-      name: this.command.name,
-      price: this.command.price,
-      description: this.command.description,
-      categoryIds: this.command.categoryIds,
-      image: imageUrl,
-    });
   }
 
   protected command: CreateProductCommand;

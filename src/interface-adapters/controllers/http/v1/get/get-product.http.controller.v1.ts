@@ -14,11 +14,12 @@ export class V1GetProductHttpController {
   @Get()
   execute(
     @Param('id') id: string,
-    @Query() { populate_discount }: V1GetProductHttpQuery,
+    @Query() { populate_discount, populate_details }: V1GetProductHttpQuery,
   ) {
     const query: GetProductQuery = {
       id,
       populate_discount,
+      populate_details,
     };
     return this.queryBus.execute(plainToInstance(GetProductQuery, query));
   }

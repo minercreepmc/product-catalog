@@ -31,6 +31,7 @@ import {
 import { MultipleExceptions } from '@base/domain';
 import { v1ApiEndpoints } from '../endpoint.v1';
 import { CategoryIdValueObject } from '@value-objects/category';
+import { DiscountIdValueObject } from '@value-objects/discount';
 
 @Controller(v1ApiEndpoints.createProduct)
 export class V1CreateProductHttpController extends HttpControllerBase<
@@ -55,7 +56,7 @@ export class V1CreateProductHttpController extends HttpControllerBase<
     options: HttpControllerBaseOption<V1CreateProductHttpRequest>,
   ): CreateProductCommand {
     const { request, image } = options;
-    const { name, description, price, categoryIds } = request;
+    const { name, description, price, categoryIds, discountId } = request;
     return new CreateProductCommand({
       name: new ProductNameValueObject(name),
       price: new ProductPriceValueObject(Number(price)),
@@ -68,6 +69,7 @@ export class V1CreateProductHttpController extends HttpControllerBase<
           value: image?.buffer,
         }),
       categoryIds: categoryIds?.map((id) => new CategoryIdValueObject(id)),
+      discountId: discountId && new DiscountIdValueObject(discountId),
     });
   }
 

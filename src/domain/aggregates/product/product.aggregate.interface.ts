@@ -20,9 +20,10 @@ export interface ProductAggregateDetails {
 
 export interface CreateProductAggregateOptions {
   name: ProductNameValueObject;
-  description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
+  description?: ProductDescriptionValueObject;
   image?: ProductImageUrlValueObject;
+  discountId?: DiscountIdValueObject;
   categoryIds?: CategoryIdValueObject[];
 }
 

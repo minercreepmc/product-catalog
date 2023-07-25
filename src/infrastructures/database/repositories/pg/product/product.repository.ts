@@ -33,6 +33,40 @@ export class ProductRepository
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
+  async createWithCategories(
+    entity: ProductAggregate,
+  ): Promise<ProductAggregate> {
+    const model = this.mapper.toPersistance(entity);
+
+    const res = await this.databaseService.runQuery(
+      `
+        WITH created_product AS (
+          INSERT INTO product (id, name, price, description, image_url)
+          VALUES ($1, $2, $3, $4, $5) RETURNING *
+        ),
+        created_relationships AS (
+          INSERT INTO product_category (product_id, category_id)
+            SELECT created_product.id AS product_id, unnest($6) AS category_id
+            FROM created_product
+        )
+        SELECT *, $6 as category_ids FROM created_product;
+
+      `,
+      [
+        model.id,
+        model.name,
+        model.price,
+        model.description,
+        model.image_url,
+        model.category_ids,
+      ],
+    );
+
+    const saved = res.rows[0];
+
+    return saved ? this.mapper.toDomain(saved) : null;
+  }
+
   async deleteOneById(id: ProductIdValueObject): Promise<ProductAggregate> {
     const query = this.mapper.toPersistance({ id });
 

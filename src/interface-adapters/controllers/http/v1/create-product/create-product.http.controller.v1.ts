@@ -3,7 +3,6 @@ import {
   ConflictException,
   Controller,
   Post,
-  UnprocessableEntityException,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -31,6 +30,7 @@ import {
 } from '@base/inteface-adapters';
 import { MultipleExceptions } from '@base/domain';
 import { v1ApiEndpoints } from '../endpoint.v1';
+import { CategoryIdValueObject } from '@value-objects/category';
 
 @Controller(v1ApiEndpoints.createProduct)
 export class V1CreateProductHttpController extends HttpControllerBase<
@@ -55,7 +55,7 @@ export class V1CreateProductHttpController extends HttpControllerBase<
     options: HttpControllerBaseOption<V1CreateProductHttpRequest>,
   ): CreateProductCommand {
     const { request, image } = options;
-    const { name, description, price } = request;
+    const { name, description, price, categoryIds } = request;
     return new CreateProductCommand({
       name: new ProductNameValueObject(name),
       price: new ProductPriceValueObject(Number(price)),
@@ -67,15 +67,10 @@ export class V1CreateProductHttpController extends HttpControllerBase<
           name: image?.originalname,
           value: image?.buffer,
         }),
+      categoryIds: categoryIds?.map((id) => new CategoryIdValueObject(id)),
     });
   }
-  validate(command: CreateProductCommand): void {
-    const exceptions = command.validate();
 
-    if (exceptions.length > 0) {
-      throw new UnprocessableEntityException(exceptions);
-    }
-  }
   extractResult(result: any): CreateProductResponseDto {
     return match(result, {
       Ok: (response: CreateProductResponseDto) =>

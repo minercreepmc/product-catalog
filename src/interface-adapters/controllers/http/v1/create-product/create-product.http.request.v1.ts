@@ -18,4 +18,7 @@ export class V1CreateProductHttpRequest {
     required: false,
   })
   image?: Express.Multer.File;
+
+  @ApiProperty()
+  categoryIds?: string[];
 }

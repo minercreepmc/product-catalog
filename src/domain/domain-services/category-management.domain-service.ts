@@ -43,6 +43,10 @@ export class CategoryManagementDomainService {
     return this.categoryVerification.doesCategoryIdExist(id);
   }
 
+  async doesCategoryIdsExist(ids: CategoryIdValueObject[]) {
+    return this.categoryVerification.doesCategoryIdsExist(ids);
+  }
+
   async createCategory(options: CreateCategoryOptions) {
     await this.categoryVerification.verifyCategoryCreationOptions(options);
 

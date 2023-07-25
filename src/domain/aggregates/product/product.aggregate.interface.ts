@@ -14,7 +14,7 @@ export interface ProductAggregateDetails {
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
-  categoryId?: CategoryIdValueObject;
+  categoryIds?: CategoryIdValueObject[];
   discountId?: DiscountIdValueObject;
 }
 
@@ -23,6 +23,7 @@ export interface CreateProductAggregateOptions {
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
+  categoryIds?: CategoryIdValueObject[];
 }
 
 export interface UpdateProductAggregateOptions {
@@ -31,5 +32,5 @@ export interface UpdateProductAggregateOptions {
   price?: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
   discountId?: DiscountIdValueObject;
-  categoryId?: CategoryIdValueObject;
+  categoryIds?: CategoryIdValueObject[];
 }

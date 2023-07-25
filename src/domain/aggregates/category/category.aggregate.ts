@@ -9,6 +9,7 @@ import {
 } from './category.aggregate.interface';
 import { CategoryCreatedDomainEvent } from '@domain-events/category/category-created.domain-event';
 import { CategoryRemovedDomainEvent } from '@domain-events/category';
+import { ProductIdValueObject } from '@value-objects/product';
 
 export class CategoryAggregate implements CategoryAggregateDetails {
   constructor(options?: CategoryAggregateDetails) {
@@ -16,6 +17,7 @@ export class CategoryAggregate implements CategoryAggregateDetails {
       this.id = options.id;
       this.name = options.name;
       this.description = options.description;
+      this.productIds = options.productIds;
     } else {
       this.id = new CategoryIdValueObject();
     }
@@ -23,6 +25,7 @@ export class CategoryAggregate implements CategoryAggregateDetails {
   id: CategoryIdValueObject;
   name: CategoryNameValueObject;
   description?: CategoryDescriptionValueObject;
+  productIds: ProductIdValueObject[];
 
   createCategory(options: CreateCategoryAggregateOptions) {
     const { name, description } = options;

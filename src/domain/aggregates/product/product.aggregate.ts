@@ -28,7 +28,7 @@ export class ProductAggregate
       this.description = options.description;
       this.price = options.price;
       this.image = options.image;
-      this.categoryId = options.categoryId;
+      this.categoryIds = options.categoryIds;
       this.discountId = options.discountId;
     } else {
       this.id = new ProductIdValueObject();
@@ -40,7 +40,7 @@ export class ProductAggregate
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
-  categoryId?: CategoryIdValueObject;
+  categoryIds?: CategoryIdValueObject[];
   discountId?: DiscountIdValueObject;
 
   createProduct(options: CreateProductAggregateOptions) {
@@ -53,6 +53,9 @@ export class ProductAggregate
     if (options.image) {
       this.image = options.image;
     }
+    if (options.categoryIds) {
+      this.categoryIds = options.categoryIds;
+    }
 
     return new ProductCreatedDomainEvent({
       id: this.id,
@@ -60,6 +63,7 @@ export class ProductAggregate
       price: this.price,
       description: this.description,
       image: this.image,
+      categoryIds: this.categoryIds,
     });
   }
 
@@ -79,8 +83,8 @@ export class ProductAggregate
     if (options.discountId) {
       this.discountId = options.discountId;
     }
-    if (options.categoryId) {
-      this.categoryId = options.categoryId;
+    if (options.categoryIds) {
+      this.categoryIds = options.categoryIds;
     }
 
     return new ProductUpdatedDomainEvent({

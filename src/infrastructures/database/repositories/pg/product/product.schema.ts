@@ -6,7 +6,7 @@ export class ProductSchema extends SchemaBase {
   description?: string;
   image_url?: string;
   discount_id?: string;
-  //category_id: string;
+  category_ids?: string[];
 }
 
 export class ProductWithDiscountSchema extends ProductSchema {
@@ -15,5 +15,4 @@ export class ProductWithDiscountSchema extends ProductSchema {
   discount_description?: string;
   discount_percentage: number;
   discount_active?: boolean;
-  //category_id: string;
 }

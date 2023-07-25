@@ -26,6 +26,9 @@ export class V1CreateProductHttpResponse {
   })
   readonly imageUrl?: string;
 
+  @ApiProperty()
+  readonly categoryIds?: string[];
+
   readonly message: string;
 
   constructor(options: Omit<V1CreateProductHttpResponse, 'message'>) {
@@ -34,6 +37,7 @@ export class V1CreateProductHttpResponse {
     this.price = options.price;
     this.description = options.description;
     this.imageUrl = options.imageUrl;
+    this.categoryIds = options.categoryIds;
     this.message = 'Product created successfully';
   }
 }

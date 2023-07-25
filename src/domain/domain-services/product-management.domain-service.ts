@@ -1,3 +1,4 @@
+import { CategoryAggregate } from '@aggregates/category';
 import {
   CreateProductAggregateOptions,
   ProductAggregate,
@@ -74,12 +75,12 @@ export class ProductManagementDomainService {
   async createProduct(
     options: CreateProductDomainServiceOptions,
   ): Promise<ProductCreatedDomainEvent> {
-    let product = await this.productRepository.findOneByName(options.name);
-    if (product) {
-      throw new ProductDomainExceptions.AlreadyExist();
-    }
+    const { categoryIds, name } = options;
 
-    product = new ProductAggregate();
+    await this.findProductByNameOrThrowIfExist(name);
+    if (categoryIds) await this.findCategoriesOrThrow(categoryIds);
+
+    const product = new ProductAggregate();
     const productCreatedEvent = product.createProduct(options);
     await this.productRepository.create(product);
     return productCreatedEvent;
@@ -89,11 +90,11 @@ export class ProductManagementDomainService {
     options: UpdateProductDomainServiceOptions,
   ): Promise<ProductUpdatedDomainEvent> {
     const { id: productId, payload } = options;
-    const { discountId, categoryId } = payload;
+    const { discountId, categoryIds } = payload;
 
-    const product = await this.findProductOrThrow(productId);
+    const product = await this.findProductByIdOrThrow(productId);
     if (discountId) await this.findDiscountOrThrow(discountId);
-    if (categoryId) await this.findCategoryOrThrow(categoryId);
+    if (categoryIds) await this.findCategoriesOrThrow(categoryIds);
 
     const productUpdatedEvent = product.updateProduct(payload);
     await this.productRepository.updateOneById(productId, product);
@@ -138,7 +139,13 @@ export class ProductManagementDomainService {
     return productsRemoved;
   }
 
-  private async findProductOrThrow(id: ProductIdValueObject) {
+  private async findProductByNameOrThrowIfExist(name: ProductNameValueObject) {
+    const product = await this.productRepository.findOneByName(name);
+    if (product) throw new ProductDomainExceptions.AlreadyExist();
+    return product;
+  }
+
+  private async findProductByIdOrThrow(id: ProductIdValueObject) {
     const product = await this.productRepository.findOneById(id);
     if (!product) throw new ProductDomainExceptions.DoesNotExist();
     return product;
@@ -150,9 +157,13 @@ export class ProductManagementDomainService {
     return discount;
   }
 
-  private async findCategoryOrThrow(id: CategoryIdValueObject) {
-    const category = await this.categoryRepository.findOneById(id);
-    if (!category) throw new CategoryDomainExceptions.DoesNotExist();
-    return category;
+  private async findCategoriesOrThrow(ids: CategoryIdValueObject[]) {
+    const categories: CategoryAggregate[] = [];
+    for (const id of ids) {
+      const category = await this.categoryRepository.findOneById(id);
+      if (!category) throw new CategoryDomainExceptions.DoesNotExist();
+      categories.push(category);
+    }
+    return categories;
   }
 }

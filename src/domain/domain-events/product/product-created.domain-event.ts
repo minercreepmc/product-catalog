@@ -1,5 +1,6 @@
 import { ProductAggregate } from '@aggregates/product';
 import { DomainEventBase } from '@base/domain';
+import { CategoryIdValueObject } from '@value-objects/category';
 import type {
   ProductDescriptionValueObject,
   ProductIdValueObject,
@@ -14,6 +15,7 @@ export interface ProductCreatedDomainEventDetails {
   price: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
   image?: ProductImageUrlValueObject;
+  categoryIds?: CategoryIdValueObject[];
 }
 
 export class ProductCreatedDomainEvent
@@ -25,6 +27,7 @@ export class ProductCreatedDomainEvent
   readonly price: ProductPriceValueObject;
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
+  readonly categoryIds?: CategoryIdValueObject[];
   constructor(options: ProductCreatedDomainEventDetails) {
     super({
       eventName: ProductCreatedDomainEvent.name,
@@ -35,5 +38,6 @@ export class ProductCreatedDomainEvent
     this.price = options.price;
     this.description = options.description;
     this.image = options.image;
+    this.categoryIds = options.categoryIds;
   }
 }

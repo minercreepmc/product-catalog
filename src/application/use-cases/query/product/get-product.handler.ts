@@ -25,7 +25,6 @@ export class GetProductQueryHandler
 
     if (populate_discount) {
       const res = await this.repository.findByIdWithDiscount(id);
-      console.log(res);
       return res;
     } else {
       return this.repository.findOneById(id);

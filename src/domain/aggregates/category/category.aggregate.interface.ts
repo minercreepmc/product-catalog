@@ -3,11 +3,13 @@ import {
   CategoryIdValueObject,
   CategoryNameValueObject,
 } from '@value-objects/category';
+import { ProductIdValueObject } from '@value-objects/product';
 
 export interface CategoryAggregateDetails {
   id: CategoryIdValueObject;
   name: CategoryNameValueObject;
   description?: CategoryDescriptionValueObject;
+  productIds?: ProductIdValueObject[];
 }
 
 export interface CreateCategoryAggregateOptions {

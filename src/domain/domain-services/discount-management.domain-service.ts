@@ -4,6 +4,8 @@ import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import {
   discountRepositoryDiToken,
   DiscountRepositoryPort,
+  unitOfWorkDiToken,
+  UnitOfWorkPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import {
@@ -65,77 +67,87 @@ export class DiscountManagementDomainService {
   }
 
   async createDiscount(options: CreateOptions) {
-    const isExist = await this.discountRepository.findOneByName(options.name);
+    return this.unitOfWork.runInTransaction(async () => {
+      const isExist = await this.discountRepository.findOneByName(options.name);
 
-    if (isExist) {
-      throw new DiscountDomainExceptions.AlreadyExist();
-    }
+      if (isExist) {
+        throw new DiscountDomainExceptions.AlreadyExist();
+      }
 
-    const discount = new DiscountAggregate();
+      const discount = new DiscountAggregate();
 
-    const discountCreated = discount.createDiscount({
-      name: options.name,
-      description: options.description,
-      percentage: options.percentage,
+      const discountCreated = discount.createDiscount({
+        name: options.name,
+        description: options.description,
+        percentage: options.percentage,
+      });
+
+      await this.discountRepository.create(discount);
+
+      return discountCreated;
     });
-
-    await this.discountRepository.create(discount);
-
-    return discountCreated;
   }
 
   async updateDiscount(options: UpdateOptions) {
-    const isExist = await this.discountRepository.findOneById(options.id);
+    return this.unitOfWork.runInTransaction(async () => {
+      const isExist = await this.discountRepository.findOneById(options.id);
 
-    if (!isExist) {
-      throw new DiscountDomainExceptions.DoesNotExist();
-    }
+      if (!isExist) {
+        throw new DiscountDomainExceptions.DoesNotExist();
+      }
 
-    const discount = await this.discountRepository.findOneById(options.id);
+      const discount = await this.discountRepository.findOneById(options.id);
 
-    const discountUpdated = discount.updateDiscount(options);
+      const discountUpdated = discount.updateDiscount(options);
 
-    await this.discountRepository.updateOneById(options.id, discount);
+      await this.discountRepository.updateOneById(options.id, discount);
 
-    return discountUpdated;
+      return discountUpdated;
+    });
   }
 
   async removeDiscount(options: RemoveDiscountOptions) {
-    const isExist = await this.discountRepository.findOneById(options.id);
+    return this.unitOfWork.runInTransaction(async () => {
+      const isExist = await this.discountRepository.findOneById(options.id);
 
-    if (!isExist) {
-      throw new DiscountDomainExceptions.DoesNotExist();
-    }
+      if (!isExist) {
+        throw new DiscountDomainExceptions.DoesNotExist();
+      }
 
-    const discount = await this.discountRepository.findOneById(options.id);
-    const discountRemoved = discount.removeDiscount();
+      const discount = await this.discountRepository.findOneById(options.id);
+      const discountRemoved = discount.removeDiscount();
 
-    await this.discountRepository.deleteOneById(options.id);
+      await this.discountRepository.deleteOneById(options.id);
 
-    return discountRemoved;
+      return discountRemoved;
+    });
   }
 
   async removeDiscounts(options: RemoveDiscountsOptions) {
-    const { ids } = options;
-    const isExist = await this.doesDiscountExistByIds(ids);
+    return this.unitOfWork.runInTransaction(async () => {
+      const { ids } = options;
+      const isExist = await this.doesDiscountExistByIds(ids);
 
-    if (!isExist) {
-      throw new DiscountDomainExceptions.DoesNotExist();
-    }
+      if (!isExist) {
+        throw new DiscountDomainExceptions.DoesNotExist();
+      }
 
-    const events: DiscountRemovedDomainEvent[] = [];
-    for (const id of ids) {
-      const discount = await this.discountRepository.findOneById(id);
-      const discountRemoved = discount.removeDiscount();
-      await this.discountRepository.deleteOneById(id);
-      events.push(discountRemoved);
-    }
+      const events: DiscountRemovedDomainEvent[] = [];
+      for (const id of ids) {
+        const discount = await this.discountRepository.findOneById(id);
+        const discountRemoved = discount.removeDiscount();
+        await this.discountRepository.deleteOneById(id);
+        events.push(discountRemoved);
+      }
 
-    return events;
+      return events;
+    });
   }
 
   constructor(
     @Inject(discountRepositoryDiToken)
     private readonly discountRepository: DiscountRepositoryPort,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
   ) {}
 }

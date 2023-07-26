@@ -48,31 +48,35 @@ export class CategoryManagementDomainService {
   }
 
   async createCategory(options: CreateCategoryOptions) {
-    await this.categoryVerification.verifyCategoryCreationOptions(options);
+    return this.unitOfWork.runInTransaction(async () => {
+      await this.categoryVerification.verifyCategoryCreationOptions(options);
 
-    const categoryAggregate = new CategoryAggregate();
+      const categoryAggregate = new CategoryAggregate();
 
-    const categoryCreated = categoryAggregate.createCategory(options);
-    await this.categoryRepository.create(categoryAggregate);
+      const categoryCreated = categoryAggregate.createCategory(options);
+      await this.categoryRepository.create(categoryAggregate);
 
-    return categoryCreated;
+      return categoryCreated;
+    });
   }
 
   async removeCategory(options: RemoveCategoryServiceOptions) {
     // TODO: run in transaction but with bulk delete not work
-    await this.categoryVerification.verifyCategoryRemovalOptions(options);
+    return this.unitOfWork.runInTransaction(async () => {
+      await this.categoryVerification.verifyCategoryRemovalOptions(options);
 
-    const { categoryId } = options;
+      const { categoryId } = options;
 
-    const categoryAggregate = await this.categoryRepository.findOneById(
-      categoryId,
-    );
+      const categoryAggregate = await this.categoryRepository.findOneById(
+        categoryId,
+      );
 
-    const categoryRemoved = categoryAggregate.removeCategory();
+      const categoryRemoved = categoryAggregate.removeCategory();
 
-    await this.categoryRepository.deleteOneById(categoryId);
+      await this.categoryRepository.deleteOneById(categoryId);
 
-    return categoryRemoved;
+      return categoryRemoved;
+    });
   }
 
   async removeCategories(

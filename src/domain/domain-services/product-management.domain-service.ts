@@ -75,75 +75,85 @@ export class ProductManagementDomainService {
   async createProduct(
     options: CreateProductDomainServiceOptions,
   ): Promise<ProductCreatedDomainEvent> {
-    const { categoryIds, name, discountId } = options;
+    return this.unitOfWork.runInTransaction(async () => {
+      const { categoryIds, name, discountId } = options;
 
-    await this.findProductByNameOrThrowIfExist(name);
+      await this.findProductByNameOrThrowIfExist(name);
 
-    if (discountId) {
-      await this.findDiscountOrThrow(discountId);
-    }
-    if (categoryIds) {
-      await this.findCategoriesOrThrow(categoryIds);
-    }
+      if (discountId) {
+        await this.findDiscountOrThrow(discountId);
+      }
+      if (categoryIds) {
+        await this.findCategoriesOrThrow(categoryIds);
+      }
 
-    const product = new ProductAggregate();
-    const productCreatedEvent = product.createProduct(options);
-    await this.productRepository.create(product);
+      const product = new ProductAggregate();
+      const productCreatedEvent = product.createProduct(options);
+      await this.productRepository.create(product);
 
-    return productCreatedEvent;
+      return productCreatedEvent;
+    });
   }
 
   async updateProduct(
     options: UpdateProductDomainServiceOptions,
   ): Promise<ProductUpdatedDomainEvent> {
-    const { id: productId, payload } = options;
-    const { discountId, categoryIds } = payload;
+    return this.unitOfWork.runInTransaction(async () => {
+      const { id: productId, payload } = options;
+      const { discountId, categoryIds } = payload;
 
-    const product = await this.findProductByIdOrThrow(productId);
-    if (discountId) await this.findDiscountOrThrow(discountId);
-    if (categoryIds) await this.findCategoriesOrThrow(categoryIds);
+      const product = await this.findProductByIdOrThrow(productId);
+      if (discountId) await this.findDiscountOrThrow(discountId);
+      if (categoryIds) await this.findCategoriesOrThrow(categoryIds);
 
-    const productUpdatedEvent = product.updateProduct(payload);
-    await this.productRepository.updateOneById(productId, product);
-    return productUpdatedEvent;
+      const productUpdatedEvent = product.updateProduct(payload);
+      await this.productRepository.updateOneById(productId, product);
+      return productUpdatedEvent;
+    });
   }
 
   async removeProduct(
     id: ProductIdValueObject,
   ): Promise<ProductRemovedDomainEvent> {
-    const product = await this.productRepository.findOneById(id);
-    if (!product) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
-    await this.productRepository.deleteOneById(id);
+    return this.unitOfWork.runInTransaction(async () => {
+      const product = await this.productRepository.findOneById(id);
+      if (!product) {
+        throw new ProductDomainExceptions.DoesNotExist();
+      }
+      await this.productRepository.deleteOneById(id);
 
-    return new ProductRemovedDomainEvent({
-      id: id,
+      return new ProductRemovedDomainEvent({
+        id: id,
+      });
     });
   }
 
   async removeProducts(
     ids: ProductIdValueObject[],
   ): Promise<ProductRemovedDomainEvent[]> {
-    const products: ProductAggregate[] = [];
+    return this.unitOfWork.runInTransaction(async () => {
+      const products: ProductAggregate[] = [];
 
-    const isExist = await this.doesProductIdsExist(ids);
+      const isExist = await this.doesProductIdsExist(ids);
 
-    if (!isExist) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
+      if (!isExist) {
+        throw new ProductDomainExceptions.DoesNotExist();
+      }
 
-    for (const id of ids) {
-      products.push(await this.productRepository.findOneById(id));
-    }
+      for (const id of ids) {
+        products.push(await this.productRepository.findOneById(id));
+      }
 
-    const productsRemoved = products.map((product) => product.removeProduct());
+      const productsRemoved = products.map((product) =>
+        product.removeProduct(),
+      );
 
-    for (const id of ids) {
-      await this.productRepository.deleteOneById(id);
-    }
+      for (const id of ids) {
+        await this.productRepository.deleteOneById(id);
+      }
 
-    return productsRemoved;
+      return productsRemoved;
+    });
   }
 
   private async findProductByNameOrThrowIfExist(name: ProductNameValueObject) {

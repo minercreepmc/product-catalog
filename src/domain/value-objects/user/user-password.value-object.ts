@@ -4,7 +4,7 @@ import {
   IsDefined,
   IsString,
   IsStrongPassword,
-  validate,
+  validateSync,
 } from 'class-validator';
 
 export class UserPasswordValueObject implements ValueObjectBase {
@@ -19,15 +19,12 @@ export class UserPasswordValueObject implements ValueObjectBase {
   })
   readonly value: string;
 
-  static async create(value: string) {
-    const password = new UserPasswordValueObject(value);
-    const exceptions = await validate(password);
+  validate?() {
+    const exceptions = validateSync(this);
 
     if (exceptions.length > 0) {
-      throw new UserDomainExceptions.PasswordDoesNotValid();
+      return new UserDomainExceptions.PasswordDoesNotValid();
     }
-
-    return password;
   }
 
   constructor(value: string) {

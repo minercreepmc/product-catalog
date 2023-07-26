@@ -30,6 +30,7 @@ export abstract class HttpControllerBase<
     const exceptions = command.validate();
 
     if (exceptions.length > 0) {
+      console.error(exceptions);
       throw new UnprocessableEntityException(exceptions);
     }
   }

@@ -27,21 +27,6 @@ export namespace UserDomainExceptions {
     readonly code = UserDomainExceptionCodes.UsernameDoesNotValid;
   }
 
-  export class EmailAlreadyExists extends DomainExceptionBase {
-    readonly message = 'User email already exists';
-    readonly code = UserDomainExceptionCodes.EmailAlreadyExists;
-  }
-
-  export class EmailDoesNotExist extends DomainExceptionBase {
-    readonly message = 'User email does not exist';
-    readonly code = UserDomainExceptionCodes.EmailDoesNotExist;
-  }
-
-  export class EmailDoesNotValid extends DomainExceptionBase {
-    readonly message = 'User email does not valid';
-    readonly code = UserDomainExceptionCodes.EmailDoesNotValid;
-  }
-
   export class PasswordDoesNotValid extends DomainExceptionBase {
     readonly message = 'User password does not valid';
     readonly code = UserDomainExceptionCodes.PasswordDoesNotValid;

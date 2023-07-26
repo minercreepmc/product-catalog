@@ -1,6 +1,6 @@
 import { ValueObjectBase } from '@base/domain';
 import { UserDomainExceptions } from '@domain-exceptions/user';
-import { IsDefined, IsEnum, validate } from 'class-validator';
+import { IsDefined, IsEnum, validate, validateSync } from 'class-validator';
 
 export enum UserRoleEnum {
   Member = 'member',
@@ -18,15 +18,12 @@ export class UserRoleValueObject implements ValueObjectBase {
     this.value = value;
   }
 
-  static async create(value: string): Promise<UserRoleValueObject> {
-    const userRole = new UserRoleValueObject(value);
-    const exceptions = await validate(userRole);
+  validate?() {
+    const exceptions = validateSync(this);
 
     if (exceptions.length > 0) {
-      throw new UserDomainExceptions.RoleDoesNotValid();
+      return new UserDomainExceptions.RoleDoesNotValid();
     }
-
-    return userRole;
   }
 
   isAdmin(): boolean {

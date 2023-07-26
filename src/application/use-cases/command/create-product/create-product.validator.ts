@@ -25,9 +25,10 @@ export type CreateProductResult = Result<
 >;
 
 @Injectable()
-export class CreateProductValidator
-  implements ValidatorBase<CreateProductCommand, CreateProductFailure>
-{
+export class CreateProductValidator extends ValidatorBase<
+  CreateProductCommand,
+  CreateProductFailure
+> {
   async validate(command: CreateProductCommand) {
     const { categoryIds, discountId } = command;
     this.command = command;
@@ -71,10 +72,12 @@ export class CreateProductValidator
     }
   }
 
-  protected command: CreateProductCommand;
+  command: CreateProductCommand;
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
     private readonly categoryManagementService: CategoryManagementDomainService,
     private readonly discountManagementService: DiscountManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

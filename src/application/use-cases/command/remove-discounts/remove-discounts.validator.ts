@@ -7,9 +7,10 @@ import { RemoveDiscountsCommand } from './remove-discounts.dto';
 import { RemoveDiscountsFailure } from './remove-discounts.result';
 
 @Injectable()
-export class RemoveDiscountsValidator
-  implements ValidatorBase<RemoveDiscountsCommand, RemoveDiscountsFailure>
-{
+export class RemoveDiscountsValidator extends ValidatorBase<
+  RemoveDiscountsCommand,
+  RemoveDiscountsFailure
+> {
   async validate(
     command: RemoveDiscountsCommand,
   ): Promise<Notification<RemoveDiscountsFailure>> {
@@ -33,8 +34,10 @@ export class RemoveDiscountsValidator
     return note;
   }
 
-  private command: RemoveDiscountsCommand;
+  command: RemoveDiscountsCommand;
   constructor(
     private readonly discountManagementService: DiscountManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

@@ -17,9 +17,10 @@ export type RemoveProductsResult = Result<
 >;
 
 @Injectable()
-export class RemoveProductsValidator
-  implements ValidatorBase<RemoveProductsCommand, RemoveProductsFailure>
-{
+export class RemoveProductsValidator extends ValidatorBase<
+  RemoveProductsCommand,
+  RemoveProductsFailure
+> {
   async validate(command: RemoveProductsCommand) {
     this.command = command;
     const note = new Notification<RemoveProductsFailure>();
@@ -39,8 +40,10 @@ export class RemoveProductsValidator
     }
   }
 
-  private command: RemoveProductsCommand;
+  command: RemoveProductsCommand;
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

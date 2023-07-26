@@ -1,5 +1,6 @@
 import { readonlyCategoryRepositoryDiToken } from '@application/interface/category';
 import { readOnlyProductRepositoryDiToken } from '@application/interface/product';
+import { userRepositoryDiToken } from '@application/interface/user';
 import { UnitOfWork } from '@base/database/unit-of-work';
 import {
   ConfigurableDatabaseModule,
@@ -22,6 +23,7 @@ import {
   ProductSchemaMapper,
   ReadOnlyProductRepository,
 } from '@database/repositories/pg/product';
+import { UserRepository } from '@database/repositories/pg/user';
 import {
   categoryRepositoryDiToken,
   discountRepositoryDiToken,
@@ -43,6 +45,10 @@ const repositories: Provider[] = [
   {
     provide: discountRepositoryDiToken,
     useClass: DiscountRepository,
+  },
+  {
+    provide: userRepositoryDiToken,
+    useClass: UserRepository,
   },
   {
     provide: readOnlyProductRepositoryDiToken,

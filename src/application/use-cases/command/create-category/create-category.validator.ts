@@ -18,9 +18,10 @@ export type CreateCategoryResult = Result<
 >;
 
 @Injectable()
-export class CreateCategoryValidator
-  implements ValidatorBase<CreateCategoryCommand, CreateCategoryFailure>
-{
+export class CreateCategoryValidator extends ValidatorBase<
+  CreateCategoryCommand,
+  CreateCategoryFailure
+> {
   async validate(command: CreateCategoryCommand) {
     this.command = command;
 
@@ -44,8 +45,10 @@ export class CreateCategoryValidator
     }
   }
 
-  private command: CreateCategoryCommand;
+  command: CreateCategoryCommand;
   constructor(
     private readonly categoryManagementService: CategoryManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

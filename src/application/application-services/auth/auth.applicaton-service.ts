@@ -4,7 +4,7 @@ import {
   userRepositoryDiToken,
   UserRepositoryPort,
 } from '@application/interface/user';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   UserNameValueObject,
   UserPasswordValueObject,
@@ -13,6 +13,7 @@ import {
 import { AuthServicePort } from '@domain-interfaces/services';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 
+@Injectable()
 export class AuthApplicationService implements AuthServicePort {
   async handlerAuthAndSaveToDb(aggregate: UserAggregate): Promise<void> {
     const hashed = await bcrypt.hash(aggregate.password.value, 10);

@@ -1,6 +1,6 @@
 import { ValueObjectBase } from '@base/domain';
 import { UserDomainExceptions } from '@domain-exceptions/user';
-import { IsDefined, IsString, Length, validate } from 'class-validator';
+import { IsDefined, IsString, Length, validateSync } from 'class-validator';
 
 export class UserNameValueObject implements ValueObjectBase {
   @IsDefined()
@@ -8,15 +8,12 @@ export class UserNameValueObject implements ValueObjectBase {
   @Length(2, 50)
   readonly value: string;
 
-  static async create(value: string) {
-    const username = new UserNameValueObject(value);
-    const exceptions = await validate(username);
+  validate?() {
+    const exceptions = validateSync(this);
 
     if (exceptions.length > 0) {
-      throw new UserDomainExceptions.UsernameDoesNotValid();
+      return new UserDomainExceptions.UsernameDoesNotValid();
     }
-
-    return username;
   }
 
   constructor(value: string) {

@@ -3,6 +3,7 @@ import { CreateCategoryModule } from './create-category.module';
 import { CreateDiscountModule } from './create-discount.module';
 import { CreateProductModule } from './create-product.module';
 import { CategoryQueryModule, ProductQueryModule } from './query';
+import { RegisterMemberModule } from './register-member.module';
 import { RemoveCategoriesModule } from './remove-categories.module';
 import { RemoveDiscountsModule } from './remove-discounts.module';
 import { RemoveProductsModule } from './remove-products.module';
@@ -22,6 +23,7 @@ import { UploadModule } from './upload.module';
     RemoveCategoriesModule,
     ProductQueryModule,
     CategoryQueryModule,
+    RegisterMemberModule,
     UploadModule,
   ],
 })

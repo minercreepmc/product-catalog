@@ -3,8 +3,10 @@ import {
   CategoryVerificationDomainService,
   DiscountManagementDomainService,
   ProductManagementDomainService,
+  UserRegistrationDomainService,
 } from '@domain-services';
 import { EventBusAdapter } from '@infrastructures/events';
+import { ApplicationServiceModule } from '@modules/application';
 //import { eventBusDiToken } from '@domain-interfaces/events';
 
 import { Module } from '@nestjs/common';
@@ -14,15 +16,16 @@ import { Module } from '@nestjs/common';
 //   provide: eventBusDiToken,
 //   useClass: EventBusAdapter,
 // };
-// const sharedModules = [CqrsModule];
+const sharedModules = [ApplicationServiceModule];
 
 @Module({
-  //imports: [...sharedModules],
+  imports: [...sharedModules],
   providers: [
     CategoryManagementDomainService,
     CategoryVerificationDomainService,
     ProductManagementDomainService,
     DiscountManagementDomainService,
+    UserRegistrationDomainService,
     // eventBus,
   ],
   exports: [
@@ -30,6 +33,7 @@ import { Module } from '@nestjs/common';
     CategoryVerificationDomainService,
     DiscountManagementDomainService,
     ProductManagementDomainService,
+    UserRegistrationDomainService,
   ],
 })
 export class DomainServicesModule {}

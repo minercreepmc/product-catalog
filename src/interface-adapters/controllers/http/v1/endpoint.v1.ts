@@ -14,4 +14,5 @@ export const v1ApiEndpoints = {
   removeCategories: `${prefix}/categories/remove`,
   getCategories: `${prefix}/categories`,
   getCategory: `${prefix}/categories/:id`,
+  registerMember: `${prefix}/register`,
 };

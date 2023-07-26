@@ -23,16 +23,16 @@ export class UserRegistrationDomainService {
 
   async registerMember(options: RegisterMemberServiceOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      const isUnique = await this.isUserNameUnique(options.username);
+      const exist = await this.isUserNameExistByName(options.username);
 
-      if (!isUnique) {
+      if (exist) {
         throw new UserDomainExceptions.UsernameAlreadyExists();
       }
 
       const userAggregate = new UserAggregate();
       const memberRegisteredDomainEvent = userAggregate.registerMember(options);
 
-      this.authService.handlerAuthAndSaveToDb(userAggregate);
+      await this.authService.handlerAuthAndSaveToDb(userAggregate);
 
       return memberRegisteredDomainEvent;
     });
@@ -40,28 +40,24 @@ export class UserRegistrationDomainService {
 
   async registerAdmin(options: RegisterAdminServiceOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      const isUnique = await this.isUserNameUnique(options.username);
+      const exist = await this.isUserNameExistByName(options.username);
 
-      if (!isUnique) {
+      if (exist) {
         throw new UserDomainExceptions.UsernameAlreadyExists();
       }
 
       const userAggregate = new UserAggregate();
       const adminRegistered = userAggregate.registerAdmin(options);
 
-      this.authService.handlerAuthAndSaveToDb(userAggregate);
+      await this.authService.handlerAuthAndSaveToDb(userAggregate);
 
       return adminRegistered;
     });
   }
 
-  async isUserNameUnique(username: UserNameValueObject) {
+  async isUserNameExistByName(username: UserNameValueObject) {
     const exist = await this.authService.isUserNameExist(username);
 
-    if (exist) {
-      return false;
-    }
-
-    return true;
+    return Boolean(exist);
   }
 }

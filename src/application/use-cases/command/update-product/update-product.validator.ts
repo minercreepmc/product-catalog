@@ -24,9 +24,10 @@ export type UpdateProductResult = Result<
 >;
 
 @Injectable()
-export class UpdateProductValidator
-  implements ValidatorBase<UpdateProductCommand, UpdateProductFailure>
-{
+export class UpdateProductValidator extends ValidatorBase<
+  UpdateProductCommand,
+  UpdateProductFailure
+> {
   async validate(
     command: UpdateProductCommand,
   ): Promise<Notification<UpdateProductFailure>> {
@@ -60,9 +61,11 @@ export class UpdateProductValidator
     }
   }
 
-  private command: UpdateProductCommand;
+  command: UpdateProductCommand;
   constructor(
     private readonly productManagementService: ProductManagementDomainService,
     private readonly discountManagementService: DiscountManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

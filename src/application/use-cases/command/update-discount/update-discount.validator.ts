@@ -7,9 +7,10 @@ import { UpdateDiscountCommand } from './update-discount.dto';
 import { UpdateDiscountFailure } from './update-discount.result';
 
 @Injectable()
-export class UpdateDiscountValidator
-  implements ValidatorBase<UpdateDiscountCommand, UpdateDiscountFailure>
-{
+export class UpdateDiscountValidator extends ValidatorBase<
+  UpdateDiscountCommand,
+  UpdateDiscountFailure
+> {
   async validate(
     command: UpdateDiscountCommand,
   ): Promise<Notification<UpdateDiscountFailure>> {
@@ -31,8 +32,10 @@ export class UpdateDiscountValidator
     }
   }
 
-  private command: UpdateDiscountCommand;
+  command: UpdateDiscountCommand;
   constructor(
     private readonly discountManagementService: DiscountManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

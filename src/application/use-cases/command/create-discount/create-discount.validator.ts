@@ -18,9 +18,10 @@ export type CreateDiscountResult = Result<
 >;
 
 @Injectable()
-export class CreateDiscountValidator
-  implements ValidatorBase<CreateDiscountCommand, CreateDiscountFailure>
-{
+export class CreateDiscountValidator extends ValidatorBase<
+  CreateDiscountCommand,
+  CreateDiscountFailure
+> {
   async validate(command: CreateDiscountCommand) {
     this.command = command;
 
@@ -40,8 +41,10 @@ export class CreateDiscountValidator
     }
   }
 
-  protected command: CreateDiscountCommand;
+  command: CreateDiscountCommand;
   constructor(
     private readonly discountManagement: DiscountManagementDomainService,
-  ) {}
+  ) {
+    super();
+  }
 }

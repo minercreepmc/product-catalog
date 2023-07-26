@@ -1,23 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
-import {
-  HealthCheckService,
-  HealthCheck,
-  MikroOrmHealthIndicator,
-} from '@nestjs/terminus';
+import { HealthCheckService, HealthCheck } from '@nestjs/terminus';
 
 @Controller('health')
 class HealthController {
-  constructor(
-    private healthCheckService: HealthCheckService,
-    private mikroOrmHealthIndicator: MikroOrmHealthIndicator,
-  ) {}
+  constructor(private healthCheckService: HealthCheckService) {}
 
   @Get()
   @HealthCheck()
   check() {
-    return this.healthCheckService.check([
-      () => this.mikroOrmHealthIndicator.pingCheck('database'),
-    ]);
+    return this.healthCheckService.check([]);
   }
 }
 

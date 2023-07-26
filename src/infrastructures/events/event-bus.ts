@@ -1,13 +1,13 @@
+import { DomainEventBase } from '@base/domain';
 import { EventBusPort } from '@domain-interfaces/events';
 import { Injectable } from '@nestjs/common';
-import { DomainEvent } from 'common-base-classes';
-import { Mediator } from 'nestjs-mediator';
+import { EventBus } from '@nestjs/cqrs';
 
 @Injectable()
 export class EventBusAdapter implements EventBusPort {
-  constructor(private readonly mediator: Mediator) {}
-  async publish(domainEvent: DomainEvent<any>): Promise<void> {
-    return this.mediator.publish(domainEvent);
+  constructor(private readonly eventBus: EventBus) {}
+  async publish(domainEvent: DomainEventBase): Promise<void> {
+    return this.eventBus.publish(domainEvent);
   }
 
   // async addToOutBoxAndPublish(domainEvent: DomainEvent<any>): Promise<void> {

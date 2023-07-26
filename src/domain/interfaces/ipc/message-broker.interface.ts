@@ -1,8 +1,8 @@
-import { DomainEvent } from 'common-base-classes';
+import { DomainEventBase } from '@base/domain';
 import { Observable } from 'rxjs';
 
 export interface MessageBrokerPort {
-  emit(domainEvent: DomainEvent<any>): Observable<any>;
+  emit(domainEvent: DomainEventBase): Observable<any>;
   //addToOutboxAndSend(domainEvent: DomainEvent<any>): Promise<any>;
 }
 

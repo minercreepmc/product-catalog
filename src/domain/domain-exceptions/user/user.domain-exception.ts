@@ -1,4 +1,4 @@
-import { DomainExceptionBase } from 'common-base-classes';
+import { DomainExceptionBase } from '@base/domain';
 import { UserDomainExceptionCodes } from './user.domain-exception-code';
 
 export namespace UserDomainExceptions {

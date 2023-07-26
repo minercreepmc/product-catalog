@@ -8,11 +8,7 @@ import {
   V1UpdateProductHttpRequest,
   V1UpdateProductHttpResponse,
 } from '@controllers/http/v1';
-import {
-  generateRandomProductPrice,
-  mapDomainExceptionsToObjects,
-  randomString,
-} from '@utils/functions';
+import { mapDomainExceptionsToObjects, randomString } from '@utils/functions';
 import * as request from 'supertest';
 import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
 
@@ -23,11 +19,11 @@ describe('Update product', () => {
 
   const createProductRequest: V1CreateProductHttpRequest = {
     name: randomString(),
-    price: generateRandomProductPrice(),
+    price: 2,
   };
   const updateProductRequest: V1UpdateProductHttpRequest = {
     name: randomString(),
-    price: generateRandomProductPrice(),
+    price: 20,
     description: 'Sample description',
   };
 

@@ -1,4 +1,3 @@
-import { eventBusDiToken } from '@domain-interfaces/events';
 import {
   CategoryManagementDomainService,
   CategoryVerificationDomainService,
@@ -6,23 +5,25 @@ import {
   ProductManagementDomainService,
 } from '@domain-services';
 import { EventBusAdapter } from '@infrastructures/events';
-import { Module, Provider } from '@nestjs/common';
-import { MediatorModule } from 'nestjs-mediator';
+//import { eventBusDiToken } from '@domain-interfaces/events';
 
-const eventBus: Provider = {
-  provide: eventBusDiToken,
-  useClass: EventBusAdapter,
-};
-const sharedModules = [MediatorModule];
+import { Module } from '@nestjs/common';
+// import { CqrsModule } from '@nestjs/cqrs';
+//
+// const eventBus: Provider = {
+//   provide: eventBusDiToken,
+//   useClass: EventBusAdapter,
+// };
+// const sharedModules = [CqrsModule];
 
 @Module({
-  imports: [...sharedModules],
+  //imports: [...sharedModules],
   providers: [
     CategoryManagementDomainService,
     CategoryVerificationDomainService,
     ProductManagementDomainService,
     DiscountManagementDomainService,
-    eventBus,
+    // eventBus,
   ],
   exports: [
     CategoryManagementDomainService,

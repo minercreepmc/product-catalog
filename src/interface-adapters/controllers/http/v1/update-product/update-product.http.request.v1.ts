@@ -1,24 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class V1UpdateProductHttpRequest {
-  @ApiProperty({
-    description: 'The name of the product',
-    example: 'Sample Product',
-  })
+  @ApiProperty({ required: false })
   name?: string;
-  @ApiProperty()
+  @ApiProperty({ required: false })
   price?: number;
 
   @ApiProperty({ required: false })
   description?: string;
 
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    required: false,
-  })
+  @ApiProperty({ required: false })
   image?: Express.Multer.File;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   discountId?: string;
 }

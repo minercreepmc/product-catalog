@@ -78,12 +78,18 @@ export class ProductManagementDomainService {
     const { categoryIds, name, discountId } = options;
 
     await this.findProductByNameOrThrowIfExist(name);
-    if (categoryIds) await this.findCategoriesOrThrow(categoryIds);
-    if (discountId) await this.findDiscountOrThrow(discountId);
+
+    if (discountId) {
+      await this.findDiscountOrThrow(discountId);
+    }
+    if (categoryIds) {
+      await this.findCategoriesOrThrow(categoryIds);
+    }
 
     const product = new ProductAggregate();
     const productCreatedEvent = product.createProduct(options);
     await this.productRepository.create(product);
+
     return productCreatedEvent;
   }
 

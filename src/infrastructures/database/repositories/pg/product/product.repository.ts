@@ -17,15 +17,26 @@ export class ProductRepository
   implements ProductRepositoryPort
 {
   async create(entity: ProductAggregate): Promise<ProductAggregate> {
+    if (entity.categoryIds && entity.categoryIds.length > 0) {
+      return this.createWithCategories(entity);
+    }
+
     const model = this.mapper.toPersistance(entity);
 
     const res = await this.databaseService.runQuery(
       `INSERT into product 
-          (id, name, price, description, image_url) 
+          (id, name, price, description, image_url, discount_id) 
       VALUES 
-          ($1, $2, $3, $4, $5)
+          ($1, $2, $3, $4, $5, $6)
       RETURNING *`,
-      [model.id, model.name, model.price, model.description, model.image_url],
+      [
+        model.id,
+        model.name,
+        model.price,
+        model.description,
+        model.image_url,
+        model.discount_id,
+      ],
     );
 
     const saved = res.rows[0];
@@ -33,7 +44,7 @@ export class ProductRepository
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
-  async createWithCategories(
+  private async createWithCategories(
     entity: ProductAggregate,
   ): Promise<ProductAggregate> {
     const model = this.mapper.toPersistance(entity);
@@ -41,15 +52,15 @@ export class ProductRepository
     const res = await this.databaseService.runQuery(
       `
         WITH created_product AS (
-          INSERT INTO product (id, name, price, description, image_url)
-          VALUES ($1, $2, $3, $4, $5) RETURNING *
+          INSERT INTO product (id, name, price, description, image_url, discount_id)
+          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
         ),
         created_relationships AS (
           INSERT INTO product_category (product_id, category_id)
-            SELECT created_product.id AS product_id, unnest($6) AS category_id
+            SELECT created_product.id AS product_id, unnest($7::varchar[]) AS category_id
             FROM created_product
         )
-        SELECT *, $6 as category_ids FROM created_product;
+        SELECT *, $7 as category_ids FROM created_product;
 
       `,
       [
@@ -58,6 +69,7 @@ export class ProductRepository
         model.price,
         model.description,
         model.image_url,
+        model.discount_id,
         model.category_ids,
       ],
     );

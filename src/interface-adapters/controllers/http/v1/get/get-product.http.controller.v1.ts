@@ -12,7 +12,7 @@ export type V1GetProductHttpResponse = GetProductResponseDto;
 @Controller(v1ApiEndpoints.getProduct)
 export class V1GetProductHttpController {
   @Get()
-  execute(
+  async execute(
     @Param('id') id: string,
     @Query() { populate_discount, populate_details }: V1GetProductHttpQuery,
   ) {
@@ -21,7 +21,10 @@ export class V1GetProductHttpController {
       populate_discount,
       populate_details,
     };
-    return this.queryBus.execute(plainToInstance(GetProductQuery, query));
+    const res = await this.queryBus.execute(
+      plainToInstance(GetProductQuery, query),
+    );
+    return res;
   }
 
   constructor(private readonly queryBus: QueryBus) {}

@@ -2,7 +2,7 @@ import { ReadonlyProductRepositoryPort } from '@application/interface/product';
 import { ReadonlyRepositoryBase } from '@base/database/repositories/pg';
 import { PaginationParams } from '@base/use-cases/query-handler';
 import { DatabaseService } from '@config/pg';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { ProductSchema, ProductWithDetailsSchema } from './product.schema';
 
@@ -67,23 +67,19 @@ export class ReadOnlyProductRepository
 
     const model = res.rows[0];
 
-    if (!model) {
-      throw new NotFoundException();
-    }
-
     const product = plainToInstance(ProductWithDetailsSchema, model);
 
     const categoryIdsRes = await this.databaseService.runQuery(
       `
-        SELECT ARRAY( 
+        SELECT ARRAY(
           SELECT category_id FROM product_category
-          WHERE product_id=$1 --> 
+          WHERE product_id=$1
         ) AS category_ids
     `,
       [product.id],
     );
 
-    product.category_ids = categoryIdsRes.rows;
+    product.category_ids = categoryIdsRes.rows[0].category_ids;
 
     return product;
   }

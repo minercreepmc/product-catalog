@@ -1,4 +1,4 @@
-export class CategoryModel {
+export class V1CategoryModel {
   id: string;
   name: string;
   description?: string;

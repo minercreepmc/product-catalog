@@ -1,9 +1,11 @@
 import { CommandBase } from '@base/use-cases';
 import { UnprocessableEntityException } from '@nestjs/common';
 import { ICommandBus } from '@nestjs/cqrs';
+import { Response as ExpressResponse } from 'express';
 
 export interface HttpControllerBaseOption<Request> {
-  request: Request;
+  request?: Request;
+  response?: ExpressResponse;
   image?: Express.Multer.File;
   param?: any;
 }
@@ -22,7 +24,7 @@ export abstract class HttpControllerBase<
 
     const result = await this.commandBus.execute(command);
 
-    return this.extractResult(result);
+    return this.extractResult(result, { response: options.response });
   }
 
   abstract toCommand(options: HttpControllerBaseOption<Request>): Command;
@@ -34,7 +36,10 @@ export abstract class HttpControllerBase<
       throw new UnprocessableEntityException(exceptions);
     }
   }
-  abstract extractResult(result: any): Response;
+  abstract extractResult(
+    result: any,
+    options?: HttpControllerBaseOption<Request>,
+  ): Response;
 
   constructor(private readonly commandBus: ICommandBus) {}
 }

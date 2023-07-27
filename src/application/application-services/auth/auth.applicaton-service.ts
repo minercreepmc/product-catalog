@@ -6,12 +6,19 @@ import {
 } from '@application/interface/user';
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  UserIdValueObject,
   UserNameValueObject,
   UserPasswordValueObject,
   UserRoleValueObject,
 } from '@value-objects/user';
 import { AuthServicePort } from '@domain-interfaces/services';
 import { UserDomainExceptions } from '@domain-exceptions/user';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+
+export interface TokenPayload {
+  userId: string;
+}
 
 @Injectable()
 export class AuthApplicationService implements AuthServicePort {
@@ -60,8 +67,47 @@ export class AuthApplicationService implements AuthServicePort {
     return bcrypt.compare(plainTextPassword, hashedPassword);
   }
 
+  async isPasswordMatchByUserName(
+    username: UserNameValueObject,
+    password: UserPasswordValueObject,
+  ): Promise<boolean> {
+    const user = await this.userRepository.findOneByName(username.value);
+
+    if (!user) {
+      throw new UserDomainExceptions.CredentialDoesNotValid();
+    }
+
+    return this.verifyPassword(password.value, user.hashed);
+  }
+
+  getAuthenticatedCookie(userId: UserIdValueObject): string {
+    const payload: TokenPayload = {
+      userId: userId.value,
+    };
+
+    const token = this.jwtService.sign(payload);
+
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_EXPIRATION_TIME',
+    )}`;
+  }
+
+  async findOneByUsername(
+    username: UserNameValueObject,
+  ): Promise<UserAggregate> {
+    const userSchema = await this.userRepository.findOneByName(username.value);
+
+    return new UserAggregate({
+      id: new UserNameValueObject(userSchema.id),
+      role: new UserRoleValueObject(userSchema.role),
+      username: new UserNameValueObject(userSchema.username),
+    });
+  }
+
   constructor(
     @Inject(userRepositoryDiToken)
     private readonly userRepository: UserRepositoryPort,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 }

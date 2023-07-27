@@ -4,7 +4,8 @@ export class Notification<T extends DomainExceptionBase[]> {
   private exceptions: T = [] as T;
 
   getExceptions(): MultipleExceptions<T> {
-    return new MultipleExceptions(this.exceptions);
+    const unique = new Set(this.exceptions);
+    return new MultipleExceptions(Array.from(unique) as T);
   }
 
   addException(message: DomainExceptionBase): void {

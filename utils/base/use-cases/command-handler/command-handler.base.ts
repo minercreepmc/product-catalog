@@ -1,5 +1,5 @@
 import { DomainExceptionBase, MultipleExceptions } from '@base/domain';
-import { ConflictException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ICommandHandler } from '@nestjs/cqrs';
 import { Catch, DefaultCatch } from 'catch-decorator-ts';
 import { Err, Ok, Result } from 'oxide.ts';
@@ -33,6 +33,8 @@ export abstract class CommandHandlerBase<
     }
   }
   abstract toResponseDto(data: any): Success;
+
+  private logger = new Logger(CommandHandlerBase.name);
 
   constructor(protected validator: ValidatorBase<Command, Failure>) {}
 }

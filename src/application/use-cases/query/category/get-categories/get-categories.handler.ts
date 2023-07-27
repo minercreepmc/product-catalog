@@ -8,7 +8,7 @@ import { CategoryViewModel } from '../category.model';
 import { CategoryQuery } from '../category.query';
 import { GetCategoriesQuery } from './get-categories.query';
 
-export interface GetCategoriesResponseDto {
+export class GetCategoriesResponseDto {
   categories: CategoryViewModel[];
 }
 

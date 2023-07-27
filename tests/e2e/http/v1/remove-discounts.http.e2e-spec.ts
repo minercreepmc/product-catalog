@@ -1,12 +1,10 @@
 import {
+  v1ApiEndpoints,
   V1CreateDiscountHttpRequest,
   V1CreateDiscountHttpResponse,
-} from '@controllers/http/v1/create-discount';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
-import {
   V1RemoveDiscountsHttpRequest,
   V1RemoveDiscountsHttpResponse,
-} from '@controllers/http/v1/remove-discounts';
+} from '@api/http';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

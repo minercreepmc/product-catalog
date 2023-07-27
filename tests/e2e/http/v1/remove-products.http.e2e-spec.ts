@@ -1,12 +1,10 @@
 import {
+  v1ApiEndpoints,
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
-} from '@controllers/http/v1';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
-import {
   V1RemoveProductsHttpRequest,
   V1RemoveProductsHttpResponse,
-} from '@controllers/http/v1/remove-products';
+} from '@api/http';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

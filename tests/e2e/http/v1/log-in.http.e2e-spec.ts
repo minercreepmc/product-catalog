@@ -1,9 +1,9 @@
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
 import {
+  v1ApiEndpoints,
   V1LogInHttpRequest,
   V1LogInHttpResponse,
-} from '@controllers/http/v1/log-in';
-import { V1RegisterMemberHttpRequest } from '@controllers/http/v1/register-member';
+  V1RegisterMemberHttpRequest,
+} from '@api/http';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

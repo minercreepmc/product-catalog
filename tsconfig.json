@@ -47,6 +47,8 @@
       "@database/*": ["./src/infrastructures/database/*"],
       "@controllers": ["./src/interface-adapters/controllers"],
       "@controllers/*": ["./src/interface-adapters/controllers/*"],
+      "@api": ["./src/interface-adapters/api"],
+      "@api/*": ["./src/interface-adapters/api/*"],
       "@message-handlers": ["./src/interface-adapters/message-handlers"],
       "@message-handlers/*": ["./src/interface-adapters/message-handlers/*"],
       "@infrastructures": ["./src/infrastructures"],

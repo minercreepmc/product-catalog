@@ -1,7 +1,7 @@
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { V1RemoveDiscountsHttpController } from '@controllers/http/v1/remove-discounts';
+import { V1RemoveDiscountsHttpController } from '@controllers/http/v1';
 import {
   RemoveDiscountsHandler,
   RemoveDiscountsValidator,

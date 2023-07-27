@@ -1,4 +1,4 @@
-import { V1LogInHttpController } from '@controllers/http/v1/log-in';
+import { V1LogInHttpController } from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { LogInHandler, LogInValidator } from '@use-cases/command/log-in';

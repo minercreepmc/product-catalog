@@ -1,14 +1,11 @@
-import { PaginationParams } from '@base/use-cases/query-handler';
+import {
+  v1ApiEndpoints,
+  V1GetCategoriesHttpQuery,
+  V1GetCategoriesHttpResponse,
+} from '@api/http';
 import { Controller, Get, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import {
-  GetCategoriesQuery,
-  GetCategoriesResponseDto,
-} from '@use-cases/query/category/get-categories';
-import { v1ApiEndpoints } from '../endpoint.v1';
-
-export class V1GetCategoriesHttpQuery extends PaginationParams {}
-export type V1GetCategoriesHttpResponse = GetCategoriesResponseDto;
+import { GetCategoriesQuery } from '@use-cases/query/category/get-categories';
 
 @Controller(v1ApiEndpoints.getCategories)
 export class V1GetCategoriesHttpController {

@@ -1,4 +1,4 @@
-import { V1CreateDiscountHttpController } from '@controllers/http/v1/create-discount';
+import { V1CreateDiscountHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';

@@ -9,13 +9,14 @@ import {
   mapDomainExceptionsToObjects,
 } from '@utils/functions';
 import {
+  v1ApiEndpoints,
   V1CreateCategoryHttpRequest,
   V1CreateCategoryHttpResponse,
-} from '@controllers/http/v1';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
+} from '@api/http';
 
 describe('Create category', () => {
   let app: INestApplication;
+  const createCategoryUrl = v1ApiEndpoints.createCategory;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -36,7 +37,7 @@ describe('Create category', () => {
       description: '1',
     };
     const response = await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createCategory)
+      .post(createCategoryUrl)
       .set('Accept', 'application/json')
       .send(createCategoryRequest);
 
@@ -54,13 +55,13 @@ describe('Create category', () => {
     };
 
     await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createCategory)
+      .post(createCategoryUrl)
       .set('Accept', 'application/json')
       .send(createCategoryRequest)
       .expect(HttpStatus.CREATED);
 
     const response = await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createCategory)
+      .post(createCategoryUrl)
       .set('Accept', 'application/json')
       .send(createCategoryRequest)
       .expect(HttpStatus.CONFLICT);
@@ -78,7 +79,7 @@ describe('Create category', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createCategory)
+      .post(createCategoryUrl)
       .set('Accept', 'application/json')
       .send(createCategoryRequest)
       .expect(HttpStatus.CREATED);

@@ -7,7 +7,7 @@ import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetCategoryQuery } from './get-category.query';
 
-export type GetCategoryResponseDto = CategorySchema;
+export class GetCategoryResponseDto extends CategorySchema {}
 
 @QueryHandler(GetCategoryQuery)
 export class GetCategoryHandler implements IQueryHandler<GetCategoryQuery> {

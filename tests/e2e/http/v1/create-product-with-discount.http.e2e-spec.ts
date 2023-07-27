@@ -1,12 +1,10 @@
 import {
-  V1CreateProductHttpRequest,
-  V1CreateProductHttpResponse,
-} from '@controllers/http/v1';
-import {
+  v1ApiEndpoints,
   V1CreateDiscountHttpRequest,
   V1CreateDiscountHttpResponse,
-} from '@controllers/http/v1/create-discount';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
+  V1CreateProductHttpRequest,
+  V1CreateProductHttpResponse,
+} from '@api/http';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

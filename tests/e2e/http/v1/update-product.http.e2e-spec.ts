@@ -1,16 +1,16 @@
-import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { HttpStatus, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '@src/app.module';
 import {
+  v1ApiEndpoints,
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
   V1UpdateProductHttpRequest,
   V1UpdateProductHttpResponse,
-} from '@controllers/http/v1';
+} from '@api/http';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
+import { HttpStatus, INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { AppModule } from '@src/app.module';
 import { mapDomainExceptionsToObjects, randomString } from '@utils/functions';
 import * as request from 'supertest';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
 
 describe('Update product', () => {
   let app: INestApplication;

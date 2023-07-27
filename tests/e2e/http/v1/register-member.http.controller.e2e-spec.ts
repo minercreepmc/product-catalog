@@ -1,5 +1,4 @@
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
-import { V1RegisterMemberHttpRequest } from '@controllers/http/v1/register-member';
+import { v1ApiEndpoints, V1RegisterMemberHttpRequest } from '@api/http';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

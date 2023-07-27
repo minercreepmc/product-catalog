@@ -1,14 +1,12 @@
+import {
+  v1ApiEndpoints,
+  V1GetProductsHttpQuery,
+  V1GetProductsHttpResponse,
+} from '@api/http';
 import { Controller, Get, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import {
-  GetProductsQuery,
-  GetProductsResponseDto,
-} from '@use-cases/query/product';
+import { GetProductsQuery } from '@use-cases/query/product';
 import { plainToInstance } from 'class-transformer';
-import { v1ApiEndpoints } from '../endpoint.v1';
-
-export class V1GetProductsHttpQuery extends GetProductsQuery {}
-export type V1GetProductsHttpResponse = GetProductsResponseDto;
 
 @Controller(v1ApiEndpoints.getProducts)
 export class V1GetProductsHttpController {

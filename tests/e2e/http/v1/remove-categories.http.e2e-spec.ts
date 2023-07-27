@@ -1,12 +1,10 @@
 import {
+  v1ApiEndpoints,
   V1CreateCategoryHttpRequest,
   V1CreateCategoryHttpResponse,
-} from '@controllers/http/v1';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
-import {
   V1RemoveCategoriesHttpRequest,
   V1RemoveCategoriesHttpResponse,
-} from '@controllers/http/v1/remove-categories';
+} from '@api/http';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -22,7 +20,6 @@ describe('Remove categories', () => {
   let app: INestApplication;
   const createCategoryUrl = v1ApiEndpoints.createCategory;
   const removeCategoriesUrl = v1ApiEndpoints.removeCategories;
-  const apiPrefix = `api/v1`;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

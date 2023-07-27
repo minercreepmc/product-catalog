@@ -1,4 +1,4 @@
-import { V1RegisterMemberHttpController } from '@controllers/http/v1/register-member';
+import { V1RegisterMemberHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';

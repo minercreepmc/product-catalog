@@ -1,10 +1,10 @@
 import {
+  v1ApiEndpoints,
   V1CreateCategoryHttpRequest,
   V1CreateCategoryHttpResponse,
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
-} from '@controllers/http/v1';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
+} from '@api/http';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

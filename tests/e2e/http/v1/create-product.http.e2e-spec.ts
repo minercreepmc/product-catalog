@@ -5,10 +5,10 @@ import { AppModule } from '@src/app.module';
 import * as request from 'supertest';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
+  v1ApiEndpoints,
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
-} from '@controllers/http/v1';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
+} from '@api/http';
 
 describe('Create Product', () => {
   let app: INestApplication;

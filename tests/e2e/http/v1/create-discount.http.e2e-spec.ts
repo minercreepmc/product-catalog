@@ -1,8 +1,8 @@
 import {
+  v1ApiEndpoints,
   V1CreateDiscountHttpRequest,
   V1CreateDiscountHttpResponse,
-} from '@controllers/http/v1/create-discount';
-import { v1ApiEndpoints } from '@controllers/http/v1/endpoint.v1';
+} from '@api/http';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,6 +12,7 @@ import * as request from 'supertest';
 
 describe('Create discount', () => {
   let app: INestApplication;
+  const createDiscountUrl = v1ApiEndpoints.createDiscount;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -33,7 +34,7 @@ describe('Create discount', () => {
       percentage: -1,
     };
     const response = await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createDiscount)
+      .post(createDiscountUrl)
       .set('Accept', 'application/json')
       .send(createDiscountRequest)
       .expect(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -55,13 +56,13 @@ describe('Create discount', () => {
     };
 
     await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createDiscount)
+      .post(createDiscountUrl)
       .set('Accept', 'application/json')
       .send(createDiscountRequest)
       .expect(HttpStatus.CREATED);
 
     const response = await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createDiscount)
+      .post(createDiscountUrl)
       .set('Accept', 'application/json')
       .send(createDiscountRequest)
       .expect(HttpStatus.CONFLICT);
@@ -81,7 +82,7 @@ describe('Create discount', () => {
     };
 
     const response = await request(app.getHttpServer())
-      .post(v1ApiEndpoints.createDiscount)
+      .post(createDiscountUrl)
       .set('Accept', 'application/json')
       .send(createDiscountRequest)
       .expect(HttpStatus.CREATED);

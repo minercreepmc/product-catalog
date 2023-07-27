@@ -1,4 +1,4 @@
-import { V1RemoveCategoriesHttpController } from '@controllers/http/v1/remove-categories';
+import { V1RemoveCategoriesHttpController } from '@controllers/http/v1';
 import { DomainServicesModule } from '@modules/domains';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';

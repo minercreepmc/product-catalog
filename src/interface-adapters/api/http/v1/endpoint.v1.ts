@@ -16,4 +16,5 @@ export const v1ApiEndpoints = {
   getCategory: `${prefix}/categories/:id`,
   registerMember: `${prefix}/register`,
   logIn: `${prefix}/log-in`,
+  logOut: `${prefix}/log-out`,
 };

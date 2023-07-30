@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   // Create the NestJS app instance
@@ -20,6 +21,8 @@ async function bootstrap() {
     }),
   );
   app.enableCors();
+
+  app.use(cookieParser());
 
   //const rmqService = app.get<RmqService>(RmqService);
   //app.connectMicroservice(rmqService.getOptions());

@@ -1,4 +1,5 @@
 import { AuthApplicationService } from '@application/application-services/auth';
+import { JwtStrategy } from '@application/application-services/auth/jwt.strategy';
 import { authServiceDiToken } from '@domain-interfaces/services';
 import { Module, Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -10,9 +11,11 @@ const providers: Provider[] = [
     provide: authServiceDiToken,
     useClass: AuthApplicationService,
   },
+  JwtStrategy,
 ];
 
 const configService = new ConfigService();
+
 @Module({
   imports: [
     PassportModule,
@@ -23,7 +26,7 @@ const configService = new ConfigService();
       },
     }),
   ],
-  providers,
+  providers: providers,
   exports: providers,
 })
-export class ApplicationServiceModule {}
+export class AuthModule {}

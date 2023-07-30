@@ -5,3 +5,11 @@ export class CategorySchema extends SchemaBase {
   description?: string;
   product_ids?: string[];
 }
+
+export class CategorySchemaWithProducts extends CategorySchema {
+  products: {
+    product_id: string;
+    product_name: string;
+    product_price: number;
+  };
+}

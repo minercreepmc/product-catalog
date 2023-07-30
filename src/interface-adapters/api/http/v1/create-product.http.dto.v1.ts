@@ -19,10 +19,14 @@ export class V1CreateProductHttpRequest {
   })
   image?: Express.Multer.File;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   categoryIds?: string[];
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   discountId?: string;
 }
 

@@ -92,6 +92,10 @@ export class AuthApplicationService implements AuthServicePort {
     )}`;
   }
 
+  getLogOutCookie(): string {
+    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  }
+
   async findOneByUsername(
     username: UserNameValueObject,
   ): Promise<UserAggregate> {

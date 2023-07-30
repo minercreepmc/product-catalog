@@ -6,7 +6,7 @@ import {
   UserRegistrationDomainService,
 } from '@domain-services';
 import { EventBusAdapter } from '@infrastructures/events';
-import { ApplicationServiceModule } from '@modules/application';
+import { AuthModule } from '@modules/infrastructures/auth';
 //import { eventBusDiToken } from '@domain-interfaces/events';
 
 import { Module } from '@nestjs/common';
@@ -16,7 +16,7 @@ import { Module } from '@nestjs/common';
 //   provide: eventBusDiToken,
 //   useClass: EventBusAdapter,
 // };
-const sharedModules = [ApplicationServiceModule];
+const sharedModules = [AuthModule];
 
 @Module({
   imports: [...sharedModules],

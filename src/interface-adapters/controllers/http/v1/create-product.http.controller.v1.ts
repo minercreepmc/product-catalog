@@ -70,7 +70,9 @@ export class V1CreateProductHttpController extends HttpControllerBase<
           name: image?.originalname,
           value: image?.buffer,
         }),
-      categoryIds: categoryIds?.map((id) => new CategoryIdValueObject(id)),
+      categoryIds:
+        categoryIds &&
+        categoryIds?.map?.((id) => new CategoryIdValueObject(id)),
       discountId: discountId && new DiscountIdValueObject(discountId),
     });
   }

@@ -75,7 +75,7 @@ export class V1LogInHttpController extends HttpControllerBase<
       },
     });
 
-    response.setHeader('Cookie', dto.cookie);
+    response.setHeader('Set-Cookie', dto.cookie);
     response.json(new V1LogInHttpResponse(dto));
     return new V1LogInHttpResponse(dto);
   }

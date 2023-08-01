@@ -68,10 +68,6 @@ export class CategoryRepository
     id: CategoryIdValueObject,
     newState: CategoryAggregate,
   ): Promise<CategoryAggregate> {
-    if (newState.productIds) {
-      return this.updateProductsFromCategory(id, newState.productIds);
-    }
-
     const query = this.mapper.toPersistance({ id });
     const model = this.mapper.toPersistance(newState);
 
@@ -83,34 +79,37 @@ export class CategoryRepository
       [query.id, model.name, model.description],
     );
 
-    const saved = res.rows[0];
+    const category = res.rows[0];
 
-    return saved ? this.mapper.toDomain(saved) : null;
+    if (newState.productIds) {
+      const productsUpdated = await this.updateProductsFromCategory(
+        category.id,
+        newState.productIds,
+      );
+      category.productIds = productsUpdated.productIds;
+    }
+
+    return category ? this.mapper.toDomain(category) : null;
   }
 
   private async updateProductsFromCategory(
-    categoryId: CategoryIdValueObject,
+    categoryId: string,
     productIds: ProductIdValueObject[],
-  ): Promise<CategoryAggregate> {
-    const model = this.mapper.toPersistance({
-      productIds,
-      id: categoryId,
-    });
-
+  ): Promise<Partial<CategoryAggregate>> {
+    const productIdsArray = productIds.map((p) => p.value);
     const res = await this.databaseService.runQuery(
       ` 
-        DELETE 
-        FROM product_category
-        WHERE category_id = $1
-        AND product_id NOT IN (SELECT unnest($2::varchar[]))
-        RETURNING category_id AS id, product_id AS product_ids
+          DELETE 
+          FROM product_category
+          WHERE category_id = $1
+          AND product_id NOT IN (SELECT unnest($2::varchar[]))
+          RETURNING product_id as product_ids
        `,
-      [model.id, model.product_ids],
+      [categoryId, productIdsArray],
     );
 
     const updated = res.rows[0];
-
-    return updated ? this.mapper.toDomain(updated) : null;
+    return updated;
   }
 
   async findOneByName(

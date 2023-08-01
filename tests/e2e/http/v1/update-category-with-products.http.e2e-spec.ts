@@ -59,6 +59,7 @@ describe('Update category', () => {
 
     const updateCategoryRequest: V1UpdateCategoryHttpRequest = {
       name: randomString(),
+      description: randomString(),
       productIds: [],
     };
 
@@ -68,10 +69,11 @@ describe('Update category', () => {
       .send(updateCategoryRequest)
       .expect(HttpStatus.OK);
 
-    const { name, productIds } =
+    const { name, productIds, description } =
       updateResponse.body as V1UpdateCategoryHttpResponse;
     expect(name).toEqual(updateCategoryRequest.name);
     expect(productIds).toEqual([]);
+    expect(description).toEqual(updateCategoryRequest.description);
   });
 
   // Add more test cases for other routes, if needed.

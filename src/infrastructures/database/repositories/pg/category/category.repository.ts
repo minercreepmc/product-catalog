@@ -7,6 +7,7 @@ import {
   CategoryIdValueObject,
   CategoryNameValueObject,
 } from '@value-objects/category';
+import { ProductIdValueObject } from '@value-objects/product';
 import { CategorySchema } from './category.schema';
 import { CategorySchemaMapper } from './category.schema.mapper';
 
@@ -15,6 +16,12 @@ export class CategoryRepository
   extends RepositoryBase<CategoryAggregate, CategorySchema>
   implements CategoryRepositoryPort
 {
+  constructor(databaseService: DatabaseService, mapper: CategorySchemaMapper) {
+    super({
+      databaseService,
+      mapper,
+    });
+  }
   async create(entity: CategoryAggregate): Promise<CategoryAggregate> {
     const model = this.mapper.toPersistance(entity);
 
@@ -61,6 +68,10 @@ export class CategoryRepository
     id: CategoryIdValueObject,
     newState: CategoryAggregate,
   ): Promise<CategoryAggregate> {
+    if (newState.productIds) {
+      return this.updateProductsFromCategory(id, newState.productIds);
+    }
+
     const query = this.mapper.toPersistance({ id });
     const model = this.mapper.toPersistance(newState);
 
@@ -77,6 +88,31 @@ export class CategoryRepository
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
+  private async updateProductsFromCategory(
+    categoryId: CategoryIdValueObject,
+    productIds: ProductIdValueObject[],
+  ): Promise<CategoryAggregate> {
+    const model = this.mapper.toPersistance({
+      productIds,
+      id: categoryId,
+    });
+
+    const res = await this.databaseService.runQuery(
+      ` 
+        DELETE 
+        FROM product_category
+        WHERE category_id = $1
+        AND product_id NOT IN (SELECT unnest($2::varchar[]))
+        RETURNING category_id AS id, product_id AS product_ids
+       `,
+      [model.id, model.product_ids],
+    );
+
+    const updated = res.rows[0];
+
+    return updated ? this.mapper.toDomain(updated) : null;
+  }
+
   async findOneByName(
     name: CategoryNameValueObject,
   ): Promise<CategoryAggregate> {
@@ -90,12 +126,5 @@ export class CategoryRepository
     const model = res.rows[0];
 
     return model ? this.mapper.toDomain(model) : null;
-  }
-
-  constructor(databaseService: DatabaseService, mapper: CategorySchemaMapper) {
-    super({
-      databaseService,
-      mapper,
-    });
   }
 }

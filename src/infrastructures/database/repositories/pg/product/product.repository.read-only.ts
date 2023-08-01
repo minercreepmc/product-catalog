@@ -16,7 +16,6 @@ export class ReadOnlyProductRepository
       databaseService,
     });
   }
-
   async findByIdWithDiscount(id: string): Promise<ProductWithDetailsSchema> {
     const res = await this.databaseService.runQuery(
       `

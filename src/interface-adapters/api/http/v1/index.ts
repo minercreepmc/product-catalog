@@ -4,6 +4,7 @@ export * from './create-product.http.dto.v1';
 export * from './register-member.http.dto.v1';
 export * from './update-product.http.dto.v1';
 export * from './update-discount.http.dto.v1';
+export * from './update-category.http.dto.v1';
 export * from './remove-products.http.dto.v1';
 export * from './remove-discounts.http.dto.v1';
 export * from './remove-categories.http.dto.v1';

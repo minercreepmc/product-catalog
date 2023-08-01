@@ -16,6 +16,13 @@ export class ProductRepository
   extends RepositoryBase<ProductAggregate, ProductSchema>
   implements ProductRepositoryPort
 {
+  constructor(databaseService: DatabaseService, mapper: ProductSchemaMapper) {
+    super({
+      databaseService,
+      mapper,
+    });
+  }
+
   async create(entity: ProductAggregate): Promise<ProductAggregate> {
     if (entity.categoryIds && entity.categoryIds.length > 0) {
       return this.createWithCategories(entity);
@@ -150,12 +157,5 @@ export class ProductRepository
     const updated = res.rows[0];
 
     return updated ? this.mapper.toDomain(updated) : null;
-  }
-
-  constructor(databaseService: DatabaseService, mapper: ProductSchemaMapper) {
-    super({
-      databaseService,
-      mapper,
-    });
   }
 }

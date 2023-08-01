@@ -16,3 +16,9 @@ export interface CreateCategoryAggregateOptions {
   name: CategoryNameValueObject;
   description?: CategoryDescriptionValueObject;
 }
+
+export interface UpdateCategoryAggregateOptions {
+  name?: CategoryNameValueObject;
+  description?: CategoryDescriptionValueObject;
+  productIds?: ProductIdValueObject[];
+}

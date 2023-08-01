@@ -23,7 +23,7 @@ export class CategorySchemaMapper extends SchemaMapperBase<
       name: new CategoryNameValueObject(name),
       description:
         description && new CategoryDescriptionValueObject(description),
-      productIds: product_ids?.map((id) => new ProductIdValueObject(id)),
+      productIds: product_ids?.map?.((id) => new ProductIdValueObject(id)),
     });
   }
   toPersistance(domain: Partial<CategoryAggregate>): Partial<CategorySchema> {
@@ -33,7 +33,7 @@ export class CategorySchemaMapper extends SchemaMapperBase<
       id: id?.value,
       name: name?.value,
       description: description?.value,
-      product_ids: productIds?.map((id) => id.value),
+      product_ids: productIds?.map?.((id) => id.value),
     };
 
     return plainToInstance(CategorySchema, model);

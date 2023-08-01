@@ -14,7 +14,6 @@ import {
   Controller,
   Param,
   Put,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {

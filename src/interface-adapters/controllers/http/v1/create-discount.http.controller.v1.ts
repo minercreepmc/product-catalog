@@ -8,13 +8,7 @@ import {
   HttpControllerBase,
   HttpControllerBaseOption,
 } from '@base/inteface-adapters';
-import {
-  Body,
-  ConflictException,
-  Controller,
-  Post,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Body, ConflictException, Controller, Post } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   CreateDiscountCommand,

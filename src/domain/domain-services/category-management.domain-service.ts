@@ -1,8 +1,12 @@
 import {
   CategoryAggregate,
   CreateCategoryAggregateOptions,
+  UpdateCategoryAggregateOptions,
 } from '@aggregates/category';
-import { CategoryRemovedDomainEvent } from '@domain-events/category';
+import {
+  CategoryRemovedDomainEvent,
+  CategoryUpdatedDomainEvent,
+} from '@domain-events/category';
 import {
   categoryRepositoryDiToken,
   CategoryRepositoryPort,
@@ -23,6 +27,11 @@ export interface RemoveCategoryServiceOptions {
 
 export interface RemoveCategoriesServiceOptions {
   categoryIds: CategoryIdValueObject[];
+}
+
+export interface UpdateCategoryServiceOptions {
+  id: CategoryIdValueObject;
+  payload: UpdateCategoryAggregateOptions;
 }
 
 @Injectable()
@@ -100,5 +109,25 @@ export class CategoryManagementDomainService {
     });
 
     return events;
+  }
+
+  async updateCategory(
+    options: UpdateCategoryServiceOptions,
+  ): Promise<CategoryUpdatedDomainEvent> {
+    return this.unitOfWork.runInTransaction(async () => {
+      await this.categoryVerification.verifyCategoryUpdateOptions(options);
+
+      const { id, payload } = options;
+
+      const categoryAggregate = await this.categoryRepository.findOneById(id);
+
+      const categoryUpdated = categoryAggregate.updateCategory({
+        ...payload,
+      });
+
+      await this.categoryRepository.updateOneById(id, categoryAggregate);
+
+      return categoryUpdated;
+    });
   }
 }

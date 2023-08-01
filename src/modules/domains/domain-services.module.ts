@@ -5,6 +5,7 @@ import {
   ProductManagementDomainService,
   UserRegistrationDomainService,
 } from '@domain-services';
+import { ProductVerificationDomainService } from '@domain-services/product-verification.domain-service';
 import { EventBusAdapter } from '@infrastructures/events';
 import { AuthModule } from '@modules/infrastructures/auth';
 //import { eventBusDiToken } from '@domain-interfaces/events';
@@ -24,6 +25,7 @@ const sharedModules = [AuthModule];
     CategoryManagementDomainService,
     CategoryVerificationDomainService,
     ProductManagementDomainService,
+    ProductVerificationDomainService,
     DiscountManagementDomainService,
     UserRegistrationDomainService,
     // eventBus,
@@ -32,6 +34,7 @@ const sharedModules = [AuthModule];
     CategoryManagementDomainService,
     CategoryVerificationDomainService,
     DiscountManagementDomainService,
+    ProductVerificationDomainService,
     ProductManagementDomainService,
     UserRegistrationDomainService,
   ],

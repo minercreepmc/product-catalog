@@ -15,7 +15,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {

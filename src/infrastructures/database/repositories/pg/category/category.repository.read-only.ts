@@ -39,7 +39,8 @@ export class ReadOnlyCategoryRepository
           )
       ) AS products
       FROM product_category
-      JOIN product ON product.id = product_category.product_id WHERE product_category.category_id = $1
+      JOIN product ON product.id = product_category.product_id 
+      WHERE product_category.category_id = $1 AND product.deleted_at is null
     `,
       [id],
     );

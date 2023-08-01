@@ -12,14 +12,30 @@ import {
   CreateCategoryOptions,
   RemoveCategoriesServiceOptions,
   RemoveCategoryServiceOptions,
+  UpdateCategoryServiceOptions,
 } from './category-management.domain-service';
+import { ProductVerificationDomainService } from './product-verification.domain-service';
 
 @Injectable()
 export class CategoryVerificationDomainService {
   constructor(
     @Inject(categoryRepositoryDiToken)
     private readonly categoryRepository: CategoryRepositoryPort,
+    private readonly productVerificationService: ProductVerificationDomainService,
   ) {}
+
+  async verifyCategoryUpdateOptions(options: UpdateCategoryServiceOptions) {
+    const { id, payload } = options;
+
+    await Promise.all([
+      this.checkCategoryIdMustExist({
+        id,
+      }),
+      this.productVerificationService.checkProductIdsMustExist(
+        payload.productIds,
+      ),
+    ]);
+  }
 
   async verifyCategoryRemovalOptions(options: RemoveCategoryServiceOptions) {
     const { categoryId } = options;

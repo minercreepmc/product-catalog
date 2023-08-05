@@ -15,20 +15,11 @@ export class ProductVerificationDomainService {
     @Inject(productRepositoryDiToken)
     private readonly productRepository: ProductRepositoryPort,
   ) {}
-
-  async checkProductIdsMustExist(ids: ProductIdValueObject[]) {
-    const isExist = await this.doesProductIdsExist(ids);
-
-    if (!isExist) {
-      throw new ProductDomainExceptions.DoesNotExist();
-    }
-  }
-
-  async doesProductExistByName(name: ProductNameValueObject): Promise<boolean> {
+  async doesProductNameExist(name: ProductNameValueObject): Promise<boolean> {
     return Boolean(await this.productRepository.findOneByName(name));
   }
 
-  async doesProductExistById(id: ProductIdValueObject): Promise<boolean> {
+  async doesProductIdExist(id: ProductIdValueObject): Promise<boolean> {
     return Boolean(await this.productRepository.findOneById(id));
   }
 
@@ -42,5 +33,28 @@ export class ProductVerificationDomainService {
     );
 
     return checks.every((exist) => exist);
+  }
+
+  async findProductAndThrowIfExist(name: ProductNameValueObject) {
+    const product = await this.productRepository.findOneByName(name);
+    if (product) throw new ProductDomainExceptions.AlreadyExist();
+  }
+
+  async findProductOrThrow(id: ProductIdValueObject) {
+    const product = await this.productRepository.findOneById(id);
+    if (!product) throw new ProductDomainExceptions.DoesNotExist();
+    return product;
+  }
+
+  async findProductsOrThrow(ids: ProductIdValueObject[]) {
+    const products = [];
+
+    for (const id of ids) {
+      const product = await this.productRepository.findOneById(id);
+      if (!product) throw new ProductDomainExceptions.DoesNotExist();
+      products.push(product);
+    }
+
+    return products;
   }
 }

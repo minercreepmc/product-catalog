@@ -8,63 +8,13 @@ import {
   CategoryIdValueObject,
   CategoryNameValueObject,
 } from '@value-objects/category';
-import {
-  CreateCategoryOptions,
-  RemoveCategoriesServiceOptions,
-  RemoveCategoryServiceOptions,
-  UpdateCategoryServiceOptions,
-} from './category-management.domain-service';
-import { ProductVerificationDomainService } from './product-verification.domain-service';
 
 @Injectable()
 export class CategoryVerificationDomainService {
   constructor(
     @Inject(categoryRepositoryDiToken)
     private readonly categoryRepository: CategoryRepositoryPort,
-    private readonly productVerificationService: ProductVerificationDomainService,
   ) {}
-
-  async verifyCategoryUpdateOptions(options: UpdateCategoryServiceOptions) {
-    const { id, payload } = options;
-
-    await Promise.all([
-      this.checkCategoryIdMustExist({
-        id,
-      }),
-      this.productVerificationService.checkProductIdsMustExist(
-        payload.productIds,
-      ),
-    ]);
-  }
-
-  async verifyCategoryRemovalOptions(options: RemoveCategoryServiceOptions) {
-    const { categoryId } = options;
-
-    await Promise.all([
-      this.checkCategoryIdMustExist({
-        id: categoryId,
-      }),
-    ]);
-  }
-
-  async verifyCategoriesRemovalOptions(
-    options: RemoveCategoriesServiceOptions,
-  ) {
-    const { categoryIds } = options;
-
-    const promises = categoryIds.map((id: CategoryIdValueObject) => {
-      this.checkCategoryIdMustExist({ id });
-    });
-
-    await Promise.all(promises);
-  }
-
-  async verifyCategoryCreationOptions(options: CreateCategoryOptions) {
-    const { name } = options;
-
-    await Promise.all([this.checkCategoryMustNotExist({ name })]);
-  }
-
   async doesCategoryIdsExist(ids: CategoryIdValueObject[]) {
     if (!ids || ids.length === 0) {
       return true;
@@ -88,19 +38,26 @@ export class CategoryVerificationDomainService {
   }
 
   // Check Methods
-
-  private async checkCategoryIdMustExist({ id }) {
+  async findCategoryOrThrow(id: CategoryIdValueObject) {
     const exist = await this.categoryRepository.findOneById(id);
     if (!exist) {
       throw new CategoryDomainExceptions.DoesNotExist();
     }
+    return exist;
   }
 
-  private async checkCategoryMustNotExist({
-    name,
-  }: {
-    name: CategoryNameValueObject;
-  }) {
+  async findCategoriesOrThrow(ids: CategoryIdValueObject[]) {
+    const categories = [];
+
+    for (const id of ids) {
+      const category = await this.categoryRepository.findOneById(id);
+      if (!category) throw new CategoryDomainExceptions.DoesNotExist();
+      categories.push(category);
+    }
+    return categories;
+  }
+
+  async findCategoryOrThrowIfExist(name: CategoryNameValueObject) {
     const exist = await this.categoryRepository.findOneByName(name);
     if (exist) {
       throw new CategoryDomainExceptions.AlreadyExist();

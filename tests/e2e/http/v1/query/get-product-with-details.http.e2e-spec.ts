@@ -91,10 +91,10 @@ describe('Get product with details', () => {
     const body: ProductWithDetailsSchema = response.body;
 
     expect(body.id).toEqual(productId);
-    expect(body.discount_id).toEqual(discountId);
-    expect(body.discount_name).toEqual(createDiscountRequest.name);
-    expect(body.discount_percentage).toEqual(createDiscountRequest.percentage);
-    expect(body.category_ids[0]).toEqual(categoryId);
+    expect(body.discount.id).toEqual(discountId);
+    expect(body.discount.name).toEqual(createDiscountRequest.name);
+    expect(body.discount.percentage).toEqual(createDiscountRequest.percentage);
+    expect(body.categories[0].id).toEqual(categoryId);
   });
 
   // Add more test cases for other routes, if needed.

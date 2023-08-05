@@ -21,6 +21,7 @@ export abstract class RepositoryBase<Domain, Schema>
   abstract deleteOneById(id: ID): Promise<Domain>;
   abstract findOneById(id: ID): Promise<Domain>;
   abstract updateOneById(id: ID, newState: Domain): Promise<Domain>;
+  abstract deleteManyByIds(ids: ID[]): Promise<Domain[]>;
 
   constructor(options: RepositoryBaseOptions<Domain, Schema>) {
     this.databaseService = options.databaseService;

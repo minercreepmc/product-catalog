@@ -17,15 +17,6 @@ describe('Update discount', () => {
   const createDiscountUrl = v1ApiEndpoints.createDiscount;
   const updateDiscountUrl = v1ApiEndpoints.updateDiscount;
 
-  const createDiscountRequest: V1CreateDiscountHttpRequest = {
-    name: randomString(),
-    percentage: 2,
-  };
-  const updateDiscountRequest: V1UpdateDiscountHttpRequest = {
-    name: randomString(),
-    description: 'Sample description',
-  };
-
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -40,6 +31,14 @@ describe('Update discount', () => {
   });
 
   it('should update a discount and return the new discount information', async () => {
+    const createDiscountRequest: V1CreateDiscountHttpRequest = {
+      name: randomString(),
+      percentage: 2,
+    };
+    const updateDiscountRequest: V1UpdateDiscountHttpRequest = {
+      name: randomString(),
+      description: 'Sample description',
+    };
     const createResponse = await request(app.getHttpServer())
       .post(createDiscountUrl)
       .set('Accept', 'application/json')
@@ -64,6 +63,11 @@ describe('Update discount', () => {
 
   it('should not update a discount if it not exists', async () => {
     const discountIdDidNotExist = '123';
+
+    const updateDiscountRequest: V1UpdateDiscountHttpRequest = {
+      name: randomString(),
+      description: 'Sample description',
+    };
     const response = await request(app.getHttpServer())
       .put(updateDiscountUrl.replace(':id', discountIdDidNotExist))
       .set('Accept', 'application/json')

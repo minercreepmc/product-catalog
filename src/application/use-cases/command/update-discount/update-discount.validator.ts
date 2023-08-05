@@ -1,7 +1,10 @@
 import { Notification } from '@base/patterns';
 import { ValidatorBase } from '@base/use-cases';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
-import { DiscountManagementDomainService } from '@domain-services';
+import {
+  DiscountManagementDomainService,
+  DiscountVerificationDomainService,
+} from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { UpdateDiscountCommand } from './update-discount.dto';
 import { UpdateDiscountFailure } from './update-discount.result';
@@ -23,7 +26,7 @@ export class UpdateDiscountValidator extends ValidatorBase<
   }
 
   async idMustExist(note: Notification<UpdateDiscountFailure>): Promise<void> {
-    const isExist = await this.discountManagementService.doesDiscountExistById(
+    const isExist = await this.discountVerificationService.doesDiscountIdExist(
       this.command.id,
     );
 
@@ -34,7 +37,7 @@ export class UpdateDiscountValidator extends ValidatorBase<
 
   command: UpdateDiscountCommand;
   constructor(
-    private readonly discountManagementService: DiscountManagementDomainService,
+    private readonly discountVerificationService: DiscountVerificationDomainService,
   ) {
     super();
   }

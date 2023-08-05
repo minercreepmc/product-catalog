@@ -1,6 +1,8 @@
-import { DiscountAggregate } from '@aggregates/discount';
-import { DiscountRemovedDomainEvent } from '@domain-events/discount';
-import { DiscountDomainExceptions } from '@domain-exceptions/discount';
+import {
+  DiscountAggregate,
+  DiscountAggregateCreateOptions,
+  DiscountAggregateUpdateOptions,
+} from '@aggregates/discount';
 import {
   discountRepositoryDiToken,
   DiscountRepositoryPort,
@@ -8,26 +10,12 @@ import {
   UnitOfWorkPort,
 } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  DiscountActiveValueObject,
-  DiscountDescriptionValueObject,
-  DiscountIdValueObject,
-  DiscountNameValueObject,
-  DiscountPercentageValueObject,
-} from '@value-objects/discount';
-
-export interface CreateOptions {
-  name: DiscountNameValueObject;
-  description?: DiscountDescriptionValueObject;
-  percentage: DiscountPercentageValueObject;
-}
+import { DiscountIdValueObject } from '@value-objects/discount';
+import { DiscountVerificationDomainService } from './discount-verification.domain-service';
 
 export interface UpdateOptions {
   id: DiscountIdValueObject;
-  name?: DiscountNameValueObject;
-  description?: DiscountDescriptionValueObject;
-  percentage?: DiscountPercentageValueObject;
-  active?: DiscountActiveValueObject;
+  payload: DiscountAggregateUpdateOptions;
 }
 
 export interface RemoveDiscountOptions {
@@ -40,67 +28,39 @@ export interface RemoveDiscountsOptions {
 
 @Injectable()
 export class DiscountManagementDomainService {
-  async doesDiscountExistByName(
-    name: DiscountNameValueObject,
-  ): Promise<boolean> {
-    const isExist = await this.discountRepository.findOneByName(name);
-
-    return !!isExist;
-  }
-
-  async doesDiscountExistById(id: DiscountIdValueObject): Promise<boolean> {
-    const isExist = await this.discountRepository.findOneById(id);
-
-    return !!isExist;
-  }
-
-  async doesDiscountExistByIds(ids: DiscountIdValueObject[]) {
-    for (const id of ids) {
-      const isExist = await this.discountRepository.findOneById(id);
-
-      if (!isExist) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  async createDiscount(options: CreateOptions) {
+  constructor(
+    @Inject(discountRepositoryDiToken)
+    private readonly discountRepository: DiscountRepositoryPort,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
+    private readonly discountVerificationService: DiscountVerificationDomainService,
+  ) {}
+  async createDiscount(options: DiscountAggregateCreateOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      const isExist = await this.discountRepository.findOneByName(options.name);
-
-      if (isExist) {
-        throw new DiscountDomainExceptions.AlreadyExist();
-      }
-
-      const discount = new DiscountAggregate();
-
-      const discountCreated = discount.createDiscount({
+      await this.discountVerificationService.findDiscountAndThrowIfExist(
+        options.name,
+      );
+      const discountAggregate = new DiscountAggregate();
+      const discountCreated = discountAggregate.createDiscount({
         name: options.name,
         description: options.description,
         percentage: options.percentage,
       });
-
-      await this.discountRepository.create(discount);
-
+      await this.discountRepository.create(discountAggregate);
       return discountCreated;
     });
   }
 
   async updateDiscount(options: UpdateOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      const isExist = await this.discountRepository.findOneById(options.id);
-
-      if (!isExist) {
-        throw new DiscountDomainExceptions.DoesNotExist();
-      }
-
-      const discount = await this.discountRepository.findOneById(options.id);
-
-      const discountUpdated = discount.updateDiscount(options);
-
-      await this.discountRepository.updateOneById(options.id, discount);
+      const { id, payload } = options;
+      const discount =
+        await this.discountVerificationService.findDiscountOrThrow(id);
+      const discountUpdated = discount.updateDiscount({
+        id,
+        ...payload,
+      });
+      await this.discountRepository.updateOneById(id, discount);
 
       return discountUpdated;
     });
@@ -108,16 +68,10 @@ export class DiscountManagementDomainService {
 
   async removeDiscount(options: RemoveDiscountOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      const isExist = await this.discountRepository.findOneById(options.id);
-
-      if (!isExist) {
-        throw new DiscountDomainExceptions.DoesNotExist();
-      }
-
-      const discount = await this.discountRepository.findOneById(options.id);
+      const discount =
+        await this.discountVerificationService.findDiscountOrThrow(options.id);
       const discountRemoved = discount.removeDiscount();
-
-      await this.discountRepository.deleteOneById(options.id);
+      await this.discountRepository.deleteOneById(discount.id);
 
       return discountRemoved;
     });
@@ -126,28 +80,16 @@ export class DiscountManagementDomainService {
   async removeDiscounts(options: RemoveDiscountsOptions) {
     return this.unitOfWork.runInTransaction(async () => {
       const { ids } = options;
-      const isExist = await this.doesDiscountExistByIds(ids);
+      const discounts =
+        await this.discountVerificationService.findDiscountsOrThrow(ids);
 
-      if (!isExist) {
-        throw new DiscountDomainExceptions.DoesNotExist();
-      }
-
-      const events: DiscountRemovedDomainEvent[] = [];
-      for (const id of ids) {
-        const discount = await this.discountRepository.findOneById(id);
+      const discountRemoved = discounts.map((discount) => {
         const discountRemoved = discount.removeDiscount();
-        await this.discountRepository.deleteOneById(id);
-        events.push(discountRemoved);
-      }
+        return discountRemoved;
+      });
+      await this.discountRepository.deleteManyByIds(ids);
 
-      return events;
+      return discountRemoved;
     });
   }
-
-  constructor(
-    @Inject(discountRepositoryDiToken)
-    private readonly discountRepository: DiscountRepositoryPort,
-    @Inject(unitOfWorkDiToken)
-    private readonly unitOfWork: UnitOfWorkPort,
-  ) {}
 }

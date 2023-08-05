@@ -1,10 +1,7 @@
-import { PopulateDetails, PopulateDiscount } from './query';
+import { PopulateDetails } from './query';
 
-export class V1GetProductHttpQuery
-  implements PopulateDiscount, PopulateDetails
-{
+export class V1GetProductHttpQuery implements PopulateDetails {
   populate_details?: boolean;
-  populate_discount?: boolean;
 }
 export class V1GetProductHttpResponse {
   discount_name: string;

@@ -61,7 +61,7 @@ describe('Log In', () => {
 
     const body: V1LogInHttpResponse = response.body;
 
-    expect(response.headers['cookie']).toBeDefined();
+    expect(response.headers['set-cookie']).toBeDefined();
     expect(body.cookie).toBeDefined();
   });
 

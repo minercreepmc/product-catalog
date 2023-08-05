@@ -99,6 +99,7 @@ export class ProductAggregate
       description: this.description,
       image: this.image,
       discountId: this.discountId,
+      categoryIds: this.categoryIds,
     });
   }
 

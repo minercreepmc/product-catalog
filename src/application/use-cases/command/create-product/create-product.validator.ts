@@ -5,8 +5,11 @@ import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
   CategoryManagementDomainService,
+  CategoryVerificationDomainService,
   DiscountManagementDomainService,
+  DiscountVerificationDomainService,
   ProductManagementDomainService,
+  ProductVerificationDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { Result } from 'oxide.ts';
@@ -43,7 +46,7 @@ export class CreateProductValidator extends ValidatorBase<
   private async nameMustBeUnique(
     note: Notification<CreateProductFailure>,
   ): Promise<void> {
-    const isExist = await this.productManagementService.doesProductExistByName(
+    const isExist = await this.productVerificationService.doesProductNameExist(
       this.command.name,
     );
 
@@ -53,7 +56,7 @@ export class CreateProductValidator extends ValidatorBase<
   }
 
   private async categoryIdsMustExist(note: Notification<CreateProductFailure>) {
-    const isExist = await this.categoryManagementService.doesCategoryIdsExist(
+    const isExist = await this.cateogryVerificationService.doesCategoryIdsExist(
       this.command.categoryIds,
     );
 
@@ -63,7 +66,7 @@ export class CreateProductValidator extends ValidatorBase<
   }
 
   private async discountIdMustExist(note: Notification<CreateProductFailure>) {
-    const isExist = await this.discountManagementService.doesDiscountExistById(
+    const isExist = await this.discountVerificationService.doesDiscountIdExist(
       this.command.discountId,
     );
 
@@ -74,9 +77,9 @@ export class CreateProductValidator extends ValidatorBase<
 
   command: CreateProductCommand;
   constructor(
-    private readonly productManagementService: ProductManagementDomainService,
-    private readonly categoryManagementService: CategoryManagementDomainService,
-    private readonly discountManagementService: DiscountManagementDomainService,
+    private readonly productVerificationService: ProductVerificationDomainService,
+    private readonly cateogryVerificationService: CategoryVerificationDomainService,
+    private readonly discountVerificationService: DiscountVerificationDomainService,
   ) {
     super();
   }

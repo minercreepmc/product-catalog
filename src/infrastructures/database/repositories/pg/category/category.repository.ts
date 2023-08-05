@@ -51,6 +51,10 @@ export class CategoryRepository
     return deleted ? this.mapper.toDomain(deleted) : null;
   }
 
+  deleteManyByIds(ids: CategoryIdValueObject[]): Promise<CategoryAggregate[]> {
+    return Promise.all(ids.map((id) => this.deleteOneById(id)));
+  }
+
   async findOneById(id: CategoryIdValueObject): Promise<CategoryAggregate> {
     const query = this.mapper.toPersistance({ id });
 
@@ -80,6 +84,7 @@ export class CategoryRepository
     );
 
     const category = res.rows[0];
+    console.log(category);
 
     if (newState.productIds) {
       const productsUpdated = await this.updateProductsFromCategory(
@@ -109,7 +114,7 @@ export class CategoryRepository
     );
 
     const updated = res.rows[0];
-    return updated;
+    return updated ? this.mapper.toDomain(updated) : { productIds };
   }
 
   async findOneByName(

@@ -21,7 +21,6 @@ export class DiscountRepository
       databaseService,
     });
   }
-
   async create(entity: DiscountAggregate): Promise<DiscountAggregate> {
     const { id, name, description, percentage, active } =
       this.mapper.toPersistance(entity);
@@ -54,6 +53,10 @@ export class DiscountRepository
     const model = res.rows[0];
 
     return model ? this.mapper.toDomain(model) : null;
+  }
+
+  deleteManyByIds(ids: DiscountIdValueObject[]): Promise<DiscountAggregate[]> {
+    return Promise.all(ids.map((id) => this.deleteOneById(id)));
   }
   async findOneById(id: DiscountIdValueObject): Promise<DiscountAggregate> {
     const domain = this.mapper.toPersistance({

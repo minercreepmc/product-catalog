@@ -16,20 +16,6 @@ export class ReadOnlyProductRepository
       databaseService,
     });
   }
-  async findByIdWithDiscount(id: string): Promise<ProductWithDetailsSchema> {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT product.id AS id, product.name AS name, product.price AS price, product.description AS description, product.image_url AS image_url, product.discount_id AS discount_id, 
-        discount.id AS discount_id, discount.name AS discount_name, discount.description AS discount_description, discount.percentage AS discount_percentage, discount.active AS discount_active 
-        FROM product
-        JOIN discount ON product.discount_id=discount.id
-        WHERE product.id=$1 AND product.deleted_at is null AND discount.deleted_at is null; 
-      `,
-      [id],
-    );
-
-    return res.rows[0];
-  }
 
   async findByDiscountId(id: string): Promise<ProductSchema[]> {
     const res = await this.databaseService.runQuery(
@@ -56,32 +42,44 @@ export class ReadOnlyProductRepository
   async findByIdWithDetails(id: string): Promise<ProductWithDetailsSchema> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT product.id AS id, product.name AS name, product.price AS price, product.description AS description, product.image_url AS image_url, product.discount_id AS discount_id, 
-        discount.id AS discount_id, discount.name AS discount_name, discount.description AS discount_description, discount.percentage AS discount_percentage, discount.active AS discount_active 
-        FROM product
-        JOIN discount ON product.discount_id=discount.id
-        WHERE product.id=$1 AND product.deleted_at is null AND discount.deleted_at is null; 
+        SELECT id, name, price, description, image_url, discount_id from product WHERE id=$1 and deleted_at is null
       `,
       [id],
     );
 
-    const model = res.rows[0];
+    const model = plainToInstance(ProductWithDetailsSchema, res.rows[0]);
 
-    const product = plainToInstance(ProductWithDetailsSchema, model);
+    if (model?.discount_id) {
+      const discount = await this.databaseService.runQuery(
+        `
+          SELECT id, name, description, percentage, active from discount WHERE id=$1 and deleted_at is null
+        `,
+        [model?.discount_id],
+      );
+      model.discount = discount.rows[0];
+    }
 
-    const categoryIdsRes = await this.databaseService.runQuery(
+    const categoryRes = await this.databaseService.runQuery(
       `
-        SELECT ARRAY(
-          SELECT category_id FROM product_category
-          WHERE product_id=$1
-        ) AS category_ids
-    `,
-      [product.id],
+       SELECT json_agg(
+          json_build_object(
+              'id', category.id,
+              'name', category.name,
+              'description', category.description
+          )
+      ) AS categories
+      FROM product_category
+      JOIN product ON product.id = product_category.product_id 
+      JOIN category ON product_category.category_id = category.id
+      WHERE product_category.product_id = $1 AND category.deleted_at IS NULL
+
+        `,
+      [model?.id],
     );
+    model.categories = categoryRes.rows[0].categories;
+    console.log(model);
 
-    product.category_ids = categoryIdsRes.rows[0].category_ids;
-
-    return product;
+    return model;
   }
 
   async findOneByName(name: string): Promise<ProductSchema> {

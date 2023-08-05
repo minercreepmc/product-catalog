@@ -1,6 +1,9 @@
 import { ValidatorBase } from '@base/use-cases';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
-import { ProductManagementDomainService } from '@domain-services';
+import {
+  ProductManagementDomainService,
+  ProductVerificationDomainService,
+} from '@domain-services';
 import { Result } from 'oxide.ts';
 import {
   RemoveProductsCommand,
@@ -31,7 +34,7 @@ export class RemoveProductsValidator extends ValidatorBase<
   }
 
   async productsMustExist(note: Notification<RemoveProductsFailure>) {
-    const exist = await this.productManagementService.doesProductIdsExist(
+    const exist = await this.productVerificationService.doesProductIdsExist(
       this.command.ids,
     );
 
@@ -42,7 +45,7 @@ export class RemoveProductsValidator extends ValidatorBase<
 
   command: RemoveProductsCommand;
   constructor(
-    private readonly productManagementService: ProductManagementDomainService,
+    private readonly productVerificationService: ProductVerificationDomainService,
   ) {
     super();
   }

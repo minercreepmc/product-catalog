@@ -13,11 +13,10 @@ export class V1GetProductHttpController {
   @Get()
   async execute(
     @Param('id') id: string,
-    @Query() { populate_discount, populate_details }: V1GetProductHttpQuery,
+    @Query() {  populate_details }: V1GetProductHttpQuery,
   ): Promise<V1GetProductHttpResponse> {
     const query: GetProductQuery = {
       id,
-      populate_discount,
       populate_details,
     };
     const res = await this.queryBus.execute(

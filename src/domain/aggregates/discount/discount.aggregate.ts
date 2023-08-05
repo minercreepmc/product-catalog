@@ -22,7 +22,7 @@ export interface DiscountAggregateDetails {
 
 export interface DiscountAggregateCreateOptions {
   name: DiscountNameValueObject;
-  description: DiscountDescriptionValueObject;
+  description?: DiscountDescriptionValueObject;
   percentage?: DiscountPercentageValueObject;
 }
 

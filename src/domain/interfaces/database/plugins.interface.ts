@@ -27,3 +27,7 @@ export interface Transaction {
 export interface FindMany<Entity> {
   findMany(options?: Entity & PaginationParams): Promise<Entity[]>;
 }
+
+export interface DeleteManyByIds<Entity> {
+  deleteManyByIds(ids: ID[]): Promise<Entity[]>;
+}

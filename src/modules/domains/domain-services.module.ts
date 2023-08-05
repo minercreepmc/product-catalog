@@ -2,6 +2,7 @@ import {
   CategoryManagementDomainService,
   CategoryVerificationDomainService,
   DiscountManagementDomainService,
+  DiscountVerificationDomainService,
   ProductManagementDomainService,
   UserRegistrationDomainService,
 } from '@domain-services';
@@ -27,6 +28,7 @@ const sharedModules = [AuthModule];
     ProductManagementDomainService,
     ProductVerificationDomainService,
     DiscountManagementDomainService,
+    DiscountVerificationDomainService,
     UserRegistrationDomainService,
     // eventBus,
   ],
@@ -34,6 +36,7 @@ const sharedModules = [AuthModule];
     CategoryManagementDomainService,
     CategoryVerificationDomainService,
     DiscountManagementDomainService,
+    DiscountVerificationDomainService,
     ProductVerificationDomainService,
     ProductManagementDomainService,
     UserRegistrationDomainService,

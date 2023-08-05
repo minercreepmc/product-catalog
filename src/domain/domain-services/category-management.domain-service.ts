@@ -13,10 +13,7 @@ import {
 } from '@domain-interfaces';
 import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  CategoryIdValueObject,
-  CategoryNameValueObject,
-} from '@value-objects/category';
+import { CategoryIdValueObject } from '@value-objects/category';
 import { CategoryVerificationDomainService } from './category-verification.domain-service';
 
 export interface CreateCategoryOptions extends CreateCategoryAggregateOptions {}
@@ -41,49 +38,27 @@ export class CategoryManagementDomainService {
     private readonly unitOfWork: UnitOfWorkPort,
     @Inject(categoryRepositoryDiToken)
     private readonly categoryRepository: CategoryRepositoryPort,
-    private readonly categoryVerification: CategoryVerificationDomainService,
+    private readonly categoryVerificationService: CategoryVerificationDomainService,
   ) {}
-
-  async doesCategoryExistByName(name: CategoryNameValueObject) {
-    return this.categoryVerification.doesCategoryNameExist(name);
-  }
-
-  async doesCategoryExistById(id: CategoryIdValueObject) {
-    return this.categoryVerification.doesCategoryIdExist(id);
-  }
-
-  async doesCategoryIdsExist(ids: CategoryIdValueObject[]) {
-    return this.categoryVerification.doesCategoryIdsExist(ids);
-  }
 
   async createCategory(options: CreateCategoryOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyCategoryCreationOptions(options);
-
+      await this.categoryVerificationService.findCategoryOrThrowIfExist(
+        options.name,
+      );
       const categoryAggregate = new CategoryAggregate();
-
       const categoryCreated = categoryAggregate.createCategory(options);
       await this.categoryRepository.create(categoryAggregate);
-
       return categoryCreated;
     });
   }
 
-  async removeCategory(options: RemoveCategoryServiceOptions) {
-    // TODO: run in transaction but with bulk delete not work
+  async removeCategory({ categoryId }: RemoveCategoryServiceOptions) {
     return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyCategoryRemovalOptions(options);
-
-      const { categoryId } = options;
-
-      const categoryAggregate = await this.categoryRepository.findOneById(
-        categoryId,
-      );
-
-      const categoryRemoved = categoryAggregate.removeCategory();
-
+      const category =
+        await this.categoryVerificationService.findCategoryOrThrow(categoryId);
+      const categoryRemoved = category.removeCategory();
       await this.categoryRepository.deleteOneById(categoryId);
-
       return categoryRemoved;
     });
   }
@@ -92,20 +67,17 @@ export class CategoryManagementDomainService {
     options: RemoveCategoriesServiceOptions,
   ): Promise<CategoryRemovedDomainEvent[]> {
     const events = await this.unitOfWork.runInTransaction(async () => {
-      const categories = [];
-      for (const id of options.categoryIds) {
-        categories.push(await this.categoryRepository.findOneById(id));
-      }
+      const categories =
+        await this.categoryVerificationService.findCategoriesOrThrow(
+          options.categoryIds,
+        );
 
-      const categoriesRemoved = categories.map((category) =>
+      const categoriesRemovedEvent = categories.map((category) =>
         category.removeCategory(),
       );
 
-      for (const id of options.categoryIds) {
-        await this.categoryRepository.deleteOneById(id);
-      }
-
-      return categoriesRemoved;
+      await this.categoryRepository.deleteManyByIds(options.categoryIds);
+      return categoriesRemovedEvent;
     });
 
     return events;
@@ -115,19 +87,12 @@ export class CategoryManagementDomainService {
     options: UpdateCategoryServiceOptions,
   ): Promise<CategoryUpdatedDomainEvent> {
     return this.unitOfWork.runInTransaction(async () => {
-      await this.categoryVerification.verifyCategoryUpdateOptions(options);
-
       const { id, payload } = options;
-
-      const categoryAggregate = await this.categoryRepository.findOneById(id);
-
-      const categoryUpdated = categoryAggregate.updateCategory({
-        ...payload,
-      });
-
-      await this.categoryRepository.updateOneById(id, categoryAggregate);
-
-      return categoryUpdated;
+      const category =
+        await this.categoryVerificationService.findCategoryOrThrow(id);
+      const categoryUpdatedEvent = category.updateCategory(payload);
+      await this.categoryRepository.updateOneById(id, category);
+      return categoryUpdatedEvent;
     });
   }
 }

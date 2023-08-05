@@ -14,7 +14,6 @@ import {
   Controller,
   Param,
   Put,
-  UnprocessableEntityException,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';

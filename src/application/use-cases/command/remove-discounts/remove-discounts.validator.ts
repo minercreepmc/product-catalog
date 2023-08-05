@@ -1,7 +1,10 @@
 import { Notification } from '@base/patterns';
 import { ValidatorBase } from '@base/use-cases';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
-import { DiscountManagementDomainService } from '@domain-services';
+import {
+  DiscountManagementDomainService,
+  DiscountVerificationDomainService,
+} from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { RemoveDiscountsCommand } from './remove-discounts.dto';
 import { RemoveDiscountsFailure } from './remove-discounts.result';
@@ -24,7 +27,7 @@ export class RemoveDiscountsValidator extends ValidatorBase<
   }
 
   async discountsMustExist(note: Notification<RemoveDiscountsFailure>) {
-    const isExist = await this.discountManagementService.doesDiscountExistByIds(
+    const isExist = await this.discountVerificationService.doesDiscountIdsExist(
       this.command.ids,
     );
 
@@ -36,7 +39,7 @@ export class RemoveDiscountsValidator extends ValidatorBase<
 
   command: RemoveDiscountsCommand;
   constructor(
-    private readonly discountManagementService: DiscountManagementDomainService,
+    private readonly discountVerificationService: DiscountVerificationDomainService,
   ) {
     super();
   }

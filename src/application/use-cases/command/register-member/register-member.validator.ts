@@ -36,8 +36,6 @@ export class RegisterMemberValidator extends ValidatorBase<
       this.command.username,
     );
 
-    console.log(exist);
-
     if (exist) {
       note.addException(new UserDomainExceptions.UsernameAlreadyExists());
     }

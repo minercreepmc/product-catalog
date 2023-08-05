@@ -7,7 +7,6 @@ import {
   ProductIdValueObject,
   ProductNameValueObject,
 } from '@value-objects/product';
-import { ID } from '@base/domain';
 import { ProductSchema } from './product.schema';
 import { ProductSchemaMapper } from './product.schema.mapper';
 
@@ -22,12 +21,7 @@ export class ProductRepository
       mapper,
     });
   }
-
   async create(entity: ProductAggregate): Promise<ProductAggregate> {
-    if (entity.categoryIds && entity.categoryIds.length > 0) {
-      return this.createWithCategories(entity);
-    }
-
     const model = this.mapper.toPersistance(entity);
 
     const res = await this.databaseService.runQuery(
@@ -46,44 +40,30 @@ export class ProductRepository
       ],
     );
 
+    if (entity.categoryIds && entity.categoryIds.length > 0) {
+      const categoriesCreated = await this.addCategories(model);
+      model.category_ids = categoriesCreated.category_ids;
+    }
+
     const saved = res.rows[0];
+    console.log(saved);
 
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
-  private async createWithCategories(
-    entity: ProductAggregate,
-  ): Promise<ProductAggregate> {
-    const model = this.mapper.toPersistance(entity);
-
+  private async addCategories(entity: Partial<ProductSchema>) {
     const res = await this.databaseService.runQuery(
       `
-        WITH created_product AS (
-          INSERT INTO product (id, name, price, description, image_url, discount_id)
-          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
-        ),
-        created_relationships AS (
           INSERT INTO product_category (product_id, category_id)
-            SELECT created_product.id AS product_id, unnest($7::varchar[]) AS category_id
-            FROM created_product
-        )
-        SELECT *, $7 as category_ids FROM created_product;
+          SELECT $1, unnest($2::varchar[]) AS category_ids
+          RETURNING category_id
 
       `,
-      [
-        model.id,
-        model.name,
-        model.price,
-        model.description,
-        model.image_url,
-        model.discount_id,
-        model.category_ids,
-      ],
+      [entity.id, entity.category_ids],
     );
 
     const saved = res.rows[0];
-
-    return saved ? this.mapper.toDomain(saved) : null;
+    return saved;
   }
 
   async deleteOneById(id: ProductIdValueObject): Promise<ProductAggregate> {
@@ -99,6 +79,10 @@ export class ProductRepository
     const deleted = res.rows[0];
 
     return deleted ? this.mapper.toDomain(deleted) : null;
+  }
+
+  deleteManyByIds(ids: ProductIdValueObject[]): Promise<ProductAggregate[]> {
+    return Promise.all(ids.map((id) => this.deleteOneById(id)));
   }
 
   async findOneById(id: ProductIdValueObject): Promise<ProductAggregate> {
@@ -132,7 +116,7 @@ export class ProductRepository
   }
 
   async updateOneById(
-    id: ID,
+    id: ProductIdValueObject,
     newState: ProductAggregate,
   ): Promise<ProductAggregate> {
     const query = this.mapper.toPersistance({

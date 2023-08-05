@@ -18,7 +18,6 @@ export type GetCategoryResponseDto =
 export class GetCategoryHandler implements IQueryHandler<GetCategoryQuery> {
   execute(query: GetCategoryQuery): Promise<GetCategoryResponseDto> {
     const { id, populate_products } = query;
-    console.log(populate_products);
     if (populate_products) {
       return this.categoryRepository.findOneWithProducts(id);
     }

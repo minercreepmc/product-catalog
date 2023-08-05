@@ -20,7 +20,10 @@ export class UpdateDiscountHandler extends CommandHandlerBase<
 > {
   protected command: UpdateDiscountCommand;
   handle(): Promise<DiscountUpdatedDomainEvent> {
-    return this.discountManagementService.updateDiscount(this.command);
+    return this.discountManagementService.updateDiscount({
+      id: this.command.id,
+      payload: this.command,
+    });
   }
   toResponseDto(data: DiscountUpdatedDomainEvent): UpdateDiscountResponseDto {
     return new UpdateDiscountResponseDto({

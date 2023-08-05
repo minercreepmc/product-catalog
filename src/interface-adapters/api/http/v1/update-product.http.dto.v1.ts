@@ -14,6 +14,9 @@ export class V1UpdateProductHttpRequest {
 
   @ApiProperty({ required: false })
   discountId?: string;
+
+  @ApiProperty({ required: false })
+  categoryIds?: string[];
 }
 
 export class V1UpdateProductHttpResponse {

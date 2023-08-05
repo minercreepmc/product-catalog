@@ -30,7 +30,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
       image_url: image?.value,
       //  category_id: categoryId?.value,
       discount_id: discountId?.value,
-      category_ids: categoryIds?.map((id) => id.value),
+      category_ids: categoryIds?.map?.((id) => id.value),
     };
 
     return plainToInstance(ProductSchema, model);
@@ -56,7 +56,8 @@ export class ProductSchemaMapper extends SchemaMapperBase<
         description && new ProductDescriptionValueObject(description),
       discountId: discount_id && new DiscountIdValueObject(discount_id),
       categoryIds:
-        category_ids && category_ids.map((id) => new CategoryIdValueObject(id)),
+        category_ids &&
+        category_ids?.map?.((id) => new CategoryIdValueObject(id)),
     });
   }
 }

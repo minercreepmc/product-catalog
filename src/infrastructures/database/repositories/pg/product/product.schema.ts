@@ -10,9 +10,16 @@ export class ProductSchema extends SchemaBase {
 }
 
 export class ProductWithDetailsSchema extends ProductSchema {
-  discount_id: string;
-  discount_name: string;
-  discount_description?: string;
-  discount_percentage: number;
-  discount_active?: boolean;
+  discount: {
+    id: string;
+    name: string;
+    description?: string;
+    percentage: number;
+    active?: boolean;
+  };
+  categories: {
+    id: string;
+    name: string;
+    description?: string;
+  }[];
 }

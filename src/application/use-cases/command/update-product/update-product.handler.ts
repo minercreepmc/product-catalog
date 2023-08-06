@@ -29,7 +29,6 @@ export class UpdateProductHandler extends CommandHandlerBase<
 
     const { command } = this;
     const { id, name, price, description, discountId, categoryIds } = command;
-    console.log(command);
 
     return this.productManagementService.updateProduct({
       id,

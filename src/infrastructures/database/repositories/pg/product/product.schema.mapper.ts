@@ -30,7 +30,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
       image_url: image?.value,
       //  category_id: categoryId?.value,
       discount_id: discountId?.value,
-      category_ids: categoryIds?.map?.((id) => id.value),
+      category_ids: categoryIds?.map?.((id) => id.value) || [],
     };
 
     return plainToInstance(ProductSchema, model);

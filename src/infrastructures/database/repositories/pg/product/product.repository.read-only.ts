@@ -101,7 +101,7 @@ export class ReadOnlyProductRepository
       [productId],
     );
 
-    return res.rows[0].category_ids;
+    return res.rows[0]?.category_ids;
   }
 
   private async getDiscount(discountId: string) {

@@ -77,7 +77,7 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
           name: image?.originalname,
           value: image?.buffer,
         }),
-      price: price && new ProductPriceValueObject(price),
+      price: price && new ProductPriceValueObject(Number(price)),
       discountId: discountId && new DiscountIdValueObject(discountId),
       categoryIds:
         categoryIds &&

@@ -41,7 +41,7 @@ export class ProductRepository
     );
 
     if (entity.categoryIds && entity.categoryIds.length > 0) {
-      model.category_ids = await this.getCategories(model);
+      model.category_ids = await this.updateCategoryIds(model);
     }
 
     const saved = res.rows[0];
@@ -49,7 +49,21 @@ export class ProductRepository
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
-  private async getCategories(entity: Partial<ProductSchema>) {
+  private async updateCategoryIds(entity: Partial<ProductSchema>) {
+    if (!entity.category_ids || entity.category_ids.length === 0) {
+      const res = await this.databaseService.runQuery(
+        `
+          DELETE 
+          FROM product_category
+          WHERE product_id = $1
+          AND category_id NOT IN (SELECT unnest($2::varchar[]))
+          RETURNING category_id as category_ids
+        `,
+        [entity.id, entity.category_ids],
+      );
+      return res.rows[0]?.category_ids;
+    }
+
     const res = await this.databaseService.runQuery(
       `
           INSERT INTO product_category (product_id, category_id)
@@ -137,9 +151,9 @@ export class ProductRepository
 
     const updated = res.rows[0];
 
-    if (newState.categoryIds && newState.categoryIds.length > 0) {
-      const categoriesCreated = await this.getCategories(updated);
-      updated.category_ids = categoriesCreated?.category_ids;
+    console.log(query);
+    if (query.category_ids && query.category_ids.length >= 0) {
+      updated.category_ids = await this.updateCategoryIds(updated);
     }
 
     return updated ? this.mapper.toDomain(updated) : null;

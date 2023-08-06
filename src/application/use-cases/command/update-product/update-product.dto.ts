@@ -38,6 +38,7 @@ export class UpdateProductCommand implements CommandBase {
     this.description = options.description;
     this.image = options.image;
     this.discountId = options.discountId;
+    this.categoryIds = options.categoryIds;
   }
 }
 

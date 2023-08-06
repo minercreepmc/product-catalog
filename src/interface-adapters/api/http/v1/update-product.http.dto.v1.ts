@@ -26,10 +26,12 @@ export class V1UpdateProductHttpResponse {
   description?: string;
   imageUrl?: string;
   discountId?: string;
+  categoryIds: string[];
   message?: string;
 
   constructor(options: Omit<V1UpdateProductHttpResponse, 'message'>) {
-    const { id, name, price, description, imageUrl, discountId } = options;
+    const { id, name, price, description, imageUrl, discountId, categoryIds } =
+      options;
     this.id = id;
     if (name) {
       this.name = name;
@@ -49,6 +51,10 @@ export class V1UpdateProductHttpResponse {
 
     if (discountId) {
       this.discountId = discountId;
+    }
+
+    if (categoryIds) {
+      this.categoryIds = categoryIds;
     }
 
     this.message = 'Product updated successfully';

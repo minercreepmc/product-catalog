@@ -41,17 +41,15 @@ export class ProductRepository
     );
 
     if (entity.categoryIds && entity.categoryIds.length > 0) {
-      const categoriesCreated = await this.addCategories(model);
-      model.category_ids = categoriesCreated.category_ids;
+      model.category_ids = await this.getCategories(model);
     }
 
     const saved = res.rows[0];
-    console.log(saved);
 
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
-  private async addCategories(entity: Partial<ProductSchema>) {
+  private async getCategories(entity: Partial<ProductSchema>) {
     const res = await this.databaseService.runQuery(
       `
           INSERT INTO product_category (product_id, category_id)
@@ -62,8 +60,7 @@ export class ProductRepository
       [entity.id, entity.category_ids],
     );
 
-    const saved = res.rows[0];
-    return saved;
+    return res.rows[0]?.category_ids;
   }
 
   async deleteOneById(id: ProductIdValueObject): Promise<ProductAggregate> {
@@ -139,6 +136,11 @@ export class ProductRepository
     );
 
     const updated = res.rows[0];
+
+    if (newState.categoryIds && newState.categoryIds.length > 0) {
+      const categoriesCreated = await this.getCategories(updated);
+      updated.category_ids = categoriesCreated?.category_ids;
+    }
 
     return updated ? this.mapper.toDomain(updated) : null;
   }

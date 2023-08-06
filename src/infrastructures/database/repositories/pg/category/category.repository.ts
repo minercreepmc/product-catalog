@@ -84,7 +84,6 @@ export class CategoryRepository
     );
 
     const category = res.rows[0];
-    console.log(category);
 
     if (newState.productIds) {
       const productsUpdated = await this.updateProductsFromCategory(

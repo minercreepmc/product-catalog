@@ -1,3 +1,5 @@
+import { ProductWithDetailsSchema } from '@database/repositories/pg/product';
+
 export class V1ProductModel {
   id: string;
   name: string;
@@ -5,5 +7,4 @@ export class V1ProductModel {
   description?: string;
   image_url?: string;
   discount_id?: string;
-  category_ids?: string[];
 }

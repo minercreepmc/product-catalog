@@ -94,6 +94,7 @@ describe('Get product with details', () => {
     expect(body.discount.id).toEqual(discountId);
     expect(body.discount.name).toEqual(createDiscountRequest.name);
     expect(body.discount.percentage).toEqual(createDiscountRequest.percentage);
+    expect(body.category_ids).toEqual([categoryId]);
     expect(body.categories[0].id).toEqual(categoryId);
   });
 

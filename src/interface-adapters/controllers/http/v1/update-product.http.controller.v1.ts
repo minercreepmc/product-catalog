@@ -24,6 +24,7 @@ import {
   UpdateProductCommand,
   UpdateProductResponseDto,
 } from '@use-cases/command/update-product';
+import { CategoryIdValueObject } from '@value-objects/category';
 import { DiscountIdValueObject } from '@value-objects/discount';
 import { FileValueObject } from '@value-objects/file.value-object';
 import {
@@ -63,7 +64,7 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
     const { image, request, param } = options;
 
     const { id } = param;
-    const { name, description, price, discountId } = request;
+    const { name, description, price, discountId, categoryIds } = request;
 
     const command = new UpdateProductCommand({
       id: new ProductIdValueObject(id),
@@ -78,6 +79,9 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
         }),
       price: price && new ProductPriceValueObject(price),
       discountId: discountId && new DiscountIdValueObject(discountId),
+      categoryIds:
+        categoryIds &&
+        categoryIds?.map?.((id) => new CategoryIdValueObject(id)),
     });
 
     return command;

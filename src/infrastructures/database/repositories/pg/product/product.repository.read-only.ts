@@ -31,12 +31,16 @@ export class ReadOnlyProductRepository
   async findOneById(id: string): Promise<ProductSchema> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id, name, price, description, image_url from product WHERE id=$1 and deleted_at is null
+        SELECT id, name, price, description, image_url, discount_id from product WHERE id=$1 and deleted_at is null
       `,
       [id],
     );
 
-    return res.rows[0];
+    const model = plainToInstance(ProductSchema, res.rows[0]);
+
+    model.category_ids = await this.getCategoryIds(id);
+
+    return model;
   }
 
   async findByIdWithDetails(id: string): Promise<ProductWithDetailsSchema> {
@@ -50,34 +54,14 @@ export class ReadOnlyProductRepository
     const model = plainToInstance(ProductWithDetailsSchema, res.rows[0]);
 
     if (model?.discount_id) {
-      const discount = await this.databaseService.runQuery(
-        `
-          SELECT id, name, description, percentage, active from discount WHERE id=$1 and deleted_at is null
-        `,
-        [model?.discount_id],
-      );
-      model.discount = discount.rows[0];
+      model.discount = await this.getDiscount(model.discount_id);
     }
 
-    const categoryRes = await this.databaseService.runQuery(
-      `
-       SELECT json_agg(
-          json_build_object(
-              'id', category.id,
-              'name', category.name,
-              'description', category.description
-          )
-      ) AS categories
-      FROM product_category
-      JOIN product ON product.id = product_category.product_id 
-      JOIN category ON product_category.category_id = category.id
-      WHERE product_category.product_id = $1 AND category.deleted_at IS NULL
+    model.category_ids = await this.getCategoryIds(id);
 
-        `,
-      [model?.id],
-    );
-    model.categories = categoryRes.rows[0].categories;
-    console.log(model);
+    if (model?.category_ids) {
+      model.categories = await this.getCategories(id);
+    }
 
     return model;
   }
@@ -107,5 +91,49 @@ export class ReadOnlyProductRepository
     );
 
     return res.rows;
+  }
+
+  private async getCategoryIds(productId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT ARRAY[category_id] as category_ids from product_category WHERE product_id=$1
+      `,
+      [productId],
+    );
+
+    return res.rows[0].category_ids;
+  }
+
+  private async getDiscount(discountId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+          SELECT id, name, description, percentage, active from discount WHERE id=$1 and deleted_at is null
+      `,
+      [discountId],
+    );
+
+    return res.rows[0];
+  }
+
+  private async getCategories(productId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+       SELECT json_agg(
+          json_build_object(
+              'id', category.id,
+              'name', category.name,
+              'description', category.description
+          )
+      ) AS categories
+      FROM product_category
+      JOIN product ON product.id = product_category.product_id 
+      JOIN category ON product_category.category_id = category.id
+      WHERE product_category.product_id = $1 AND category.deleted_at IS NULL
+
+        `,
+      [productId],
+    );
+
+    return res.rows[0].categories;
   }
 }

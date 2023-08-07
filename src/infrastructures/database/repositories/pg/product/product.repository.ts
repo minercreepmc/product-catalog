@@ -68,11 +68,12 @@ export class ProductRepository
       `
           INSERT INTO product_category (product_id, category_id)
           SELECT $1, unnest($2::varchar[]) AS category_ids
-          RETURNING category_id
+          RETURNING category_id as category_ids
 
       `,
       [entity.id, entity.category_ids],
     );
+    console.log(res.rows[0]);
 
     return res.rows[0]?.category_ids;
   }
@@ -151,9 +152,8 @@ export class ProductRepository
 
     const updated = res.rows[0];
 
-    console.log(query);
     if (query.category_ids && query.category_ids.length >= 0) {
-      updated.category_ids = await this.updateCategoryIds(updated);
+      updated.category_ids = await this.updateCategoryIds(query);
     }
 
     return updated ? this.mapper.toDomain(updated) : null;

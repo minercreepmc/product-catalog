@@ -28,6 +28,21 @@ export class ReadOnlyProductRepository
     return res.rows;
   }
 
+  async findByCategoryId(categoryId: string): Promise<ProductSchema[]> {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT product.id, product.name, product.price, product.description, product.image_url, product.discount_id 
+        FROM product 
+        JOIN product_category 
+        ON product_category.product_id = product.id
+        WHERE product_category.category_id=$1 and deleted_at is null
+      `,
+      [categoryId],
+    );
+
+    return res.rows;
+  }
+
   async findOneById(id: string): Promise<ProductSchema> {
     const res = await this.databaseService.runQuery(
       `

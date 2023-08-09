@@ -5,7 +5,7 @@ import { IsDefined, IsString, Length, validateSync } from 'class-validator';
 export class CategoryDescriptionValueObject implements ValueObjectBase {
   @IsDefined()
   @IsString()
-  @Length(5, 100)
+  @Length(5, 500)
   readonly value: string;
 
   static create(value: string) {

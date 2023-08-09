@@ -12,9 +12,11 @@ import { plainToInstance } from 'class-transformer';
 export class V1GetProductsHttpController {
   @Get()
   execute(
-    @Query() { discount_id, limit, offset }: V1GetProductsHttpQuery,
+    @Query()
+    { discount_id, limit, offset, category_id }: V1GetProductsHttpQuery,
   ): Promise<V1GetProductsHttpResponse> {
     const query: GetProductsQuery = {
+      category_id,
       discount_id,
       limit,
       offset,

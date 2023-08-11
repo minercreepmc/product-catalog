@@ -15,10 +15,12 @@ export class V1RegisterMemberHttpRequest {
 }
 
 export class V1RegisterMemberHttpResponse {
+  id: string;
   username: string;
   message?: string;
 
   constructor(dto: Omit<V1RegisterMemberHttpResponse, 'message'>) {
+    this.id = dto.id;
     this.username = dto.username;
     this.message = 'Member registered successfully.';
   }

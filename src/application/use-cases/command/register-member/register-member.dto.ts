@@ -21,8 +21,10 @@ export class RegisterMemberCommand implements CommandBase {
 }
 
 export class RegisterMemberResponseDto {
+  id: string;
   username: string;
   constructor(dtos: RegisterMemberResponseDto) {
+    this.id = dtos.id;
     this.username = dtos.username;
   }
 }

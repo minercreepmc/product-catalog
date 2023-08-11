@@ -56,7 +56,7 @@ export class UserRegistrationDomainService {
   }
 
   async isUserNameExistByName(username: UserNameValueObject) {
-    const exist = await this.authService.isUserNameExist(username);
+    const exist = await this.authService.doesUserNameExist(username);
 
     return Boolean(exist);
   }

@@ -12,7 +12,7 @@ export class UserRepository
   async create(entity: UserSchema): Promise<UserSchema> {
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO "user" (
+      INSERT INTO "users" (
         id,
         username,
         hashed,
@@ -32,7 +32,7 @@ export class UserRepository
   async deleteOneById(id: string): Promise<UserSchema> {
     const res = await this.databaseService.runQuery(
       `
-      UPDATE "user" SET deleted_at=now() WHERE id=$1 AND deleted_at IS NULL RETURNING *
+      UPDATE "users" SET deleted_at=now() WHERE id=$1 AND deleted_at IS NULL RETURNING *
     `,
       [id],
     );
@@ -44,7 +44,7 @@ export class UserRepository
   async findOneById(id: string): Promise<UserSchema> {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from "user" WHERE id=$1 AND deleted_at IS NULL
+      SELECT * from "users" WHERE id=$1 AND deleted_at IS NULL
       `,
       [id],
     );
@@ -56,7 +56,7 @@ export class UserRepository
   async updateOneById(id: string, newState: UserSchema): Promise<UserSchema> {
     const res = await this.databaseService.runQuery(
       `
-      UPDATE "user" SET username=$2, password=$3, role=$4 WHERE id=$1 AND deleted_at IS NULL 
+      UPDATE "users" SET username=$2, password=$3, role=$4 WHERE id=$1 AND deleted_at IS NULL 
       `,
       [id, newState.username, newState.hashed, newState.role],
     );
@@ -69,7 +69,7 @@ export class UserRepository
   async findOneByName(name: string): Promise<UserSchema> {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from "user" WHERE username=$1 AND deleted_at IS NULL
+      SELECT * from "users" WHERE username=$1 AND deleted_at IS NULL
       `,
       [name],
     );

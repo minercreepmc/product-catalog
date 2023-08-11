@@ -10,3 +10,4 @@ export * from './remove-products.http.controller.v1';
 export * from './remove-discounts.http.controller.v1';
 export * from './remove-categories.http.controler.v1';
 export * from './log-in.http.controller.v1';
+export * from './create-cart.http.controller.v1';

@@ -25,6 +25,8 @@
       "@config/*": ["./config/*"],
       "@aggregates": ["./src/domain/aggregates"],
       "@aggregates/*": ["./src/domain/aggregates/*"],
+      "@entities": ["./src/domain/entities"],
+      "@entities/*": ["./src/domain/entities/*"],
       "@value-objects": ["./src/domain/value-objects"],
       "@value-objects/*": ["./src/domain/value-objects/*"],
       "@domain-events": ["./src/domain/domain-events"],

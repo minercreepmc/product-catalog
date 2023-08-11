@@ -17,6 +17,11 @@ export namespace UserDomainExceptions {
     readonly code = UserDomainExceptionCodes.UsernameAlreadyExists;
   }
 
+  export class IdDoesNotValid extends DomainExceptionBase {
+    readonly message = 'User id does not valid';
+    readonly code = UserDomainExceptionCodes.IdDoesNotValid;
+  }
+
   export class RoleDoesNotValid extends DomainExceptionBase {
     readonly message = 'User role does not valid';
     readonly code = UserDomainExceptionCodes.RoleDoesNotValid;

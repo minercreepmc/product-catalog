@@ -1,11 +1,14 @@
 import {
+  CartManagementDomainService,
   CategoryManagementDomainService,
   CategoryVerificationDomainService,
   DiscountManagementDomainService,
   DiscountVerificationDomainService,
   ProductManagementDomainService,
   UserRegistrationDomainService,
+  UserVerificationDomainService,
 } from '@domain-services';
+import { CartVerificationDomainService } from '@domain-services/cart-verification.domain-service';
 import { ProductVerificationDomainService } from '@domain-services/product-verification.domain-service';
 import { EventBusAdapter } from '@infrastructures/events';
 import { AuthModule } from '@modules/infrastructures/auth';
@@ -30,6 +33,9 @@ const sharedModules = [AuthModule];
     DiscountManagementDomainService,
     DiscountVerificationDomainService,
     UserRegistrationDomainService,
+    UserVerificationDomainService,
+    CartManagementDomainService,
+    CartVerificationDomainService,
     // eventBus,
   ],
   exports: [
@@ -40,6 +46,9 @@ const sharedModules = [AuthModule];
     ProductVerificationDomainService,
     ProductManagementDomainService,
     UserRegistrationDomainService,
+    UserVerificationDomainService,
+    CartManagementDomainService,
+    CartVerificationDomainService,
   ],
 })
 export class DomainServicesModule {}

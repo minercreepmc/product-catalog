@@ -13,6 +13,7 @@ export * from './get-category.http.dto.v1';
 export * from './get-product.http.dto.v1';
 export * from './get-products.http.dto.v1';
 export * from './log-in.http.dto.v1';
+export * from './create-cart.http.dto.v1';
 export * from './endpoint.v1';
 export * from './query';
 export * from './models';

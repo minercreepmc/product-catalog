@@ -1,4 +1,4 @@
-import { AggregateRootBase, ID } from '@base/domain';
+import { AggregateRootBase } from '@base/domain';
 import {
   AdminRegisteredDomainEvent,
   MemberRegisteredDomainEvent,
@@ -28,7 +28,7 @@ export class UserAggregate implements AggregateRootBase, UserAggregateDetails {
   username: UserNameValueObject;
   password: UserPasswordValueObject;
   role: UserRoleValueObject;
-  id: ID;
+  id: UserIdValueObject;
 
   registerMember(options: RegisterUserAggregateOptions) {
     const { username, password } = options;

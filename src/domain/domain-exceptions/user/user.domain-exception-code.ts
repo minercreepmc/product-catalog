@@ -2,6 +2,7 @@ export enum UserDomainExceptionCodes {
   DoesNotExist = 'USER.DOES_NOT_EXIST',
   AlreadyExists = 'USER.ALREADY_EXISTS',
   UsernameAlreadyExists = 'USER.USER_NAME_ALREADY_EXISTS',
+  IdDoesNotValid = 'USER.ID_DOES_NOT_VALID',
   EmailAlreadyExists = 'USER.EMAIL_ALREADY_EXISTS',
   EmailDoesNotExist = 'USER.EMAIL_DOES_NOT_EXIST',
   RoleDoesNotValid = 'USER.ROLE_DOES_NOT_VALID',

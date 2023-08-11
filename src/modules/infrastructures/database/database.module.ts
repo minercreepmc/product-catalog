@@ -10,6 +10,11 @@ import {
   DATABASE_OPTIONS,
 } from '@config/pg';
 import {
+  CartItemSchemaMapper,
+  CartRepository,
+  CartSchemaMapper,
+} from '@database/repositories/pg/cart';
+import {
   CategoryRepository,
   CategorySchemaMapper,
   ReadOnlyCategoryRepository,
@@ -25,6 +30,7 @@ import {
 } from '@database/repositories/pg/product';
 import { UserRepository } from '@database/repositories/pg/user';
 import {
+  cartRepositoryDiToken,
   categoryRepositoryDiToken,
   discountRepositoryDiToken,
   productRepositoryDiToken,
@@ -59,6 +65,10 @@ const repositories: Provider[] = [
     useClass: ReadOnlyCategoryRepository,
   },
   {
+    provide: cartRepositoryDiToken,
+    useClass: CartRepository,
+  },
+  {
     provide: unitOfWorkDiToken,
     useClass: UnitOfWork,
   },
@@ -82,6 +92,8 @@ const mappers: Provider[] = [
   ProductSchemaMapper,
   CategorySchemaMapper,
   DiscountSchemaMapper,
+  CartSchemaMapper,
+  CartItemSchemaMapper,
 ];
 
 @Global()

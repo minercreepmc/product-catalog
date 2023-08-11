@@ -9,7 +9,8 @@ export const authServiceDiToken = Symbol('AUTH_SERVICE');
 
 export interface AuthServicePort {
   handlerAuthAndSaveToDb(aggregate: UserAggregate): Promise<void>;
-  isUserNameExist(name: UserNameValueObject): Promise<boolean>;
+  doesUserNameExist(name: UserNameValueObject): Promise<boolean>;
+  doesUserIdExist(id: UserIdValueObject): Promise<boolean>;
   isPasswordMatchByUserName(
     username: UserNameValueObject,
     password: UserPasswordValueObject,

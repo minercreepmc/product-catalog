@@ -5,3 +5,5 @@ export * from './category-verification.domain-service';
 export * from './discount-management.domain-service';
 export * from './discount-verification.domain-service';
 export * from './user-registration.domain-service';
+export * from './user-verification.domain-service';
+export * from './cart-management.domain-service';

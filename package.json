@@ -13,6 +13,7 @@
     "knex": "knex --knexfile ./config/knex/knexfile.ts",
     "knex:up": "knex --knexfile ./config/knex/knexfile.ts migrate:latest",
     "knex:down": "knex --knexfile ./config/knex/knexfile.ts migrate:rollback",
+    "knex:migrate": "knex --knexfile ./config/knex/knexfile.ts migrate:make",
     "knex:down-all": "knex --knexfile ./config/knex/knexfile.ts migrate:rollback --all",
     "database": "docker exec -it product-catalog-database bash",
     "generate-client": "openapi-generator-cli generate -i ./config/swagger/swagger.json -g typescript-fetch -o ./api/product-catalog-client",

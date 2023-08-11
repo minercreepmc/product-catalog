@@ -22,6 +22,18 @@ export interface TokenPayload {
 
 @Injectable()
 export class AuthApplicationService implements AuthServicePort {
+  constructor(
+    @Inject(userRepositoryDiToken)
+    private readonly userRepository: UserRepositoryPort,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  async doesUserIdExist(id: UserIdValueObject): Promise<boolean> {
+    const exist = await this.userRepository.findOneById(id.value);
+    return Boolean(exist);
+  }
+
   async handlerAuthAndSaveToDb(aggregate: UserAggregate): Promise<void> {
     const hashed = await bcrypt.hash(aggregate.password.value, 10);
 
@@ -33,7 +45,7 @@ export class AuthApplicationService implements AuthServicePort {
     });
   }
 
-  async isUserNameExist(name: UserNameValueObject): Promise<boolean> {
+  async doesUserNameExist(name: UserNameValueObject): Promise<boolean> {
     return Boolean(await this.userRepository.findOneByName(name.value));
   }
 
@@ -57,7 +69,7 @@ export class AuthApplicationService implements AuthServicePort {
     }
 
     return new UserAggregate({
-      id: new UserNameValueObject(user.id),
+      id: new UserIdValueObject(user.id),
       role: new UserRoleValueObject(user.role),
       username: new UserNameValueObject(user.username),
     });
@@ -102,16 +114,9 @@ export class AuthApplicationService implements AuthServicePort {
     const userSchema = await this.userRepository.findOneByName(username.value);
 
     return new UserAggregate({
-      id: new UserNameValueObject(userSchema.id),
+      id: new UserIdValueObject(userSchema.id),
       role: new UserRoleValueObject(userSchema.role),
       username: new UserNameValueObject(userSchema.username),
     });
   }
-
-  constructor(
-    @Inject(userRepositoryDiToken)
-    private readonly userRepository: UserRepositoryPort,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-  ) {}
 }

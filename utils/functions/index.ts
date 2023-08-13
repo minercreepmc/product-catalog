@@ -4,3 +4,4 @@ export * from './random-string-generator.util';
 export * from './get-variable-name.util';
 export * from './temp-file.util';
 export * from './random-string.util';
+export * from './has-duplicate.util';

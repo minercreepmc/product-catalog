@@ -17,11 +17,11 @@ export interface RawRepositoryBaseOptions {
 export abstract class RepositoryBase<Domain, Schema>
   implements RepositoryPort<Domain>
 {
-  abstract create(entity: Domain): Promise<Domain>;
-  abstract deleteOneById(id: ID): Promise<Domain>;
-  abstract findOneById(id: ID): Promise<Domain>;
-  abstract updateOneById(id: ID, newState: Domain): Promise<Domain>;
-  abstract deleteManyByIds(ids: ID[]): Promise<Domain[]>;
+  abstract create(entity: Domain): Promise<Domain | null>;
+  abstract deleteOneById(id: ID): Promise<Domain | null>;
+  abstract findOneById(id: ID): Promise<Domain | null>;
+  abstract updateOneById(id: ID, newState: Domain): Promise<Domain | null>;
+  abstract deleteManyByIds(ids: ID[]): Promise<Domain[] | null>;
 
   constructor(options: RepositoryBaseOptions<Domain, Schema>) {
     this.databaseService = options.databaseService;
@@ -32,10 +32,10 @@ export abstract class RepositoryBase<Domain, Schema>
 }
 
 export abstract class ApplicationRepositoryBase<Schema> {
-  abstract create(entity: Schema): Promise<Schema>;
-  abstract deleteOneById(id: string): Promise<Schema>;
-  abstract findOneById(id: string): Promise<Schema>;
-  abstract updateOneById(id: string, newState: Schema): Promise<Schema>;
+  abstract create(entity: Schema): Promise<Schema | null>;
+  abstract deleteOneById(id: string): Promise<Schema | null>;
+  abstract findOneById(id: string): Promise<Schema | null>;
+  abstract updateOneById(id: string, newState: Schema): Promise<Schema | null>;
 
   constructor(options: RawRepositoryBaseOptions) {
     this.databaseService = options.databaseService;
@@ -47,8 +47,8 @@ export abstract class ApplicationRepositoryBase<Schema> {
 export abstract class ReadonlyRepositoryBase<Schema>
   implements ReadOnlyRepositoryPort<Schema>
 {
-  abstract findOneById(id: string): Promise<Schema>;
-  abstract findAll(filter: PaginationParams): Promise<Schema[]>;
+  abstract findOneById(id: string): Promise<Schema | null>;
+  abstract findAll(filter: PaginationParams): Promise<Schema[] | null>;
 
   constructor(options: RawRepositoryBaseOptions) {
     this.databaseService = options.databaseService;

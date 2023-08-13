@@ -1,10 +1,6 @@
 import { CommandHandlerBase } from '@base/use-cases/command-handler/command-handler.base';
 import { DiscountRemovedDomainEvent } from '@domain-events/discount';
 import { DiscountManagementDomainService } from '@domain-services';
-import {
-  ConflictException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import {
   RemoveDiscountsCommand,

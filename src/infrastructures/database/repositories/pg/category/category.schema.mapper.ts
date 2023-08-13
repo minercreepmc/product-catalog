@@ -21,8 +21,9 @@ export class CategorySchemaMapper extends SchemaMapperBase<
     return new CategoryAggregate({
       id: new CategoryIdValueObject(id),
       name: new CategoryNameValueObject(name),
-      description:
-        description && new CategoryDescriptionValueObject(description),
+      description: description
+        ? new CategoryDescriptionValueObject(description)
+        : undefined,
       productIds: product_ids?.map?.((id) => new ProductIdValueObject(id)),
     });
   }

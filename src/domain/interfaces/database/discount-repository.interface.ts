@@ -6,5 +6,7 @@ export const discountRepositoryDiToken = Symbol('DISCOUNT_REPOSITORY');
 
 export interface DiscountRepositoryPort
   extends RepositoryPort<DiscountAggregate> {
-  findOneByName(name: DiscountNameValueObject): Promise<DiscountAggregate>;
+  findOneByName(
+    name: DiscountNameValueObject,
+  ): Promise<DiscountAggregate | null>;
 }

@@ -21,7 +21,7 @@ export class ProductRepository
       mapper,
     });
   }
-  async create(entity: ProductAggregate): Promise<ProductAggregate> {
+  async create(entity: ProductAggregate): Promise<ProductAggregate | null> {
     const model = this.mapper.toPersistance(entity);
 
     const res = await this.databaseService.runQuery(
@@ -45,7 +45,6 @@ export class ProductRepository
     }
 
     const saved = res.rows[0];
-
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
@@ -73,12 +72,13 @@ export class ProductRepository
       `,
       [entity.id, entity.category_ids],
     );
-    console.log(res.rows[0]);
 
     return res.rows[0]?.category_ids;
   }
 
-  async deleteOneById(id: ProductIdValueObject): Promise<ProductAggregate> {
+  async deleteOneById(
+    id: ProductIdValueObject,
+  ): Promise<ProductAggregate | null> {
     const query = this.mapper.toPersistance({ id });
 
     const res = await this.databaseService.runQuery(
@@ -93,11 +93,26 @@ export class ProductRepository
     return deleted ? this.mapper.toDomain(deleted) : null;
   }
 
-  deleteManyByIds(ids: ProductIdValueObject[]): Promise<ProductAggregate[]> {
-    return Promise.all(ids.map((id) => this.deleteOneById(id)));
+  async deleteManyByIds(
+    ids: ProductIdValueObject[],
+  ): Promise<ProductAggregate[] | null> {
+    const deleteds: ProductAggregate[] = [];
+
+    for (const id of ids) {
+      const deleted = await this.deleteOneById(id);
+      if (deleted) {
+        deleteds.push(deleted);
+      } else {
+        break;
+      }
+    }
+
+    return deleteds ? deleteds : [];
   }
 
-  async findOneById(id: ProductIdValueObject): Promise<ProductAggregate> {
+  async findOneById(
+    id: ProductIdValueObject,
+  ): Promise<ProductAggregate | null> {
     const query = this.mapper.toPersistance({ id });
 
     const res = await this.databaseService.runQuery(
@@ -112,7 +127,9 @@ export class ProductRepository
     return model ? this.mapper.toDomain(model) : null;
   }
 
-  async findOneByName(name: ProductNameValueObject): Promise<ProductAggregate> {
+  async findOneByName(
+    name: ProductNameValueObject,
+  ): Promise<ProductAggregate | null> {
     const query = this.mapper.toPersistance({
       name,
     });
@@ -130,11 +147,8 @@ export class ProductRepository
   async updateOneById(
     id: ProductIdValueObject,
     newState: ProductAggregate,
-  ): Promise<ProductAggregate> {
-    const query = this.mapper.toPersistance({
-      id,
-      ...newState,
-    });
+  ): Promise<ProductAggregate | null> {
+    const query = this.mapper.toPersistance(newState);
 
     const res = await this.databaseService.runQuery(
       `UPDATE product 

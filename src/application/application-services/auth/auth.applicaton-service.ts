@@ -35,7 +35,7 @@ export class AuthApplicationService implements AuthServicePort {
   }
 
   async handlerAuthAndSaveToDb(aggregate: UserAggregate): Promise<void> {
-    const hashed = await bcrypt.hash(aggregate.password.value, 10);
+    const hashed = await bcrypt.hash(aggregate.password!.value, 10);
 
     await this.userRepository.create({
       id: aggregate.id.value,
@@ -110,11 +110,12 @@ export class AuthApplicationService implements AuthServicePort {
 
   async findOneByUsername(
     username: UserNameValueObject,
-  ): Promise<UserAggregate> {
+  ): Promise<UserAggregate | null> {
     const userSchema = await this.userRepository.findOneByName(username.value);
+    if (!userSchema) return Promise.resolve(null);
 
     return new UserAggregate({
-      id: new UserIdValueObject(userSchema.id),
+      id: new UserIdValueObject(userSchema?.id),
       role: new UserRoleValueObject(userSchema.role),
       username: new UserNameValueObject(userSchema.username),
     });

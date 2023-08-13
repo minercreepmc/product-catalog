@@ -17,7 +17,7 @@ import {
 } from './cart.aggregate.interface';
 
 export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
-  items: Map<CartItemIdValueObject, CartItemEntity>;
+  items: Map<CartItemIdValueObject, CartItemEntity> = new Map();
   id: CartIdValueObject;
   userId: UserIdValueObject;
 
@@ -29,6 +29,7 @@ export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
     } else {
       this.id = new CartIdValueObject();
     }
+    console.log(this);
   }
 
   createCart(options: CreateCartAggregateOptions) {
@@ -49,11 +50,12 @@ export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
     return new CartUpdatedDomainEvent({
       id: this.id,
       items: Array.from(this.items.values()),
+      userId: this.userId,
     });
   }
 
   get totalPrice(): CartPriceValueObject {
-    let cartTotal: CartPriceValueObject;
+    let cartTotal: CartPriceValueObject = new CartPriceValueObject(0);
     for (const item of this.items.values()) {
       if (!item.isEmpty()) {
         cartTotal = cartTotal.plus(item.totalPrice);

@@ -32,7 +32,9 @@ export class LogInValidator extends ValidatorBase<LogInCommand, LogInFailure> {
   }
 
   async userNameMustExist(note: Notification<LogInFailure>): Promise<void> {
-    const exist = await this.authService.doesUserNameExist(this.command.username);
+    const exist = await this.authService.doesUserNameExist(
+      this.command.username,
+    );
 
     if (!exist) {
       note.addException(new UserDomainExceptions.CredentialDoesNotValid());

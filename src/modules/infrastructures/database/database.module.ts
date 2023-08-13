@@ -10,6 +10,7 @@ import {
   DATABASE_OPTIONS,
 } from '@config/pg';
 import {
+  CartItemRepository,
   CartItemSchemaMapper,
   CartRepository,
   CartSchemaMapper,
@@ -68,6 +69,7 @@ const repositories: Provider[] = [
     provide: cartRepositoryDiToken,
     useClass: CartRepository,
   },
+  CartItemRepository,
   {
     provide: unitOfWorkDiToken,
     useClass: UnitOfWork,

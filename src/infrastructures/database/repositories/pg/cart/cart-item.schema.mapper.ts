@@ -7,30 +7,50 @@ import {
   CartItemIdValueObject,
   CartPriceValueObject,
 } from '@value-objects/cart';
+import { ProductIdValueObject } from '@value-objects/product';
 import { plainToInstance } from 'class-transformer';
-import { CartItemSchema } from './cart-item.schema';
+import { CartItemDetailsSchema, CartItemSchema } from './cart-item.schema';
 
 @Injectable()
 export class CartItemSchemaMapper extends SchemaMapperBase<
   CartItemEntity,
   CartItemSchema
 > {
-  toDomain(model: CartItemSchema): CartItemEntity {
-    const { id, amount, product, cart_id } = model;
-    return new CartItemEntity({
+  toDomain(model: Partial<CartItemDetailsSchema>): CartItemEntity {
+    const { id, amount, cart_id, product_id, product } = model;
+
+    const entity: Partial<CartItemEntity> = {
       id: new CartItemIdValueObject(id),
-      amount: new CartAmountValueObject(amount),
-      price: new CartPriceValueObject(product.price),
+      amount: amount ? new CartAmountValueObject(amount) : undefined,
+      price:
+        product && product.price
+          ? new CartPriceValueObject(product.price)
+          : undefined,
       cartId: new CartIdValueObject(cart_id),
-    });
+      productId: new ProductIdValueObject(product_id),
+    };
+
+    return new CartItemEntity(entity as CartItemEntity);
   }
   toPersistance(model: Partial<CartItemEntity>): Partial<CartItemSchema> {
-    const { id, amount, cartId } = model;
-    const entity: CartItemSchema = {
-      id: id.value,
-      cart_id: cartId.value,
-      amount: amount.value,
-    };
+    const { id, amount, cartId, productId } = model;
+    const entity: Partial<CartItemSchema> = {};
+
+    if (id) {
+      entity.id = id.value;
+    }
+
+    if (amount) {
+      entity.amount = amount.value;
+    }
+
+    if (cartId) {
+      entity.cart_id = cartId.value;
+    }
+
+    if (productId) {
+      entity.product_id = productId.value;
+    }
 
     return plainToInstance(CartItemSchema, entity);
   }

@@ -7,17 +7,6 @@ export class ProductPriceValueObject {
   @IsPositive()
   readonly value: number;
 
-  static create(value: number) {
-    const price = new ProductPriceValueObject(value);
-    const exception = price.validate();
-
-    if (exception) {
-      throw exception;
-    }
-
-    return price;
-  }
-
   validate() {
     const exceptions = validateSync(this);
 

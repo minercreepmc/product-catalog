@@ -48,16 +48,17 @@ export class ProductSchemaMapper extends SchemaMapperBase<
     } = model;
 
     return new ProductAggregate({
-      id: id && new ProductIdValueObject(id),
-      name: name && new ProductNameValueObject(name),
-      image: image_url && new ProductImageUrlValueObject(image_url),
-      price: price && new ProductPriceValueObject(price),
-      description:
-        description && new ProductDescriptionValueObject(description),
-      discountId: discount_id && new DiscountIdValueObject(discount_id),
-      categoryIds:
-        category_ids &&
-        category_ids?.map?.((id) => new CategoryIdValueObject(id)),
+      id: new ProductIdValueObject(id),
+      name: new ProductNameValueObject(name),
+      image: image_url ? new ProductImageUrlValueObject(image_url) : undefined,
+      price: new ProductPriceValueObject(price),
+      description: description
+        ? new ProductDescriptionValueObject(description)
+        : undefined,
+      discountId: discount_id
+        ? new DiscountIdValueObject(discount_id)
+        : undefined,
+      categoryIds: category_ids?.map?.((id) => new CategoryIdValueObject(id)),
     });
   }
 }

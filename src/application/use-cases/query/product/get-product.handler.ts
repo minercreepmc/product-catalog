@@ -18,10 +18,14 @@ export type GetProductResponseDto = ProductSchema | ProductWithDetailsSchema;
 
 @QueryHandler(GetProductQuery)
 export class GetProductQueryHandler
-  implements IQueryHandler<GetProductQuery, GetProductResponseDto>
+  implements IQueryHandler<GetProductQuery, GetProductResponseDto | null>
 {
-  async execute(query: GetProductQuery): Promise<GetProductResponseDto> {
+  async execute(query: GetProductQuery): Promise<GetProductResponseDto | null> {
     const { id, populate_details } = query;
+
+    if (!id) {
+      return Promise.resolve(null);
+    }
 
     if (populate_details) return this.repository.findByIdWithDetails(id);
     else return this.repository.findOneById(id);

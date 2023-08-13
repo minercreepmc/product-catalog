@@ -45,13 +45,13 @@ export class UpdateCategoryValidator
     }
   }
 
-  async productsMustExist(
+  private async productsMustExist(
     note: Notification<UpdateCategoryFailure>,
   ): Promise<void> {
     const { productIds } = this.command;
 
     const exist = await this.productVerificationService.doesProductIdsExist(
-      productIds,
+      productIds!,
     );
 
     if (!exist) {

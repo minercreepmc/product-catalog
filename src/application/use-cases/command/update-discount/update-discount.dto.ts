@@ -24,12 +24,12 @@ export class UpdateDiscountCommand implements CommandBase {
 
   validate?(): DomainExceptionBase[] {
     return [
-      this.id.validate(),
-      this.name?.validate(),
-      this.description?.validate(),
-      this.percentage?.validate(),
-      this.active?.validate(),
-    ].filter((e) => e);
+      this.id.validate?.(),
+      this.name?.validate?.(),
+      this.description?.validate?.(),
+      this.percentage?.validate?.(),
+      this.active?.validate?.(),
+    ].filter((e) => e) as DomainExceptionBase[];
   }
 }
 

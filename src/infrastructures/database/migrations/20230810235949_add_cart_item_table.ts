@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<void> {
       updated_at timestamp without time zone not null default now(),
       deleted_at timestamp without time zone,
       cart_id varchar(255) REFERENCES cart(id),
+      amount int not null default 1,
       product_id varchar(255) REFERENCES product(id)
     )
   `);

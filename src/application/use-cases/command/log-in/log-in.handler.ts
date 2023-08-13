@@ -20,7 +20,7 @@ export class LogInHandler extends CommandHandlerBase<
     const user = await this.authService.findOneByUsername(
       this.command.username,
     );
-    const cookie = this.authService.getAuthenticatedCookie(user.id);
+    const cookie = this.authService.getAuthenticatedCookie(user!.id);
     return cookie;
   }
   toResponseDto(data: any): LogInResponseDto {

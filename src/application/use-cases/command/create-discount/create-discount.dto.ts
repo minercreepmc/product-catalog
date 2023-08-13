@@ -16,7 +16,7 @@ export class CreateDiscountCommand implements CommandBase {
       this.name?.validate?.(),
       this.description?.validate?.(),
       this.percentage?.validate?.(),
-    ].filter((e) => e);
+    ].filter((e) => e) as DomainExceptionBase[];
   }
 
   constructor(options: CreateDiscountCommand) {

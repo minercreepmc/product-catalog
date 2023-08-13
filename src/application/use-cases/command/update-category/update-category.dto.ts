@@ -1,3 +1,4 @@
+import { DomainExceptionBase } from '@base/domain';
 import { CommandBase } from '@base/use-cases';
 import {
   CategoryDescriptionValueObject,
@@ -12,13 +13,13 @@ export class UpdateCategoryCommand implements CommandBase {
   description?: CategoryDescriptionValueObject;
   productIds?: ProductIdValueObject[];
 
-  validate?() {
+  validate?(): DomainExceptionBase[] {
     return [
-      this.id.validate(),
+      this.id.validate?.(),
       this.name?.validate(),
       this.description?.validate(),
       this.productIds?.map?.((p) => p?.validate())[0],
-    ].filter((e) => e);
+    ].filter((e) => e) as DomainExceptionBase[];
   }
 
   constructor(options: UpdateCategoryCommand) {

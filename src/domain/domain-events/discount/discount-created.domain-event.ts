@@ -34,7 +34,7 @@ export class DiscountCreatedDomainEvent
   }
   readonly id: DiscountIdValueObject;
   readonly name: DiscountNameValueObject;
-  readonly description: DiscountDescriptionValueObject;
+  readonly description?: DiscountDescriptionValueObject;
   readonly percentage: DiscountPercentageValueObject;
   readonly active: DiscountActiveValueObject;
 }

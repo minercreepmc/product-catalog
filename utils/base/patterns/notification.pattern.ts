@@ -1,7 +1,7 @@
 import { DomainExceptionBase, MultipleExceptions } from '@base/domain';
 
 export class Notification<T extends DomainExceptionBase[]> {
-  private exceptions: T = [] as T;
+  private exceptions: T = [] as unknown as T;
 
   getExceptions(): MultipleExceptions<T> {
     const unique = new Set(this.exceptions);

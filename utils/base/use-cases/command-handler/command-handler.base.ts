@@ -1,12 +1,12 @@
 import { DomainExceptionBase, MultipleExceptions } from '@base/domain';
 import { Logger } from '@nestjs/common';
-import { ICommandHandler } from '@nestjs/cqrs';
+import { ICommand, ICommandHandler } from '@nestjs/cqrs';
 import { Catch, DefaultCatch } from 'catch-decorator-ts';
 import { Err, Ok, Result } from 'oxide.ts';
 import { ValidatorBase } from '../validator.base';
 
 export abstract class CommandHandlerBase<
-  Command,
+  Command extends ICommand,
   Success,
   Failure extends Array<any>,
 > implements

@@ -15,7 +15,9 @@ export interface AuthServicePort {
     username: UserNameValueObject,
     password: UserPasswordValueObject,
   ): Promise<boolean>;
-  findOneByUsername(username: UserNameValueObject): Promise<UserAggregate>;
+  findOneByUsername(
+    username: UserNameValueObject,
+  ): Promise<UserAggregate | null>;
   getAuthenticatedCookie(userId: UserIdValueObject): string;
   getLogOutCookie(): string;
 }

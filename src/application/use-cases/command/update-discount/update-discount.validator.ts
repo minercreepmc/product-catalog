@@ -1,10 +1,7 @@
 import { Notification } from '@base/patterns';
 import { ValidatorBase } from '@base/use-cases';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
-import {
-  DiscountManagementDomainService,
-  DiscountVerificationDomainService,
-} from '@domain-services';
+import { DiscountVerificationDomainService } from '@domain-services';
 import { Injectable } from '@nestjs/common';
 import { UpdateDiscountCommand } from './update-discount.dto';
 import { UpdateDiscountFailure } from './update-discount.result';

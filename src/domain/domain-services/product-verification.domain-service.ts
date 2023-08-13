@@ -1,3 +1,4 @@
+import { ProductAggregate } from '@aggregates/product';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
   productRepositoryDiToken,
@@ -47,7 +48,7 @@ export class ProductVerificationDomainService {
   }
 
   async findProductsOrThrow(ids: ProductIdValueObject[]) {
-    const products = [];
+    const products: ProductAggregate[] = [];
 
     for (const id of ids) {
       const product = await this.productRepository.findOneById(id);

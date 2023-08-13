@@ -53,12 +53,13 @@ export class V1UpdateCategoryHttpController extends HttpControllerBase<
     request,
     param,
   }: HttpControllerBaseOption<V1UpdateCategoryHttpRequest>): UpdateCategoryCommand {
-    const { name, description, productIds } = request;
+    const { name, description, productIds } = request!;
     return new UpdateCategoryCommand({
       id: new CategoryIdValueObject(param.id),
-      name: name && new CategoryNameValueObject(name),
-      description:
-        description && new CategoryDescriptionValueObject(description),
+      name: name ? new CategoryNameValueObject(name) : undefined,
+      description: description
+        ? new CategoryDescriptionValueObject(description)
+        : undefined,
       productIds:
         productIds && productIds?.map?.((p) => new ProductIdValueObject(p)),
     });

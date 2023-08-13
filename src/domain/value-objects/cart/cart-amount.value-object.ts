@@ -1,5 +1,5 @@
 import { DomainExceptionBase, ValueObjectBase } from '@base/domain';
-import { CartDomainException } from '@domain-exceptions/cart';
+import { CartDomainExceptions } from '@domain-exceptions/cart';
 import { IsDefined, IsNumber, Min, validateSync } from 'class-validator';
 
 export class CartAmountValueObject implements ValueObjectBase {
@@ -7,11 +7,11 @@ export class CartAmountValueObject implements ValueObjectBase {
   @IsNumber()
   @Min(0)
   value: number;
-  validate?(): DomainExceptionBase {
+  validate?(): DomainExceptionBase | undefined {
     const exceptions = validateSync(this);
 
     if (exceptions.length > 0) {
-      return new CartDomainException.AmountDoesNotValid();
+      return new CartDomainExceptions.AmountDoesNotValid();
     }
   }
 

@@ -26,7 +26,7 @@ export class UserAggregate implements AggregateRootBase, UserAggregateDetails {
     }
   }
   username: UserNameValueObject;
-  password: UserPasswordValueObject;
+  password?: UserPasswordValueObject;
   role: UserRoleValueObject;
   id: UserIdValueObject;
 

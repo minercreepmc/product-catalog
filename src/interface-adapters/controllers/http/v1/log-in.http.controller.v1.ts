@@ -55,9 +55,10 @@ export class V1LogInHttpController extends HttpControllerBase<
   toCommand({
     request,
   }: HttpControllerBaseOption<V1LogInHttpRequest>): LogInCommand {
+    const { username, password } = request!;
     return new LogInCommand({
-      username: new UserNameValueObject(request.username),
-      password: new UserPasswordValueObject(request.password),
+      username: new UserNameValueObject(username),
+      password: new UserPasswordValueObject(password),
     });
   }
   extractResult(
@@ -75,8 +76,8 @@ export class V1LogInHttpController extends HttpControllerBase<
       },
     });
 
-    response.setHeader('Set-Cookie', dto.cookie);
-    response.json(new V1LogInHttpResponse(dto));
+    response!.setHeader('Set-Cookie', dto.cookie);
+    response!.json(new V1LogInHttpResponse(dto));
     return new V1LogInHttpResponse(dto);
   }
 }

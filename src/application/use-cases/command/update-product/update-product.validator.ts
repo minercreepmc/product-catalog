@@ -58,7 +58,7 @@ export class UpdateProductValidator extends ValidatorBase<
 
   private async discountIdMustExist(note: Notification<UpdateProductFailure>) {
     const isExist = await this.discoutVerificationService.doesDiscountIdExist(
-      this.command.discountId,
+      this.command.discountId!,
     );
 
     if (!isExist) {
@@ -68,7 +68,7 @@ export class UpdateProductValidator extends ValidatorBase<
 
   private async categoryIdsMustExist(note: Notification<UpdateProductFailure>) {
     const isExist = await this.categoryVerificationService.doesCategoryIdsExist(
-      this.command.categoryIds,
+      this.command.categoryIds!,
     );
 
     if (!isExist) {

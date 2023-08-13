@@ -42,6 +42,6 @@ export class ProductUpdatedDomainEvent
   readonly price?: ProductPriceValueObject;
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
-  readonly discountId: DiscountIdValueObject;
+  readonly discountId?: DiscountIdValueObject;
   readonly categoryIds?: CategoryIdValueObject[];
 }

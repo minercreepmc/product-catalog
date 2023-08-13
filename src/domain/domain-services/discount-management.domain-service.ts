@@ -56,10 +56,7 @@ export class DiscountManagementDomainService {
       const { id, payload } = options;
       const discount =
         await this.discountVerificationService.findDiscountOrThrow(id);
-      const discountUpdated = discount.updateDiscount({
-        id,
-        ...payload,
-      });
+      const discountUpdated = discount.updateDiscount(payload);
       await this.discountRepository.updateOneById(id, discount);
 
       return discountUpdated;

@@ -15,9 +15,16 @@ export type GetCategoryResponseDto =
   | CategorySchemaWithProducts;
 
 @QueryHandler(GetCategoryQuery)
-export class GetCategoryHandler implements IQueryHandler<GetCategoryQuery> {
-  execute(query: GetCategoryQuery): Promise<GetCategoryResponseDto> {
+export class GetCategoryHandler
+  implements IQueryHandler<GetCategoryQuery, GetCategoryResponseDto | null>
+{
+  execute(query: GetCategoryQuery): Promise<GetCategoryResponseDto | null> {
     const { id, populate_products } = query;
+
+    if (!id) {
+      return Promise.resolve(null);
+    }
+
     if (populate_products) {
       return this.categoryRepository.findOneWithProducts(id);
     }

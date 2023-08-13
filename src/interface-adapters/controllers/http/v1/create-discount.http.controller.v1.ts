@@ -41,11 +41,12 @@ export class V1CreateDiscountHttpController extends HttpControllerBase<
   toCommand(
     options: HttpControllerBaseOption<V1CreateDiscountHttpRequest>,
   ): CreateDiscountCommand {
-    const { name, description, percentage } = options.request;
+    const { name, description, percentage } = options.request!;
     return new CreateDiscountCommand({
       name: new DiscountNameValueObject(name),
-      description:
-        description && new DiscountDescriptionValueObject(description),
+      description: description
+        ? new DiscountDescriptionValueObject(description)
+        : undefined,
       percentage: new DiscountPercentageValueObject(Number(percentage)),
     });
   }

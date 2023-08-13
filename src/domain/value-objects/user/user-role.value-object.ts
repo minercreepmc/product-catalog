@@ -1,6 +1,6 @@
 import { ValueObjectBase } from '@base/domain';
 import { UserDomainExceptions } from '@domain-exceptions/user';
-import { IsDefined, IsEnum, validate, validateSync } from 'class-validator';
+import { IsDefined, IsEnum, validateSync } from 'class-validator';
 
 export enum UserRoleEnum {
   Member = 'member',

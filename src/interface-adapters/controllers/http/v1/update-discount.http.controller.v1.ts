@@ -49,14 +49,17 @@ export class V1UpdateDiscountHttpController extends HttpControllerBase<
   toCommand(
     options: HttpControllerBaseOption<V1UpdateDiscountHttpRequest>,
   ): UpdateDiscountCommand {
-    const { name, description, percentage, active } = options.request;
+    const { name, description, percentage, active } = options.request!;
     return new UpdateDiscountCommand({
       id: new DiscountIdValueObject(options.param),
-      name: name && new DiscountNameValueObject(name),
-      description:
-        description && new DiscountDescriptionValueObject(description),
-      percentage: percentage && new DiscountPercentageValueObject(percentage),
-      active: active && new DiscountActiveValueObject(active),
+      name: name ? new DiscountNameValueObject(name) : undefined,
+      description: description
+        ? new DiscountDescriptionValueObject(description)
+        : undefined,
+      percentage: percentage
+        ? new DiscountPercentageValueObject(percentage)
+        : undefined,
+      active: active ? new DiscountActiveValueObject(active) : undefined,
     });
   }
   extractResult(result: any): V1UpdateDiscountHttpResponse {

@@ -22,7 +22,7 @@ export class UpdateProductHandler extends CommandHandlerBase<
   UpdateProductFailure
 > {
   async handle(): Promise<ProductUpdatedDomainEvent> {
-    let imageUrl: ProductImageUrlValueObject;
+    let imageUrl: ProductImageUrlValueObject | undefined;
     if (this.command.image) {
       imageUrl = await this.uploadImage();
     }
@@ -59,8 +59,8 @@ export class UpdateProductHandler extends CommandHandlerBase<
     throw err;
   })
   private async uploadImage() {
-    const url = await this.uploadService.upload(this.command.image);
-    const imageUrl = ProductImageUrlValueObject.create(url);
+    const url = await this.uploadService.upload(this.command.image!);
+    const imageUrl = new ProductImageUrlValueObject(url);
     return imageUrl;
   }
 

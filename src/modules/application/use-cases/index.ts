@@ -9,6 +9,7 @@ import { RegisterMemberModule } from './register-member.module';
 import { RemoveCategoriesModule } from './remove-categories.module';
 import { RemoveDiscountsModule } from './remove-discounts.module';
 import { RemoveProductsModule } from './remove-products.module';
+import { UpdateCartModule } from './update-cart.module';
 import { UpdateCategoryModule } from './update-category.module';
 import { UpdateDiscountModule } from './update-discount.module';
 import { UpdateProductModule } from './update-product.module';
@@ -23,6 +24,7 @@ import { UploadModule } from './upload.module';
     UpdateDiscountModule,
     RemoveDiscountsModule,
     CreateCartModule,
+    UpdateCartModule,
     RemoveProductsModule,
     UpdateCategoryModule,
     RemoveCategoriesModule,

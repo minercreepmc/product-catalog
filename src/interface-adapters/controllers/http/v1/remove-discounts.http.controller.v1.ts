@@ -44,7 +44,7 @@ export class V1RemoveDiscountsHttpController extends HttpControllerBase<
   toCommand(
     options: HttpControllerBaseOption<V1RemoveDiscountsHttpRequest>,
   ): RemoveDiscountsCommand {
-    const { ids } = options.request;
+    const { ids } = options.request!;
     return new RemoveDiscountsCommand({
       ids: ids?.map((id) => new DiscountIdValueObject(id)),
     });

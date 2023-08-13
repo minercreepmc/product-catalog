@@ -37,11 +37,10 @@ export class V1CreateCategoryHttpController extends HttpControllerBase<
     options: HttpControllerBaseOption<V1CreateCategoryHttpRequest>,
   ): CreateCategoryCommand {
     const { request } = options;
-    const { name, description } = request;
+    const { name, description } = request!;
     return new CreateCategoryCommand({
-      name: name && new CategoryNameValueObject(name),
-      description:
-        description && new CategoryDescriptionValueObject(description),
+      name: new CategoryNameValueObject(name),
+      description: new CategoryDescriptionValueObject(description || ''),
     });
   }
 

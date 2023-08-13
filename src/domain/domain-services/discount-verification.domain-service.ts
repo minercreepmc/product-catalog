@@ -32,7 +32,7 @@ export class DiscountVerificationDomainService {
   async findDiscountsOrThrow(
     ids: DiscountIdValueObject[],
   ): Promise<DiscountAggregate[]> {
-    const discounts = [];
+    const discounts: DiscountAggregate[] = [];
 
     for (const id of ids) {
       const discount = await this.findDiscountOrThrow(id);

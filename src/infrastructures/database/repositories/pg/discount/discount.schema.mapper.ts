@@ -19,7 +19,9 @@ export class DiscountSchemaMapper
     return new DiscountAggregate({
       id: new DiscountIdValueObject(id),
       name: new DiscountNameValueObject(name),
-      description: new DiscountDescriptionValueObject(description),
+      description: description
+        ? new DiscountDescriptionValueObject(description)
+        : undefined,
       percentage: new DiscountPercentageValueObject(percentage),
       active: new DiscountActiveValueObject(active),
     });

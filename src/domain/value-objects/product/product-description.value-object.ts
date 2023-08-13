@@ -7,17 +7,6 @@ export class ProductDescriptionValueObject {
   @Length(5, 500)
   readonly value: string;
 
-  static create(value?: string) {
-    const description = new ProductDescriptionValueObject(value);
-
-    const exception = description.validate();
-    if (exception) {
-      throw exception;
-    }
-
-    return description;
-  }
-
   validate() {
     const exceptions = validateSync(this);
 

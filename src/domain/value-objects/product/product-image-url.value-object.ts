@@ -7,17 +7,6 @@ export class ProductImageUrlValueObject {
   @IsUrl()
   readonly value: string;
 
-  static create(value: string) {
-    const image = new ProductImageUrlValueObject(value);
-
-    const exception = image.validate();
-    if (exception) {
-      throw exception;
-    }
-
-    return image;
-  }
-
   validate() {
     const exceptions = validateSync(this);
     if (exceptions.length > 0) {

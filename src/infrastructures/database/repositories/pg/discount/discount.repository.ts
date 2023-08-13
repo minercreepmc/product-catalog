@@ -21,7 +21,7 @@ export class DiscountRepository
       databaseService,
     });
   }
-  async create(entity: DiscountAggregate): Promise<DiscountAggregate> {
+  async create(entity: DiscountAggregate): Promise<DiscountAggregate | null> {
     const { id, name, description, percentage, active } =
       this.mapper.toPersistance(entity);
 
@@ -38,7 +38,9 @@ export class DiscountRepository
 
     return model ? this.mapper.toDomain(model) : null;
   }
-  async deleteOneById(id: DiscountIdValueObject): Promise<DiscountAggregate> {
+  async deleteOneById(
+    id: DiscountIdValueObject,
+  ): Promise<DiscountAggregate | null> {
     const domain = this.mapper.toPersistance({
       id,
     });
@@ -55,10 +57,25 @@ export class DiscountRepository
     return model ? this.mapper.toDomain(model) : null;
   }
 
-  deleteManyByIds(ids: DiscountIdValueObject[]): Promise<DiscountAggregate[]> {
-    return Promise.all(ids.map((id) => this.deleteOneById(id)));
+  async deleteManyByIds(
+    ids: DiscountIdValueObject[],
+  ): Promise<DiscountAggregate[] | null> {
+    const deleteds: DiscountAggregate[] = [];
+
+    for (const id of ids) {
+      const deleted = await this.deleteOneById(id);
+      if (deleted) {
+        deleteds.push(deleted);
+      } else {
+        break;
+      }
+    }
+
+    return deleteds ? deleteds : [];
   }
-  async findOneById(id: DiscountIdValueObject): Promise<DiscountAggregate> {
+  async findOneById(
+    id: DiscountIdValueObject,
+  ): Promise<DiscountAggregate | null> {
     const domain = this.mapper.toPersistance({
       id,
     });
@@ -77,12 +94,8 @@ export class DiscountRepository
   async updateOneById(
     id: DiscountIdValueObject,
     newState: DiscountAggregate,
-  ): Promise<DiscountAggregate> {
-    const query = this.mapper.toPersistance({
-      id,
-      ...newState,
-    });
-
+  ): Promise<DiscountAggregate | null> {
+    const query = this.mapper.toPersistance(newState);
     const res = await this.databaseService.runQuery(
       `UPDATE discount 
        SET name=$2, description=$3, percentage=$4, active=$5 
@@ -94,9 +107,10 @@ export class DiscountRepository
 
     return updated ? this.mapper.toDomain(updated) : null;
   }
+
   async findOneByName(
     name: DiscountNameValueObject,
-  ): Promise<DiscountAggregate> {
+  ): Promise<DiscountAggregate | null> {
     const query = this.mapper.toPersistance({
       name,
     });

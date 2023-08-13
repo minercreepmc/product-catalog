@@ -1,3 +1,4 @@
+import { DomainExceptionBase } from '@base/domain';
 import { CommandBase } from '@base/use-cases';
 import {
   UserNameValueObject,
@@ -9,9 +10,9 @@ export class RegisterMemberCommand implements CommandBase {
   password: UserPasswordValueObject;
 
   validate?() {
-    return [this.username.validate(), this.password.validate()].filter(
+    return [this.username.validate?.(), this.password.validate?.()].filter(
       (e) => e,
-    );
+    ) as DomainExceptionBase[];
   }
 
   constructor(dtos: RegisterMemberCommand) {

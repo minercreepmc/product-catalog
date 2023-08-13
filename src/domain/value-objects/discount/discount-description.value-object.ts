@@ -12,7 +12,7 @@ export class DiscountDescriptionValueObject implements ValueObjectBase {
     this.value = value;
   }
 
-  validate?(): DomainExceptionBase {
+  validate?() {
     const exception = validateSync(this);
     if (exception.length > 0) {
       return new DiscountDomainExceptions.DescriptionDoesNotValid();

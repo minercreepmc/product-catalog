@@ -23,20 +23,17 @@ export class GetProductsQueryHandler
 {
   async execute(query: GetProductsQuery): Promise<GetProductsResponseDto> {
     const { discount_id, category_id } = query;
-    let products: ProductViewModel[] = [];
+    let products: ProductViewModel[] | null = [];
 
     if (discount_id) {
       products = await this.repository.findByDiscountId(discount_id);
-    }  else if (category_id) {
+    } else if (category_id) {
       products = await this.repository.findByCategoryId(category_id);
-    }
-    else {
+    } else {
       products = await this.repository.findAll(query);
     }
 
-    return {
-      products,
-    };
+    return products ? { products } : { products: [] };
   }
 
   constructor(

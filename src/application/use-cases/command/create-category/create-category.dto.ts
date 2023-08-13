@@ -12,7 +12,7 @@ export class CreateCategoryCommand implements CommandBase {
   validate?(): DomainExceptionBase[] {
     return [this.name?.validate(), this.description?.validate()].filter(
       (e) => e,
-    );
+    ) as DomainExceptionBase[];
   }
 
   constructor(options: CreateCategoryCommand) {

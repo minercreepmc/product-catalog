@@ -64,21 +64,24 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
     const { image, request, param } = options;
 
     const { id } = param;
-    const { name, description, price, discountId, categoryIds } = request;
+    const { name, description, price, discountId, categoryIds } = request!;
 
     const command = new UpdateProductCommand({
       id: new ProductIdValueObject(id),
-      name: name && new ProductNameValueObject(name),
-      description:
-        description && new ProductDescriptionValueObject(description),
+      name: name ? new ProductNameValueObject(name) : undefined,
+      description: description
+        ? new ProductDescriptionValueObject(description)
+        : undefined,
       image:
         image &&
         new FileValueObject({
           name: image?.originalname,
           value: image?.buffer,
         }),
-      price: price && new ProductPriceValueObject(Number(price)),
-      discountId: discountId && new DiscountIdValueObject(discountId),
+      price: price ? new ProductPriceValueObject(Number(price)) : undefined,
+      discountId: discountId
+        ? new DiscountIdValueObject(discountId)
+        : undefined,
       categoryIds:
         categoryIds &&
         categoryIds?.map?.((id) => new CategoryIdValueObject(id)),

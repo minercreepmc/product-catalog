@@ -1,4 +1,4 @@
-import { DomainExceptionBase, ValueObjectBase } from '@base/domain';
+import { ValueObjectBase } from '@base/domain';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import {
   IsDefined,
@@ -21,7 +21,7 @@ export class DiscountPercentageValueObject implements ValueObjectBase {
     this.value = value;
   }
 
-  validate?(): DomainExceptionBase {
+  validate?() {
     const exception = validateSync(this);
     if (exception.length > 0) {
       return new DiscountDomainExceptions.PercentageDoesNotValid();

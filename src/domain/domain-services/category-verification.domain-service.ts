@@ -1,3 +1,4 @@
+import { CategoryAggregate } from '@aggregates/category';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import {
   categoryRepositoryDiToken,
@@ -47,7 +48,7 @@ export class CategoryVerificationDomainService {
   }
 
   async findCategoriesOrThrow(ids: CategoryIdValueObject[]) {
-    const categories = [];
+    const categories: CategoryAggregate[] = [];
 
     for (const id of ids) {
       const category = await this.categoryRepository.findOneById(id);

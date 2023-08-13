@@ -39,7 +39,7 @@ export class V1RemoveProductsHttpController extends HttpControllerBase<
   toCommand({
     request,
   }: HttpControllerBaseOption<V1RemoveProductsHttpRequest>): RemoveProductsCommand {
-    const { ids } = request;
+    const { ids } = request!;
 
     const command = new RemoveProductsCommand({
       ids: ids?.map((id) => new ProductIdValueObject(id)),

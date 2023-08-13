@@ -23,7 +23,7 @@ export class CreateProductHandler extends CommandHandlerBase<
 > {
   async handle(): Promise<ProductCreatedDomainEvent> {
     const { command } = this;
-    let imageUrl: ProductImageUrlValueObject;
+    let imageUrl: ProductImageUrlValueObject | undefined;
 
     if (command.image) {
       imageUrl = await this.uploadImage();
@@ -55,8 +55,8 @@ export class CreateProductHandler extends CommandHandlerBase<
     throw err;
   })
   private async uploadImage() {
-    const url = await this.uploadService.upload(this.command.image);
-    const imageUrl = ProductImageUrlValueObject.create(url);
+    const url = await this.uploadService.upload(this.command.image!);
+    const imageUrl = new ProductImageUrlValueObject(url);
     return imageUrl;
   }
 

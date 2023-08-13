@@ -26,7 +26,7 @@ export class V1UpdateProductHttpResponse {
   description?: string;
   imageUrl?: string;
   discountId?: string;
-  categoryIds: string[];
+  categoryIds?: string[];
   message?: string;
 
   constructor(options: Omit<V1UpdateProductHttpResponse, 'message'>) {

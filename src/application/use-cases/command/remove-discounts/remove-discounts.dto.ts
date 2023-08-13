@@ -20,10 +20,10 @@ export class RemoveDiscountsCommand implements CommandBase {
       isValid = false;
     }
 
-    let exception: DomainExceptionBase;
+    let exception: DomainExceptionBase | undefined;
 
     isValid = !this.ids.some((id) => {
-      exception = id.validate();
+      exception = id.validate?.();
       if (exception) return true;
       return false;
     });

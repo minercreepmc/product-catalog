@@ -29,7 +29,7 @@ export class CategoryAggregate implements CategoryAggregateDetails {
   id: CategoryIdValueObject;
   name: CategoryNameValueObject;
   description?: CategoryDescriptionValueObject;
-  productIds: ProductIdValueObject[];
+  productIds?: ProductIdValueObject[];
 
   createCategory(options: CreateCategoryAggregateOptions) {
     const { name, description } = options;

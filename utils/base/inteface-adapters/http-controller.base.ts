@@ -29,7 +29,7 @@ export abstract class HttpControllerBase<
 
   abstract toCommand(options: HttpControllerBaseOption<Request>): Command;
   validate(command: Command): void {
-    const exceptions = command.validate();
+    const exceptions = command.validate!();
 
     if (exceptions.length > 0) {
       console.error(exceptions);

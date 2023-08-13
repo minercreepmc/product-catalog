@@ -1,14 +1,14 @@
 import { DomainExceptionBase, ID } from '@base/domain';
-import { CartDomainException } from '@domain-exceptions/cart';
+import { CartDomainExceptions } from '@domain-exceptions/cart';
 import { validateSync } from 'class-validator';
 
 export class CartIdValueObject extends ID {
   value: string;
-  validate?(): DomainExceptionBase {
+  validate?(): DomainExceptionBase | undefined {
     const validations = validateSync(this);
 
     if (validations.length > 0) {
-      return new CartDomainException.IdDoesNotValid();
+      return new CartDomainExceptions.IdDoesNotValid();
     }
   }
 

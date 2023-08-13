@@ -22,9 +22,9 @@ export class CreateProductCommand {
       this.price.validate(),
       this.description?.validate?.(),
       this.image?.validate?.(),
-      this.categoryIds?.map?.((id) => id.validate())[0],
+      this.categoryIds?.map?.((id) => id?.validate?.())[0],
       this.discountId?.validate?.(),
-    ].filter((e) => e);
+    ].filter((e) => e) as DomainExceptionBase[];
   }
 
   constructor(dto: CreateProductCommand) {

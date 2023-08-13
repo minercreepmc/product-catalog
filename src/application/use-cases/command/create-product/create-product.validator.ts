@@ -4,11 +4,8 @@ import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import {
-  CategoryManagementDomainService,
   CategoryVerificationDomainService,
-  DiscountManagementDomainService,
   DiscountVerificationDomainService,
-  ProductManagementDomainService,
   ProductVerificationDomainService,
 } from '@domain-services';
 import { Injectable } from '@nestjs/common';
@@ -57,7 +54,7 @@ export class CreateProductValidator extends ValidatorBase<
 
   private async categoryIdsMustExist(note: Notification<CreateProductFailure>) {
     const isExist = await this.cateogryVerificationService.doesCategoryIdsExist(
-      this.command.categoryIds,
+      this.command.categoryIds!,
     );
 
     if (!isExist) {
@@ -67,7 +64,7 @@ export class CreateProductValidator extends ValidatorBase<
 
   private async discountIdMustExist(note: Notification<CreateProductFailure>) {
     const isExist = await this.discountVerificationService.doesDiscountIdExist(
-      this.command.discountId,
+      this.command.discountId!,
     );
 
     if (!isExist) {

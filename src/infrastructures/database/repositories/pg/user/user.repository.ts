@@ -2,6 +2,7 @@ import { UserRepositoryPort } from '@application/interface/user';
 import { ApplicationRepositoryBase } from '@base/database/repositories/pg';
 import { DatabaseService } from '@config/pg';
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { UserSchema } from './user.schema';
 
 @Injectable()
@@ -9,7 +10,7 @@ export class UserRepository
   extends ApplicationRepositoryBase<UserSchema>
   implements UserRepositoryPort
 {
-  async create(entity: UserSchema): Promise<UserSchema> {
+  async create(entity: UserSchema): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
       INSERT INTO "users" (
@@ -24,12 +25,10 @@ export class UserRepository
       [entity.id, entity.username, entity.hashed, entity.role],
     );
 
-    const saved = res.rows[0];
-
-    return saved;
+    return plainToInstance(UserSchema, res.rows[0]);
   }
 
-  async deleteOneById(id: string): Promise<UserSchema> {
+  async deleteOneById(id: string): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
       UPDATE "users" SET deleted_at=now() WHERE id=$1 AND deleted_at IS NULL RETURNING *
@@ -37,11 +36,10 @@ export class UserRepository
       [id],
     );
 
-    const deleted = res.rows[0];
-
-    return deleted;
+    return plainToInstance(UserSchema, res.rows[0]);
   }
-  async findOneById(id: string): Promise<UserSchema> {
+
+  async findOneById(id: string): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
       SELECT * from "users" WHERE id=$1 AND deleted_at IS NULL
@@ -49,11 +47,12 @@ export class UserRepository
       [id],
     );
 
-    const model = res.rows[0];
-
-    return model;
+    return plainToInstance(UserSchema, res.rows[0]);
   }
-  async updateOneById(id: string, newState: UserSchema): Promise<UserSchema> {
+  async updateOneById(
+    id: string,
+    newState: UserSchema,
+  ): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
       UPDATE "users" SET username=$2, password=$3, role=$4 WHERE id=$1 AND deleted_at IS NULL 
@@ -66,7 +65,7 @@ export class UserRepository
     return updated;
   }
 
-  async findOneByName(name: string): Promise<UserSchema> {
+  async findOneByName(name: string): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
       SELECT * from "users" WHERE username=$1 AND deleted_at IS NULL

@@ -27,8 +27,8 @@ export class UpdateProductCommand implements CommandBase {
       this.description?.validate?.(),
       this.image?.validate?.(),
       this.discountId?.validate?.(),
-      this.categoryIds?.map?.((e) => e?.validate())[0],
-    ].filter((e) => e);
+      this.categoryIds?.map?.((e) => e?.validate?.())[0],
+    ].filter((e) => e) as DomainExceptionBase[];
   }
 
   constructor(options: UpdateProductCommand) {
@@ -49,7 +49,7 @@ export class UpdateProductResponseDto {
   description?: string;
   imageUrl?: string;
   discountId?: string;
-  categoryIds: string[];
+  categoryIds?: string[];
 
   constructor(dto: UpdateProductResponseDto) {
     this.id = dto.id;

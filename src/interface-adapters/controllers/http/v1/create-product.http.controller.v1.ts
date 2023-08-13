@@ -58,12 +58,13 @@ export class V1CreateProductHttpController extends HttpControllerBase<
     options: HttpControllerBaseOption<V1CreateProductHttpRequest>,
   ): CreateProductCommand {
     const { request, image } = options;
-    const { name, description, price, categoryIds, discountId } = request;
+    const { name, description, price, categoryIds, discountId } = request!;
     return new CreateProductCommand({
       name: new ProductNameValueObject(name),
       price: new ProductPriceValueObject(Number(price)),
-      description:
-        description && new ProductDescriptionValueObject(description),
+      description: description
+        ? new ProductDescriptionValueObject(description)
+        : undefined,
       image:
         image &&
         new FileValueObject({
@@ -73,7 +74,9 @@ export class V1CreateProductHttpController extends HttpControllerBase<
       categoryIds:
         categoryIds &&
         categoryIds?.map?.((id) => new CategoryIdValueObject(id)),
-      discountId: discountId && new DiscountIdValueObject(discountId),
+      discountId: discountId
+        ? new DiscountIdValueObject(discountId)
+        : undefined,
     });
   }
 

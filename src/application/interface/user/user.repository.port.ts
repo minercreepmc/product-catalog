@@ -5,5 +5,5 @@ export const userRepositoryDiToken = Symbol('USER_REPOSITORY');
 
 export interface UserRepositoryPort
   extends ApplicationRepositoryPort<UserSchema> {
-  findOneByName(name: string): Promise<UserSchema>;
+  findOneByName(name: string): Promise<UserSchema | null>;
 }

@@ -2,10 +2,12 @@ import { CartAggregate } from '@aggregates/cart';
 import { DomainEventBase } from '@base/domain';
 import { CartItemEntity } from '@entities';
 import { CartIdValueObject } from '@value-objects/cart';
+import { UserIdValueObject } from '@value-objects/user';
 
 export interface CartUpdatedDomainEventDetails {
   id: CartIdValueObject;
   items: CartItemEntity[];
+  userId: UserIdValueObject;
 }
 
 export class CartUpdatedDomainEvent
@@ -19,7 +21,9 @@ export class CartUpdatedDomainEvent
     });
     this.id = options.id;
     this.items = options.items;
+    this.userId = options.userId;
   }
   id: CartIdValueObject;
   items: CartItemEntity[];
+  userId: UserIdValueObject;
 }

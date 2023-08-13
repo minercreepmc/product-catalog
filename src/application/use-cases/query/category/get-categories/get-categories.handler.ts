@@ -18,10 +18,7 @@ export class GetCategoriesHandler
 {
   async execute(query: CategoryQuery): Promise<GetCategoriesResponseDto> {
     const categories = await this.categoryRepository.findAll(query);
-
-    return {
-      categories,
-    };
+    return categories ? { categories } : { categories: [] };
   }
 
   constructor(

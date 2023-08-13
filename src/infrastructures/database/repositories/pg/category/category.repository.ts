@@ -8,6 +8,7 @@ import {
   CategoryNameValueObject,
 } from '@value-objects/category';
 import { ProductIdValueObject } from '@value-objects/product';
+import { plainToInstance } from 'class-transformer';
 import { CategorySchema } from './category.schema';
 import { CategorySchemaMapper } from './category.schema.mapper';
 
@@ -22,7 +23,7 @@ export class CategoryRepository
       mapper,
     });
   }
-  async create(entity: CategoryAggregate): Promise<CategoryAggregate> {
+  async create(entity: CategoryAggregate): Promise<CategoryAggregate | null> {
     const model = this.mapper.toPersistance(entity);
 
     const res = await this.databaseService.runQuery(
@@ -34,11 +35,12 @@ export class CategoryRepository
       [model.id, model.name, model.description],
     );
 
-    const saved = res.rows[0];
-
+    const saved = plainToInstance(CategorySchema, res.rows[0]);
     return saved ? this.mapper.toDomain(saved) : null;
   }
-  async deleteOneById(id: CategoryIdValueObject): Promise<CategoryAggregate> {
+  async deleteOneById(
+    id: CategoryIdValueObject,
+  ): Promise<CategoryAggregate | null> {
     const query = this.mapper.toPersistance({ id });
 
     const res = await this.databaseService.runQuery(
@@ -46,32 +48,45 @@ export class CategoryRepository
       [query.id],
     );
 
-    const deleted = res.rows[0];
-
+    const deleted = plainToInstance(CategorySchema, res.rows[0]);
     return deleted ? this.mapper.toDomain(deleted) : null;
   }
 
-  deleteManyByIds(ids: CategoryIdValueObject[]): Promise<CategoryAggregate[]> {
-    return Promise.all(ids.map((id) => this.deleteOneById(id)));
+  async deleteManyByIds(
+    ids: CategoryIdValueObject[],
+  ): Promise<CategoryAggregate[]> {
+    const deleteds: CategoryAggregate[] = [];
+
+    for (const id of ids) {
+      const deleted = await this.deleteOneById(id);
+      if (deleted) {
+        deleteds.push(deleted);
+      } else {
+        break;
+      }
+    }
+
+    return deleteds ? deleteds : [];
   }
 
-  async findOneById(id: CategoryIdValueObject): Promise<CategoryAggregate> {
+  async findOneById(
+    id: CategoryIdValueObject,
+  ): Promise<CategoryAggregate | null> {
     const query = this.mapper.toPersistance({ id });
 
     const res = await this.databaseService.runQuery(
-      `SELECT * from category WHERE id=$1`,
+      `SELECT * from category WHERE id=$1 AND deleted_at IS NULL`,
       [query.id],
     );
 
-    const deleted = res.rows[0];
-
-    return deleted ? this.mapper.toDomain(deleted) : null;
+    const model = plainToInstance(CategorySchema, res.rows[0]);
+    return model ? this.mapper.toDomain(model) : null;
   }
 
   async updateOneById(
     id: CategoryIdValueObject,
     newState: CategoryAggregate,
-  ): Promise<CategoryAggregate> {
+  ): Promise<CategoryAggregate | null> {
     const query = this.mapper.toPersistance({ id });
     const model = this.mapper.toPersistance(newState);
 
@@ -90,7 +105,7 @@ export class CategoryRepository
         category.id,
         newState.productIds,
       );
-      category.productIds = productsUpdated.productIds;
+      category.productIds = productsUpdated?.productIds;
     }
 
     return category ? this.mapper.toDomain(category) : null;
@@ -99,7 +114,7 @@ export class CategoryRepository
   private async updateProductsFromCategory(
     categoryId: string,
     productIds: ProductIdValueObject[],
-  ): Promise<Partial<CategoryAggregate>> {
+  ): Promise<Partial<CategoryAggregate> | null> {
     const productIdsArray = productIds.map((p) => p.value);
     const res = await this.databaseService.runQuery(
       ` 
@@ -118,7 +133,7 @@ export class CategoryRepository
 
   async findOneByName(
     name: CategoryNameValueObject,
-  ): Promise<CategoryAggregate> {
+  ): Promise<CategoryAggregate | null> {
     const query = this.mapper.toPersistance({ name });
 
     const res = await this.databaseService.runQuery(

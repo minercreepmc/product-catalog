@@ -1,7 +1,7 @@
-import { EventBus, IEventHandler } from '@nestjs/cqrs';
+import { EventBus, IEventHandler, IEvent } from '@nestjs/cqrs';
 import { Result } from 'oxide.ts';
 
-export abstract class EventHandlerBase<TEvent>
+export abstract class EventHandlerBase<TEvent extends IEvent>
   implements IEventHandler<TEvent>
 {
   constructor(protected readonly eventBus: EventBus) {}

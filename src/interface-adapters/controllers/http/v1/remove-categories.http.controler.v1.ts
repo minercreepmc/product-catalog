@@ -34,7 +34,7 @@ export class V1RemoveCategoriesHttpController extends HttpControllerBase<
     options: HttpControllerBaseOption<V1RemoveCategoriesHttpRequest>,
   ): RemoveCategoriesCommand {
     const { request } = options;
-    const { ids } = request;
+    const { ids } = request!;
     return new RemoveCategoriesCommand({
       ids: ids && ids.map((id) => new CategoryIdValueObject(id)),
     });

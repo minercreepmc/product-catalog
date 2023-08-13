@@ -1,4 +1,4 @@
-import { DomainExceptionBase, ValueObjectBase } from '@base/domain';
+import { ValueObjectBase } from '@base/domain';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { IsBoolean, IsDefined, validateSync } from 'class-validator';
 
@@ -15,7 +15,7 @@ export class DiscountActiveValueObject implements ValueObjectBase {
     this.value = value;
   }
 
-  validate?(): DomainExceptionBase {
+  validate?() {
     const exceptions = validateSync(this);
 
     if (exceptions.length > 0) {

@@ -10,7 +10,7 @@ export class CreateCartCommand implements CommandBase {
   }
 
   validate?(): DomainExceptionBase[] {
-    return [this.userId.validate()].filter((e) => e);
+    return [this.userId.validate()].filter((e) => e) as DomainExceptionBase[];
   }
 }
 

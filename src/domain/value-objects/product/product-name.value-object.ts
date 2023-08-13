@@ -7,17 +7,6 @@ export class ProductNameValueObject {
   @Length(2, 250)
   readonly value: string;
 
-  static create(value: string) {
-    const name = new ProductNameValueObject(value);
-    const exception = name.validate();
-
-    if (exception) {
-      throw exception;
-    }
-
-    return name;
-  }
-
   validate() {
     const exceptions = validateSync(this);
 

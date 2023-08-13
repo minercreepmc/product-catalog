@@ -48,8 +48,8 @@ describe('Create Product with Categories', () => {
       .set('Accept', 'application/json')
       .field('name', createProductRequest.name)
       .field('price', createProductRequest.price)
-      .field('description', createProductRequest.description)
-      .field('categoryIds[0]', createProductRequest.categoryIds[0]);
+      .field('description', createProductRequest.description!)
+      .field('categoryIds[0]', createProductRequest.categoryIds![0]);
 
     expect(createProductResponse.body.message).toIncludeAllMembers(
       mapDomainExceptionsToObjects([
@@ -85,8 +85,8 @@ describe('Create Product with Categories', () => {
       //.attach('image', tempFilePath)
       .field('name', createProductRequest.name)
       .field('price', createProductRequest.price)
-      .field('description', createProductRequest.description)
-      .field('categoryIds[0]', createProductRequest.categoryIds[0])
+      .field('description', createProductRequest.description!)
+      .field('categoryIds[0]', createProductRequest.categoryIds![0])
       .expect(HttpStatus.CREATED);
 
     const body: V1CreateProductHttpResponse = response.body;

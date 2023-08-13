@@ -43,8 +43,8 @@ describe('Create Product with Discount', () => {
       .set('Accept', 'application/json')
       .field('name', createProductRequest.name)
       .field('price', createProductRequest.price)
-      .field('description', createProductRequest.description)
-      .field('discountId', createProductRequest.discountId);
+      .field('description', createProductRequest.description!)
+      .field('discountId', createProductRequest.discountId!);
 
     expect(createProductResponse.body.message).toIncludeAllMembers(
       mapDomainExceptionsToObjects([
@@ -81,8 +81,8 @@ describe('Create Product with Discount', () => {
       //.attach('image', tempFilePath)
       .field('name', createProductRequest.name)
       .field('price', createProductRequest.price)
-      .field('description', createProductRequest.description)
-      .field('discountId', createProductRequest.discountId)
+      .field('description', createProductRequest.description!)
+      .field('discountId', createProductRequest.discountId!)
       .expect(HttpStatus.CREATED);
 
     const body: V1CreateProductHttpResponse = response.body;

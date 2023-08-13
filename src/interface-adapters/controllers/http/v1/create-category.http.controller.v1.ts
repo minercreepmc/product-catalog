@@ -40,7 +40,9 @@ export class V1CreateCategoryHttpController extends HttpControllerBase<
     const { name, description } = request!;
     return new CreateCategoryCommand({
       name: new CategoryNameValueObject(name),
-      description: new CategoryDescriptionValueObject(description || ''),
+      description: description
+        ? new CategoryDescriptionValueObject(description)
+        : undefined,
     });
   }
 

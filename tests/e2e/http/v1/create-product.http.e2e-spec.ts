@@ -45,7 +45,7 @@ describe('Create Product', () => {
       //.attach('image', tempFilePath)
       .field('name', createProductRequest.name)
       .field('price', createProductRequest.price)
-      .field('description', createProductRequest.description)
+      .field('description', createProductRequest.description!)
       .expect(HttpStatus.CREATED);
 
     const body: V1CreateProductHttpResponse = response.body;

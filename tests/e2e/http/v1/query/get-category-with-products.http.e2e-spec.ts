@@ -74,7 +74,7 @@ describe('Get category with products', () => {
     const body: V1GetCategoryHttpResponse = response.body;
 
     expect(body.id).toBe(categoryId);
-    expect(body.products.length).toBeGreaterThanOrEqual(1);
+    expect(body.products?.length).toBeGreaterThanOrEqual(1);
   });
 
   // Add more test cases for other routes, if needed.

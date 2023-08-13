@@ -85,7 +85,7 @@ describe('Get product', () => {
     const body: V1GetProductHttpResponse = response.body;
     expect(body.name).toBe(createBody.name);
     expect(body.discount_id).toBe(discountId);
-    expect(body.category_ids[0]).toBe(categoryId);
+    expect(body.category_ids?.[0]).toBe(categoryId);
   });
 
   // Add more test cases for other routes, if needed.

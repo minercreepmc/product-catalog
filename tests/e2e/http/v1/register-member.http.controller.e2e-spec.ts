@@ -1,4 +1,8 @@
-import { v1ApiEndpoints, V1RegisterMemberHttpRequest } from '@api/http';
+import {
+  v1ApiEndpoints,
+  V1RegisterMemberHttpRequest,
+  V1RegisterMemberHttpResponse,
+} from '@api/http';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -25,6 +29,7 @@ describe('RegisterMemberHttpController', () => {
     const httpRequest: V1RegisterMemberHttpRequest = {
       username: '',
       password: '',
+      fullName: '',
     };
 
     const response = await request(app.getHttpServer())
@@ -35,6 +40,7 @@ describe('RegisterMemberHttpController', () => {
     const expectedExceptions = mapDomainExceptionsToObjects([
       new UserDomainExceptions.UsernameDoesNotValid(),
       new UserDomainExceptions.PasswordDoesNotValid(),
+      new UserDomainExceptions.UsernameDoesNotValid(),
     ]);
 
     expect(response.body.message).toIncludeAllMembers(expectedExceptions);
@@ -66,6 +72,24 @@ describe('RegisterMemberHttpController', () => {
     ]);
 
     expect(response.body.message).toIncludeAllMembers(expectedExceptions);
+  });
+
+  it('should create member', async () => {
+    const httpRequest: V1RegisterMemberHttpRequest = {
+      username: randomString(),
+      password: 'asdasdas123123+AA',
+      fullName: randomString(),
+    };
+
+    const response = await request(app.getHttpServer())
+      .post(registerMemberUrl)
+      .send(httpRequest)
+      .expect(HttpStatus.CREATED);
+
+    const body = response.body as V1RegisterMemberHttpResponse;
+
+    expect(body.username).toBe(httpRequest.username);
+    expect(body.fullName).toBe(httpRequest.fullName);
   });
 
   afterEach(async () => {

@@ -4,6 +4,7 @@ import {
   MemberRegisteredDomainEvent,
 } from '@domain-events/user';
 import {
+  UserFullNameValueObject,
   UserIdValueObject,
   UserNameValueObject,
   UserPasswordValueObject,
@@ -21,6 +22,7 @@ export class UserAggregate implements AggregateRootBase, UserAggregateDetails {
       this.username = options.username;
       this.password = options.password;
       this.role = options.role;
+      this.fullName = options.fullName;
     } else {
       this.id = new UserIdValueObject();
     }
@@ -28,32 +30,38 @@ export class UserAggregate implements AggregateRootBase, UserAggregateDetails {
   username: UserNameValueObject;
   password?: UserPasswordValueObject;
   role: UserRoleValueObject;
+  fullName?: UserFullNameValueObject;
   id: UserIdValueObject;
 
   registerMember(options: RegisterUserAggregateOptions) {
-    const { username, password } = options;
+    const { username, password, fullName } = options;
 
     this.username = username;
     this.password = password;
     this.role = UserRoleValueObject.createMember();
+    this.fullName = fullName ? fullName : new UserFullNameValueObject();
+
     return new MemberRegisteredDomainEvent({
       id: this.id,
       username,
       role: this.role,
+      fullName: this.fullName,
     });
   }
 
   registerAdmin(options: RegisterUserAggregateOptions) {
-    const { username, password } = options;
+    const { username, password, fullName } = options;
 
     this.username = username;
     this.password = password;
     this.role = UserRoleValueObject.createAdmin();
+    this.fullName = fullName ? fullName : new UserFullNameValueObject();
 
     return new AdminRegisteredDomainEvent({
       id: this.id,
       username,
       role: this.role,
+      fullName: this.fullName,
     });
   }
 }

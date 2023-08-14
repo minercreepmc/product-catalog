@@ -17,12 +17,19 @@ export class UserRepository
         id,
         username,
         hashed,
-        role
+        role,
+        full_name
       ) VALUES (
-        $1, $2, $3, $4
+        $1, $2, $3, $4, $5
       ) RETURNING *
     `,
-      [entity.id, entity.username, entity.hashed, entity.role],
+      [
+        entity.id,
+        entity.username,
+        entity.hashed,
+        entity.role,
+        entity.full_name,
+      ],
     );
 
     return plainToInstance(UserSchema, res.rows[0]);
@@ -55,9 +62,15 @@ export class UserRepository
   ): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
-      UPDATE "users" SET username=$2, password=$3, role=$4 WHERE id=$1 AND deleted_at IS NULL 
+      UPDATE "users" SET username=$2, password=$3, role=$4, full_name=$5 WHERE id=$1 AND deleted_at IS NULL 
       `,
-      [id, newState.username, newState.hashed, newState.role],
+      [
+        id,
+        newState.username,
+        newState.hashed,
+        newState.role,
+        newState.full_name,
+      ],
     );
 
     const updated = res.rows[0];

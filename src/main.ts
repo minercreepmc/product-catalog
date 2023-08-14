@@ -20,7 +20,11 @@ async function bootstrap() {
       forbidUnknownValues: false,
     }),
   );
-  app.enableCors();
+  app.enableCors({
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin'],
+    origin: ['http://localhost:4201'],
+    credentials: true,
+  });
 
   app.use(cookieParser());
 

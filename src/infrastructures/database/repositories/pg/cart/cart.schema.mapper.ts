@@ -25,7 +25,6 @@ export class CartSchemaMapper extends SchemaMapperBase<
         return this.cartItemMapper.toDomain(item);
       });
 
-    console.log(model);
     return new CartAggregate({
       id: new CartIdValueObject(id),
       userId: new UserIdValueObject(user_id),

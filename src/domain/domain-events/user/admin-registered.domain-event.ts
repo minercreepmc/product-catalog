@@ -1,6 +1,7 @@
 import { UserAggregate } from '@aggregates/user';
 import { DomainEventBase } from '@base/domain';
 import {
+  UserFullNameValueObject,
   UserIdValueObject,
   UserNameValueObject,
   UserRoleValueObject,
@@ -10,6 +11,7 @@ export interface AdminRegisteredDomainEventDetails {
   id: UserIdValueObject;
   username: UserNameValueObject;
   role: UserRoleValueObject;
+  fullName?: UserFullNameValueObject;
 }
 
 export class AdminRegisteredDomainEvent
@@ -24,8 +26,10 @@ export class AdminRegisteredDomainEvent
     this.id = options.id;
     this.username = options.username;
     this.role = options.role;
+    this.fullName = options.fullName;
   }
   id: UserIdValueObject;
   username: UserNameValueObject;
   role: UserRoleValueObject;
+  fullName?: UserFullNameValueObject;
 }

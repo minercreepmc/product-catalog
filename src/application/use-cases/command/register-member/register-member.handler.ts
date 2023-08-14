@@ -26,6 +26,7 @@ export class RegisterMemberHandler extends CommandHandlerBase<
     return new RegisterMemberResponseDto({
       id: data.id?.value,
       username: data.username?.value,
+      fullName: data.fullName?.value,
     });
   }
 

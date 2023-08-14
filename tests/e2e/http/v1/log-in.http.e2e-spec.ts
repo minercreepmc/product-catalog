@@ -31,16 +31,10 @@ describe('Log In', () => {
       password: 'okeokeoke',
     };
 
-    const response = await request(app.getHttpServer())
+    await request(app.getHttpServer())
       .post(logInUrl)
       .send(invalidRequest)
       .expect(HttpStatus.UNAUTHORIZED);
-
-    const expectedExceptions = mapDomainExceptionsToObjects([
-      new UserDomainExceptions.CredentialDoesNotValid(),
-    ]);
-
-    expect(response.body.message).toIncludeAllMembers(expectedExceptions);
   });
 
   it('should sign in successfully if email and password are correct', async () => {

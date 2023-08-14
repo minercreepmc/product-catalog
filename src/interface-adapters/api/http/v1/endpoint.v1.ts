@@ -19,4 +19,5 @@ export const v1ApiEndpoints = {
   updateCart: `${prefix}/cart/:id`,
   logIn: `${prefix}/log-in`,
   logOut: `${prefix}/log-out`,
+  getProfile: `${prefix}/profile`,
 };

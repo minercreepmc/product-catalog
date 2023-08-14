@@ -15,6 +15,7 @@ import {
   RegisterMemberResponseDto,
 } from '@use-cases/command/register-member';
 import {
+  UserFullNameValueObject,
   UserNameValueObject,
   UserPasswordValueObject,
 } from '@value-objects/user';
@@ -40,10 +41,11 @@ export class V1RegisterMemberHttpController extends HttpControllerBase<
   toCommand({
     request,
   }: HttpControllerBaseOption<V1RegisterMemberHttpRequest>): RegisterMemberCommand {
-    const { username, password } = request!;
+    const { username, password, fullName } = request!;
     return new RegisterMemberCommand({
       username: new UserNameValueObject(username),
       password: new UserPasswordValueObject(password),
+      fullName: new UserFullNameValueObject(fullName),
     });
   }
   extractResult(result: any): V1RegisterMemberHttpResponse {

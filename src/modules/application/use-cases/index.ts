@@ -4,7 +4,11 @@ import { CreateCategoryModule } from './create-category.module';
 import { CreateDiscountModule } from './create-discount.module';
 import { CreateProductModule } from './create-product.module';
 import { LogInModule } from './log-in.module';
-import { CategoryQueryModule, ProductQueryModule } from './query';
+import {
+  CategoryQueryModule,
+  ProductQueryModule,
+  UserQueryModule,
+} from './query';
 import { RegisterMemberModule } from './register-member.module';
 import { RemoveCategoriesModule } from './remove-categories.module';
 import { RemoveDiscountsModule } from './remove-discounts.module';
@@ -31,6 +35,7 @@ import { UploadModule } from './upload.module';
     ProductQueryModule,
     CategoryQueryModule,
     RegisterMemberModule,
+    UserQueryModule,
     LogInModule,
     UploadModule,
   ],

@@ -24,10 +24,6 @@ export class LogInValidator extends ValidatorBase<LogInCommand, LogInFailure> {
 
     await this.userNameMustExist(note);
 
-    if (!note.hasExceptions()) {
-      await this.passwordMustMatch(note);
-    }
-
     return note;
   }
 
@@ -37,17 +33,6 @@ export class LogInValidator extends ValidatorBase<LogInCommand, LogInFailure> {
     );
 
     if (!exist) {
-      note.addException(new UserDomainExceptions.CredentialDoesNotValid());
-    }
-  }
-
-  async passwordMustMatch(note: Notification<LogInFailure>): Promise<void> {
-    const isMatch = await this.authService.isPasswordMatchByUserName(
-      this.command.username,
-      this.command.password,
-    );
-
-    if (!isMatch) {
       note.addException(new UserDomainExceptions.CredentialDoesNotValid());
     }
   }

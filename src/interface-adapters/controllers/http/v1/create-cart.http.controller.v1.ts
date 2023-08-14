@@ -35,7 +35,6 @@ export class V1CreateCartHttpController extends HttpControllerBase<
   ): CreateCartCommand {
     const { request } = options;
     const { userId } = request!;
-    console.log(userId);
     return new CreateCartCommand({
       userId: new UserIdValueObject(userId),
     });

@@ -4,13 +4,14 @@ import {
   HttpControllerBaseOption,
 } from '@base/inteface-adapters';
 import {
-  Body,
   Controller,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { LogInCommand, LogInResponseDto } from '@use-cases/command/log-in';
 import {
@@ -25,6 +26,8 @@ import {
   V1LogInHttpRequest,
   V1LogInHttpResponse,
 } from '@api/http';
+import { LocalAuthenticationGuard } from '@application/application-services/auth';
+import { RequestWithUser } from '@api/http/v1/models/user.model.v1';
 
 @Controller(v1ApiEndpoints.logIn)
 export class V1LogInHttpController extends HttpControllerBase<
@@ -38,12 +41,12 @@ export class V1LogInHttpController extends HttpControllerBase<
 
   @Post()
   @HttpCode(HttpStatus.OK)
-  execute(
-    @Body() request: V1LogInHttpRequest,
-    @Res() response: ExpressResponse,
-  ) {
+  @UseGuards(LocalAuthenticationGuard)
+  execute(@Res() response: ExpressResponse, @Req() request: RequestWithUser) {
+    const body = request.user;
+    console.log(body);
     return super._execute({
-      request,
+      request: body,
       response,
     });
   }
@@ -55,10 +58,9 @@ export class V1LogInHttpController extends HttpControllerBase<
   toCommand({
     request,
   }: HttpControllerBaseOption<V1LogInHttpRequest>): LogInCommand {
-    const { username, password } = request!;
+    const { username } = request!;
     return new LogInCommand({
       username: new UserNameValueObject(username),
-      password: new UserPasswordValueObject(password),
     });
   }
   extractResult(

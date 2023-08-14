@@ -105,7 +105,7 @@ describe('Update cart', () => {
 
     const { id: cartId } = res3.body as V1CreateProductHttpResponse;
 
-    const updateCartRequest: V1UpdateCartHttpRequest = {
+    const updateCartRequest1: V1UpdateCartHttpRequest = {
       userId: userId,
       items: [
         {
@@ -118,17 +118,50 @@ describe('Update cart', () => {
 
     const res4 = await request(app.getHttpServer())
       .put(updateCartUrl.replace(':id', cartId))
-      .send(updateCartRequest);
-
-    console.log(res4.body.message);
-    console.log(userId);
+      .send(updateCartRequest1);
 
     const cart = res4.body as V1UpdateCartHttpResponse;
 
     expect(cart.userId).toBe(userId);
     expect(cart.items[0].productId).toBe(productId);
-    expect(cart.items[0].amount).toBe(updateCartRequest.items[0].amount);
+    expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
     expect(cart.items[0].price).toBe(price);
+
+    const updateCartRequest2: V1UpdateCartHttpRequest = {
+      userId: userId,
+      items: [
+        {
+          productId,
+          price,
+          amount: 1,
+        },
+      ],
+    };
+
+    const res5 = await request(app.getHttpServer())
+      .put(updateCartUrl.replace(':id', cartId))
+      .send(updateCartRequest2);
+
+    const cart2 = res5.body as V1UpdateCartHttpResponse;
+
+    expect(cart2.userId).toBe(userId);
+    expect(cart2.items[0].productId).toBe(productId);
+    expect(cart2.items[0].amount).toBe(updateCartRequest2.items[0].amount);
+    expect(cart2.items[0].price).toBe(price);
+
+    const updateCartRequest3: V1UpdateCartHttpRequest = {
+      userId: userId,
+      items: [],
+    };
+
+    const res6 = await request(app.getHttpServer())
+      .put(updateCartUrl.replace(':id', cartId))
+      .send(updateCartRequest3);
+
+    const cart3 = res6.body as V1UpdateCartHttpResponse;
+
+    expect(cart3.userId).toBe(userId);
+    expect(cart3.items.length).toBe(0);
   });
 
   // Add more test cases for other routes, if needed.

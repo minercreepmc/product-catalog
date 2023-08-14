@@ -26,7 +26,6 @@ export class CartManagementDomainService {
   ) {}
   async createCart(options: CreateCartAggregateOptions) {
     const cart = new CartAggregate();
-    console.log(options);
     const cartCreated = cart.createCart(options);
 
     await this.cartRepository.create(cart);
@@ -36,11 +35,9 @@ export class CartManagementDomainService {
 
   async updateCart(options: UpdateCartDomainServiceOptions) {
     const { id, userId, payload } = options;
-    console.log(options);
 
     await this.userVerificationService.findOneOrThrow(userId);
     let cart = await this.cartVerificationService.findOneOrThrow(id);
-    console.log(cart);
 
     if (!cart) {
       cart = new CartAggregate();

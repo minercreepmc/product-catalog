@@ -4,8 +4,9 @@ import {
   userRepositoryDiToken,
   UserRepositoryPort,
 } from '@application/interface/user';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import {
+  UserFullNameValueObject,
   UserIdValueObject,
   UserNameValueObject,
   UserPasswordValueObject,
@@ -15,6 +16,7 @@ import { AuthServicePort } from '@domain-interfaces/services';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { UserSchema } from '@database/repositories/pg/user';
 
 export interface TokenPayload {
   userId: string;
@@ -41,6 +43,7 @@ export class AuthApplicationService implements AuthServicePort {
       id: aggregate.id.value,
       role: aggregate.role.value,
       username: aggregate.username.value,
+      full_name: aggregate.fullName ? aggregate.fullName.value : undefined,
       hashed,
     });
   }
@@ -50,29 +53,22 @@ export class AuthApplicationService implements AuthServicePort {
   }
 
   async getAuthenticatedUser(
-    username: UserNameValueObject,
-    password: UserPasswordValueObject,
-  ): Promise<UserAggregate> {
-    const user = await this.userRepository.findOneByName(username.value);
+    username: string,
+    password: string,
+  ): Promise<UserSchema> {
+    const user = await this.userRepository.findOneByName(username);
 
     if (!user) {
-      throw new UserDomainExceptions.CredentialDoesNotValid();
+      throw new UnauthorizedException();
     }
 
-    const isPasswordMatching = await bcrypt.compare(
-      password.value,
-      user.hashed,
-    );
+    const isPasswordMatching = await bcrypt.compare(password, user.hashed!);
 
     if (!isPasswordMatching) {
-      throw new UserDomainExceptions.CredentialDoesNotValid();
+      throw new UnauthorizedException();
     }
 
-    return new UserAggregate({
-      id: new UserIdValueObject(user.id),
-      role: new UserRoleValueObject(user.role),
-      username: new UserNameValueObject(user.username),
-    });
+    return user;
   }
 
   async verifyPassword(plainTextPassword: string, hashedPassword: string) {
@@ -89,7 +85,7 @@ export class AuthApplicationService implements AuthServicePort {
       throw new UserDomainExceptions.CredentialDoesNotValid();
     }
 
-    return this.verifyPassword(password.value, user.hashed);
+    return this.verifyPassword(password.value, user.hashed!);
   }
 
   getAuthenticatedCookie(userId: UserIdValueObject): string {
@@ -118,6 +114,7 @@ export class AuthApplicationService implements AuthServicePort {
       id: new UserIdValueObject(userSchema?.id),
       role: new UserRoleValueObject(userSchema.role),
       username: new UserNameValueObject(userSchema.username),
+      fullName: new UserFullNameValueObject(userSchema.full_name),
     });
   }
 }

@@ -12,6 +12,11 @@ export namespace UserDomainExceptions {
     readonly code = UserDomainExceptionCodes.AlreadyExists;
   }
 
+  export class FullNameDoesNotValid extends DomainExceptionBase {
+    readonly message = 'User full name does not exist';
+    readonly code = UserDomainExceptionCodes.FullNameDoesNotValid;
+  }
+
   export class UsernameAlreadyExists extends DomainExceptionBase {
     readonly message = 'User name already exists';
     readonly code = UserDomainExceptionCodes.UsernameAlreadyExists;

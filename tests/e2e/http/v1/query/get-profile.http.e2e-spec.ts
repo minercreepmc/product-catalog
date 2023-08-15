@@ -1,15 +1,15 @@
 import {
   v1ApiEndpoints,
   V1LogInHttpRequest,
+  V1LogInHttpResponse,
   V1RegisterMemberHttpRequest,
 } from '@api/http';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { LogInResponseDto } from '@use-cases/command/log-in';
+import { GetProfileResponseDto } from '@use-cases/query/user';
 import { randomString } from '@utils/functions';
 import * as request from 'supertest';
-import  
 
 describe('Get user profile', () => {
   let app: INestApplication;
@@ -50,17 +50,20 @@ describe('Get user profile', () => {
     const loginResponse = await request(app.getHttpServer())
       .post(logInUrl)
       .send(loginRequest)
-      .expect(HttpStatus.CREATED);
+      .expect(HttpStatus.OK);
 
-    expect(loginResponse.headers['set-cookie']).toBeDefined();
-
-    const { cookie } = loginResponse.body as LogInResponseDto;
-
-    const id =  
+    const { header } = loginResponse;
 
     const response = await request(app.getHttpServer())
       .get(getProfileUrl)
+      .set('Cookie', [...header['set-cookie']])
       .expect(HttpStatus.OK);
+
+    const user = response.body as GetProfileResponseDto;
+
+    expect(user).toBeDefined();
+    expect(user.id).toBeDefined();
+    expect(user.username).toEqual(registerMemberRequest.username);
   });
 
   // Add more test cases for other routes, if needed.

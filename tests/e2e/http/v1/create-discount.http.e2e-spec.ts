@@ -3,6 +3,10 @@ import {
   V1CreateDiscountHttpRequest,
   V1CreateDiscountHttpResponse,
 } from '@api/http';
+import {
+  JwtAuthenticationGuard,
+  MockAuthGuard,
+} from '@application/application-services/auth';
 import { DiscountDomainExceptions } from '@domain-exceptions/discount';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -17,7 +21,10 @@ describe('Create discount', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthenticationGuard)
+      .useClass(MockAuthGuard)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();

@@ -1,14 +1,13 @@
 import {
   v1ApiEndpoints,
   V1LogInHttpRequest,
-  V1LogInHttpResponse,
   V1RegisterMemberHttpRequest,
 } from '@api/http';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import { GetProfileResponseDto } from '@use-cases/query/user';
-import { randomString } from '@utils/functions';
+import { getCookieFromHeader, randomString } from '@utils/functions';
 import * as request from 'supertest';
 
 describe('Get user profile', () => {
@@ -56,7 +55,7 @@ describe('Get user profile', () => {
 
     const response = await request(app.getHttpServer())
       .get(getProfileUrl)
-      .set('Cookie', [...header['set-cookie']])
+      .set('Cookie', getCookieFromHeader(header))
       .expect(HttpStatus.OK);
 
     const user = response.body as GetProfileResponseDto;

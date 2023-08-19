@@ -3,6 +3,8 @@ import {
   V1UpdateCategoryHttpRequest,
   V1UpdateCategoryHttpResponse,
 } from '@api/http';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
 import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
@@ -14,6 +16,7 @@ import {
   Controller,
   Param,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
@@ -26,6 +29,7 @@ import {
   CategoryNameValueObject,
 } from '@value-objects/category';
 import { ProductIdValueObject } from '@value-objects/product';
+import { UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.updateCategory)
@@ -39,6 +43,8 @@ export class V1UpdateCategoryHttpController extends HttpControllerBase<
   }
 
   @Put()
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
   execute(
     @Body() request: V1UpdateCategoryHttpRequest,
     @Param('id') id: string,

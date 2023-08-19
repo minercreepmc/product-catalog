@@ -9,6 +9,10 @@ import {
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
 } from '@api/http';
+import {
+  JwtAuthenticationGuard,
+  MockAuthGuard,
+} from '@application/application-services/auth';
 
 describe('Create Product', () => {
   let app: INestApplication;
@@ -17,7 +21,10 @@ describe('Create Product', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthenticationGuard)
+      .useClass(MockAuthGuard)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     //uploadService = moduleFixture.get<UploadService>(UploadService);

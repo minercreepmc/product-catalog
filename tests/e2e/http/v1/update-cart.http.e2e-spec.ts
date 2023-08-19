@@ -14,7 +14,11 @@ import { UserDomainExceptions } from '@domain-exceptions/user';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { mapDomainExceptionsToObjects, randomString } from '@utils/functions';
+import {
+  getCookieFromHeader,
+  mapDomainExceptionsToObjects,
+  randomString,
+} from '@utils/functions';
 import * as request from 'supertest';
 
 describe('Update cart', () => {
@@ -22,7 +26,8 @@ describe('Update cart', () => {
   const createCartUrl = v1ApiEndpoints.createCart;
   const updateCartUrl = v1ApiEndpoints.updateCart;
   const createProductUrl = v1ApiEndpoints.createProduct;
-  const registerMember = v1ApiEndpoints.registerMember;
+  const registerMemberUrl = v1ApiEndpoints.registerMember;
+  const loginUrl = v1ApiEndpoints.logIn;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -37,9 +42,30 @@ describe('Update cart', () => {
     await app.close();
   });
 
-  it('Should not update a cart if user, cart, product did not exist or somehow cart item is the same', async () => {
+  it('Should not update a cart if cart, product did not exist or somehow cart item is the same', async () => {
+    const registerMemberRequest: V1RegisterMemberHttpRequest = {
+      username: randomString(),
+      password: 'Okeasdasd123123+',
+    };
+
+    await request(app.getHttpServer())
+      .post(registerMemberUrl)
+      .send(registerMemberRequest)
+      .set('Accept', 'application/json')
+      .expect(HttpStatus.CREATED);
+
+    const loginRequest: V1RegisterMemberHttpRequest = {
+      username: registerMemberRequest.username,
+      password: registerMemberRequest.password,
+    };
+
+    const loginResponse = await request(app.getHttpServer())
+      .post(loginUrl)
+      .set('Accept', 'application/json')
+      .send(loginRequest)
+      .expect(HttpStatus.OK);
+
     const updateCartRequest: V1UpdateCartHttpRequest = {
-      userId: '12345',
       items: [
         {
           productId: '12345',
@@ -57,11 +83,12 @@ describe('Update cart', () => {
       .put(updateCartUrl)
       .query({ id: '12345' })
       .send(updateCartRequest)
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(loginResponse.header))
       .expect(HttpStatus.CONFLICT);
 
     expect(res.body.message).toIncludeAllMembers(
       mapDomainExceptionsToObjects([
-        new UserDomainExceptions.CredentialDoesNotValid(),
         new CartDomainExceptions.DoesNotExist(),
         new ProductDomainExceptions.DoesNotExist(),
         new CartDomainExceptions.ItemMustBeUnique(),
@@ -72,41 +99,56 @@ describe('Update cart', () => {
   it('Should update successfully', async () => {
     const registerMemberRequest: V1RegisterMemberHttpRequest = {
       username: randomString(),
-      password: 'Wtf123123123+++',
+      password: 'Okeasdasd123123+',
     };
 
-    const res = await request(app.getHttpServer())
-      .post(registerMember)
+    const res1 = await request(app.getHttpServer())
+      .post(registerMemberUrl)
       .send(registerMemberRequest)
+      .set('Accept', 'application/json')
       .expect(HttpStatus.CREATED);
 
-    const { id: userId } = res.body as V1RegisterMemberHttpResponse;
+    const { id: userId } = res1.body as V1RegisterMemberHttpResponse;
+
+    const loginRequest: V1RegisterMemberHttpRequest = {
+      username: registerMemberRequest.username,
+      password: registerMemberRequest.password,
+    };
+
+    const res2 = await request(app.getHttpServer())
+      .post(loginUrl)
+      .set('Accept', 'application/json')
+      .send(loginRequest)
+      .expect(HttpStatus.OK);
 
     const createProductRequest: V1CreateProductHttpRequest = {
       name: randomString(),
       price: 2,
     };
 
-    const res2 = await request(app.getHttpServer())
+    const res3 = await request(app.getHttpServer())
       .post(createProductUrl)
       .send(createProductRequest)
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(res2.header))
       .expect(HttpStatus.CREATED);
 
-    const { id: productId, price } = res2.body as V1CreateProductHttpResponse;
+    const { id: productId, price } = res3.body as V1CreateProductHttpResponse;
 
-    const createCartRequest: V1CreateCartHttpRequest = {
+    const cartRequest: V1CreateCartHttpRequest = {
       userId,
     };
 
-    const res3 = await request(app.getHttpServer())
+    const res4 = await request(app.getHttpServer())
       .post(createCartUrl)
-      .send(createCartRequest)
+      .send(cartRequest)
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(res2.header))
       .expect(HttpStatus.CREATED);
 
-    const { id: cartId } = res3.body as V1CreateProductHttpResponse;
+    const { id: cartId } = res4.body as V1CreateProductHttpResponse;
 
     const updateCartRequest1: V1UpdateCartHttpRequest = {
-      userId: userId,
       items: [
         {
           productId,
@@ -116,19 +158,19 @@ describe('Update cart', () => {
       ],
     };
 
-    const res4 = await request(app.getHttpServer())
+    const res5 = await request(app.getHttpServer())
       .put(updateCartUrl.replace(':id', cartId))
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(res2.header))
       .send(updateCartRequest1);
 
-    const cart = res4.body as V1UpdateCartHttpResponse;
+    const cart = res5.body as V1UpdateCartHttpResponse;
 
-    expect(cart.userId).toBe(userId);
     expect(cart.items[0].productId).toBe(productId);
     expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
     expect(cart.items[0].price).toBe(price);
 
     const updateCartRequest2: V1UpdateCartHttpRequest = {
-      userId: userId,
       items: [
         {
           productId,
@@ -138,29 +180,29 @@ describe('Update cart', () => {
       ],
     };
 
-    const res5 = await request(app.getHttpServer())
+    const res6 = await request(app.getHttpServer())
       .put(updateCartUrl.replace(':id', cartId))
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(res2.header))
       .send(updateCartRequest2);
 
-    const cart2 = res5.body as V1UpdateCartHttpResponse;
+    const cart2 = res6.body as V1UpdateCartHttpResponse;
 
-    expect(cart2.userId).toBe(userId);
     expect(cart2.items[0].productId).toBe(productId);
     expect(cart2.items[0].amount).toBe(updateCartRequest2.items[0].amount);
     expect(cart2.items[0].price).toBe(price);
 
     const updateCartRequest3: V1UpdateCartHttpRequest = {
-      userId: userId,
       items: [],
     };
 
-    const res6 = await request(app.getHttpServer())
+    const res7 = await request(app.getHttpServer())
       .put(updateCartUrl.replace(':id', cartId))
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(res2.header))
       .send(updateCartRequest3);
 
-    const cart3 = res6.body as V1UpdateCartHttpResponse;
-
-    expect(cart3.userId).toBe(userId);
+    const cart3 = res7.body as V1UpdateCartHttpResponse;
     expect(cart3.items.length).toBe(0);
   });
 

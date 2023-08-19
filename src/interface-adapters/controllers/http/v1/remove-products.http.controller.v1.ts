@@ -3,6 +3,8 @@ import {
   V1RemoveProductsHttpRequest,
   V1RemoveProductsHttpResponse,
 } from '@api/http';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
 import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
@@ -15,6 +17,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
@@ -22,6 +25,7 @@ import {
   RemoveProductsResponseDto,
 } from '@use-cases/command/remove-products';
 import { ProductIdValueObject } from '@value-objects/product';
+import { UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.removeProducts)
@@ -32,6 +36,8 @@ export class V1RemoveProductsHttpController extends HttpControllerBase<
 > {
   @Post()
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
   async execute(@Body() request: V1RemoveProductsHttpRequest): Promise<any> {
     return super._execute({ request });
   }

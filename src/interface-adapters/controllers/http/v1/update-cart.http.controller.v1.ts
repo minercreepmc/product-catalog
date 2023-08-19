@@ -3,6 +3,9 @@ import {
   V1UpdateCartHttpRequest,
   V1UpdateCartHttpResponse,
 } from '@api/http';
+import { RequestWithUser } from '@api/http/v1/models';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
 import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
@@ -15,6 +18,8 @@ import {
   Controller,
   Param,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
@@ -27,7 +32,7 @@ import {
   CartPriceValueObject,
 } from '@value-objects/cart';
 import { ProductIdValueObject } from '@value-objects/product';
-import { UserIdValueObject } from '@value-objects/user';
+import { UserIdValueObject, UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.updateCart)
@@ -41,7 +46,18 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
   }
 
   @Put()
-  execute(@Body() request: V1UpdateCartHttpRequest, @Param('id') id: string) {
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
+  execute(
+    @Req() req: RequestWithUser,
+    @Body() body: V1UpdateCartHttpRequest,
+    @Param('id') id: string,
+  ) {
+    const request: V1UpdateCartHttpRequest = {
+      ...body,
+      userId: req.user.id,
+    };
+
     return super._execute({
       request,
       param: { id },
@@ -71,7 +87,6 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
     return match(result, {
       Ok: (response: UpdateCartResponseDto) =>
         new V1UpdateCartHttpResponse({
-          userId: response.userId,
           items: response.items.map((item) => ({
             id: item.id,
             price: item.price,

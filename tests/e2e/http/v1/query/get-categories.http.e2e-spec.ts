@@ -4,6 +4,10 @@ import {
   V1GetCategoriesHttpQuery,
   V1GetCategoriesHttpResponse,
 } from '@api/http';
+import {
+  JwtAuthenticationGuard,
+  MockAuthGuard,
+} from '@application/application-services/auth';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -18,7 +22,10 @@ describe('Get categories', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthenticationGuard)
+      .useClass(MockAuthGuard)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();

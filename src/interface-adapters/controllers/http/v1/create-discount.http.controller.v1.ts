@@ -3,12 +3,20 @@ import {
   V1CreateDiscountHttpRequest,
   V1CreateDiscountHttpResponse,
 } from '@api/http';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
 import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
   HttpControllerBaseOption,
 } from '@base/inteface-adapters';
-import { Body, ConflictException, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   CreateDiscountCommand,
@@ -19,6 +27,7 @@ import {
   DiscountNameValueObject,
   DiscountPercentageValueObject,
 } from '@value-objects/discount';
+import { UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.createDiscount)
@@ -32,6 +41,8 @@ export class V1CreateDiscountHttpController extends HttpControllerBase<
   }
 
   @Post()
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
   execute(@Body() request: V1CreateDiscountHttpRequest) {
     return super._execute({
       request,

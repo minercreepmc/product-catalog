@@ -5,6 +5,10 @@ import {
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
 } from '@api/http';
+import {
+  JwtAuthenticationGuard,
+  MockAuthGuard,
+} from '@application/application-services/auth';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -20,7 +24,10 @@ describe('Create Product with Categories', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthenticationGuard)
+      .useClass(MockAuthGuard)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     //uploadService = moduleFixture.get<UploadService>(UploadService);

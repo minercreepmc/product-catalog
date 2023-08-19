@@ -4,7 +4,7 @@ export class V1UpdateCartHttpRequest {
     productId: string;
     price: number;
   }[];
-  userId: string;
+  userId?: string;
 }
 
 export class V1UpdateCartHttpResponse {
@@ -15,11 +15,9 @@ export class V1UpdateCartHttpResponse {
     productId: string;
     price: number;
   }[];
-  userId: string;
   message: string;
   constructor(options: Omit<V1UpdateCartHttpResponse, 'message'>) {
     this.items = options.items;
-    this.userId = options.userId;
     this.message = 'Cart updated successfully';
   }
 }

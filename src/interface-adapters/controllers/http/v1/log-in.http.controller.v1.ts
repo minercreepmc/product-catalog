@@ -14,10 +14,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { LogInCommand, LogInResponseDto } from '@use-cases/command/log-in';
-import {
-  UserNameValueObject,
-  UserPasswordValueObject,
-} from '@value-objects/user';
+import { UserNameValueObject } from '@value-objects/user';
 import { match } from 'oxide.ts';
 import { Response as ExpressResponse } from 'express';
 import { CommandBus } from '@nestjs/cqrs';

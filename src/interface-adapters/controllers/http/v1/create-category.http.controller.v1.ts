@@ -1,4 +1,10 @@
-import { Body, ConflictException, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   CreateCategoryCommand,
@@ -19,6 +25,9 @@ import {
   V1CreateCategoryHttpRequest,
   V1CreateCategoryHttpResponse,
 } from '@api/http';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
+import { UserRoleEnum } from '@value-objects/user';
 
 @Controller(v1ApiEndpoints.createCategory)
 export class V1CreateCategoryHttpController extends HttpControllerBase<
@@ -27,6 +36,8 @@ export class V1CreateCategoryHttpController extends HttpControllerBase<
   V1CreateCategoryHttpResponse
 > {
   @Post()
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
   async execute(@Body() request: V1CreateCategoryHttpRequest) {
     return super._execute({
       request,

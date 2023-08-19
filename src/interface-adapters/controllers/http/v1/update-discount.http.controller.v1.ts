@@ -3,6 +3,8 @@ import {
   V1UpdateDiscountHttpRequest,
   V1UpdateDiscountHttpResponse,
 } from '@api/http';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
 import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
@@ -14,6 +16,7 @@ import {
   Controller,
   Param,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
@@ -27,6 +30,7 @@ import {
   DiscountNameValueObject,
   DiscountPercentageValueObject,
 } from '@value-objects/discount';
+import { UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.updateDiscount)
@@ -36,6 +40,8 @@ export class V1UpdateDiscountHttpController extends HttpControllerBase<
   V1UpdateDiscountHttpResponse
 > {
   @Put()
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
   execute(
     @Body() request: V1UpdateDiscountHttpRequest,
     @Param('id') id: string,

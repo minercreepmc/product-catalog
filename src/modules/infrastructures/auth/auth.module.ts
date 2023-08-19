@@ -1,10 +1,11 @@
 import {
   AuthApplicationService,
+  HeaderApiKeyStrategy,
   LocalStrategy,
 } from '@application/application-services/auth';
 import { JwtStrategy } from '@application/application-services/auth/jwt.strategy';
 import { authServiceDiToken } from '@domain-interfaces/services';
-import { Module, Provider } from '@nestjs/common';
+import { Global, Module, Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -17,10 +18,12 @@ const providers: Provider[] = [
   AuthApplicationService,
   LocalStrategy,
   JwtStrategy,
+  HeaderApiKeyStrategy,
 ];
 
 const configService = new ConfigService();
 
+@Global()
 @Module({
   imports: [
     PassportModule,

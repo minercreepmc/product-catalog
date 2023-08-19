@@ -1,10 +1,7 @@
 import { ValidatorBase } from '@base/use-cases';
 import { CategoryDomainExceptions } from '@domain-exceptions/category';
-import {
-  CategoryManagementDomainService,
-  CategoryVerificationDomainService,
-} from '@domain-services';
-import { Result } from 'oxide.ts/dist';
+import { CategoryVerificationDomainService } from '@domain-services';
+import { Result } from 'oxide.ts';
 import {
   RemoveCategoriesCommand,
   RemoveCategoriesResponseDto,

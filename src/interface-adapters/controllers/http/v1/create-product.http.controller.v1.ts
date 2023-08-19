@@ -4,6 +4,7 @@ import {
   Controller,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -34,6 +35,9 @@ import {
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
 } from '@api/http';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
+import { UserRoleEnum } from '@value-objects/user';
 
 @Controller(v1ApiEndpoints.createProduct)
 export class V1CreateProductHttpController extends HttpControllerBase<
@@ -44,6 +48,8 @@ export class V1CreateProductHttpController extends HttpControllerBase<
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
   execute(
     @Body() request: V1CreateProductHttpRequest,
     @UploadedFile() image: Express.Multer.File,

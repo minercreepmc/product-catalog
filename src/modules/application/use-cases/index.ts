@@ -3,12 +3,14 @@ import { CreateCartModule } from './create-cart.module';
 import { CreateCategoryModule } from './create-category.module';
 import { CreateDiscountModule } from './create-discount.module';
 import { CreateProductModule } from './create-product.module';
+import { LogInAdminModule } from './log-in-admin.module';
 import { LogInModule } from './log-in.module';
 import {
   CategoryQueryModule,
   ProductQueryModule,
   UserQueryModule,
 } from './query';
+import { RegisterAdminModule } from './register-admin.module';
 import { RegisterMemberModule } from './register-member.module';
 import { RemoveCategoriesModule } from './remove-categories.module';
 import { RemoveDiscountsModule } from './remove-discounts.module';
@@ -35,8 +37,10 @@ import { UploadModule } from './upload.module';
     ProductQueryModule,
     CategoryQueryModule,
     RegisterMemberModule,
+    RegisterAdminModule,
     UserQueryModule,
     LogInModule,
+    LogInAdminModule,
     UploadModule,
   ],
 })

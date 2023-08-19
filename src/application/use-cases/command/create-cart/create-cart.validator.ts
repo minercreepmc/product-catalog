@@ -31,7 +31,7 @@ export class CreateCartValidator
     );
 
     if (!exist) {
-      note.addException(new UserDomainExceptions.CredentialDoesNotValid());
+      note.addException(new UserDomainExceptions.DoesNotExist());
     }
   }
 }

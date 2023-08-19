@@ -4,17 +4,18 @@ import {
   V1LogInHttpResponse,
   V1RegisterMemberHttpRequest,
 } from '@api/http';
-import { UserDomainExceptions } from '@domain-exceptions/user';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { mapDomainExceptionsToObjects, randomString } from '@utils/functions';
+import { randomString } from '@utils/functions';
 import * as request from 'supertest';
+import * as superagent from 'superagent';
 
 describe('Log In', () => {
   let app: INestApplication;
   const logInUrl = v1ApiEndpoints.logIn;
   const registerUrl = v1ApiEndpoints.registerMember;
+  const logOutUrl = v1ApiEndpoints.logOut;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -57,6 +58,13 @@ describe('Log In', () => {
 
     expect(response.headers['set-cookie']).toBeDefined();
     expect(body.cookie).toBeDefined();
+
+    const logOutResponse = await request(app.getHttpServer())
+      .post(logOutUrl)
+      .expect(HttpStatus.OK);
+
+    console.log(logOutResponse.headers);
+    expect(logOutResponse.headers.cookie).toBeUndefined();
   });
 
   // Add more tests here

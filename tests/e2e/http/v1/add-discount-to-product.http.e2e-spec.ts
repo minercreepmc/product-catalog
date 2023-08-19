@@ -6,6 +6,10 @@ import {
   V1CreateProductHttpResponse,
   V1UpdateProductHttpRequest,
 } from '@api/http';
+import {
+  JwtAuthenticationGuard,
+  MockAuthGuard,
+} from '@application/application-services/auth';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -21,7 +25,10 @@ describe('Add discount to product', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthenticationGuard)
+      .useClass(MockAuthGuard)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -44,14 +51,16 @@ describe('Add discount to product', () => {
     const createProductResponse = await request(app.getHttpServer())
       .post(createProductUrl)
       .set('Accept', 'application/json')
-      .send(createProductRequest)
-      .expect(HttpStatus.CREATED);
+      .send(createProductRequest);
+
+    expect(createProductResponse.status).toEqual(HttpStatus.CREATED);
 
     const createDiscountResponse = await request(app.getHttpServer())
       .post(createDiscountUrl)
       .set('Accept', 'application/json')
-      .send(createDiscountRequest)
-      .expect(HttpStatus.CREATED);
+      .send(createDiscountRequest);
+
+    expect(createDiscountResponse.status).toEqual(HttpStatus.CREATED);
 
     const { id: productId } =
       createProductResponse.body as V1CreateProductHttpResponse;
@@ -65,9 +74,9 @@ describe('Add discount to product', () => {
     const updateProductResponse = await request(app.getHttpServer())
       .put(updateProductUrl.replace(':id', productId))
       .set('Accept', 'application/json')
-      .send(updateProductRequest)
-      .expect(HttpStatus.OK);
+      .send(updateProductRequest);
 
+    expect(updateProductResponse.status).toEqual(HttpStatus.OK);
     expect(updateProductResponse.body.discountId).toEqual(discountId);
   });
 

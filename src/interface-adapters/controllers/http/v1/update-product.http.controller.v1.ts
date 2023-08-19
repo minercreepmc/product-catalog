@@ -3,6 +3,8 @@ import {
   V1UpdateProductHttpRequest,
   V1UpdateProductHttpResponse,
 } from '@api/http';
+import { JwtAuthenticationGuard } from '@application/application-services/auth';
+import { Roles } from '@application/application-services/auth/roles';
 import { MultipleExceptions } from '@base/domain';
 import {
   HttpControllerBase,
@@ -15,6 +17,7 @@ import {
   Param,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -33,6 +36,7 @@ import {
   ProductNameValueObject,
   ProductPriceValueObject,
 } from '@value-objects/product';
+import { UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.updateProduct)
@@ -44,6 +48,8 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
   @Put()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @UseGuards(JwtAuthenticationGuard)
+  @Roles(UserRoleEnum.Admin)
   async execute(
     @UploadedFile() image: Express.Multer.File,
     @Body() request: V1UpdateProductHttpRequest,

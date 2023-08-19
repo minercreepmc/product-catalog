@@ -5,6 +5,7 @@ import HealthModule from './modules/infrastructures/health-check/health.module';
 import { UseCaseModule } from './modules/application/use-cases';
 import { DatabaseModule } from '@modules/infrastructures/database';
 import { databaseConfig } from '@config/pg';
+import { AuthModule } from '@modules/infrastructures/auth';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { databaseConfig } from '@config/pg';
     UseCaseModule,
     DatabaseModule.forRoot(databaseConfig),
     HealthModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class V1CreateCartHttpRequest {
   @ApiProperty()
-  userId: string;
+  userId?: string;
 }
 
 export class V1CreateCartHttpResponse {

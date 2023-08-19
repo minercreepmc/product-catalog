@@ -5,17 +5,17 @@ import {
   V1RegisterMemberHttpRequest,
   V1RegisterMemberHttpResponse,
 } from '@api/http';
-import { UserDomainExceptions } from '@domain-exceptions/user';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { mapDomainExceptionsToObjects, randomString } from '@utils/functions';
+import { getCookieFromHeader, randomString } from '@utils/functions';
 import * as request from 'supertest';
 
 describe('Create cart', () => {
   let app: INestApplication;
   const createCartUrl = v1ApiEndpoints.createCart;
-  const registerMember = v1ApiEndpoints.registerMember;
+  const registerMemberUrl = v1ApiEndpoints.registerMember;
+  const loginUrl = v1ApiEndpoints.logIn;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -30,48 +30,44 @@ describe('Create cart', () => {
     await app.close();
   });
 
-  it('Should not create a cart if user is not exist', async () => {
-    const createCartRequest: V1CreateCartHttpRequest = {
-      userId: '12345',
-    };
-    const res = await request(app.getHttpServer())
-      .post(createCartUrl)
-      .send(createCartRequest)
-      .expect(HttpStatus.UNAUTHORIZED);
-
-    expect(res.body.message).toIncludeAllMembers(
-      mapDomainExceptionsToObjects([
-        new UserDomainExceptions.CredentialDoesNotValid(),
-      ]),
-    );
-  });
-
   it('Should create a cart', async () => {
-    const registerMemberRequest: V1RegisterMemberHttpRequest = {
+    const memberRequest: V1RegisterMemberHttpRequest = {
       username: randomString(),
-      password: 'Oke123123+++',
+      password: 'Okeasdasd123123+',
     };
 
-    const res = await request(app.getHttpServer())
-      .post(registerMember)
-      .send(registerMemberRequest)
+    const res1 = await request(app.getHttpServer())
+      .post(registerMemberUrl)
+      .send(memberRequest)
+      .set('Accept', 'application/json')
       .expect(HttpStatus.CREATED);
 
-    const { id: userId } = res.body as V1RegisterMemberHttpResponse;
+    const body1 = res1.body as V1RegisterMemberHttpResponse;
 
-    const createCartRequest: V1CreateCartHttpRequest = {
+    expect(body1.id).toBeDefined();
+
+    const res2 = await request(app.getHttpServer())
+      .post(loginUrl)
+      .set('Accept', 'application/json')
+      .send(memberRequest)
+      .expect(HttpStatus.OK);
+
+    const { id: userId } = res2.body as V1RegisterMemberHttpResponse;
+
+    const cartRequest: V1CreateCartHttpRequest = {
       userId,
     };
 
-    const res2 = await request(app.getHttpServer())
+    const res3 = await request(app.getHttpServer())
       .post(createCartUrl)
-      .send(createCartRequest)
+      .send(cartRequest)
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(res2.header))
       .expect(HttpStatus.CREATED);
 
-    const body2 = res2.body as V1CreateCartHttpResponse;
+    const body3 = res3.body as V1CreateCartHttpResponse;
 
-    expect(body2.id).toBeDefined();
-    expect(body2.userId).toBe(userId);
+    expect(body3.id).toBeDefined();
   });
   // Add more test cases for other routes, if needed.
 });

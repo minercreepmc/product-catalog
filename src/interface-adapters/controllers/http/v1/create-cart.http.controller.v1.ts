@@ -55,7 +55,6 @@ export class V1CreateCartHttpController extends HttpControllerBase<
         new V1CreateCartHttpResponse(response),
       Err: (e: Error) => {
         if (e instanceof MultipleExceptions) {
-          console.log(e);
           throw new ConflictException(e.exceptions);
         }
 

@@ -2,6 +2,7 @@ import { CartAggregate } from '@aggregates/cart';
 import { ID } from '@base/domain';
 import { DatabaseService } from '@config/pg';
 import { CartRepositoryPort } from '@domain-interfaces';
+import { CartItemEntity } from '@entities';
 import { Injectable } from '@nestjs/common';
 import { CartIdValueObject } from '@value-objects/cart';
 import { UserIdValueObject } from '@value-objects/user';
@@ -18,7 +19,6 @@ export class CartRepository implements CartRepositoryPort {
     private readonly mapper: CartSchemaMapper,
   ) {}
   async create(entity: CartAggregate): Promise<CartAggregate | null> {
-    console.log('hey');
     const model = this.mapper.toPersistance(entity);
     const res = await this.databaseService.runQuery(
       `
@@ -141,13 +141,16 @@ export class CartRepository implements CartRepositoryPort {
 
       if (existingCartItem) {
         if (existingCartItem.amount !== newCartItem.amount) {
-          await this.cartItemRepository.updateOneById(
-            existingCartItem.id,
-            newCartItem,
-          );
+          await this.cartItemRepository.updateOneById(existingCartItem.id, {
+            ...newCartItem,
+            cartId: existingCart!.id,
+          } as CartItemEntity);
         }
       } else {
-        await this.cartItemRepository.create(newCartItem);
+        await this.cartItemRepository.create({
+          ...newCartItem,
+          cartId: existingCart!.id,
+        } as CartItemEntity);
       }
     }
 

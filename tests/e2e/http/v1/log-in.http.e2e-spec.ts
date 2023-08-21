@@ -63,7 +63,6 @@ describe('Log In', () => {
       .post(logOutUrl)
       .expect(HttpStatus.OK);
 
-    console.log(logOutResponse.headers);
     expect(logOutResponse.headers.cookie).toBeUndefined();
   });
 

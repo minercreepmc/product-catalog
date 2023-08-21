@@ -29,7 +29,6 @@ export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
     } else {
       this.id = new CartIdValueObject();
     }
-    console.log(this);
   }
 
   createCart(options: CreateCartAggregateOptions) {

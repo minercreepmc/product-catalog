@@ -1,5 +1,7 @@
 import {
   v1ApiEndpoints,
+  V1CreateProductHttpRequest,
+  V1CreateProductHttpResponse,
   V1GetCartHttpResponse,
   V1RegisterMemberHttpRequest,
   V1UpdateCartHttpRequest,
@@ -15,6 +17,8 @@ describe('Get cart', () => {
   const getCartUrl = v1ApiEndpoints.getCart;
   const registerMemberUrl = v1ApiEndpoints.registerMember;
   const loginUrl = v1ApiEndpoints.logIn;
+  const createProductUrl = v1ApiEndpoints.createProduct;
+  const updateCartUrl = v1ApiEndpoints.updateCart;
   let cookie: any;
 
   beforeAll(async () => {
@@ -67,7 +71,48 @@ describe('Get cart', () => {
   });
 
   it('Should get a cart with items', async () => {
-    const updateCartRequest: V1UpdateCartHttpRequest = {};
+    const createProductRequest: V1CreateProductHttpRequest = {
+      name: randomString(),
+      price: 2,
+    };
+
+    const createProductRes = await request(app.getHttpServer())
+      .post(createProductUrl)
+      .send(createProductRequest)
+      .set('Accept', 'application/json')
+      .set('Cookie', cookie)
+      .expect(HttpStatus.CREATED);
+
+    const { id: productId, price } =
+      createProductRes.body as V1CreateProductHttpResponse;
+
+    const updateCartRequest1: V1UpdateCartHttpRequest = {
+      items: [
+        {
+          productId,
+          price,
+          amount: 2,
+        },
+      ],
+    };
+
+    await request(app.getHttpServer())
+      .put(updateCartUrl)
+      .set('Accept', 'application/json')
+      .set('Cookie', cookie)
+      .send(updateCartRequest1);
+
+    const getCartRes = await request(app.getHttpServer())
+      .get(getCartUrl)
+      .set('Accept', 'application/json')
+      .set('Cookie', cookie)
+      .expect(HttpStatus.OK);
+
+    const cart = getCartRes.body as V1GetCartHttpResponse;
+    console.log(cart);
+
+    expect(cart.items[0].product_id).toBe(productId);
+    expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
   });
 
   // Add more test cases for other routes, if needed.

@@ -50,8 +50,6 @@ describe('Log In Admin', () => {
       .set('X-API-Key', apiKey)
       .expect(HttpStatus.CREATED);
 
-    console.log(res2.body);
-
     const response = await request(app.getHttpServer())
       .post(logInUrl)
       .send(registerRequest)

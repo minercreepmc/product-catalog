@@ -40,7 +40,6 @@ export class ReadOnlyCartRepository
       [userId],
     );
 
-    console.log(res.rows[0]);
     return plainToInstance(CartDetailsSchema, res.rows[0]);
   }
 }

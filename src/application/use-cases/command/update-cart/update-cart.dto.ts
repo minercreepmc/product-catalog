@@ -1,12 +1,10 @@
 import { DomainExceptionBase } from '@base/domain';
 import { CommandBase } from '@base/use-cases';
 import { CartItemEntity } from '@entities';
-import { CartIdValueObject } from '@value-objects/cart';
 import { UserIdValueObject } from '@value-objects/user';
 import { validateSync } from 'class-validator';
 
 export class UpdateCartCommand implements CommandBase {
-  cartId: CartIdValueObject;
   items: CartItemEntity[];
   userId: UserIdValueObject;
 
@@ -24,10 +22,9 @@ export class UpdateCartCommand implements CommandBase {
       return false;
     });
 
-    const otherExceptions = [
-      this.cartId?.validate?.(),
-      this.userId?.validate?.(),
-    ].filter((e) => e) as DomainExceptionBase[];
+    const otherExceptions = [this.userId?.validate?.()].filter(
+      (e) => e,
+    ) as DomainExceptionBase[];
 
     if (!isValid) {
       return [...exceptions, ...otherExceptions];
@@ -39,7 +36,6 @@ export class UpdateCartCommand implements CommandBase {
   constructor(options: UpdateCartCommand) {
     this.items = options.items;
     this.userId = options.userId;
-    this.cartId = options.cartId;
   }
 }
 
@@ -48,7 +44,7 @@ export class UpdateCartResponseDto {
     id: string;
     price: number;
     amount: number;
-    cartId: string;
+    cartId?: string;
     productId: string;
   }[];
   userId: string;

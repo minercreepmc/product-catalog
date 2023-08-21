@@ -5,13 +5,11 @@ import {
 } from '@aggregates/cart';
 import { cartRepositoryDiToken, CartRepositoryPort } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
-import { CartIdValueObject } from '@value-objects/cart';
 import { UserIdValueObject } from '@value-objects/user';
 import { CartVerificationDomainService } from './cart-verification.domain-service';
 import { UserVerificationDomainService } from './user-verification.domain-service';
 
 export interface UpdateCartDomainServiceOptions {
-  id: CartIdValueObject;
   userId: UserIdValueObject;
   payload: UpdateCartAggregateOptions;
 }
@@ -34,10 +32,10 @@ export class CartManagementDomainService {
   }
 
   async updateCart(options: UpdateCartDomainServiceOptions) {
-    const { id, userId, payload } = options;
+    const { userId, payload } = options;
 
     await this.userVerificationService.findOneOrThrow(userId);
-    let cart = await this.cartVerificationService.findOneOrThrow(id);
+    let cart = await this.cartVerificationService.findOneOrThrow(userId);
 
     if (!cart) {
       cart = new CartAggregate();
@@ -48,7 +46,7 @@ export class CartManagementDomainService {
     }
 
     const cartUpdated = cart.updateCart(payload);
-    await this.cartRepository.updateOneById(id, cart);
+    await this.cartRepository.updateOneByUserId(userId, cart);
 
     return cartUpdated;
   }

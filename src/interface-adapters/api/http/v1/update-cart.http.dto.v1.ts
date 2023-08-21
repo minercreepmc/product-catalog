@@ -4,7 +4,6 @@ export class V1UpdateCartHttpRequest {
     productId: string;
     price: number;
   }[];
-  userId?: string;
 }
 
 export class V1UpdateCartHttpResponse {

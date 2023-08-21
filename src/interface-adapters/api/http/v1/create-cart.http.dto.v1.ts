@@ -1,9 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-
-export class V1CreateCartHttpRequest {
-  @ApiProperty()
-  userId?: string;
-}
+export class V1CreateCartHttpRequest {}
 
 export class V1CreateCartHttpResponse {
   id: string;

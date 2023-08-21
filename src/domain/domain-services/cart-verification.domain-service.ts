@@ -4,7 +4,7 @@ import { cartRepositoryDiToken, CartRepositoryPort } from '@domain-interfaces';
 import { CartItemEntity } from '@entities';
 import { Inject, Injectable } from '@nestjs/common';
 import { hasDuplicates } from '@utils/functions';
-import { CartIdValueObject } from '@value-objects/cart';
+import { UserIdValueObject } from '@value-objects/user';
 
 @Injectable()
 export class CartVerificationDomainService {
@@ -13,7 +13,7 @@ export class CartVerificationDomainService {
     private readonly cartRepository: CartRepositoryPort,
   ) {}
 
-  async doesCartIdExist(cartId: CartIdValueObject): Promise<boolean> {
+  async doesCartIdExist(cartId: UserIdValueObject): Promise<boolean> {
     const cart = await this.cartRepository.findOneById(cartId);
 
     return !!cart;
@@ -25,8 +25,8 @@ export class CartVerificationDomainService {
     return hasDuplicates(ids);
   }
 
-  async findOneOrThrow(cartId: CartIdValueObject): Promise<CartAggregate> {
-    const cart = await this.cartRepository.findOneById(cartId);
+  async findOneOrThrow(userId: UserIdValueObject): Promise<CartAggregate> {
+    const cart = await this.cartRepository.findOneByUserId(userId);
 
     if (!cart) {
       throw new CartDomainExceptions.DoesNotExist();

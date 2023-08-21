@@ -16,7 +16,6 @@ import {
   Controller,
   Post,
   Req,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -37,21 +36,16 @@ export class V1CreateCartHttpController extends HttpControllerBase<
   @UseGuards(JwtAuthenticationGuard)
   @Roles(UserRoleEnum.Admin)
   async execute(@Req() req: RequestWithUser) {
-    const httpRequest: V1CreateCartHttpRequest = {
-      userId: req.user.id,
-    };
     return super._execute({
-      request: httpRequest,
+      user: req.user,
     });
   }
 
-  toCommand(
-    options: HttpControllerBaseOption<V1CreateCartHttpRequest>,
-  ): CreateCartCommand {
-    const { request } = options;
-    const { userId } = request!;
+  toCommand({
+    user,
+  }: HttpControllerBaseOption<V1CreateCartHttpRequest>): CreateCartCommand {
     return new CreateCartCommand({
-      userId: new UserIdValueObject(userId),
+      userId: new UserIdValueObject(user!.id),
     });
   }
 

@@ -4,6 +4,7 @@ import { DatabaseService } from '@config/pg';
 import { CartRepositoryPort } from '@domain-interfaces';
 import { Injectable } from '@nestjs/common';
 import { CartIdValueObject } from '@value-objects/cart';
+import { UserIdValueObject } from '@value-objects/user';
 import { plainToInstance } from 'class-transformer';
 import { CartItemRepository } from './cart-item.repository';
 import { CartSchema } from './cart.schema';
@@ -78,6 +79,60 @@ export class CartRepository implements CartRepositoryPort {
     const existingCartItems = await this.cartItemRepository.getByCartId(id);
 
     const newCartItems = Array.from(newState.items.values());
+
+    for (const newCartItem of newCartItems) {
+      const existingCartItem = existingCartItems.find(
+        (item) => item.productId.value === newCartItem.productId.value,
+      );
+
+      if (existingCartItem) {
+        if (existingCartItem.amount !== newCartItem.amount) {
+          await this.cartItemRepository.updateOneById(
+            existingCartItem.id,
+            newCartItem,
+          );
+        }
+      } else {
+        await this.cartItemRepository.create(newCartItem);
+      }
+    }
+
+    for (const existingCartItem of existingCartItems) {
+      if (
+        !newCartItems.some(
+          (item) => item.productId.value === existingCartItem.productId.value,
+        )
+      ) {
+        await this.cartItemRepository.deleteOneById(existingCartItem.id);
+      }
+    }
+  }
+
+  async findOneByUserId(
+    userId: UserIdValueObject,
+  ): Promise<CartAggregate | null> {
+    const data = this.mapper.toPersistance({ userId });
+
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT * FROM cart
+        WHERE user_id=$1 AND deleted_at IS NULL
+      `,
+      [data.user_id],
+    );
+
+    return res.rows[0] ? this.mapper.toDomain(res.rows[0]) : null;
+  }
+  async updateOneByUserId(
+    userId: UserIdValueObject,
+    newCart: CartAggregate,
+  ): Promise<void> {
+    const existingCart = await this.findOneByUserId(userId);
+    const existingCartItems = await this.cartItemRepository.getByCartId(
+      existingCart!.id,
+    );
+
+    const newCartItems = Array.from(newCart.items.values());
 
     for (const newCartItem of newCartItems) {
       const existingCartItem = existingCartItems.find(

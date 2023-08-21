@@ -16,7 +16,6 @@ import {
   Body,
   ConflictException,
   Controller,
-  Param,
   Put,
   Req,
   UseGuards,
@@ -28,7 +27,6 @@ import {
 } from '@use-cases/command/update-cart';
 import {
   CartAmountValueObject,
-  CartIdValueObject,
   CartPriceValueObject,
 } from '@value-objects/cart';
 import { ProductIdValueObject } from '@value-objects/product';
@@ -48,33 +46,23 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
   @Put()
   @UseGuards(JwtAuthenticationGuard)
   @Roles(UserRoleEnum.Admin)
-  execute(
-    @Req() req: RequestWithUser,
-    @Body() body: V1UpdateCartHttpRequest,
-    @Param('id') id: string,
-  ) {
-    const request: V1UpdateCartHttpRequest = {
-      ...body,
-      userId: req.user.id,
-    };
-
+  execute(@Req() req: RequestWithUser, @Body() body: V1UpdateCartHttpRequest) {
     return super._execute({
-      request,
-      param: { id },
+      request: body,
+      user: req.user,
     });
   }
 
   toCommand({
     request,
-    param,
+    user,
   }: HttpControllerBaseOption<V1UpdateCartHttpRequest>): UpdateCartCommand {
-    const { items, userId } = request!;
+    const { items } = request!;
+    const { id: userId } = user!;
     return new UpdateCartCommand({
-      cartId: new CartIdValueObject(param.id),
       userId: new UserIdValueObject(userId),
       items: items.map((item) => {
         return new CartItemEntity({
-          cartId: new CartIdValueObject(param.id),
           amount: new CartAmountValueObject(item.amount),
           price: new CartPriceValueObject(item.price),
           productId: new ProductIdValueObject(item.productId),
@@ -91,7 +79,7 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
             id: item.id,
             price: item.price,
             amount: item.amount,
-            cartId: item.cartId,
+            cartId: item.cartId!,
             productId: item.productId,
           })),
         }),

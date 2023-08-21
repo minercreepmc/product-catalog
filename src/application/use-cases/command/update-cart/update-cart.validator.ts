@@ -32,7 +32,6 @@ export class UpdateCartValidator extends ValidatorBase<
     const note = new Notification<UpdateCartFailure>();
 
     await this.userMustExist(note);
-    await this.cartMustExist(note);
     await this.productMustExist(note);
     await this.cartItemMustNotBeTheSame(note);
 
@@ -46,16 +45,6 @@ export class UpdateCartValidator extends ValidatorBase<
 
     if (!user) {
       note.addException(new UserDomainExceptions.CredentialDoesNotValid());
-    }
-  }
-
-  private async cartMustExist(note: Notification<UpdateCartFailure>) {
-    const cart = await this.cartVerificationService.doesCartIdExist(
-      this.command.cartId,
-    );
-
-    if (!cart) {
-      note.addException(new CartDomainExceptions.DoesNotExist());
     }
   }
 

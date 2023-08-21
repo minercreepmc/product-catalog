@@ -1,3 +1,4 @@
+import { UserModel } from '@api/http';
 import { CommandBase } from '@base/use-cases';
 import { UnprocessableEntityException } from '@nestjs/common';
 import { ICommandBus } from '@nestjs/cqrs';
@@ -6,6 +7,7 @@ import { Response as ExpressResponse } from 'express';
 export interface HttpControllerBaseOption<Request> {
   request?: Request;
   response?: ExpressResponse;
+  user?: UserModel;
   image?: Express.Multer.File;
   param?: any;
 }

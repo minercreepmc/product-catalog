@@ -20,9 +20,8 @@ export class UpdateCartHandler extends CommandHandlerBase<
   }
   protected command: UpdateCartCommand;
   handle(): Promise<CartUpdatedDomainEvent> {
-    const { items, userId, cartId } = this.command;
+    const { items, userId } = this.command;
     return this.cartManagementService.updateCart({
-      id: cartId,
       userId,
       payload: {
         items: new Map(
@@ -40,7 +39,7 @@ export class UpdateCartHandler extends CommandHandlerBase<
           id: item.id.value,
           price: item.price.value,
           amount: item.amount.value,
-          cartId: item.cartId.value,
+          cartId: item.cartId?.value,
           productId: item.productId.value,
         };
       }),

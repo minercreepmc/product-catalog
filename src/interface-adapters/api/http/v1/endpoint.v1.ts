@@ -18,7 +18,7 @@ export const v1ApiEndpoints = {
   registerMember: `${prefix}/register`,
   registerAdmin: `${prefix}/register-admin`,
   createCart: `${prefix}/cart`,
-  updateCart: `${prefix}/cart/:id`,
+  updateCart: `${prefix}/cart`,
   logIn: `${prefix}/log-in`,
   logOut: `${prefix}/log-out`,
   logInAdmin: `${prefix}/log-in-admin`,

@@ -3,10 +3,10 @@ import { SchemaMapperBase } from '@base/database/repositories/pg';
 import { Injectable } from '@nestjs/common';
 import { CartIdValueObject } from '@value-objects/cart';
 import { UserIdValueObject } from '@value-objects/user';
-import { CartDetailsSchema } from './cart.schema';
+import { CartDetailsSchema, CartSchema } from './cart.schema';
 import { CartItemSchemaMapper } from './cart-item.schema.mapper';
 import { plainToInstance } from 'class-transformer';
-import { CartItemSchema } from './cart-item.schema';
+import { CartItemDetailsSchema, CartItemSchema } from './cart-item.schema';
 
 @Injectable()
 export class CartSchemaMapper extends SchemaMapperBase<
@@ -16,8 +16,15 @@ export class CartSchemaMapper extends SchemaMapperBase<
   constructor(private readonly cartItemMapper: CartItemSchemaMapper) {
     super();
   }
-  toDomain(model: CartDetailsSchema): CartAggregate {
-    const { id, items, user_id } = model;
+  toDomain(model: CartSchema | CartDetailsSchema): CartAggregate {
+    const { id, user_id } = model;
+    let items: Partial<CartItemDetailsSchema>[];
+
+    if ('items' in model) {
+      items = model.items;
+    } else {
+      items = [];
+    }
 
     const itemsDomain =
       items &&

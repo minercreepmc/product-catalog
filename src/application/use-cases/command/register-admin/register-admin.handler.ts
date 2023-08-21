@@ -20,7 +20,7 @@ export class RegisterAdminHandler extends CommandHandlerBase<
 > {
   protected command: RegisterAdminCommand;
   handle(): Promise<AdminRegisteredDomainEvent> {
-    return this.userRegistrationService.registerMember(this.command);
+    return this.userRegistrationService.registerAdmin(this.command);
   }
   toResponseDto(data: AdminRegisteredDomainEvent): RegisterAdminResponseDto {
     return new RegisterAdminResponseDto({

@@ -15,8 +15,8 @@ export class V1GetCategoriesHttpController {
     @Query() { limit, offset }: V1GetCategoriesHttpQuery,
   ): Promise<V1GetCategoriesHttpResponse> {
     const query: GetCategoriesQuery = {
-      limit,
-      offset,
+      limit: limit ? Number(limit) : undefined,
+      offset: offset ? Number(offset) : undefined,
     };
     return this.queryBus.execute(plainToInstance(GetCategoriesQuery, query));
   }

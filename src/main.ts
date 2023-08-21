@@ -21,8 +21,8 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin'],
-    origin: ['http://localhost:4201'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-API-Key'],
+    origin: ['http://localhost:4200', 'http://localhost:4201'],
     credentials: true,
   });
 

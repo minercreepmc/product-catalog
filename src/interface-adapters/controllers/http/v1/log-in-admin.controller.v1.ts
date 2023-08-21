@@ -22,12 +22,13 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { LogInCommand, LogInResponseDto } from '@use-cases/command/log-in';
-import { UserNameValueObject } from '@value-objects/user';
+import { UserNameValueObject, UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 import { Response as ExpressResponse } from 'express';
-import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from '@application/application-services/auth/roles';
 
 @Controller(v1ApiEndpoints.logInAdmin)
+@UseGuards(LocalAuthenticationGuard, RoleGuard(UserRoleEnum.Admin))
 export class V1LogInAdminController extends HttpControllerBase<
   V1LogInAdminHttpRequest,
   LogInCommand,
@@ -39,8 +40,6 @@ export class V1LogInAdminController extends HttpControllerBase<
 
   @Post()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(LocalAuthenticationGuard)
-  @UseGuards(AuthGuard('api-key'))
   execute(@Req() request: RequestWithUser, @Res() response: ExpressResponse) {
     const body = request.user;
     return super._execute({

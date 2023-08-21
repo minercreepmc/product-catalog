@@ -3,9 +3,11 @@ import { CreateCartModule } from './create-cart.module';
 import { CreateCategoryModule } from './create-category.module';
 import { CreateDiscountModule } from './create-discount.module';
 import { CreateProductModule } from './create-product.module';
+import { EventHandlerModule } from './event-handler.module';
 import { LogInAdminModule } from './log-in-admin.module';
 import { LogInModule } from './log-in.module';
 import {
+  CartQueryModule,
   CategoryQueryModule,
   ProductQueryModule,
   UserQueryModule,
@@ -39,6 +41,8 @@ import { UploadModule } from './upload.module';
     RegisterMemberModule,
     RegisterAdminModule,
     UserQueryModule,
+    CartQueryModule,
+    EventHandlerModule,
     LogInModule,
     LogInAdminModule,
     UploadModule,

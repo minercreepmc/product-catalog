@@ -4,3 +4,4 @@ export * from './cart-item.schema';
 export * from './cart-item.schema.mapper';
 export * from './cart.repository';
 export * from './cart-item.repository';
+export * from './cart.repository.read-only';

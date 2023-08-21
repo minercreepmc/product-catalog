@@ -44,16 +44,18 @@ describe('Log In Admin', () => {
       password: 'Password123+',
     };
 
-    await request(app.getHttpServer())
+    const res2 = await request(app.getHttpServer())
       .post(registerAdminUrl)
       .send(registerRequest)
       .set('X-API-Key', apiKey)
       .expect(HttpStatus.CREATED);
 
+    console.log(res2.body);
+
     const response = await request(app.getHttpServer())
       .post(logInUrl)
-      .set('X-API-Key', apiKey)
       .send(registerRequest)
+      .set('X-API-Key', apiKey)
       .expect(HttpStatus.OK);
 
     const body: V1LogInAdminHttpResponse = response.body;

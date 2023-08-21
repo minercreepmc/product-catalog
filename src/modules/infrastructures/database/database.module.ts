@@ -1,5 +1,8 @@
 import { readonlyCategoryRepositoryDiToken } from '@application/interface/category';
-import { readOnlyProductRepositoryDiToken } from '@application/interface/product';
+import {
+  readOnlyCartRepositoryDiToken,
+  readOnlyProductRepositoryDiToken,
+} from '@application/interface/product';
 import { userRepositoryDiToken } from '@application/interface/user';
 import { UnitOfWork } from '@base/database/unit-of-work';
 import {
@@ -14,6 +17,7 @@ import {
   CartItemSchemaMapper,
   CartRepository,
   CartSchemaMapper,
+  ReadOnlyCartRepository,
 } from '@database/repositories/pg/cart';
 import {
   CategoryRepository,
@@ -73,6 +77,10 @@ const repositories: Provider[] = [
   {
     provide: unitOfWorkDiToken,
     useClass: UnitOfWork,
+  },
+  {
+    provide: readOnlyCartRepositoryDiToken,
+    useClass: ReadOnlyCartRepository,
   },
 ];
 

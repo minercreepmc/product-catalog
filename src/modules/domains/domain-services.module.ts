@@ -14,13 +14,14 @@ import { EventBusAdapter } from '@infrastructures/events';
 //import { eventBusDiToken } from '@domain-interfaces/events';
 
 import { Module } from '@nestjs/common';
-// import { CqrsModule } from '@nestjs/cqrs';
+import { CqrsModule } from '@nestjs/cqrs';
 //
 // const eventBus: Provider = {
 //   provide: eventBusDiToken,
 //   useClass: EventBusAdapter,
 // };
 @Module({
+  imports: [CqrsModule],
   providers: [
     CategoryManagementDomainService,
     CategoryVerificationDomainService,

@@ -17,6 +17,7 @@ export class CartRepository implements CartRepositoryPort {
     private readonly mapper: CartSchemaMapper,
   ) {}
   async create(entity: CartAggregate): Promise<CartAggregate | null> {
+    console.log('hey');
     const model = this.mapper.toPersistance(entity);
     const res = await this.databaseService.runQuery(
       `
@@ -30,7 +31,7 @@ export class CartRepository implements CartRepositoryPort {
     return cart ? this.mapper.toDomain(cart) : null;
   }
 
-  async deleteOneById(id: any): Promise<CartAggregate | null> {
+  async deleteOneById(id: CartIdValueObject): Promise<CartAggregate | null> {
     const query = this.mapper.toPersistance({ id });
 
     const res = await this.databaseService.runQuery(

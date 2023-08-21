@@ -1,6 +1,5 @@
 import { SchemaBase } from '@base/database/repositories/pg';
-import type { UserSchema } from '../user';
-import type { CartItemDetailsSchema, CartItemSchema } from './cart-item.schema';
+import type { CartItemDetailsSchema } from './cart-item.schema';
 
 export class CartSchema extends SchemaBase {
   user_id: string;
@@ -8,6 +7,5 @@ export class CartSchema extends SchemaBase {
 }
 
 export class CartDetailsSchema extends CartSchema {
-  user?: UserSchema;
-  items?: Partial<CartItemSchema | CartItemDetailsSchema>[];
+  items: Partial<CartItemDetailsSchema>[];
 }

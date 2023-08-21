@@ -14,6 +14,7 @@ export const v1ApiEndpoints = {
   removeCategories: `${prefix}/categories/remove`,
   getCategories: `${prefix}/categories`,
   getCategory: `${prefix}/categories/:id`,
+  getCart: `${prefix}/cart`,
   registerMember: `${prefix}/register`,
   registerAdmin: `${prefix}/register-admin`,
   createCart: `${prefix}/cart`,

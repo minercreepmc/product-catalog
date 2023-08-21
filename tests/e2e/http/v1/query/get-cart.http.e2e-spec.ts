@@ -1,9 +1,7 @@
 import {
   v1ApiEndpoints,
-  V1CreateCartHttpRequest,
-  V1CreateCartHttpResponse,
+  V1GetCartHttpResponse,
   V1RegisterMemberHttpRequest,
-  V1RegisterMemberHttpResponse,
 } from '@api/http';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -11,9 +9,9 @@ import { AppModule } from '@src/app.module';
 import { getCookieFromHeader, randomString } from '@utils/functions';
 import * as request from 'supertest';
 
-describe('Create cart', () => {
+describe('Get cart', () => {
   let app: INestApplication;
-  const createCartUrl = v1ApiEndpoints.createCart;
+  const getCartUrl = v1ApiEndpoints.getCart;
   const registerMemberUrl = v1ApiEndpoints.registerMember;
   const loginUrl = v1ApiEndpoints.logIn;
 
@@ -30,44 +28,39 @@ describe('Create cart', () => {
     await app.close();
   });
 
-  it('Should create a cart when a member create', async () => {
-    const memberRequest: V1RegisterMemberHttpRequest = {
+  it('Should get an empty cart when register an account', async () => {
+    const registerMemberRequest: V1RegisterMemberHttpRequest = {
       username: randomString(),
       password: 'Okeasdasd123123+',
     };
 
-    const res1 = await request(app.getHttpServer())
+    await request(app.getHttpServer())
       .post(registerMemberUrl)
-      .send(memberRequest)
       .set('Accept', 'application/json')
+      .send(registerMemberRequest)
       .expect(HttpStatus.CREATED);
 
-    const body1 = res1.body as V1RegisterMemberHttpResponse;
-
-    expect(body1.id).toBeDefined();
-
-    const res2 = await request(app.getHttpServer())
-      .post(loginUrl)
-      .set('Accept', 'application/json')
-      .send(memberRequest)
-      .expect(HttpStatus.OK);
-
-    const { id: userId } = res2.body as V1RegisterMemberHttpResponse;
-
-    const cartRequest: V1CreateCartHttpRequest = {
-      userId,
+    const loginRequest: V1RegisterMemberHttpRequest = {
+      username: registerMemberRequest.username,
+      password: registerMemberRequest.password,
     };
 
-    const res3 = await request(app.getHttpServer())
-      .post(createCartUrl)
-      .send(cartRequest)
+    const loginResponse = await request(app.getHttpServer())
+      .post(loginUrl)
       .set('Accept', 'application/json')
-      .set('Cookie', getCookieFromHeader(res2.header))
-      .expect(HttpStatus.CREATED);
+      .send(loginRequest)
+      .expect(HttpStatus.OK);
 
-    const body3 = res3.body as V1CreateCartHttpResponse;
+    const getCartResponse = await request(app.getHttpServer())
+      .get(getCartUrl)
+      .set('Accept', 'application/json')
+      .set('Cookie', getCookieFromHeader(loginResponse.header))
+      .expect(HttpStatus.OK);
 
-    expect(body3.id).toBeDefined();
+    const body = getCartResponse.body as V1GetCartHttpResponse;
+
+    expect(body.items.length).toBe(0);
   });
+
   // Add more test cases for other routes, if needed.
 });

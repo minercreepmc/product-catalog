@@ -7,6 +7,7 @@ import { JwtStrategy } from '@application/application-services/auth/jwt.strategy
 import { authServiceDiToken } from '@domain-interfaces/services';
 import { Global, Module, Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
@@ -34,7 +35,7 @@ const configService = new ConfigService();
       },
     }),
   ],
-  providers: providers,
+  providers: [...providers],
   exports: providers,
 })
 export class AuthModule {}

@@ -29,6 +29,7 @@ import { UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.removeDiscounts)
+@UseGuards(JwtAuthenticationGuard)
 export class V1RemoveDiscountsHttpController extends HttpControllerBase<
   V1RemoveDiscountsHttpRequest,
   RemoveDiscountsCommand,
@@ -39,7 +40,6 @@ export class V1RemoveDiscountsHttpController extends HttpControllerBase<
   }
   @Post()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthenticationGuard)
   @Roles(UserRoleEnum.Admin)
   execute(@Body() request: V1RemoveDiscountsHttpRequest) {
     return super._execute({

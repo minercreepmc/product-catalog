@@ -29,6 +29,7 @@ import {
 import { match } from 'oxide.ts';
 
 @Controller(v1ApiEndpoints.registerAdmin)
+@UseGuards(AuthGuard('api-key'))
 export class V1RegisterAdminHttpController extends HttpControllerBase<
   V1RegisterAdminHttpRequest,
   RegisterAdminCommand,
@@ -39,7 +40,6 @@ export class V1RegisterAdminHttpController extends HttpControllerBase<
   }
 
   @Post()
-  @UseGuards(AuthGuard('api-key'))
   execute(@Body() request: V1RegisterAdminHttpRequest) {
     return super._execute({
       request,

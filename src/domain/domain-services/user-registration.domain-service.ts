@@ -7,6 +7,7 @@ import {
   AuthServicePort,
 } from '@domain-interfaces/services';
 import { Inject, Injectable } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { UserNameValueObject } from '@value-objects/user';
 
 export type RegisterMemberServiceOptions = RegisterUserAggregateOptions;
@@ -19,23 +20,30 @@ export class UserRegistrationDomainService {
     private readonly unitOfWork: UnitOfWorkPort,
     @Inject(authServiceDiToken)
     private readonly authService: AuthServicePort,
+    private readonly eventBus: EventBus,
   ) {}
 
   async registerMember(options: RegisterMemberServiceOptions) {
-    return this.unitOfWork.runInTransaction(async () => {
-      const exist = await this.isUserNameExistByName(options.username);
+    const memberRegsitered = await this.unitOfWork.runInTransaction(
+      async () => {
+        const exist = await this.isUserNameExistByName(options.username);
 
-      if (exist) {
-        throw new UserDomainExceptions.UsernameAlreadyExists();
-      }
+        if (exist) {
+          throw new UserDomainExceptions.UsernameAlreadyExists();
+        }
 
-      const userAggregate = new UserAggregate();
-      const memberRegisteredDomainEvent = userAggregate.registerMember(options);
+        const userAggregate = new UserAggregate();
+        const memberRegisteredDomainEvent =
+          userAggregate.registerMember(options);
 
-      await this.authService.handlerAuthAndSaveToDb(userAggregate);
+        await this.authService.handlerAuthAndSaveToDb(userAggregate);
 
-      return memberRegisteredDomainEvent;
-    });
+        return memberRegisteredDomainEvent;
+      },
+    );
+
+    this.eventBus.publish(memberRegsitered);
+    return memberRegsitered;
   }
 
   async registerAdmin(options: RegisterAdminServiceOptions) {

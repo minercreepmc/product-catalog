@@ -1,11 +1,11 @@
 import { ID } from '@base/domain';
-import { CartItemEntity } from '@entities';
-import { CartItemIdValueObject } from '@value-objects/cart';
-import { UserIdValueObject } from '@value-objects/user';
+import type { CartItemEntity } from '@entities';
+import type { ProductIdValueObject } from '@value-objects/product';
+import type { UserIdValueObject } from '@value-objects/user';
 
 export interface CartAggregateDetails {
   id: ID;
-  items: Map<CartItemIdValueObject, CartItemEntity>;
+  items: Map<ProductIdValueObject, CartItemEntity>;
   userId: UserIdValueObject;
 }
 
@@ -14,5 +14,5 @@ export interface CreateCartAggregateOptions {
 }
 
 export interface UpdateCartAggregateOptions {
-  items: Map<CartItemIdValueObject, CartItemEntity>;
+  items: Map<ProductIdValueObject, CartItemEntity>;
 }

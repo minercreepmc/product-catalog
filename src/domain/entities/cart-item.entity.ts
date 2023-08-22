@@ -23,13 +23,9 @@ export class CartItemEntity implements EntityBase {
   amount: CartAmountValueObject;
 
   validate(): DomainExceptionBase[] {
-    return [
-      this.id?.validate?.(),
-      this.cartId?.validate?.(),
-      this.price?.validate?.(),
-      this.amount?.validate?.(),
-      this.productId?.validate(),
-    ].filter((e) => e) as DomainExceptionBase[];
+    return [this.id?.validate?.(), this.productId?.validate()].filter(
+      (e) => e,
+    ) as DomainExceptionBase[];
   }
 
   constructor(options: CartItemEntityOptions) {
@@ -41,21 +37,21 @@ export class CartItemEntity implements EntityBase {
   }
 
   get totalPrice(): CartPriceValueObject {
-    return new CartPriceValueObject(this.price.value * this.amount.value);
+    return new CartPriceValueObject(this.price!.value * this.amount!.value);
   }
 
   get value() {
     return {
       id: this.id.value,
-      price: this.price.value,
+      price: this.price?.value,
       productId: this.productId.value,
-      amount: this.amount.value,
+      amount: this.amount?.value,
       cartId: this.cartId?.value,
     };
   }
 
   isEmpty() {
-    return this.amount.value === 0;
+    return this.amount?.value === 0;
   }
 
   updateAmount(amount: CartAmountValueObject) {

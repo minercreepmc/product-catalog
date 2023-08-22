@@ -24,7 +24,9 @@ export class CreateCategoryHandler extends CommandHandlerBase<
       description: this.command.description,
     });
   }
-  toResponseDto(data: CategoryCreatedDomainEvent): any {
+  async toResponseDto(
+    data: CategoryCreatedDomainEvent,
+  ): Promise<CreateCategoryResponseDto> {
     return new CreateCategoryResponseDto({
       id: data.id?.value,
       name: data.name?.value,

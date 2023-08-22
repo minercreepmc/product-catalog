@@ -22,7 +22,9 @@ export class RemoveProductsHandler extends CommandHandlerBase<
     return this.productManagementService.removeProducts(this.command.ids);
   }
 
-  toResponseDto(data: ProductRemovedDomainEvent[]): RemoveProductsSuccess {
+  async toResponseDto(
+    data: ProductRemovedDomainEvent[],
+  ): Promise<RemoveProductsResponseDto> {
     return new RemoveProductsResponseDto({
       ids: data.map((event) => event.id.value),
     });

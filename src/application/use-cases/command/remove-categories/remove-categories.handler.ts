@@ -31,9 +31,9 @@ export class RemoveCategoriesHandler extends CommandHandlerBase<
     });
   }
 
-  toResponseDto(
+  async toResponseDto(
     data: CategoryRemovedDomainEvent[],
-  ): RemoveCategoriesResponseDto {
+  ): Promise<RemoveCategoriesResponseDto> {
     return new RemoveCategoriesResponseDto({
       ids: data.map((event) => event.id?.value),
     });

@@ -22,7 +22,9 @@ export class RegisterMemberHandler extends CommandHandlerBase<
   handle(): Promise<MemberRegisteredDomainEvent> {
     return this.userRegistrationService.registerMember(this.command);
   }
-  toResponseDto(data: MemberRegisteredDomainEvent): RegisterMemberResponseDto {
+  async toResponseDto(
+    data: MemberRegisteredDomainEvent,
+  ): Promise<RegisterMemberResponseDto> {
     return new RegisterMemberResponseDto({
       id: data.id?.value,
       username: data.username?.value,

@@ -1,12 +1,11 @@
-export class CartModel {
+import type { V1ProductModel } from './product.model.v1';
+
+export class V1CartModel {
   user_id: string;
-  item_ids: string[];
-  id: string;
+  items: V1CartItemModel[];
 }
 
-export class CartItemModel {
-  cart_id: string;
+export class V1CartItemModel {
   amount: number;
-  product_id: string;
-  id: string;
+  product: V1ProductModel;
 }

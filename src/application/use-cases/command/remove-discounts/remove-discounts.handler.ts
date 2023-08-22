@@ -28,7 +28,9 @@ export class RemoveDiscountsHandler extends CommandHandlerBase<
   handle(): Promise<DiscountRemovedDomainEvent[]> {
     return this.discountManagementService.removeDiscounts(this.command);
   }
-  toResponseDto(events: DiscountRemovedDomainEvent[]): RemoveDiscountsSuccess {
+  async toResponseDto(
+    events: DiscountRemovedDomainEvent[],
+  ): Promise<RemoveDiscountsResponseDto> {
     return new RemoveDiscountsResponseDto({
       ids: events.map((event) => event.id.value),
     });

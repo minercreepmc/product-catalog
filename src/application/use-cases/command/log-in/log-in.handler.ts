@@ -23,7 +23,7 @@ export class LogInHandler extends CommandHandlerBase<
     const cookie = this.authService.getAuthenticatedCookie(user!.id);
     return cookie;
   }
-  toResponseDto(data: any): LogInResponseDto {
+  async toResponseDto(data: any): Promise<LogInResponseDto> {
     return new LogInResponseDto({
       cookie: data,
     });

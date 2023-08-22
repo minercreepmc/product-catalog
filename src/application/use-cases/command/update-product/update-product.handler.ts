@@ -43,7 +43,9 @@ export class UpdateProductHandler extends CommandHandlerBase<
     });
   }
 
-  toResponseDto(event: ProductUpdatedDomainEvent): UpdateProductResponseDto {
+  async toResponseDto(
+    event: ProductUpdatedDomainEvent,
+  ): Promise<UpdateProductResponseDto> {
     return new UpdateProductResponseDto({
       id: event.id?.value,
       name: event.name?.value,

@@ -1,17 +1,7 @@
-import {
-  CartItemSchema,
-  CartItemDetailsSchema,
-} from '@database/repositories/pg/cart';
-
-export class V1GetCartHttpQuery {
-  userId: string;
-  offset?: number | undefined;
-  limit?: number | undefined;
-}
+import type { V1CartItemModel } from './models';
 
 export class V1GetCartHttpResponse {
-  items: Partial<CartItemSchema | CartItemDetailsSchema>[];
+  items: Partial<V1CartItemModel>[];
   user_id: string;
-  item_ids: string[];
   id: string;
 }

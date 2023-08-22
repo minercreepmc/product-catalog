@@ -111,7 +111,7 @@ describe('Get cart', () => {
     const cart = getCartRes.body as V1GetCartHttpResponse;
     console.log(cart);
 
-    expect(cart.items[0].product_id).toBe(productId);
+    expect(cart.items[0]?.product?.id).toBe(productId);
     expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
   });
 

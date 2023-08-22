@@ -22,7 +22,9 @@ export class CreateDiscountHandler extends CommandHandlerBase<
   handle(): Promise<DiscountCreatedDomainEvent> {
     return this.discountManagementService.createDiscount(this.command);
   }
-  toResponseDto(data: DiscountCreatedDomainEvent): CreateDiscountResponseDto {
+  async toResponseDto(
+    data: DiscountCreatedDomainEvent,
+  ): Promise<CreateDiscountResponseDto> {
     return new CreateDiscountResponseDto({
       id: data.id.value,
       name: data.name?.value,

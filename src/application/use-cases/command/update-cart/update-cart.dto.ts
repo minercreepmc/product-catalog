@@ -2,50 +2,34 @@ import { DomainExceptionBase } from '@base/domain';
 import { CommandBase } from '@base/use-cases';
 import { CartItemEntity } from '@entities';
 import { UserIdValueObject } from '@value-objects/user';
-import { validateSync } from 'class-validator';
 
 export class UpdateCartCommand implements CommandBase {
   items: CartItemEntity[];
   userId: UserIdValueObject;
 
-  validate?() {
-    let isValid: boolean;
-    if (validateSync(this).length > 0) {
-      isValid = false;
+  validate?(): DomainExceptionBase[] {
+    for (const item of this.items) {
+      const exceptions = item.validate().filter((e) => e);
+
+      if (exceptions.length > 0) {
+        return exceptions;
+      }
     }
 
-    let exceptions: DomainExceptionBase[] = [];
-
-    isValid = !this.items.some((item) => {
-      exceptions = item.validate();
-      if (exceptions.length > 0) return true;
-      return false;
-    });
-
-    const otherExceptions = [this.userId?.validate?.()].filter(
-      (e) => e,
-    ) as DomainExceptionBase[];
-
-    if (!isValid) {
-      return [...exceptions, ...otherExceptions];
-    } else {
-      return otherExceptions;
-    }
+    return [];
   }
 
   constructor(options: UpdateCartCommand) {
-    this.items = options.items;
     this.userId = options.userId;
+    this.items = options.items;
   }
 }
 
 export class UpdateCartResponseDto {
   items: {
-    id: string;
-    price: number;
+    name: string;
     amount: number;
-    cartId?: string;
-    productId: string;
+    price: number;
   }[];
   userId: string;
   constructor(options: UpdateCartResponseDto) {

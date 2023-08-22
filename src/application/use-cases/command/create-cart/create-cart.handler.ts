@@ -22,7 +22,9 @@ export class CreateCartHandler extends CommandHandlerBase<
   handle(): Promise<CartCreatedDomainEvent> {
     return this.cartManagementService.createCart(this.command);
   }
-  toResponseDto(event: CartCreatedDomainEvent): CreateCartResponseDto {
+  async toResponseDto(
+    event: CartCreatedDomainEvent,
+  ): Promise<CreateCartResponseDto> {
     return new CreateCartResponseDto({
       id: event.id.value,
       userId: event.userId.value,

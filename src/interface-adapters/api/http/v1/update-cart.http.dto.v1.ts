@@ -8,11 +8,9 @@ export class V1UpdateCartHttpRequest {
 
 export class V1UpdateCartHttpResponse {
   items: {
-    id: string;
     amount: number;
-    cartId: string;
-    productId: string;
     price: number;
+    name: string;
   }[];
   message: string;
   constructor(options: Omit<V1UpdateCartHttpResponse, 'message'>) {

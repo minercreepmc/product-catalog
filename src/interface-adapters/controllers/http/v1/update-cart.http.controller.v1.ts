@@ -58,6 +58,7 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
     user,
   }: HttpControllerBaseOption<V1UpdateCartHttpRequest>): UpdateCartCommand {
     const { items } = request!;
+    console.log(items);
     const { id: userId } = user!;
     return new UpdateCartCommand({
       userId: new UserIdValueObject(userId),
@@ -76,11 +77,9 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
       Ok: (response: UpdateCartResponseDto) =>
         new V1UpdateCartHttpResponse({
           items: response.items.map((item) => ({
-            id: item.id,
             price: item.price,
             amount: item.amount,
-            cartId: item.cartId!,
-            productId: item.productId,
+            name: item.name,
           })),
         }),
       Err: (e: Error) => {

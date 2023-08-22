@@ -20,7 +20,7 @@ export abstract class CommandHandlerBase<
 
     const event = await this.handle();
 
-    return Ok(this.toResponseDto(event));
+    return Ok(await this.toResponseDto(event));
   }
 
   protected abstract command: Command;
@@ -32,7 +32,7 @@ export abstract class CommandHandlerBase<
       throw result.getExceptions();
     }
   }
-  abstract toResponseDto(data: any): Success;
+  abstract toResponseDto(data: any): Promise<Success>;
 
   private logger = new Logger(CommandHandlerBase.name);
 

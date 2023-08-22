@@ -25,7 +25,9 @@ export class UpdateDiscountHandler extends CommandHandlerBase<
       payload: this.command,
     });
   }
-  toResponseDto(data: DiscountUpdatedDomainEvent): UpdateDiscountResponseDto {
+  async toResponseDto(
+    data: DiscountUpdatedDomainEvent,
+  ): Promise<UpdateDiscountResponseDto> {
     return new UpdateDiscountResponseDto({
       id: data.id?.value,
       name: data.name?.value,

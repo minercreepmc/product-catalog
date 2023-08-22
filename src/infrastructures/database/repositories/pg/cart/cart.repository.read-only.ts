@@ -27,19 +27,41 @@ export class ReadOnlyCartRepository
   async findOneWithItems(userId: string): Promise<CartDetailsSchema> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT cart.id, cart.user_id,
-               CASE
-                   WHEN COUNT(cart_item.*) > 0 THEN to_json(array_agg(cart_item.*))
-                   ELSE '[]'::json
-               END as items
-        FROM cart
-        LEFT OUTER JOIN cart_item ON cart.id = cart_item.cart_id
-        WHERE cart.user_id = $1
-        GROUP BY cart.id, cart.user_id;
+        SELECT cart.user_id, cart_item.amount, product.name, product.price, product.id as product_id
+        FROM cart 
+        LEFT OUTER JOIN cart_item ON cart_item.cart_id = cart.id
+        LEFT OUTER JOIN product ON product.id = cart_item.product_id
+        WHERE cart.user_id = $1;
       `,
       [userId],
     );
 
-    return plainToInstance(CartDetailsSchema, res.rows[0]);
+
+    const cartDetails: CartDetailsSchema = {
+      user_id: res.rows[0].user_id,
+    } as CartDetailsSchema;
+
+    res.rows.forEach((row) => {
+      const { amount, name, price, product_id } = row;
+
+      if (!cartDetails.items) {
+        cartDetails.items = [];
+      }
+
+      if (name && price) {
+        cartDetails.items.push({
+          amount,
+          product: {
+            id: product_id,
+            name,
+            price,
+          },
+        });
+      }
+    });
+
+    console.log(cartDetails);
+
+    return plainToInstance(CartDetailsSchema, cartDetails);
   }
 }

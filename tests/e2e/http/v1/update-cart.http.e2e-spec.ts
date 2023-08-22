@@ -107,8 +107,11 @@ describe('Update cart', () => {
       .set('Cookie', cookie)
       .expect(HttpStatus.CREATED);
 
-    const { id: productId, price } =
-      createProductRes.body as V1CreateProductHttpResponse;
+    const {
+      id: productId,
+      price,
+      name: productName,
+    } = createProductRes.body as V1CreateProductHttpResponse;
 
     const updateCartRequest1: V1UpdateCartHttpRequest = {
       items: [
@@ -128,7 +131,7 @@ describe('Update cart', () => {
 
     const cart = updateCartRes.body as V1UpdateCartHttpResponse;
 
-    expect(cart.items[0].productId).toBe(productId);
+    expect(cart.items[0].name).toBe(productName);
     expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
     expect(cart.items[0].price).toBe(price);
 
@@ -150,7 +153,7 @@ describe('Update cart', () => {
 
     const cart2 = updateCartRes2.body as V1UpdateCartHttpResponse;
 
-    expect(cart2.items[0].productId).toBe(productId);
+    expect(cart2.items[0].name).toBe(productName);
     expect(cart2.items[0].amount).toBe(updateCartRequest2.items[0].amount);
     expect(cart2.items[0].price).toBe(price);
 

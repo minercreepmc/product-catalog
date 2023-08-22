@@ -4,11 +4,8 @@ import {
   CartUpdatedDomainEvent,
 } from '@domain-events/cart';
 import { CartItemEntity } from '@entities';
-import {
-  CartIdValueObject,
-  CartItemIdValueObject,
-  CartPriceValueObject,
-} from '@value-objects/cart';
+import { CartIdValueObject, CartPriceValueObject } from '@value-objects/cart';
+import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject } from '@value-objects/user';
 import {
   CartAggregateDetails,
@@ -17,7 +14,7 @@ import {
 } from './cart.aggregate.interface';
 
 export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
-  items: Map<CartItemIdValueObject, CartItemEntity> = new Map();
+  items: Map<ProductIdValueObject, CartItemEntity> = new Map();
   id: CartIdValueObject;
   userId: UserIdValueObject;
 
@@ -33,19 +30,13 @@ export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
 
   createCart(options: CreateCartAggregateOptions) {
     const { userId } = options;
-
     this.userId = userId;
-
     return new CartCreatedDomainEvent({ id: this.id, userId });
   }
 
   updateCart(options: UpdateCartAggregateOptions) {
     const { items } = options;
-
-    if (items) {
-      this.items = items;
-    }
-
+    this.items = items;
     return new CartUpdatedDomainEvent({
       id: this.id,
       items: Array.from(this.items.values()),

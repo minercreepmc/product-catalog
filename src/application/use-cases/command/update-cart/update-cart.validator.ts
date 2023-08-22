@@ -50,9 +50,12 @@ export class UpdateCartValidator extends ValidatorBase<
 
   private async productMustExist(note: Notification<UpdateCartFailure>) {
     for (const item of this.command.items) {
+      console.log(item);
       const exist = await this.productVerificationService.doesProductIdExist(
         item.productId,
       );
+
+      console.log(exist);
 
       if (!exist) {
         note.addException(new ProductDomainExceptions.DoesNotExist());

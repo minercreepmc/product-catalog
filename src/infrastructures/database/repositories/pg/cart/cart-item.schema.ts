@@ -8,5 +8,5 @@ export class CartItemSchema extends SchemaBase {
 }
 
 export class CartItemDetailsSchema extends CartItemSchema {
-  product?: ProductSchema;
+  product?: Partial<ProductSchema>;
 }

@@ -38,7 +38,9 @@ export class UpdateCategoryHandler extends CommandHandlerBase<
       },
     });
   }
-  toResponseDto(event: CategoryUpdatedDomainEvent): UpdateCategoryResponseDto {
+  async toResponseDto(
+    event: CategoryUpdatedDomainEvent,
+  ): Promise<UpdateCategoryResponseDto> {
     return new UpdateCategoryResponseDto({
       id: event.id?.value,
       name: event.name?.value,

@@ -39,7 +39,9 @@ export class CreateProductHandler extends CommandHandlerBase<
     });
   }
 
-  toResponseDto(data: ProductCreatedDomainEvent): CreateProductResponseDto {
+  async toResponseDto(
+    data: ProductCreatedDomainEvent,
+  ): Promise<CreateProductResponseDto> {
     return new CreateProductResponseDto({
       id: data.id?.value,
       price: data.price?.value,

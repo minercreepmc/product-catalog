@@ -22,7 +22,9 @@ export class RegisterAdminHandler extends CommandHandlerBase<
   handle(): Promise<AdminRegisteredDomainEvent> {
     return this.userRegistrationService.registerAdmin(this.command);
   }
-  toResponseDto(data: AdminRegisteredDomainEvent): RegisterAdminResponseDto {
+  async toResponseDto(
+    data: AdminRegisteredDomainEvent,
+  ): Promise<RegisterAdminResponseDto> {
     return new RegisterAdminResponseDto({
       id: data.id?.value,
       username: data.username?.value,

@@ -1,6 +1,12 @@
 import { CommandHandlerBase } from '@base/use-cases';
 import { CartUpdatedDomainEvent } from '@domain-events/cart';
+import {
+  productRepositoryDiToken,
+  ProductRepositoryPort,
+} from '@domain-interfaces';
 import { CartManagementDomainService } from '@domain-services';
+import { CartItemEntity } from '@entities';
+import { Inject } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { UpdateCartCommand, UpdateCartResponseDto } from './update-cart.dto';
 import { UpdateCartFailure, UpdateCartSuccess } from './update-cart.result';
@@ -14,6 +20,8 @@ export class UpdateCartHandler extends CommandHandlerBase<
 > {
   constructor(
     private readonly cartManagementService: CartManagementDomainService,
+    @Inject(productRepositoryDiToken)
+    private readonly productRepository: ProductRepositoryPort,
     validator: UpdateCartValidator,
   ) {
     super(validator);
@@ -26,24 +34,31 @@ export class UpdateCartHandler extends CommandHandlerBase<
       payload: {
         items: new Map(
           items.map((item) => {
-            return [item.id, item];
+            return [item.productId, new CartItemEntity(item)];
           }),
         ),
       },
     });
   }
-  toResponseDto(data: CartUpdatedDomainEvent): UpdateCartResponseDto {
+  async toResponseDto(
+    data: CartUpdatedDomainEvent,
+  ): Promise<UpdateCartResponseDto> {
+    const { userId, items } = data;
+
+    const itemsValuePromises = items.map(async (item) => {
+      const product = await this.productRepository.findOneById(item.productId);
+      return {
+        price: item.price.value,
+        amount: item.amount.value,
+        name: product!.name.value,
+      };
+    });
+
+    const itemsValue = await Promise.all(itemsValuePromises);
+
     return new UpdateCartResponseDto({
-      items: data.items.map((item) => {
-        return {
-          id: item.id.value,
-          price: item.price.value,
-          amount: item.amount.value,
-          cartId: item.cartId?.value,
-          productId: item.productId.value,
-        };
-      }),
-      userId: data.userId.value,
+      items: itemsValue,
+      userId: userId.value,
     });
   }
 }

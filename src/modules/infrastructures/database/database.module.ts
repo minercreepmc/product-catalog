@@ -29,6 +29,10 @@ import {
   DiscountSchemaMapper,
 } from '@database/repositories/pg/discount';
 import {
+  OrderRepository,
+  OrderSchemaMapper,
+} from '@database/repositories/pg/order';
+import {
   ProductRepository,
   ProductSchemaMapper,
   ReadOnlyProductRepository,
@@ -41,6 +45,7 @@ import {
   productRepositoryDiToken,
 } from '@domain-interfaces';
 import { unitOfWorkDiToken } from '@domain-interfaces';
+import { orderRepositoryDiToken } from '@domain-interfaces/database/order-repository.interface';
 import { Global, Module, Provider } from '@nestjs/common';
 import { Pool } from 'pg';
 
@@ -82,6 +87,10 @@ const repositories: Provider[] = [
     provide: readOnlyCartRepositoryDiToken,
     useClass: ReadOnlyCartRepository,
   },
+  {
+    provide: orderRepositoryDiToken,
+    useClass: OrderRepository,
+  },
 ];
 
 const poolProvider: Provider = {
@@ -104,6 +113,7 @@ const mappers: Provider[] = [
   DiscountSchemaMapper,
   CartSchemaMapper,
   CartItemSchemaMapper,
+  OrderSchemaMapper,
 ];
 
 @Global()

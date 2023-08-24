@@ -27,6 +27,7 @@ import {
 } from '@use-cases/command/update-cart';
 import {
   CartAmountValueObject,
+  CartIdValueObject,
   CartPriceValueObject,
 } from '@value-objects/cart';
 import { ProductIdValueObject } from '@value-objects/product';
@@ -47,6 +48,7 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
   @UseGuards(JwtAuthenticationGuard)
   @Roles(UserRoleEnum.Admin)
   execute(@Req() req: RequestWithUser, @Body() body: V1UpdateCartHttpRequest) {
+    console.log(body);
     return super._execute({
       request: body,
       user: req.user,
@@ -58,12 +60,12 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
     user,
   }: HttpControllerBaseOption<V1UpdateCartHttpRequest>): UpdateCartCommand {
     const { items } = request!;
-    console.log(items);
     const { id: userId } = user!;
     return new UpdateCartCommand({
       userId: new UserIdValueObject(userId),
       items: items.map((item) => {
         return new CartItemEntity({
+          cartId: new CartIdValueObject(item.cartId),
           amount: new CartAmountValueObject(item.amount),
           price: new CartPriceValueObject(item.price),
           productId: new ProductIdValueObject(item.productId),
@@ -77,10 +79,17 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
       Ok: (response: UpdateCartResponseDto) =>
         new V1UpdateCartHttpResponse({
           items: response.items.map((item) => ({
-            price: item.price,
             amount: item.amount,
-            name: item.name,
+            cartId: item.cartId,
+            product: {
+              id: item.product.id,
+              name: item.product.name,
+              price: item.product.price,
+            },
           })),
+          id: response.id,
+          userId: response.userId,
+          totalPrice: response.totalPrice,
         }),
       Err: (e: Error) => {
         if (e instanceof MultipleExceptions) {

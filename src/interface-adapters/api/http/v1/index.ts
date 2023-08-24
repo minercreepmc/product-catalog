@@ -1,6 +1,7 @@
 export * from './create-category.http.dto.v1';
 export * from './create-discount.http.dto.v1';
 export * from './create-product.http.dto.v1';
+export * from './create-order.http.dto.v1';
 export * from './register-member.http.dto.v1';
 export * from './register-admin.http.dto.v1';
 export * from './update-product.http.dto.v1';

@@ -27,13 +27,21 @@ export class UpdateCartCommand implements CommandBase {
 
 export class UpdateCartResponseDto {
   items: {
-    name: string;
+    product: {
+      name: string;
+      price: number;
+      id: string;
+    };
     amount: number;
-    price: number;
+    cartId: string;
   }[];
+  id: string;
+  totalPrice: number;
   userId: string;
   constructor(options: UpdateCartResponseDto) {
     this.items = options.items;
     this.userId = options.userId;
+    this.totalPrice = options.totalPrice;
+    this.id = options.id;
   }
 }

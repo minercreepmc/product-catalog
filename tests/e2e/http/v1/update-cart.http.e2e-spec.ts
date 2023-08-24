@@ -2,6 +2,7 @@ import {
   v1ApiEndpoints,
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
+  V1GetCartHttpResponse,
   V1RegisterMemberHttpRequest,
   V1UpdateCartHttpRequest,
   V1UpdateCartHttpResponse,
@@ -20,6 +21,7 @@ import * as request from 'supertest';
 
 describe('Update cart', () => {
   let app: INestApplication;
+  const getCartUrl = v1ApiEndpoints.getCart;
   const updateCartUrl = v1ApiEndpoints.updateCart;
   const createProductUrl = v1ApiEndpoints.createProduct;
   const registerMemberUrl = v1ApiEndpoints.registerMember;
@@ -70,11 +72,13 @@ describe('Update cart', () => {
           productId: '12345',
           price: 2,
           amount: 2,
+          cartId: '12345',
         },
         {
           productId: '12345',
           price: 2,
           amount: 2,
+          cartId: '12345',
         },
       ],
     };
@@ -90,11 +94,20 @@ describe('Update cart', () => {
       mapDomainExceptionsToObjects([
         new ProductDomainExceptions.DoesNotExist(),
         new CartDomainExceptions.ItemMustBeUnique(),
+        new CartDomainExceptions.DoesNotExist(),
       ]),
     );
   });
 
   it('Should update successfully', async () => {
+    const getCartResponse = await request(app.getHttpServer())
+      .get(getCartUrl)
+      .set('Accept', 'application/json')
+      .set('Cookie', cookie)
+      .expect(HttpStatus.OK);
+
+    const getCartBody = getCartResponse.body as V1GetCartHttpResponse;
+
     const createProductRequest: V1CreateProductHttpRequest = {
       name: randomString(),
       price: 2,
@@ -119,6 +132,7 @@ describe('Update cart', () => {
           productId,
           price,
           amount: 2,
+          cartId: getCartBody.id,
         },
       ],
     };
@@ -131,9 +145,10 @@ describe('Update cart', () => {
 
     const cart = updateCartRes.body as V1UpdateCartHttpResponse;
 
-    expect(cart.items[0].name).toBe(productName);
+    expect(cart.items[0].product.name).toBe(productName);
     expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
-    expect(cart.items[0].price).toBe(price);
+    expect(cart.items[0].product.price).toBeCloseTo(price, 2);
+    expect(cart.totalPrice).toBe(price * updateCartRequest1.items[0].amount);
 
     const updateCartRequest2: V1UpdateCartHttpRequest = {
       items: [
@@ -141,6 +156,7 @@ describe('Update cart', () => {
           productId,
           price,
           amount: 1,
+          cartId: getCartBody.id,
         },
       ],
     };
@@ -153,9 +169,10 @@ describe('Update cart', () => {
 
     const cart2 = updateCartRes2.body as V1UpdateCartHttpResponse;
 
-    expect(cart2.items[0].name).toBe(productName);
+    expect(cart2.items[0].product.name).toBe(productName);
     expect(cart2.items[0].amount).toBe(updateCartRequest2.items[0].amount);
-    expect(cart2.items[0].price).toBe(price);
+    expect(cart2.items[0].product.price).toBeCloseTo(price, 2);
+    expect(cart2.totalPrice).toBe(price * updateCartRequest2.items[0].amount);
 
     const updateCartRequest3: V1UpdateCartHttpRequest = {
       items: [],
@@ -169,6 +186,7 @@ describe('Update cart', () => {
 
     const cart3 = updateCartRes3.body as V1UpdateCartHttpResponse;
     expect(cart3.items.length).toBe(0);
+    expect(cart3.totalPrice).toBe(0);
   });
 
   // Add more test cases for other routes, if needed.

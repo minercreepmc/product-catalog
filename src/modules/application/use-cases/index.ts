@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CreateCartModule } from './create-cart.module';
 import { CreateCategoryModule } from './create-category.module';
 import { CreateDiscountModule } from './create-discount.module';
+import { CreateOrderModule } from './create-order.module';
 import { CreateProductModule } from './create-product.module';
 import { EventHandlerModule } from './event-handler.module';
 import { LogInAdminModule } from './log-in-admin.module';
@@ -42,6 +43,7 @@ import { UploadModule } from './upload.module';
     RegisterAdminModule,
     UserQueryModule,
     CartQueryModule,
+    CreateOrderModule,
     EventHandlerModule,
     LogInModule,
     LogInAdminModule,

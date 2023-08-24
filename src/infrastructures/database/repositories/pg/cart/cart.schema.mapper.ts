@@ -1,7 +1,7 @@
 import { CartAggregate } from '@aggregates/cart';
 import { SchemaMapperBase } from '@base/database/repositories/pg';
 import { Injectable } from '@nestjs/common';
-import { CartIdValueObject } from '@value-objects/cart';
+import { CartIdValueObject, CartPriceValueObject } from '@value-objects/cart';
 import { UserIdValueObject } from '@value-objects/user';
 import { CartDetailsSchema, CartSchema } from './cart.schema';
 import { CartItemSchemaMapper } from './cart-item.schema.mapper';
@@ -17,7 +17,7 @@ export class CartSchemaMapper extends SchemaMapperBase<
     super();
   }
   toDomain(model: CartSchema | CartDetailsSchema): CartAggregate {
-    const { id, user_id } = model;
+    const { id, user_id, total_price } = model;
     let items: Partial<CartItemDetailsSchema>[];
 
     if ('items' in model) {
@@ -38,10 +38,11 @@ export class CartSchemaMapper extends SchemaMapperBase<
       items: itemsDomain
         ? new Map(itemsDomain?.map((item) => [item?.id, item]))
         : new Map(),
+      totalPrice: new CartPriceValueObject(total_price),
     });
   }
   toPersistance(domain: Partial<CartAggregate>): Partial<CartDetailsSchema> {
-    const { id, userId } = domain;
+    const { id, userId, totalPrice } = domain;
 
     const items: Partial<CartItemSchema>[] = [];
     const itemIds: string[] = [];
@@ -61,6 +62,7 @@ export class CartSchemaMapper extends SchemaMapperBase<
       items,
       item_ids: itemIds,
       user_id: userId?.value,
+      total_price: totalPrice?.value,
     };
 
     return plainToInstance(CartDetailsSchema, model);

@@ -17,12 +17,27 @@ export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
   items: Map<ProductIdValueObject, CartItemEntity> = new Map();
   id: CartIdValueObject;
   userId: UserIdValueObject;
+  totalPrice: CartPriceValueObject;
+
+  calculateTotalPrice(
+    items: Map<ProductIdValueObject, CartItemEntity>,
+  ): CartPriceValueObject {
+    let cartTotal: CartPriceValueObject = new CartPriceValueObject(0);
+    for (const item of items.values()) {
+      if (!item.isEmpty()) {
+        cartTotal = cartTotal.plus(item.totalPrice);
+      }
+    }
+
+    return cartTotal;
+  }
 
   constructor(options?: CartAggregateDetails) {
     if (options) {
       this.id = options.id;
       this.items = options.items;
       this.userId = options.userId;
+      this.totalPrice = options.totalPrice;
     } else {
       this.id = new CartIdValueObject();
     }
@@ -31,27 +46,25 @@ export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
   createCart(options: CreateCartAggregateOptions) {
     const { userId } = options;
     this.userId = userId;
-    return new CartCreatedDomainEvent({ id: this.id, userId });
+    this.totalPrice = new CartPriceValueObject(0);
+    return new CartCreatedDomainEvent({
+      id: this.id,
+      userId,
+      totalPrice: this.totalPrice,
+    });
   }
 
   updateCart(options: UpdateCartAggregateOptions) {
     const { items } = options;
+
     this.items = items;
+    this.totalPrice = this.calculateTotalPrice(items);
+
     return new CartUpdatedDomainEvent({
       id: this.id,
       items: Array.from(this.items.values()),
       userId: this.userId,
+      totalPrice: this.totalPrice,
     });
-  }
-
-  get totalPrice(): CartPriceValueObject {
-    let cartTotal: CartPriceValueObject = new CartPriceValueObject(0);
-    for (const item of this.items.values()) {
-      if (!item.isEmpty()) {
-        cartTotal = cartTotal.plus(item.totalPrice);
-      }
-    }
-
-    return cartTotal;
   }
 }

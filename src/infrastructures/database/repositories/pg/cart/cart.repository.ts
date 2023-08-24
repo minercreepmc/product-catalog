@@ -2,7 +2,6 @@ import { CartAggregate } from '@aggregates/cart';
 import { ID } from '@base/domain';
 import { DatabaseService } from '@config/pg';
 import { CartRepositoryPort } from '@domain-interfaces';
-import { CartItemEntity } from '@entities';
 import { Injectable } from '@nestjs/common';
 import { CartIdValueObject } from '@value-objects/cart';
 import { UserIdValueObject } from '@value-objects/user';
@@ -22,9 +21,9 @@ export class CartRepository implements CartRepositoryPort {
     const model = this.mapper.toPersistance(entity);
     const res = await this.databaseService.runQuery(
       `
-        INSERT INTO cart (id, user_id) VALUES ($1, $2) RETURNING *;
+        INSERT INTO cart (id, user_id, total_price) VALUES ($1, $2, $3) RETURNING *;
       `,
-      [model.id, model.user_id],
+      [model.id, model.user_id, model.total_price],
     );
 
     const cart = plainToInstance(CartSchema, res.rows[0]);
@@ -140,17 +139,14 @@ export class CartRepository implements CartRepositoryPort {
       );
 
       if (existingCartItem) {
-        if (existingCartItem.amount !== newCartItem.amount) {
-          await this.cartItemRepository.updateOneById(existingCartItem.id, {
-            ...newCartItem,
-            cartId: existingCart!.id,
-          } as CartItemEntity);
+        if (existingCartItem.amount.value !== newCartItem.amount.value) {
+          await this.cartItemRepository.updateOneById(
+            existingCartItem.id,
+            newCartItem,
+          );
         }
       } else {
-        await this.cartItemRepository.create({
-          ...newCartItem,
-          cartId: existingCart!.id,
-        } as CartItemEntity);
+        await this.cartItemRepository.create(newCartItem);
       }
     }
 
@@ -163,5 +159,12 @@ export class CartRepository implements CartRepositoryPort {
         await this.cartItemRepository.deleteOneById(existingCartItem.id);
       }
     }
+
+    await this.databaseService.runQuery(
+      `
+        UPDATE cart SET total_price=$1 WHERE id=$2 AND deleted_at IS NULL RETURNING *;
+      `,
+      [newCart.totalPrice.value, newCart.id.value],
+    );
   }
 }

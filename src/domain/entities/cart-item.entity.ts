@@ -12,13 +12,13 @@ export interface CartItemEntityOptions {
   price: CartPriceValueObject;
   productId: ProductIdValueObject;
   amount: CartAmountValueObject;
-  cartId?: CartIdValueObject;
+  cartId: CartIdValueObject;
 }
 
 export class CartItemEntity implements EntityBase {
   id: CartItemIdValueObject;
   productId: ProductIdValueObject;
-  cartId?: CartIdValueObject;
+  cartId: CartIdValueObject;
   price: CartPriceValueObject;
   amount: CartAmountValueObject;
 
@@ -29,7 +29,7 @@ export class CartItemEntity implements EntityBase {
   }
 
   constructor(options: CartItemEntityOptions) {
-    this.id = options.id ?? new CartIdValueObject();
+    this.id = options.id ?? new CartItemIdValueObject();
     this.price = options.price;
     this.amount = options.amount;
     this.productId = options.productId;

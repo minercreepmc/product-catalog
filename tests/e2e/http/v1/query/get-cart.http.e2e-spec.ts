@@ -86,12 +86,21 @@ describe('Get cart', () => {
     const { id: productId, price } =
       createProductRes.body as V1CreateProductHttpResponse;
 
+    const getCartResponse = await request(app.getHttpServer())
+      .get(getCartUrl)
+      .set('Accept', 'application/json')
+      .set('Cookie', cookie)
+      .expect(HttpStatus.OK);
+
+    const { id: cartId } = getCartResponse.body as V1GetCartHttpResponse;
+
     const updateCartRequest1: V1UpdateCartHttpRequest = {
       items: [
         {
           productId,
           price,
           amount: 2,
+          cartId,
         },
       ],
     };
@@ -109,10 +118,10 @@ describe('Get cart', () => {
       .expect(HttpStatus.OK);
 
     const cart = getCartRes.body as V1GetCartHttpResponse;
-    console.log(cart);
 
     expect(cart.items[0]?.product?.id).toBe(productId);
     expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
+    expect(cart.total_price).toBe(updateCartRequest1.items[0].amount * price);
   });
 
   // Add more test cases for other routes, if needed.

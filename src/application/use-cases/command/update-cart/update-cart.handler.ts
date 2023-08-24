@@ -43,22 +43,37 @@ export class UpdateCartHandler extends CommandHandlerBase<
   async toResponseDto(
     data: CartUpdatedDomainEvent,
   ): Promise<UpdateCartResponseDto> {
-    const { userId, items } = data;
+    const { userId, items, totalPrice } = data;
 
-    const itemsValuePromises = items.map(async (item) => {
-      const product = await this.productRepository.findOneById(item.productId);
-      return {
-        price: item.price.value,
-        amount: item.amount.value,
-        name: product!.name.value,
+    const itemsValue: {
+      product: {
+        name: string;
+        price: number;
+        id: string;
       };
-    });
+      amount: number;
+      cartId: string;
+    }[] = [];
 
-    const itemsValue = await Promise.all(itemsValuePromises);
+    for (const item of items) {
+      const product = await this.productRepository.findOneById(item.productId);
+
+      itemsValue.push({
+        product: {
+          name: product!.name.value,
+          price: Number(product!.price.value),
+          id: product!.id.value,
+        },
+        amount: item.amount.value,
+        cartId: item.cartId.value,
+      });
+    }
 
     return new UpdateCartResponseDto({
+      id: data.id.value,
       items: itemsValue,
       userId: userId.value,
+      totalPrice: totalPrice.value,
     });
   }
 }

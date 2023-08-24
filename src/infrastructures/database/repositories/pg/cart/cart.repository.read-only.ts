@@ -27,7 +27,7 @@ export class ReadOnlyCartRepository
   async findOneWithItems(userId: string): Promise<CartDetailsSchema> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT cart.user_id, cart_item.amount, product.name, product.price, product.id as product_id
+        SELECT cart.user_id, cart.id, cart.total_price, cart_item.amount, product.name, product.price, product.id as product_id
         FROM cart 
         LEFT OUTER JOIN cart_item ON cart_item.cart_id = cart.id
         LEFT OUTER JOIN product ON product.id = cart_item.product_id
@@ -36,9 +36,10 @@ export class ReadOnlyCartRepository
       [userId],
     );
 
-
     const cartDetails: CartDetailsSchema = {
+      id: res.rows[0].id,
       user_id: res.rows[0].user_id,
+      total_price: res.rows[0].total_price,
     } as CartDetailsSchema;
 
     res.rows.forEach((row) => {
@@ -59,8 +60,6 @@ export class ReadOnlyCartRepository
         });
       }
     });
-
-    console.log(cartDetails);
 
     return plainToInstance(CartDetailsSchema, cartDetails);
   }

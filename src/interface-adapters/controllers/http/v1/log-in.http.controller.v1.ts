@@ -41,7 +41,6 @@ export class V1LogInHttpController extends HttpControllerBase<
   @UseGuards(LocalAuthenticationGuard)
   execute(@Res() response: ExpressResponse, @Req() request: RequestWithUser) {
     const body = request.user;
-    console.log(body);
     return super._execute({
       request: body,
       response,

@@ -1,11 +1,12 @@
 import { CartAggregate } from '@aggregates/cart';
 import { DomainEventBase } from '@base/domain';
-import { CartIdValueObject } from '@value-objects/cart';
+import { CartIdValueObject, CartPriceValueObject } from '@value-objects/cart';
 import { UserIdValueObject } from '@value-objects/user';
 
 export interface CartCreatedDomainEventDetails {
   id: CartIdValueObject;
   userId: UserIdValueObject;
+  totalPrice: CartPriceValueObject;
 }
 
 export class CartCreatedDomainEvent
@@ -19,7 +20,9 @@ export class CartCreatedDomainEvent
     });
     this.id = options.id;
     this.userId = options.userId;
+    this.totalPrice = options.totalPrice;
   }
   id: CartIdValueObject;
   userId: UserIdValueObject;
+  totalPrice: CartPriceValueObject;
 }

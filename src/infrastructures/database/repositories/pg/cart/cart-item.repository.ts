@@ -58,7 +58,10 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
     id: CartItemIdValueObject,
     newState: CartItemEntity,
   ): Promise<CartItemEntity | null> {
-    const query = this.mapper.toPersistance(newState);
+    const query = this.mapper.toPersistance({
+      ...newState,
+      id,
+    });
 
     const res = await this.databaseService.runQuery(
       `
@@ -71,6 +74,25 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
 
     return deleted ? this.mapper.toDomain(deleted) : null;
   }
+
+  async updateOneByCartId(
+    cartId: CartIdValueObject,
+    newState: CartItemEntity,
+  ): Promise<CartItemEntity | null> {
+    const query = this.mapper.toPersistance({ ...newState, cartId });
+
+    const res = await this.databaseService.runQuery(
+      `
+      UPDATE cart_item SET amount=$1 WHERE cart_id=$2 RETURNING *;
+    `,
+      [query.amount, query.cart_id],
+    );
+
+    const updated = res.rows[0];
+
+    return updated ? this.mapper.toDomain(updated) : null;
+  }
+
   async deleteManyByIds(
     ids: CartItemIdValueObject[],
   ): Promise<CartItemEntity[]> {

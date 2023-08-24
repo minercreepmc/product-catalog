@@ -9,6 +9,7 @@ import {
   UserVerificationDomainService,
 } from '@domain-services';
 import { CartVerificationDomainService } from '@domain-services/cart-verification.domain-service';
+import { OrderManagementDomainService } from '@domain-services/order-management.domain-service';
 import { ProductVerificationDomainService } from '@domain-services/product-verification.domain-service';
 import { EventBusAdapter } from '@infrastructures/events';
 //import { eventBusDiToken } from '@domain-interfaces/events';
@@ -33,6 +34,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     UserVerificationDomainService,
     CartManagementDomainService,
     CartVerificationDomainService,
+    OrderManagementDomainService,
     // eventBus,
   ],
   exports: [
@@ -46,6 +48,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     UserVerificationDomainService,
     CartManagementDomainService,
     CartVerificationDomainService,
+    OrderManagementDomainService,
   ],
 })
 export class DomainServicesModule {}

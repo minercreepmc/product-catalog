@@ -2,6 +2,7 @@ export * from './get';
 export * from './create-category.http.controller.v1';
 export * from './create-product.http.controller.v1';
 export * from './create-discount.http.controller.v1';
+export * from './create-order.http.controller.v1';
 export * from './register-member.http.controller.v1';
 export * from './register-admin.http.controller.v1';
 export * from './update-product.http.controller.v1';

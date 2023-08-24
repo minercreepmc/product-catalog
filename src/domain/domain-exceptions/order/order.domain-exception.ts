@@ -16,4 +16,9 @@ export namespace OrderDomainExceptions {
     readonly message = 'Status does not valid';
     readonly code = OrderDomainExceptionCodes.StatusDoesNotValid;
   }
+
+  export class DoesNotExist implements DomainExceptionBase {
+    readonly message = 'Does not exist';
+    readonly code = OrderDomainExceptionCodes.DoesNotExist;
+  }
 }

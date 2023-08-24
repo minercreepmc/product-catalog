@@ -19,6 +19,7 @@ export * from './log-in.http.dto.v1';
 export * from './log-in-admin.dto.v1';
 export * from './create-cart.http.dto.v1';
 export * from './update-cart.http.dto.v1';
+export * from './update-order.http.dto.v1';
 export * from './endpoint.v1';
 export * from './query';
 export * from './models';

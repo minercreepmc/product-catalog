@@ -1,16 +1,22 @@
-import { CreateOrderAggregateOptions, OrderAggregate } from '@aggregates/order';
+import {
+  CreateOrderAggregateOptions,
+  OrderAggregate,
+  UpdateOrderAggregateOptions,
+} from '@aggregates/order';
 import {
   orderRepositoryDiToken,
   OrderRepositoryPort,
-} from '@domain-interfaces/database/order-repository.interface';
+} from '@domain-interfaces/database';
 import { Inject, Injectable } from '@nestjs/common';
-import { OrderStatusValueObject } from '@value-objects/order';
+import { OrderIdValueObject } from '@value-objects/order';
+import { OrderVerificationDomainService } from './order-verification.domain-service';
 
 @Injectable()
 export class OrderManagementDomainService {
   constructor(
     @Inject(orderRepositoryDiToken)
     private readonly orderRepository: OrderRepositoryPort,
+    private readonly orderVerification: OrderVerificationDomainService,
   ) {}
   async createOrder(options: CreateOrderAggregateOptions) {
     const order = new OrderAggregate();
@@ -19,10 +25,13 @@ export class OrderManagementDomainService {
     return orderCreated;
   }
 
-  async updateStatus(status: OrderStatusValueObject) {
-    const order = new OrderAggregate();
-    const orderUpdated = order.updateStatus(status);
-    await this.orderRepository.updateStatusById(order.id, status);
+  async updateOrder(
+    id: OrderIdValueObject,
+    payload: UpdateOrderAggregateOptions,
+  ) {
+    const order = await this.orderVerification.findOneOrThrow(id);
+    const orderUpdated = order.updateOrder(payload);
+    await this.orderRepository.updateOneById(id, order);
     return orderUpdated;
   }
 }

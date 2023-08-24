@@ -19,3 +19,8 @@ export interface CreateOrderAggregateOptions {
   userId: UserIdValueObject;
   cartId: CartIdValueObject;
 }
+
+export interface UpdateOrderAggregateOptions {
+  address?: OrderAddressValueObject;
+  status?: OrderStatusValueObject;
+}

@@ -20,6 +20,7 @@ export const v1ApiEndpoints = {
   createCart: `${prefix}/cart`,
   updateCart: `${prefix}/cart`,
   createOrder: `${prefix}/order`,
+  updateOrder: `${prefix}/order/:id`,
   logIn: `${prefix}/log-in`,
   logOut: `${prefix}/log-out`,
   logInAdmin: `${prefix}/log-in-admin`,

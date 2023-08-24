@@ -1,6 +1,6 @@
 import { ValueObjectBase } from '@base/domain';
 import { OrderDomainExceptions } from '@domain-exceptions/order';
-import { IsDefined, IsEnum, validateSync } from 'class-validator';
+import { IsDefined, IsEnum, IsNotEmpty, validateSync } from 'class-validator';
 
 export enum OrderStatusEnum {
   PROCESSING = 'PROCESSING',
@@ -11,6 +11,7 @@ export enum OrderStatusEnum {
 
 export class OrderStatusValueObject implements ValueObjectBase {
   @IsDefined()
+  @IsNotEmpty()
   @IsEnum(OrderStatusEnum)
   readonly value: OrderStatusEnum;
   constructor(value: OrderStatusEnum) {

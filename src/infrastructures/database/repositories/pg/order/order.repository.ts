@@ -62,18 +62,45 @@ export class OrderRepository
     return updated ? this.mapper.toDomain(updated) : null;
   }
 
+  async findOneById(id: OrderIdValueObject): Promise<OrderAggregate | null> {
+    const model = this.mapper.toPersistance({ id });
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT * FROM orders WHERE id = $1;
+      `,
+      [model.id],
+    );
+
+    const found = res.rows[0];
+
+    return found ? this.mapper.toDomain(found) : null;
+  }
+  async updateOneById(
+    id: OrderIdValueObject,
+    newState: OrderAggregate,
+  ): Promise<OrderAggregate | null> {
+    const model = this.mapper.toPersistance({
+      ...newState,
+      id,
+    });
+    const res = await this.databaseService.runQuery(
+      `
+        UPDATE orders 
+        SET address = $1, status = $2
+        WHERE id = $3 RETURNING *;
+      `,
+      [model.address, model.status, model.id],
+    );
+
+    const updated = res.rows[0];
+
+    return updated ? this.mapper.toDomain(updated) : null;
+  }
+
   deleteOneById(id: ID): Promise<OrderAggregate | null> {
     throw new Error('Method not implemented.');
   }
-  findOneById(id: ID): Promise<OrderAggregate | null> {
-    throw new Error('Method not implemented.');
-  }
-  updateOneById(
-    id: ID,
-    newState: OrderAggregate,
-  ): Promise<OrderAggregate | null> {
-    throw new Error('Method not implemented.');
-  }
+
   deleteManyByIds(ids: ID[]): Promise<OrderAggregate[] | null> {
     throw new Error('Method not implemented.');
   }

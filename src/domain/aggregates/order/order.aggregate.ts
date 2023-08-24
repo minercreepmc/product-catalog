@@ -1,5 +1,8 @@
 import { AggregateRootBase } from '@base/domain';
-import { OrderCreatedDomainEvent } from '@domain-events/order';
+import {
+  OrderCreatedDomainEvent,
+  OrderUpdatedDomainEvent,
+} from '@domain-events/order';
 import { CartIdValueObject } from '@value-objects/cart';
 import {
   OrderAddressValueObject,
@@ -10,6 +13,7 @@ import { UserIdValueObject } from '@value-objects/user';
 import {
   CreateOrderAggregateOptions,
   OrderAggregateDetails,
+  UpdateOrderAggregateOptions,
 } from './order.aggregate.interface';
 
 export class OrderAggregate
@@ -46,7 +50,21 @@ export class OrderAggregate
     });
   }
 
-  updateStatus(status: OrderStatusValueObject) {
-    this.status = status;
+  updateOrder(options: UpdateOrderAggregateOptions) {
+    const { address, status } = options;
+
+    if (address) {
+      this.address = address;
+    }
+
+    if (status) {
+      this.status = status;
+    }
+
+    return new OrderUpdatedDomainEvent({
+      id: this.id,
+      address: this.address,
+      status: this.status,
+    });
   }
 }

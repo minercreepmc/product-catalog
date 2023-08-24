@@ -21,6 +21,7 @@ import { RemoveProductsModule } from './remove-products.module';
 import { UpdateCartModule } from './update-cart.module';
 import { UpdateCategoryModule } from './update-category.module';
 import { UpdateDiscountModule } from './update-discount.module';
+import { UpdateOrderModule } from './update-order.module';
 import { UpdateProductModule } from './update-product.module';
 import { UploadModule } from './upload.module';
 
@@ -44,6 +45,7 @@ import { UploadModule } from './upload.module';
     UserQueryModule,
     CartQueryModule,
     CreateOrderModule,
+    UpdateOrderModule,
     EventHandlerModule,
     LogInModule,
     LogInAdminModule,

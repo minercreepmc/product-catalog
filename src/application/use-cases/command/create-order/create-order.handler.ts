@@ -33,6 +33,7 @@ export class CreateOrderHandler extends CommandHandlerBase<
     data: OrderCreatedDomainEvent,
   ): Promise<CreateOrderResponseDto> {
     return new CreateOrderResponseDto({
+      id: data.id.value,
       userId: data.userId.value,
       cartId: data.cartId.value,
       address: data.address.value,

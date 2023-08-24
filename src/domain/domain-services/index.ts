@@ -8,3 +8,5 @@ export * from './user-registration.domain-service';
 export * from './user-verification.domain-service';
 export * from './cart-management.domain-service';
 export * from './cart-verification.domain-service';
+export * from './order-management.domain-service';
+export * from './order-verification.domain-service';

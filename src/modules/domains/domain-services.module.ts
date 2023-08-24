@@ -4,6 +4,7 @@ import {
   CategoryVerificationDomainService,
   DiscountManagementDomainService,
   DiscountVerificationDomainService,
+  OrderVerificationDomainService,
   ProductManagementDomainService,
   UserRegistrationDomainService,
   UserVerificationDomainService,
@@ -35,6 +36,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     CartManagementDomainService,
     CartVerificationDomainService,
     OrderManagementDomainService,
+    OrderVerificationDomainService,
     // eventBus,
   ],
   exports: [
@@ -49,6 +51,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     CartManagementDomainService,
     CartVerificationDomainService,
     OrderManagementDomainService,
+    OrderVerificationDomainService,
   ],
 })
 export class DomainServicesModule {}

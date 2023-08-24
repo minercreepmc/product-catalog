@@ -24,11 +24,13 @@ export class CreateOrderCommand implements CommandBase {
 }
 
 export class CreateOrderResponseDto {
+  id: string;
   userId: string;
   cartId: string;
   address: string;
 
   constructor(options: CreateOrderResponseDto) {
+    this.id = options.id;
     this.userId = options.userId;
     this.cartId = options.cartId;
     this.address = options.address;

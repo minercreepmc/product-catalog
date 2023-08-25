@@ -12,7 +12,7 @@ import {
 import { CartVerificationDomainService } from '@domain-services/cart-verification.domain-service';
 import { OrderManagementDomainService } from '@domain-services/order-management.domain-service';
 import { ProductVerificationDomainService } from '@domain-services/product-verification.domain-service';
-import { EventBusAdapter } from '@infrastructures/events';
+//import { EventBusAdapter } from '@infrastructures/events';
 //import { eventBusDiToken } from '@domain-interfaces/events';
 
 import { Module } from '@nestjs/common';

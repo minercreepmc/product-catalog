@@ -25,6 +25,7 @@ export class ReadOnlyCartRepository
   }
 
   async findOneWithItems(userId: string): Promise<CartDetailsSchema> {
+    console.log(userId);
     const res = await this.databaseService.runQuery(
       `
         SELECT cart.user_id, cart.id, cart.total_price, cart_item.amount, product.name, product.price, product.id as product_id
@@ -36,6 +37,7 @@ export class ReadOnlyCartRepository
       [userId],
     );
 
+    console.log(res.rows[0]);
     const cartDetails: CartDetailsSchema = {
       id: res.rows[0].id,
       user_id: res.rows[0].user_id,

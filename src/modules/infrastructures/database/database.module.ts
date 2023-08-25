@@ -1,4 +1,5 @@
 import { readonlyCategoryRepositoryDiToken } from '@application/interface/category';
+import { readonlyOrderRepositoryDiToken } from '@application/interface/order';
 import {
   readOnlyCartRepositoryDiToken,
   readOnlyProductRepositoryDiToken,
@@ -31,6 +32,7 @@ import {
 import {
   OrderRepository,
   OrderSchemaMapper,
+  ReadOnlyOrderRepository,
 } from '@database/repositories/pg/order';
 import {
   ProductRepository,
@@ -90,6 +92,10 @@ const repositories: Provider[] = [
   {
     provide: orderRepositoryDiToken,
     useClass: OrderRepository,
+  },
+  {
+    provide: readonlyOrderRepositoryDiToken,
+    useClass: ReadOnlyOrderRepository,
   },
 ];
 

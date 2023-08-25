@@ -18,11 +18,11 @@ export class UserVerificationDomainService {
   }
 
   async findOneOrThrow(id: UserIdValueObject) {
-    const exist = await this.authService.doesUserIdExist(id);
+    const found = await this.authService.findOneById(id);
 
-    if (!exist) {
+    if (!found) {
       throw new UserDomainExceptions.DoesNotExist();
     }
-    return exist;
+    return found;
   }
 }

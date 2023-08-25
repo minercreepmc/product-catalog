@@ -62,15 +62,9 @@ export class UserRepository
   ): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
-      UPDATE "users" SET username=$2, password=$3, role=$4, full_name=$5 WHERE id=$1 AND deleted_at IS NULL 
+      UPDATE "users" SET full_name=$2, address=$3 WHERE id=$1 AND deleted_at IS NULL 
       `,
-      [
-        id,
-        newState.username,
-        newState.hashed,
-        newState.role,
-        newState.full_name,
-      ],
+      [id, newState.full_name, newState.address],
     );
 
     const updated = res.rows[0];

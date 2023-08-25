@@ -1,4 +1,5 @@
 import {
+  UserAddressValueObject,
   UserFullNameValueObject,
   UserIdValueObject,
   UserNameValueObject,
@@ -12,10 +13,17 @@ export interface UserAggregateDetails {
   password?: UserPasswordValueObject;
   role: UserRoleValueObject;
   fullName?: UserFullNameValueObject;
+  address?: UserAddressValueObject;
 }
 
 export interface RegisterUserAggregateOptions {
   username: UserNameValueObject;
   password: UserPasswordValueObject;
   fullName?: UserFullNameValueObject;
+}
+
+export interface UpdateUserProfileAggregateOptions {
+  fullName?: UserFullNameValueObject;
+  address?: UserAddressValueObject;
+  password?: UserPasswordValueObject;
 }

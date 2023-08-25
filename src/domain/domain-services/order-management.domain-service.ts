@@ -6,8 +6,11 @@ import {
 import {
   orderRepositoryDiToken,
   OrderRepositoryPort,
+  unitOfWorkDiToken,
+  UnitOfWorkPort,
 } from '@domain-interfaces/database';
 import { Inject, Injectable } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { OrderIdValueObject } from '@value-objects/order';
 import { OrderVerificationDomainService } from './order-verification.domain-service';
 
@@ -17,11 +20,19 @@ export class OrderManagementDomainService {
     @Inject(orderRepositoryDiToken)
     private readonly orderRepository: OrderRepositoryPort,
     private readonly orderVerification: OrderVerificationDomainService,
+    @Inject(unitOfWorkDiToken)
+    private readonly unitOfWork: UnitOfWorkPort,
+    private readonly eventBus: EventBus,
   ) {}
   async createOrder(options: CreateOrderAggregateOptions) {
-    const order = new OrderAggregate();
-    const orderCreated = order.createOrder(options);
-    await this.orderRepository.create(order);
+    const orderCreated = await this.unitOfWork.runInTransaction(async () => {
+      const order = new OrderAggregate();
+      const orderCreated = order.createOrder(options);
+      await this.orderRepository.create(order);
+      return orderCreated;
+    });
+
+    this.eventBus.publish(orderCreated);
     return orderCreated;
   }
 

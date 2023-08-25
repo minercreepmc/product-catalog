@@ -37,6 +37,11 @@ export namespace UserDomainExceptions {
     readonly code = UserDomainExceptionCodes.UsernameDoesNotValid;
   }
 
+  export class AddressDoesNotValid extends DomainExceptionBase {
+    readonly message = 'User address does not valid';
+    readonly code = UserDomainExceptionCodes.AddressDoesNotValid;
+  }
+
   export class PasswordDoesNotValid extends DomainExceptionBase {
     readonly message = 'User password does not valid';
     readonly code = UserDomainExceptionCodes.PasswordDoesNotValid;

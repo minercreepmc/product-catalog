@@ -24,6 +24,7 @@ import { UpdateCategoryModule } from './update-category.module';
 import { UpdateDiscountModule } from './update-discount.module';
 import { UpdateOrderModule } from './update-order.module';
 import { UpdateProductModule } from './update-product.module';
+import { UpdateProfileModule } from './update-profile.module';
 import { UploadModule } from './upload.module';
 
 @Module({
@@ -49,6 +50,7 @@ import { UploadModule } from './upload.module';
     UpdateOrderModule,
     OrderQueryModule,
     EventHandlerModule,
+    UpdateProfileModule,
     LogInModule,
     LogInAdminModule,
     UploadModule,

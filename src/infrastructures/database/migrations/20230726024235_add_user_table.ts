@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<void> {
       hashed varchar(255) not null,
       role varchar(250) not null,
       full_name varchar(250),
+      address varchar(250),
       created_at timestamp without time zone not null default now(),
       updated_at timestamp without time zone not null default now(),
       deleted_at timestamp without time zone

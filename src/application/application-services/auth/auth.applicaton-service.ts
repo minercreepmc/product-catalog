@@ -6,6 +6,7 @@ import {
 } from '@application/interface/user';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import {
+  UserAddressValueObject,
   UserFullNameValueObject,
   UserIdValueObject,
   UserNameValueObject,
@@ -31,6 +32,26 @@ export class AuthApplicationService implements AuthServicePort {
     private readonly configService: ConfigService,
   ) {}
 
+  async findOneById(id: UserIdValueObject): Promise<UserAggregate | null> {
+    const model = await this.userRepository.findOneById(id.value);
+
+    if (!model) {
+      return null;
+    }
+
+    return new UserAggregate({
+      id: new UserIdValueObject(model.id),
+      username: new UserNameValueObject(model.username),
+      fullName: model?.full_name
+        ? new UserFullNameValueObject(model.full_name)
+        : undefined,
+      role: new UserRoleValueObject(model.role),
+      address: model?.address
+        ? new UserAddressValueObject(model.address)
+        : undefined,
+    });
+  }
+
   async doesUserIdExist(id: UserIdValueObject): Promise<boolean> {
     const exist = await this.userRepository.findOneById(id.value);
     return Boolean(exist);
@@ -45,6 +66,18 @@ export class AuthApplicationService implements AuthServicePort {
       username: aggregate.username.value,
       full_name: aggregate.fullName ? aggregate.fullName.value : undefined,
       hashed,
+    });
+  }
+
+  async handleAuthAndUpdateToDb(aggregate: UserAggregate): Promise<void> {
+    let hashed: string;
+    if (aggregate.password) {
+      hashed = await bcrypt.hash(aggregate.password.value, 10);
+    }
+
+    await this.userRepository.updateOneById(aggregate.id.value, {
+      address: aggregate.address?.value,
+      full_name: aggregate.fullName?.value,
     });
   }
 
@@ -114,7 +147,12 @@ export class AuthApplicationService implements AuthServicePort {
       id: new UserIdValueObject(userSchema?.id),
       role: new UserRoleValueObject(userSchema.role),
       username: new UserNameValueObject(userSchema.username),
-      fullName: new UserFullNameValueObject(userSchema.full_name),
+      fullName: userSchema.full_name
+        ? new UserFullNameValueObject(userSchema.full_name)
+        : undefined,
+      address: userSchema.address
+        ? new UserAddressValueObject(userSchema.address)
+        : undefined,
     });
   }
 }

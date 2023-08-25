@@ -5,7 +5,10 @@ import {
   V1UpdateProductHttpRequest,
   V1UpdateProductHttpResponse,
 } from '@api/http';
-import { JwtAuthenticationGuard, MockAuthGuard } from '@application/application-services/auth';
+import {
+  JwtAuthenticationGuard,
+  MockAuthGuard,
+} from '@application/application-services/auth';
 import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

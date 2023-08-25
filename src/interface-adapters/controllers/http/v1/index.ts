@@ -9,6 +9,7 @@ export * from './update-product.http.controller.v1';
 export * from './update-discount.http.controller.v1';
 export * from './update-category.http.controller.v1';
 export * from './update-order.http.controller.v1';
+export * from './update-profile.http.controller.v1';
 export * from './remove-products.http.controller.v1';
 export * from './remove-discounts.http.controller.v1';
 export * from './remove-categories.http.controler.v1';

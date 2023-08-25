@@ -7,6 +7,7 @@ export * from './register-admin.http.dto.v1';
 export * from './update-product.http.dto.v1';
 export * from './update-discount.http.dto.v1';
 export * from './update-category.http.dto.v1';
+export * from './update-profile.http.dto.v1';
 export * from './remove-products.http.dto.v1';
 export * from './remove-discounts.http.dto.v1';
 export * from './remove-categories.http.dto.v1';

@@ -2,8 +2,10 @@ import { AggregateRootBase } from '@base/domain';
 import {
   AdminRegisteredDomainEvent,
   MemberRegisteredDomainEvent,
+  ProfileUpdatedDomainEvent,
 } from '@domain-events/user';
 import {
+  UserAddressValueObject,
   UserFullNameValueObject,
   UserIdValueObject,
   UserNameValueObject,
@@ -12,6 +14,7 @@ import {
 } from '@value-objects/user';
 import {
   RegisterUserAggregateOptions,
+  UpdateUserProfileAggregateOptions,
   UserAggregateDetails,
 } from './user.aggregate.interface';
 
@@ -31,6 +34,7 @@ export class UserAggregate implements AggregateRootBase, UserAggregateDetails {
   password?: UserPasswordValueObject;
   role: UserRoleValueObject;
   fullName?: UserFullNameValueObject;
+  address?: UserAddressValueObject;
   id: UserIdValueObject;
 
   registerMember(options: RegisterUserAggregateOptions) {
@@ -61,6 +65,28 @@ export class UserAggregate implements AggregateRootBase, UserAggregateDetails {
       id: this.id,
       username,
       role: this.role,
+      fullName: this.fullName,
+    });
+  }
+
+  updateProfile(options: UpdateUserProfileAggregateOptions) {
+    const { fullName, address, password } = options;
+
+    if (fullName) {
+      this.fullName = fullName;
+    }
+
+    if (address) {
+      this.address = address;
+    }
+
+    if (password) {
+      this.password = password;
+    }
+
+    return new ProfileUpdatedDomainEvent({
+      id: this.id,
+      address: this.address,
       fullName: this.fullName,
     });
   }

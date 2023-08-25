@@ -26,4 +26,5 @@ export const v1ApiEndpoints = {
   logOut: `${prefix}/log-out`,
   logInAdmin: `${prefix}/log-in-admin`,
   getProfile: `${prefix}/profile`,
+  updateProfile: `${prefix}/profile/:id`,
 };

@@ -23,4 +23,21 @@ export class ReadOnlyOrderRepository implements ReadOnlyOrderRepositoryPort {
   findAll(filter: PaginationParams): Promise<OrderSchema[]> {
     throw new Error('Method not implemented.');
   }
+
+  async findByUserId(
+    userId: string,
+    filter?: PaginationParams | undefined,
+  ): Promise<OrderSchema[] | null> {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT * FROM orders 
+        WHERE user_id = $1
+        ORDER BY updated_at ASC
+        OFFSET $2 LIMIT $3;
+      `,
+      [userId, filter?.offset, filter?.limit],
+    );
+
+    return res.rows;
+  }
 }

@@ -1,17 +1,17 @@
 import { OrderAggregate } from '@aggregates/order';
 import { DomainEventBase } from '@base/domain';
-import { CartIdValueObject } from '@value-objects/cart';
 import {
   OrderAddressValueObject,
   OrderIdValueObject,
+  OrderTotalPriceValueObject,
 } from '@value-objects/order';
 import { UserIdValueObject } from '@value-objects/user';
 
 export interface OrderCreatedDomainEventDetails {
   id: OrderIdValueObject;
   userId: UserIdValueObject;
-  cartId: CartIdValueObject;
   address: OrderAddressValueObject;
+  totalPrice: OrderTotalPriceValueObject;
 }
 
 export class OrderCreatedDomainEvent
@@ -25,12 +25,12 @@ export class OrderCreatedDomainEvent
     });
     this.id = options.id;
     this.userId = options.userId;
-    this.cartId = options.cartId;
     this.address = options.address;
+    this.totalPrice = options.totalPrice;
   }
 
   id: OrderIdValueObject;
   userId: UserIdValueObject;
-  cartId: CartIdValueObject;
   address: OrderAddressValueObject;
+  totalPrice: OrderTotalPriceValueObject;
 }

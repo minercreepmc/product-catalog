@@ -4,7 +4,7 @@ import {
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
   V1GetCartHttpResponse,
-  V1GetOrderHttpResponse,
+  V1GetOrdersHttpResponse,
   V1RegisterAdminHttpRequest,
   V1RegisterMemberHttpRequest,
   V1UpdateCartHttpRequest,
@@ -15,7 +15,7 @@ import { AppModule } from '@src/app.module';
 import { getCookieFromHeader, randomString } from '@utils/functions';
 import * as request from 'supertest';
 
-describe('Get order', () => {
+describe('Get orders', () => {
   let app: INestApplication;
   const registerMemberUrl = v1ApiEndpoints.registerMember;
   const registerAdminUrl = v1ApiEndpoints.registerAdmin;
@@ -24,7 +24,7 @@ describe('Get order', () => {
   const createProductUrl = v1ApiEndpoints.createProduct;
   const updateCartUrl = v1ApiEndpoints.updateCart;
   const createOrderUrl = v1ApiEndpoints.createOrder;
-  const getOrderUrl = v1ApiEndpoints.getOrder;
+  const getOrdersUrl = v1ApiEndpoints.getOrders;
   const getCartUrl = v1ApiEndpoints.getCart;
 
   const apiKey = process.env.API_KEY!;
@@ -136,7 +136,7 @@ describe('Get order', () => {
 
     const createOrderRequest: V1CreateOrderHttpRequest = {
       address: randomString(),
-      totalPrice: 2,
+      totalPrice: product.price * 2,
     };
 
     const createOrderResponse = await request(app.getHttpServer())
@@ -146,17 +146,19 @@ describe('Get order', () => {
       .send(createOrderRequest)
       .expect(HttpStatus.CREATED);
 
-    const getOrderResponse = await request(app.getHttpServer())
-      .get(getOrderUrl.replace(':id', createOrderResponse.body.id))
+    const getOrdersResponse = await request(app.getHttpServer())
+      .get(getOrdersUrl)
       .set('Accept', 'application/json')
       .set('Cookie', memberCookie)
       .expect(HttpStatus.OK);
 
-    const getOrderBody = getOrderResponse.body as V1GetOrderHttpResponse;
+    const getOrdersBody = getOrdersResponse.body as V1GetOrdersHttpResponse;
 
-    expect(getOrderBody.id).toBe(createOrderResponse.body.id);
-    expect(getOrderBody.address).toBe(createOrderRequest.address);
-    expect(getOrderBody.total_price).toBe(createOrderRequest.totalPrice);
+    expect(getOrdersBody.orders[0].id).toBe(createOrderResponse.body.id);
+    expect(getOrdersBody.orders[0].address).toBe(createOrderRequest.address);
+    expect(getOrdersBody.orders[0].total_price).toBe(
+      createOrderRequest.totalPrice
+    )
   });
 
   // Add more test cases for other routes, if needed.

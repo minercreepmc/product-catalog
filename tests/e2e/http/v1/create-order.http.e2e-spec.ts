@@ -2,10 +2,8 @@ import {
   v1ApiEndpoints,
   V1CreateOrderHttpRequest,
   V1CreateOrderHttpResponse,
-  V1GetCartHttpResponse,
   V1RegisterMemberHttpRequest,
 } from '@api/http';
-import { CartDomainExceptions } from '@domain-exceptions/cart';
 import { OrderDomainExceptions } from '@domain-exceptions/order';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -22,7 +20,6 @@ describe('Create order', () => {
   const createOrderUrl = v1ApiEndpoints.createOrder;
   const registerMemberUrl = v1ApiEndpoints.registerMember;
   const loginUrl = v1ApiEndpoints.logIn;
-  const getCartUrl = v1ApiEndpoints.getCart;
   let cookie: any;
 
   beforeAll(async () => {
@@ -59,8 +56,8 @@ describe('Create order', () => {
 
   it('Should not create a order if the request is invalid', async () => {
     const createOrderRequest: V1CreateOrderHttpRequest = {
-      cartId: '',
       address: '',
+      totalPrice: 0,
     };
 
     const response = await request(app.getHttpServer())
@@ -72,24 +69,16 @@ describe('Create order', () => {
 
     expect(response.body.message).toIncludeAllMembers(
       mapDomainExceptionsToObjects([
-        new CartDomainExceptions.IdDoesNotValid(),
+        new OrderDomainExceptions.TotalPriceDoesNotValid(),
         new OrderDomainExceptions.AddressDoesNotValid(),
       ]),
     );
   });
 
   it('Should create an order', async () => {
-    const getCartResponse = await request(app.getHttpServer())
-      .get(getCartUrl)
-      .set('Accept', 'application/json')
-      .set('Cookie', cookie)
-      .expect(HttpStatus.OK);
-
-    const { id: cartId } = getCartResponse.body as V1GetCartHttpResponse;
-
     const createOrderRequest: V1CreateOrderHttpRequest = {
-      cartId,
       address: randomString(),
+      totalPrice: 12,
     };
 
     const createOrderResponse = await request(app.getHttpServer())
@@ -102,8 +91,10 @@ describe('Create order', () => {
     const createOrderResponseBody =
       createOrderResponse.body as V1CreateOrderHttpResponse;
 
-    expect(createOrderResponseBody.cartId).toBe(createOrderRequest.cartId);
     expect(createOrderResponseBody.address).toBe(createOrderRequest.address);
+    expect(createOrderResponseBody.totalPrice).toBe(
+      createOrderRequest.totalPrice,
+    );
   });
 
   // Add more test cases for other routes, if needed.

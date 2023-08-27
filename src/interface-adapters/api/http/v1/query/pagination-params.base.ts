@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, Min } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class PaginationParams {
   @IsOptional()

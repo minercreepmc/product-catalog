@@ -23,8 +23,10 @@ import {
   CreateOrderCommand,
   CreateOrderResponseDto,
 } from '@use-cases/command/create-order';
-import { CartIdValueObject } from '@value-objects/cart';
-import { OrderAddressValueObject } from '@value-objects/order';
+import {
+  OrderAddressValueObject,
+  OrderTotalPriceValueObject,
+} from '@value-objects/order';
 import { UserIdValueObject } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
@@ -51,11 +53,11 @@ export class V1CreateOrderHttpController extends HttpControllerBase<
     request,
     user,
   }: HttpControllerBaseOption<V1CreateOrderHttpRequest>): CreateOrderCommand {
-    const { cartId, address } = request!;
+    const { address, totalPrice } = request!;
     return new CreateOrderCommand({
-      cartId: new CartIdValueObject(cartId),
       address: new OrderAddressValueObject(address),
       userId: new UserIdValueObject(user!.id),
+      totalPrice: new OrderTotalPriceValueObject(totalPrice),
     });
   }
   extractResult(result: any): V1CreateOrderHttpResponse {

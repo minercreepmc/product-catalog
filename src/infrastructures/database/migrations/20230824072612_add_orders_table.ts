@@ -9,8 +9,8 @@ export async function up(knex: Knex): Promise<void> {
       updated_at timestamp without time zone not null default now(),
       deleted_at timestamp without time zone,
       user_id varchar(255) REFERENCES users(id),
-      cart_id varchar(255) REFERENCES cart(id),
       address varchar(255) not null, 
+      total_price float not null,
       status varchar(255) not null
     );
   `);

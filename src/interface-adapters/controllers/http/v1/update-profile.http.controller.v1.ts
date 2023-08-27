@@ -47,24 +47,22 @@ export class V1UpdateProfileHttpController extends HttpControllerBase<
 
   @Put()
   execute(
-    @Param('id') id: string,
     @Body() request: V1UpdateProfileHttpRequest,
     @Req() { user }: RequestWithUser,
   ) {
     return super._execute({
       user,
       request,
-      param: id,
     });
   }
 
   toCommand(
     options: HttpControllerBaseOption<V1UpdateProfileHttpRequest>,
   ): UpdateProfileCommand {
-    const { param, request } = options;
+    const { request, user } = options;
     const { fullName, address } = request!;
     return new UpdateProfileCommand({
-      id: new UserIdValueObject(param!),
+      id: new UserIdValueObject(user!.id),
       fullName: fullName ? new UserFullNameValueObject(fullName) : undefined,
       address: address ? new UserAddressValueObject(address) : undefined,
     });

@@ -21,4 +21,9 @@ export namespace OrderDomainExceptions {
     readonly message = 'Does not exist';
     readonly code = OrderDomainExceptionCodes.DoesNotExist;
   }
+
+  export class TotalPriceDoesNotValid implements DomainExceptionBase {
+    readonly message = 'Total price is not valid';
+    readonly code = OrderDomainExceptionCodes.TotalPriceDoesNotValid;
+  }
 }

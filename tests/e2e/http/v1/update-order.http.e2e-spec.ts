@@ -82,17 +82,9 @@ describe('Update order', () => {
   });
 
   it('Should update an order', async () => {
-    const getCartResponse = await request(app.getHttpServer())
-      .get(getCartUrl)
-      .set('Accept', 'application/json')
-      .set('Cookie', cookie)
-      .expect(HttpStatus.OK);
-
-    const { id: cartId } = getCartResponse.body as V1GetCartHttpResponse;
-
     const createOrderRequest: V1CreateOrderHttpRequest = {
-      cartId,
       address: randomString(),
+      totalPrice: 100,
     };
 
     const createOrderResponse = await request(app.getHttpServer())
@@ -105,8 +97,10 @@ describe('Update order', () => {
     const createOrderResponseBody =
       createOrderResponse.body as V1CreateOrderHttpResponse;
 
-    expect(createOrderResponseBody.cartId).toBe(createOrderRequest.cartId);
     expect(createOrderResponseBody.address).toBe(createOrderRequest.address);
+    expect(createOrderResponseBody.totalPrice).toBe(
+      createOrderRequest.totalPrice,
+    );
 
     const updateOrderRequest: V1UpdateOrderHttpRequest = {
       status: OrderStatusEnum.SHIPPING,

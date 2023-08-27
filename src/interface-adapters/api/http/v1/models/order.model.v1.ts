@@ -3,8 +3,8 @@ import { OrderStatusEnum } from '@value-objects/order';
 
 export class V1OrderModel implements OrderSchema {
   user_id: string;
-  cart_id: string;
   address: string;
   status: OrderStatusEnum;
+  total_price: number;
   id: string;
 }

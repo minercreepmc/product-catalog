@@ -17,6 +17,7 @@ export * from './get-product.http.dto.v1';
 export * from './get-products.http.dto.v1';
 export * from './get-cart.http.dto.v1';
 export * from './get-order.http.dto.v1';
+export * from './get-orders.http.dto.v1';
 export * from './log-in.http.dto.v1';
 export * from './log-in-admin.dto.v1';
 export * from './create-cart.http.dto.v1';

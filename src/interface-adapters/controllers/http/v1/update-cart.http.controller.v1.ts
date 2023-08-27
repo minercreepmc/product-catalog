@@ -48,7 +48,6 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
   @UseGuards(JwtAuthenticationGuard)
   @Roles(UserRoleEnum.Admin)
   execute(@Req() req: RequestWithUser, @Body() body: V1UpdateCartHttpRequest) {
-    console.log(body);
     return super._execute({
       request: body,
       user: req.user,

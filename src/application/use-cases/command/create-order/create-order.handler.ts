@@ -25,8 +25,8 @@ export class CreateOrderHandler extends CommandHandlerBase<
 
     return this.orderManagementService.createOrder({
       userId: command.userId,
-      cartId: command.cartId,
       address: command.address,
+      totalPrice: command.totalPrice,
     });
   }
   async toResponseDto(
@@ -35,8 +35,8 @@ export class CreateOrderHandler extends CommandHandlerBase<
     return new CreateOrderResponseDto({
       id: data.id.value,
       userId: data.userId.value,
-      cartId: data.cartId.value,
       address: data.address.value,
+      totalPrice: data.totalPrice.value,
     });
   }
 }

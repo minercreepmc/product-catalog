@@ -1,8 +1,8 @@
-import { CartIdValueObject } from '@value-objects/cart';
 import {
   OrderAddressValueObject,
   OrderIdValueObject,
   OrderStatusValueObject,
+  OrderTotalPriceValueObject,
 } from '@value-objects/order';
 import { UserIdValueObject } from '@value-objects/user';
 
@@ -10,14 +10,14 @@ export interface OrderAggregateDetails {
   id: OrderIdValueObject;
   address: OrderAddressValueObject;
   status: OrderStatusValueObject;
+  totalPrice: OrderTotalPriceValueObject;
   userId: UserIdValueObject;
-  cartId: CartIdValueObject;
 }
 
 export interface CreateOrderAggregateOptions {
   address: OrderAddressValueObject;
   userId: UserIdValueObject;
-  cartId: CartIdValueObject;
+  totalPrice: OrderTotalPriceValueObject;
 }
 
 export interface UpdateOrderAggregateOptions {

@@ -16,6 +16,7 @@ export const v1ApiEndpoints = {
   getCategory: `${prefix}/categories/:id`,
   getCart: `${prefix}/cart`,
   getOrder: `${prefix}/order/:id`,
+  getOrders: `${prefix}/order`,
   registerMember: `${prefix}/register`,
   registerAdmin: `${prefix}/register-admin`,
   createCart: `${prefix}/cart`,
@@ -26,5 +27,5 @@ export const v1ApiEndpoints = {
   logOut: `${prefix}/log-out`,
   logInAdmin: `${prefix}/log-in-admin`,
   getProfile: `${prefix}/profile`,
-  updateProfile: `${prefix}/profile/:id`,
+  updateProfile: `${prefix}/profile`,
 };

@@ -1,3 +1,4 @@
+import { PaginationParams } from '@api/http';
 import { UserRepositoryPort } from '@application/interface/user';
 import { ApplicationRepositoryBase } from '@base/database/repositories/pg';
 import { DatabaseService } from '@config/pg';
@@ -83,6 +84,18 @@ export class UserRepository
     const model = res.rows[0];
 
     return model;
+  }
+
+  async findAll(filter?: PaginationParams): Promise<UserSchema[]> {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT * from "users" WHERE deleted_at IS NULL
+      OFFSET $1 LIMIT $2
+      `,
+      [filter?.offset, filter?.limit],
+    );
+
+    return res.rows;
   }
 
   constructor(databaseService: DatabaseService) {

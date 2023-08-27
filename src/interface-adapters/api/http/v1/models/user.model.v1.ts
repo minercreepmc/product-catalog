@@ -1,4 +1,4 @@
-export class UserModel {
+export class V1UserModel {
   username: string;
   password: string;
   role: string;
@@ -7,5 +7,5 @@ export class UserModel {
 }
 
 export class RequestWithUser {
-  user: UserModel;
+  user: V1UserModel;
 }

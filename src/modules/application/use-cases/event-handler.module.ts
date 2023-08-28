@@ -4,10 +4,15 @@ import { CqrsModule } from '@nestjs/cqrs';
 import {
   MemberRegisteredEventHandler,
   OrderCreatedEventHandler,
+  OrderUpdatedEventHandler,
 } from '@use-cases/event-handlers';
 
 @Module({
   imports: [CqrsModule, DomainServicesModule],
-  providers: [MemberRegisteredEventHandler, OrderCreatedEventHandler],
+  providers: [
+    MemberRegisteredEventHandler,
+    OrderCreatedEventHandler,
+    OrderUpdatedEventHandler,
+  ],
 })
 export class EventHandlerModule {}

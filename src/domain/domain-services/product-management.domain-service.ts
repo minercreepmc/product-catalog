@@ -89,4 +89,17 @@ export class ProductManagementDomainService {
       return productsRemovedEvent;
     });
   }
+
+  async increaseSold(
+    id: ProductIdValueObject,
+  ): Promise<ProductUpdatedDomainEvent> {
+    return this.unitOfWork.runInTransaction(async () => {
+      const product = await this.productVerificationService.findProductOrThrow(
+        id,
+      );
+      const productUpdated = product.increaseSold();
+      await this.productRepository.updateOneById(id, product);
+      return productUpdated;
+    });
+  }
 }

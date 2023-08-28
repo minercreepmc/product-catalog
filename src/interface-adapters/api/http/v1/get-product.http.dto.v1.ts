@@ -16,6 +16,7 @@ export class V1GetProductHttpResponse {
     name: string;
     description?: string;
   }[];
+  sold: number;
   name: string;
   price: number;
   description?: string;

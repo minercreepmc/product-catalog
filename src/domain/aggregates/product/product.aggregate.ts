@@ -119,6 +119,23 @@ export class ProductAggregate
       description: this.description,
       image: this.image,
       discountId: this.discountId,
+      categoryIds: this.categoryIds,
+    });
+  }
+
+  increaseSold() {
+    const currentSold = this.sold!.value;
+    this.sold = new ProductSoldValueObject(currentSold + 1);
+
+    return new ProductUpdatedDomainEvent({
+      id: this.id,
+      name: this.name,
+      price: this.price,
+      description: this.description,
+      sold: this.sold,
+      image: this.image,
+      discountId: this.discountId,
+      categoryIds: this.categoryIds,
     });
   }
 }

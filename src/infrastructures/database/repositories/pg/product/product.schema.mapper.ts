@@ -70,7 +70,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
         ? new DiscountIdValueObject(discount_id)
         : undefined,
       categoryIds: category_ids?.map?.((id) => new CategoryIdValueObject(id)),
-      sold: sold ? new ProductSoldValueObject(sold) : undefined,
+      sold: new ProductSoldValueObject(sold),
     });
   }
 }

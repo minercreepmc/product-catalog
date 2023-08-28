@@ -69,6 +69,7 @@ export class OrderAggregate
       id: this.id,
       address: this.address,
       status: this.status,
+      productIds: this.productIds,
     });
   }
 }

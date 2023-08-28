@@ -5,11 +5,13 @@ import {
   OrderIdValueObject,
   OrderStatusValueObject,
 } from '@value-objects/order';
+import { ProductIdValueObject } from '@value-objects/product';
 
 export interface OrderUpdatedDomainEventDetails {
   id: OrderIdValueObject;
   address: OrderAddressValueObject;
   status: OrderStatusValueObject;
+  productIds: ProductIdValueObject[];
 }
 
 export class OrderUpdatedDomainEvent
@@ -24,9 +26,11 @@ export class OrderUpdatedDomainEvent
     this.id = options.id;
     this.address = options.address;
     this.status = options.status;
+    this.productIds = options.productIds;
   }
 
   id: OrderIdValueObject;
   address: OrderAddressValueObject;
   status: OrderStatusValueObject;
+  productIds: ProductIdValueObject[];
 }

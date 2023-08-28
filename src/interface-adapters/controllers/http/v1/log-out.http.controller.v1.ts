@@ -11,12 +11,10 @@ import {
   Inject,
   Post,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 
 @Controller(v1ApiEndpoints.logOut)
-@UseGuards(JwtAuthenticationGuard)
 export class V1LogOutHttpController {
   constructor(
     @Inject(authServiceDiToken) private readonly authService: AuthServicePort,

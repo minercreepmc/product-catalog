@@ -2,7 +2,9 @@ import {
   v1ApiEndpoints,
   V1CreateOrderHttpRequest,
   V1CreateOrderHttpResponse,
-  V1GetCartHttpResponse,
+  V1CreateProductHttpRequest,
+  V1CreateProductHttpResponse,
+  V1GetProductHttpResponse,
   V1RegisterMemberHttpRequest,
   V1UpdateOrderHttpRequest,
   V1UpdateOrderHttpResponse,
@@ -24,9 +26,15 @@ describe('Update order', () => {
   const createOrderUrl = v1ApiEndpoints.createOrder;
   const updateOrderUrl = v1ApiEndpoints.updateOrder;
   const registerMemberUrl = v1ApiEndpoints.registerMember;
+  const registerAdminUrl = v1ApiEndpoints.registerAdmin;
+  const loginAdminUrl = v1ApiEndpoints.logInAdmin;
   const loginUrl = v1ApiEndpoints.logIn;
-  const getCartUrl = v1ApiEndpoints.getCart;
-  let cookie: any;
+  const createProductUrl = v1ApiEndpoints.createProduct;
+  const getProductUrl = v1ApiEndpoints.getProduct;
+  let memberCookie: any;
+  let adminCookie: any;
+  const apiKey = process.env.API_KEY!;
+  let product: any;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -53,7 +61,42 @@ describe('Update order', () => {
       .send(registerMemberRequest)
       .expect(HttpStatus.OK);
 
-    cookie = getCookieFromHeader(loginResponse.header);
+    const registerAdminRequest: V1RegisterMemberHttpRequest = {
+      username: randomString(),
+      password: 'Orasdad12312+++',
+    };
+
+    await request(app.getHttpServer())
+      .post(registerAdminUrl)
+      .send(registerAdminRequest)
+      .set('Accept', 'application/json')
+      .set('X-API-KEY', apiKey)
+      .expect(HttpStatus.CREATED);
+
+    const loginAdminResponse = await request(app.getHttpServer())
+      .post(loginAdminUrl)
+      .send(registerAdminRequest)
+      .set('Accept', 'application/json')
+      .set('X-API-KEY', apiKey)
+      .expect(HttpStatus.OK);
+
+    const createProductRequest: V1CreateProductHttpRequest = {
+      name: randomString(),
+      price: 5.99,
+    };
+
+    memberCookie = getCookieFromHeader(loginResponse.header);
+    adminCookie = getCookieFromHeader(loginAdminResponse.header);
+
+    const createProductResponse = await request(app.getHttpServer())
+      .post(createProductUrl)
+      .send(createProductRequest)
+      .set('Accept', 'application/json')
+      .set('X-API-KEY', apiKey)
+      .set('Cookie', adminCookie)
+      .expect(HttpStatus.CREATED);
+
+    product = createProductResponse.body as V1CreateProductHttpResponse;
   });
 
   afterAll(async () => {
@@ -70,7 +113,7 @@ describe('Update order', () => {
       .put(updateOrderUrl.replace(':id', randomString()))
       .set('Accept', 'application/json')
       .send(updateOrderRequest)
-      .set('Cookie', cookie)
+      .set('Cookie', memberCookie)
       .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
     expect(response.body.message).toIncludeAllMembers(
@@ -85,13 +128,14 @@ describe('Update order', () => {
     const createOrderRequest: V1CreateOrderHttpRequest = {
       address: randomString(),
       totalPrice: 100,
+      productIds: [product.id],
     };
 
     const createOrderResponse = await request(app.getHttpServer())
       .post(createOrderUrl)
       .send(createOrderRequest)
       .set('Accept', 'application/json')
-      .set('Cookie', cookie)
+      .set('Cookie', memberCookie)
       .expect(HttpStatus.CREATED);
 
     const createOrderResponseBody =
@@ -103,7 +147,7 @@ describe('Update order', () => {
     );
 
     const updateOrderRequest: V1UpdateOrderHttpRequest = {
-      status: OrderStatusEnum.SHIPPING,
+      status: OrderStatusEnum.COMPLETED,
       address: randomString(),
     };
 
@@ -111,7 +155,7 @@ describe('Update order', () => {
       .put(updateOrderUrl.replace(':id', createOrderResponseBody.id))
       .send(updateOrderRequest)
       .set('Accept', 'application/json')
-      .set('Cookie', cookie)
+      .set('Cookie', memberCookie)
       .expect(HttpStatus.OK);
 
     const updateOrderResponseBody =
@@ -119,6 +163,18 @@ describe('Update order', () => {
 
     expect(updateOrderResponseBody.status).toBe(updateOrderRequest.status);
     expect(updateOrderResponseBody.address).toBe(updateOrderRequest.address);
+
+    // should increase sold count if "COMPLETE"
+
+    const getProductResponse = await request(app.getHttpServer())
+      .get(getProductUrl.replace(':id', product.id))
+      .set('Accept', 'application/json')
+      .expect(HttpStatus.OK);
+
+    const getProductResponseBody =
+      getProductResponse.body as V1GetProductHttpResponse;
+
+    expect(getProductResponseBody.sold).toBe(1);
   });
 
   // Add more test cases for other routes, if needed.

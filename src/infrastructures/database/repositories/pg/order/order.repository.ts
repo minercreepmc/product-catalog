@@ -78,7 +78,9 @@ export class OrderRepository
     const model = this.mapper.toPersistance({ id });
     const res = await this.databaseService.runQuery(
       `
-        SELECT * FROM orders WHERE id = $1;
+        SELECT *, ARRAY[product_orders.product_id] as product_ids FROM orders
+        JOIN product_orders ON orders.id = product_orders.order_id
+        WHERE id = $1;
       `,
       [model.id],
     );

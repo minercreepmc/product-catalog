@@ -2,9 +2,13 @@ import {
   v1ApiEndpoints,
   V1CreateOrderHttpRequest,
   V1CreateOrderHttpResponse,
+  V1CreateProductHttpRequest,
+  V1CreateProductHttpResponse,
+  V1RegisterAdminHttpRequest,
   V1RegisterMemberHttpRequest,
 } from '@api/http';
 import { OrderDomainExceptions } from '@domain-exceptions/order';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -19,8 +23,14 @@ describe('Create order', () => {
   let app: INestApplication;
   const createOrderUrl = v1ApiEndpoints.createOrder;
   const registerMemberUrl = v1ApiEndpoints.registerMember;
+  const registerAdminUrl = v1ApiEndpoints.registerAdmin;
+  const loginAdminUrl = v1ApiEndpoints.logInAdmin;
+  const createProductUrl = v1ApiEndpoints.createProduct;
   const loginUrl = v1ApiEndpoints.logIn;
-  let cookie: any;
+  let memberCookie: any;
+  let adminCookie: any;
+  const apiKey = process.env.API_KEY!;
+  let productId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -47,7 +57,43 @@ describe('Create order', () => {
       .send(registerMemberRequest)
       .expect(HttpStatus.OK);
 
-    cookie = getCookieFromHeader(loginResponse.header);
+    const registerAdminRequest: V1RegisterAdminHttpRequest = {
+      username: randomString(),
+      password: 'Orasdad12312+++',
+    };
+
+    await request(app.getHttpServer())
+      .post(registerAdminUrl)
+      .send(registerAdminRequest)
+      .set('Accept', 'application/json')
+      .set('X-API-KEY', apiKey)
+      .expect(HttpStatus.CREATED);
+
+    const loginAdminResponse = await request(app.getHttpServer())
+      .post(loginAdminUrl)
+      .send(registerAdminRequest)
+      .set('Accept', 'application/json')
+      .expect(HttpStatus.OK);
+
+    memberCookie = getCookieFromHeader(loginResponse.header);
+    adminCookie = getCookieFromHeader(loginAdminResponse.header);
+
+    const createProductRequest: V1CreateProductHttpRequest = {
+      name: randomString(),
+      price: 5.99,
+    };
+
+    const createProductResponse = await request(app.getHttpServer())
+      .post(createProductUrl)
+      .send(createProductRequest)
+      .set('Accept', 'application/json')
+      .set('Cookie', adminCookie)
+      .expect(HttpStatus.CREATED);
+
+    const createProductResponseBody =
+      createProductResponse.body as V1CreateProductHttpResponse;
+
+    productId = createProductResponseBody.id;
   });
 
   afterAll(async () => {
@@ -58,19 +104,21 @@ describe('Create order', () => {
     const createOrderRequest: V1CreateOrderHttpRequest = {
       address: '',
       totalPrice: 0,
+      productIds: [''],
     };
 
     const response = await request(app.getHttpServer())
       .post(createOrderUrl)
       .set('Accept', 'application/json')
       .send(createOrderRequest)
-      .set('Cookie', cookie)
+      .set('Cookie', memberCookie)
       .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
     expect(response.body.message).toIncludeAllMembers(
       mapDomainExceptionsToObjects([
         new OrderDomainExceptions.TotalPriceDoesNotValid(),
         new OrderDomainExceptions.AddressDoesNotValid(),
+        new ProductDomainExceptions.IdDoesNotValid(),
       ]),
     );
   });
@@ -79,13 +127,14 @@ describe('Create order', () => {
     const createOrderRequest: V1CreateOrderHttpRequest = {
       address: randomString(),
       totalPrice: 12,
+      productIds: [productId],
     };
 
     const createOrderResponse = await request(app.getHttpServer())
       .post(createOrderUrl)
       .set('Accept', 'application/json')
       .send(createOrderRequest)
-      .set('Cookie', cookie)
+      .set('Cookie', memberCookie)
       .expect(HttpStatus.CREATED);
 
     const createOrderResponseBody =
@@ -95,6 +144,7 @@ describe('Create order', () => {
     expect(createOrderResponseBody.totalPrice).toBe(
       createOrderRequest.totalPrice,
     );
+    expect(createOrderResponseBody.productIds).toIncludeAllMembers([productId]);
   });
 
   // Add more test cases for other routes, if needed.

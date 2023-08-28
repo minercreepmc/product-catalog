@@ -9,6 +9,7 @@ import {
   ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
+  ProductSoldValueObject,
 } from '@value-objects/product';
 import { plainToInstance } from 'class-transformer';
 import { ProductSchema } from './product.schema';
@@ -19,8 +20,16 @@ export class ProductSchemaMapper extends SchemaMapperBase<
   ProductSchema
 > {
   toPersistance(product: Partial<ProductAggregate>): Partial<ProductSchema> {
-    const { id, name, image, price, description, discountId, categoryIds } =
-      product;
+    const {
+      id,
+      name,
+      image,
+      price,
+      description,
+      discountId,
+      categoryIds,
+      sold,
+    } = product;
 
     const model: Partial<ProductSchema> = {
       id: id?.value,
@@ -31,6 +40,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
       //  category_id: categoryId?.value,
       discount_id: discountId?.value,
       category_ids: categoryIds?.map?.((id) => id.value) || [],
+      sold: sold?.value,
     };
 
     return plainToInstance(ProductSchema, model);
@@ -45,6 +55,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
       description,
       discount_id,
       category_ids,
+      sold,
     } = model;
 
     return new ProductAggregate({
@@ -59,6 +70,7 @@ export class ProductSchemaMapper extends SchemaMapperBase<
         ? new DiscountIdValueObject(discount_id)
         : undefined,
       categoryIds: category_ids?.map?.((id) => new CategoryIdValueObject(id)),
+      sold: sold ? new ProductSoldValueObject(sold) : undefined,
     });
   }
 }

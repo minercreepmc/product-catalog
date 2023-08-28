@@ -27,6 +27,7 @@ import {
   OrderAddressValueObject,
   OrderTotalPriceValueObject,
 } from '@value-objects/order';
+import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject } from '@value-objects/user';
 import { match } from 'oxide.ts';
 
@@ -53,11 +54,12 @@ export class V1CreateOrderHttpController extends HttpControllerBase<
     request,
     user,
   }: HttpControllerBaseOption<V1CreateOrderHttpRequest>): CreateOrderCommand {
-    const { address, totalPrice } = request!;
+    const { address, totalPrice, productIds } = request!;
     return new CreateOrderCommand({
       address: new OrderAddressValueObject(address),
       userId: new UserIdValueObject(user!.id),
       totalPrice: new OrderTotalPriceValueObject(totalPrice),
+      productIds: productIds.map((e) => new ProductIdValueObject(e)),
     });
   }
   extractResult(result: any): V1CreateOrderHttpResponse {

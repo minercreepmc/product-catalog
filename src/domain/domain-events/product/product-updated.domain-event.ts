@@ -8,6 +8,7 @@ import type {
   ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
+  ProductSoldValueObject,
 } from '@value-objects/product';
 
 export interface ProductUpdatedDomainEventDetails {
@@ -16,6 +17,7 @@ export interface ProductUpdatedDomainEventDetails {
   readonly price?: ProductPriceValueObject;
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
+  readonly sold?: ProductSoldValueObject;
   readonly discountId?: DiscountIdValueObject;
   readonly categoryIds?: CategoryIdValueObject[];
 }
@@ -42,6 +44,7 @@ export class ProductUpdatedDomainEvent
   readonly price?: ProductPriceValueObject;
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
+  readonly sold?: ProductSoldValueObject;
   readonly discountId?: DiscountIdValueObject;
   readonly categoryIds?: CategoryIdValueObject[];
 }

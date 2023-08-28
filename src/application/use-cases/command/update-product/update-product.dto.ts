@@ -8,6 +8,7 @@ import {
   ProductIdValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
+  ProductSoldValueObject,
 } from '@value-objects/product';
 
 export class UpdateProductCommand implements CommandBase {
@@ -16,6 +17,7 @@ export class UpdateProductCommand implements CommandBase {
   price?: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
   image?: FileValueObject;
+  sold?: ProductSoldValueObject;
   discountId?: DiscountIdValueObject;
   categoryIds?: CategoryIdValueObject[];
 
@@ -26,6 +28,7 @@ export class UpdateProductCommand implements CommandBase {
       this.price?.validate?.(),
       this.description?.validate?.(),
       this.image?.validate?.(),
+      this.sold?.validate?.(),
       this.discountId?.validate?.(),
       this.categoryIds?.map?.((e) => e?.validate?.())[0],
     ].filter((e) => e) as DomainExceptionBase[];
@@ -37,6 +40,7 @@ export class UpdateProductCommand implements CommandBase {
     this.price = options.price;
     this.description = options.description;
     this.image = options.image;
+    this.sold = options.sold;
     this.discountId = options.discountId;
     this.categoryIds = options.categoryIds;
   }
@@ -49,6 +53,7 @@ export class UpdateProductResponseDto {
   description?: string;
   imageUrl?: string;
   discountId?: string;
+  sold?: number;
   categoryIds?: string[];
 
   constructor(dto: UpdateProductResponseDto) {
@@ -70,6 +75,10 @@ export class UpdateProductResponseDto {
     }
     if (dto.categoryIds) {
       this.categoryIds = dto.categoryIds;
+    }
+
+    if (dto.sold) {
+      this.sold = dto.sold;
     }
   }
 }

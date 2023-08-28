@@ -9,6 +9,7 @@ import {
   OrderStatusValueObject,
   OrderTotalPriceValueObject,
 } from '@value-objects/order';
+import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject } from '@value-objects/user';
 import {
   CreateOrderAggregateOptions,
@@ -24,12 +25,14 @@ export class OrderAggregate
   status: OrderStatusValueObject;
   totalPrice: OrderTotalPriceValueObject;
   userId: UserIdValueObject;
+  productIds: ProductIdValueObject[];
 
   constructor(options?: OrderAggregateDetails) {
     if (options) {
       this.id = options.id;
       this.address = options.address;
       this.userId = options.userId;
+      this.productIds = options.productIds;
     } else {
       this.id = new OrderIdValueObject();
     }
@@ -40,12 +43,14 @@ export class OrderAggregate
     this.userId = options.userId;
     this.status = OrderStatusValueObject.processing();
     this.totalPrice = options.totalPrice;
+    this.productIds = options.productIds;
 
     return new OrderCreatedDomainEvent({
       id: this.id,
       userId: this.userId,
       address: this.address,
       totalPrice: this.totalPrice,
+      productIds: this.productIds,
     });
   }
 

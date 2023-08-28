@@ -26,9 +26,9 @@ export class ProductRepository
 
     const res = await this.databaseService.runQuery(
       `INSERT into product 
-          (id, name, price, description, image_url, discount_id) 
+          (id, name, price, description, image_url, discount_id, sold) 
       VALUES 
-          ($1, $2, $3, $4, $5, $6)
+          ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *`,
       [
         model.id,
@@ -37,6 +37,7 @@ export class ProductRepository
         model.description,
         model.image_url,
         model.discount_id,
+        model.sold,
       ],
     );
 
@@ -152,7 +153,7 @@ export class ProductRepository
 
     const res = await this.databaseService.runQuery(
       `UPDATE product 
-       SET name=$2, price=$3, description=$4, image_url=$5, discount_id=$6
+       SET name=$2, price=$3, description=$4, image_url=$5, discount_id=$6, sold=$7
         WHERE id=$1 AND deleted_at IS NULL RETURNING *`,
       [
         query.id,
@@ -161,6 +162,7 @@ export class ProductRepository
         query.description,
         query.image_url,
         query.discount_id,
+        query.sold,
       ],
     );
 

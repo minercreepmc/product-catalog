@@ -6,6 +6,7 @@ import {
   ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
+  ProductSoldValueObject,
 } from '@value-objects/product';
 
 export interface ProductAggregateDetails {
@@ -13,6 +14,7 @@ export interface ProductAggregateDetails {
   name: ProductNameValueObject;
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
+  sold?: ProductSoldValueObject;
   image?: ProductImageUrlValueObject;
   categoryIds?: CategoryIdValueObject[];
   discountId?: DiscountIdValueObject;
@@ -31,6 +33,7 @@ export interface UpdateProductAggregateOptions {
   name?: ProductNameValueObject;
   description?: ProductDescriptionValueObject;
   price?: ProductPriceValueObject;
+  sold?: ProductSoldValueObject;
   image?: ProductImageUrlValueObject;
   discountId?: DiscountIdValueObject;
   categoryIds?: CategoryIdValueObject[];

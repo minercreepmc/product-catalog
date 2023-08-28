@@ -10,6 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       price decimal(10,2) not null,
       description varchar(500),
       image_url varchar(255),
+      sold int not null default 0,
       created_at timestamp without time zone not null default now(),
       updated_at timestamp without time zone not null default now(),
       deleted_at timestamp without time zone

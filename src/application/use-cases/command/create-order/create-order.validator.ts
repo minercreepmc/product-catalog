@@ -1,10 +1,12 @@
 import { Notification } from '@base/patterns';
 import { ValidatorBase } from '@base/use-cases';
+import { ProductDomainExceptions } from '@domain-exceptions/product';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import {
   authServiceDiToken,
   AuthServicePort,
 } from '@domain-interfaces/services';
+import { ProductVerificationDomainService } from '@domain-services';
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateOrderCommand } from './create-order.dto';
 import { CreateOrderFailure } from './create-order.result';
@@ -17,6 +19,7 @@ export class CreateOrderValidator extends ValidatorBase<
   constructor(
     @Inject(authServiceDiToken)
     private readonly userManagementService: AuthServicePort,
+    private readonly productVerificationService: ProductVerificationDomainService,
   ) {
     super();
   }
@@ -28,6 +31,7 @@ export class CreateOrderValidator extends ValidatorBase<
 
     const note = new Notification<CreateOrderFailure>();
     await this.userMustExist(note);
+    await this.productsMustExist(note);
 
     return note;
   }
@@ -39,6 +43,19 @@ export class CreateOrderValidator extends ValidatorBase<
 
     if (!exist) {
       note.addException(new UserDomainExceptions.DoesNotExist());
+    }
+  }
+
+  async productsMustExist(
+    note: Notification<CreateOrderFailure>,
+  ): Promise<void> {
+    const exist = await this.productVerificationService.doesProductIdsExist(
+      this.command.productIds,
+    );
+    console.log(exist);
+
+    if (!exist) {
+      note.addException(new ProductDomainExceptions.DoesNotExist());
     }
   }
 }

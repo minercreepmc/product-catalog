@@ -20,7 +20,7 @@ export class ReadOnlyProductRepository
   async findByDiscountId(id: string): Promise<ProductSchema[]> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id, name, price, description, image_url, discount_id from product WHERE discount_id=$1 and deleted_at is null
+        SELECT id, name, price, description, image_url, discount_id, sold from product WHERE discount_id=$1 and deleted_at is null
       `,
       [id],
     );
@@ -31,7 +31,7 @@ export class ReadOnlyProductRepository
   async findByCategoryId(categoryId: string): Promise<ProductSchema[]> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT product.id, product.name, product.price, product.description, product.image_url, product.discount_id 
+        SELECT product.id, product.name, product.price, product.description, product.image_url, product.discount_id, product.sold 
         FROM product 
         JOIN product_category 
         ON product_category.product_id = product.id
@@ -46,7 +46,7 @@ export class ReadOnlyProductRepository
   async findOneById(id: string): Promise<ProductSchema> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id, name, price, description, image_url, discount_id from product WHERE id=$1 and deleted_at is null
+        SELECT id, name, price, description, image_url, discount_id, sold from product WHERE id=$1 and deleted_at is null
       `,
       [id],
     );
@@ -61,7 +61,7 @@ export class ReadOnlyProductRepository
   async findByIdWithDetails(id: string): Promise<ProductWithDetailsSchema> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id, name, price, description, image_url, discount_id from product WHERE id=$1 and deleted_at is null
+        SELECT id, name, price, description, image_url, discount_id, sold from product WHERE id=$1 and deleted_at is null
       `,
       [id],
     );
@@ -84,7 +84,7 @@ export class ReadOnlyProductRepository
   async findOneByName(name: string): Promise<ProductSchema> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id, name, price, description, image_url from product WHERE name=$1 and deleted_at is null
+        SELECT id, name, price, description, image_url, sold from product WHERE name=$1 and deleted_at is null
       `,
       [name],
     );
@@ -97,7 +97,7 @@ export class ReadOnlyProductRepository
 
     const res = await this.databaseService.runQuery(
       ` 
-        SELECT id, name, price, description, image_url from product 
+        SELECT id, name, price, description, image_url, sold from product 
         WHERE deleted_at is null
         ORDER BY updated_at ASC
         OFFSET $1 LIMIT $2;
@@ -140,11 +140,10 @@ export class ReadOnlyProductRepository
               'description', category.description
           )
       ) AS categories
-      FROM product_category
-      JOIN product ON product.id = product_category.product_id 
-      JOIN category ON product_category.category_id = category.id
-      WHERE product_category.product_id = $1 AND category.deleted_at IS NULL
-
+        FROM product_category
+        JOIN product ON product.id = product_category.product_id 
+        JOIN category ON product_category.category_id = category.id
+        WHERE product_category.product_id = $1 AND category.deleted_at IS NULL
         `,
       [productId],
     );

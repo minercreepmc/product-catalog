@@ -4,6 +4,7 @@ import {
   OrderStatusValueObject,
   OrderTotalPriceValueObject,
 } from '@value-objects/order';
+import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject } from '@value-objects/user';
 
 export interface OrderAggregateDetails {
@@ -12,12 +13,14 @@ export interface OrderAggregateDetails {
   status: OrderStatusValueObject;
   totalPrice: OrderTotalPriceValueObject;
   userId: UserIdValueObject;
+  productIds: ProductIdValueObject[];
 }
 
 export interface CreateOrderAggregateOptions {
   address: OrderAddressValueObject;
   userId: UserIdValueObject;
   totalPrice: OrderTotalPriceValueObject;
+  productIds: ProductIdValueObject[];
 }
 
 export interface UpdateOrderAggregateOptions {

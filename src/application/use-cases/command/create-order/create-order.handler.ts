@@ -27,6 +27,7 @@ export class CreateOrderHandler extends CommandHandlerBase<
       userId: command.userId,
       address: command.address,
       totalPrice: command.totalPrice,
+      productIds: command.productIds,
     });
   }
   async toResponseDto(
@@ -37,6 +38,7 @@ export class CreateOrderHandler extends CommandHandlerBase<
       userId: data.userId.value,
       address: data.address.value,
       totalPrice: data.totalPrice.value,
+      productIds: data.productIds.map((e) => e.value),
     });
   }
 }

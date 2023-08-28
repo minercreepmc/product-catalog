@@ -5,6 +5,7 @@ import {
   OrderIdValueObject,
   OrderTotalPriceValueObject,
 } from '@value-objects/order';
+import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject } from '@value-objects/user';
 
 export interface OrderCreatedDomainEventDetails {
@@ -12,6 +13,7 @@ export interface OrderCreatedDomainEventDetails {
   userId: UserIdValueObject;
   address: OrderAddressValueObject;
   totalPrice: OrderTotalPriceValueObject;
+  productIds: ProductIdValueObject[];
 }
 
 export class OrderCreatedDomainEvent
@@ -27,10 +29,12 @@ export class OrderCreatedDomainEvent
     this.userId = options.userId;
     this.address = options.address;
     this.totalPrice = options.totalPrice;
+    this.productIds = options.productIds;
   }
 
   id: OrderIdValueObject;
   userId: UserIdValueObject;
   address: OrderAddressValueObject;
   totalPrice: OrderTotalPriceValueObject;
+  productIds: ProductIdValueObject[];
 }

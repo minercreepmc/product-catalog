@@ -35,6 +35,7 @@ import {
   ProductIdValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
+  ProductSoldValueObject,
 } from '@value-objects/product';
 import { UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
@@ -70,7 +71,8 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
     const { image, request, param } = options;
 
     const { id } = param;
-    const { name, description, price, discountId, categoryIds } = request!;
+    const { name, description, price, discountId, categoryIds, sold } =
+      request!;
 
     const command = new UpdateProductCommand({
       id: new ProductIdValueObject(id),
@@ -91,6 +93,7 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
       categoryIds:
         categoryIds &&
         categoryIds?.map?.((id) => new CategoryIdValueObject(id)),
+      sold: sold ? new ProductSoldValueObject(sold) : undefined,
     });
 
     return command;

@@ -11,6 +11,7 @@ import {
   ProductImageUrlValueObject,
   ProductNameValueObject,
   ProductPriceValueObject,
+  ProductSoldValueObject,
 } from '@value-objects/product';
 import {
   CreateProductAggregateOptions,
@@ -30,8 +31,10 @@ export class ProductAggregate
       this.image = options.image;
       this.categoryIds = options.categoryIds;
       this.discountId = options.discountId;
+      this.sold = options.sold;
     } else {
       this.id = new ProductIdValueObject();
+      this.sold = new ProductSoldValueObject(0);
     }
   }
 
@@ -40,6 +43,7 @@ export class ProductAggregate
   description?: ProductDescriptionValueObject;
   price: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
+  sold?: ProductSoldValueObject;
   categoryIds?: CategoryIdValueObject[];
   discountId?: DiscountIdValueObject;
 
@@ -91,12 +95,16 @@ export class ProductAggregate
     if (options.categoryIds) {
       this.categoryIds = options.categoryIds;
     }
+    if (options.sold) {
+      this.sold = options.sold;
+    }
 
     return new ProductUpdatedDomainEvent({
       id: this.id,
       name: this.name,
       price: this.price,
       description: this.description,
+      sold: this.sold,
       image: this.image,
       discountId: this.discountId,
       categoryIds: this.categoryIds,

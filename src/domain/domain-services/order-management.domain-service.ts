@@ -40,9 +40,14 @@ export class OrderManagementDomainService {
     id: OrderIdValueObject,
     payload: UpdateOrderAggregateOptions,
   ) {
-    const order = await this.orderVerification.findOneOrThrow(id);
-    const orderUpdated = order.updateOrder(payload);
-    await this.orderRepository.updateOneById(id, order);
+    const orderUpdated = await this.unitOfWork.runInTransaction(async () => {
+      const order = await this.orderVerification.findOneOrThrow(id);
+      const orderUpdated = order.updateOrder(payload);
+      await this.orderRepository.updateOneById(id, order);
+      return orderUpdated;
+    });
+
+    this.eventBus.publish(orderUpdated);
     return orderUpdated;
   }
 }

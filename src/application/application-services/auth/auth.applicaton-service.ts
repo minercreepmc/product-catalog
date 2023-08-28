@@ -130,7 +130,7 @@ export class AuthApplicationService implements AuthServicePort {
 
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_EXPIRATION_TIME',
-    )}`;
+    )}; sameSite=none; secure=true`;
   }
 
   getLogOutCookie(): string {

@@ -11,7 +11,10 @@ export class ReadOnlyOrderRepository implements ReadOnlyOrderRepositoryPort {
   async findOneById(id: string): Promise<OrderSchema | null> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT * FROM orders WHERE id = $1;
+        SELECT *, array_agg(product_id) as product_ids FROM orders
+        JOIN product_orders ON orders.id = product_orders.order_id
+        WHERE id = $1
+        GROUP BY orders.id, product_orders.product_id, product_orders.order_id
       `,
       [id],
     );
@@ -30,8 +33,10 @@ export class ReadOnlyOrderRepository implements ReadOnlyOrderRepositoryPort {
   ): Promise<OrderSchema[] | null> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT * FROM orders 
+        SELECT *, array_agg(product_id) as product_ids FROM orders 
+        JOIN product_orders ON orders.id = product_orders.order_id
         WHERE user_id = $1
+        GROUP BY orders.id, product_orders.product_id, product_orders.order_id
         ORDER BY updated_at ASC
         OFFSET $2 LIMIT $3;
       `,

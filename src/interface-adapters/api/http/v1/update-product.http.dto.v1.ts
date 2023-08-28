@@ -17,6 +17,9 @@ export class V1UpdateProductHttpRequest {
 
   @ApiProperty({ required: false })
   categoryIds?: string[];
+
+  @ApiProperty({ required: false })
+  sold?: number;
 }
 
 export class V1UpdateProductHttpResponse {
@@ -27,11 +30,20 @@ export class V1UpdateProductHttpResponse {
   imageUrl?: string;
   discountId?: string;
   categoryIds?: string[];
+  sold?: number;
   message?: string;
 
   constructor(options: Omit<V1UpdateProductHttpResponse, 'message'>) {
-    const { id, name, price, description, imageUrl, discountId, categoryIds } =
-      options;
+    const {
+      id,
+      name,
+      price,
+      description,
+      imageUrl,
+      discountId,
+      categoryIds,
+      sold,
+    } = options;
     this.id = id;
     if (name) {
       this.name = name;
@@ -55,6 +67,10 @@ export class V1UpdateProductHttpResponse {
 
     if (categoryIds) {
       this.categoryIds = categoryIds;
+    }
+
+    if (sold) {
+      this.sold = sold;
     }
 
     this.message = 'Product updated successfully';

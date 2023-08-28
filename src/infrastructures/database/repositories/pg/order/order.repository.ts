@@ -26,18 +26,30 @@ export class OrderRepository
   async create(entity: OrderAggregate): Promise<OrderAggregate | null> {
     const model = this.mapper.toPersistance(entity);
 
-    const { id, status, user_id, address, total_price } = model;
+    const { id, status, user_id, address, total_price, product_ids } = model;
 
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO orders (id, status, user_id, address, total_price)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;
-    `,
+        INSERT INTO orders (id, status, user_id, address, total_price)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *;
+      `,
+
       [id, status, user_id, address, total_price],
     );
 
     const created = res.rows[0];
+
+    const addProductsRes = await this.databaseService.runQuery(
+      `
+        INSERT INTO product_orders (order_id, product_id)
+        SELECT $1, unnest($2::varchar[]) AS product_ids
+        RETURNING product_id as product_ids
+      `,
+      [created.id, product_ids],
+    );
+
+    created.product_ids = addProductsRes.rows[0]?.product_ids;
 
     return created ? this.mapper.toDomain(created) : null;
   }

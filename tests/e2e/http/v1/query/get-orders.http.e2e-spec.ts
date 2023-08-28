@@ -137,6 +137,7 @@ describe('Get orders', () => {
     const createOrderRequest: V1CreateOrderHttpRequest = {
       address: randomString(),
       totalPrice: product.price * 2,
+      productIds: [product.id],
     };
 
     const createOrderResponse = await request(app.getHttpServer())
@@ -157,8 +158,9 @@ describe('Get orders', () => {
     expect(getOrdersBody.orders[0].id).toBe(createOrderResponse.body.id);
     expect(getOrdersBody.orders[0].address).toBe(createOrderRequest.address);
     expect(getOrdersBody.orders[0].total_price).toBe(
-      createOrderRequest.totalPrice
-    )
+      createOrderRequest.totalPrice,
+    );
+    expect(getOrdersBody.orders[0].product_ids).toIncludeAllMembers([product.id]);
   });
 
   // Add more test cases for other routes, if needed.

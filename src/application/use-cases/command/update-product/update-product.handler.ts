@@ -13,7 +13,7 @@ import { DefaultCatch } from 'catch-decorator-ts';
 import { ProductImageUrlValueObject } from '@value-objects/product';
 import { ProductUpdatedDomainEvent } from '@domain-events/product';
 import { UploadService } from '@infrastructures/cloud';
-import { CommandHandlerBase } from '@base/use-cases/command-handler/command-handler.base';
+import { CommandHandlerBase } from '@base/use-cases/command-handler';
 
 @CommandHandler(UpdateProductCommand)
 export class UpdateProductHandler extends CommandHandlerBase<
@@ -28,7 +28,8 @@ export class UpdateProductHandler extends CommandHandlerBase<
     }
 
     const { command } = this;
-    const { id, name, price, description, discountId, categoryIds } = command;
+    const { id, name, price, description, discountId, categoryIds, sold } =
+      command;
 
     return this.productManagementService.updateProduct({
       id,
@@ -39,6 +40,7 @@ export class UpdateProductHandler extends CommandHandlerBase<
         description,
         discountId,
         categoryIds,
+        sold,
       },
     });
   }
@@ -54,6 +56,7 @@ export class UpdateProductHandler extends CommandHandlerBase<
       description: event.description?.value,
       discountId: event.discountId?.value,
       categoryIds: event.categoryIds?.map((id) => id?.value),
+      sold: event.sold?.value,
     });
   }
 

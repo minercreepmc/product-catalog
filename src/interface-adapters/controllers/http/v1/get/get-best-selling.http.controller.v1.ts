@@ -1,6 +1,6 @@
 import {
   v1ApiEndpoints,
-  V1GetBestSellingHttpRequest,
+  V1GetBestSellingHttpQuery,
   V1GetBestSellingHttpResponse,
 } from '@api/http';
 import { Controller, Get, Query } from '@nestjs/common';
@@ -12,7 +12,7 @@ import { plainToInstance } from 'class-transformer';
 export class V1GetBestSellingHttpController {
   @Get()
   execute(
-    @Query() { limit, offset }: V1GetBestSellingHttpRequest,
+    @Query() { limit, offset }: V1GetBestSellingHttpQuery,
   ): Promise<V1GetBestSellingHttpResponse> {
     const query: GetBestSellingQuery = {
       limit: limit ? Number(limit) : undefined,

@@ -1,6 +1,6 @@
 import { V1ProductModel } from './models';
 
-export class V1GetBestSellingHttpRequest {
+export class V1GetBestSellingHttpQuery {
   limit?: number;
   offset?: number;
 }

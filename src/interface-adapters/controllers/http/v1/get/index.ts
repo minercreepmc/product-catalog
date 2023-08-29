@@ -7,3 +7,5 @@ export * from './get-cart.http.controller.v1';
 export * from './get-order.http.controller.v1';
 export * from './get-users.http.controller.v1';
 export * from './get-best-selling.http.controller.v1';
+export * from './get-discounts.http.controller.v1';
+export * from './get-discount.http.controller.v1';

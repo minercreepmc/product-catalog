@@ -16,4 +16,5 @@ export interface ReadonlyProductRepositoryPort
   findByCategoryId(id: string): Promise<ProductSchema[]>;
   findByIdWithDetails(id: string): Promise<ProductWithDetailsSchema>;
   findSortByBestSelling(params: PaginationParams): Promise<ProductSchema[]>;
+  findSortByBestDiscount(params: PaginationParams): Promise<ProductSchema[]>;
 }

@@ -10,6 +10,7 @@ import { LogInModule } from './log-in.module';
 import {
   CartQueryModule,
   CategoryQueryModule,
+  DiscountQueryModule,
   OrderQueryModule,
   ProductQueryModule,
   UserQueryModule,
@@ -51,6 +52,7 @@ import { UploadModule } from './upload.module';
     OrderQueryModule,
     EventHandlerModule,
     UpdateProfileModule,
+    DiscountQueryModule,
     LogInModule,
     LogInAdminModule,
     UploadModule,

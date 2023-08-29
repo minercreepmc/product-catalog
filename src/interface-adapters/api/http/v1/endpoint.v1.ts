@@ -18,6 +18,8 @@ export const v1ApiEndpoints = {
   getOrder: `${prefix}/order/:id`,
   getOrders: `${prefix}/order`,
   getUsers: `${prefix}/users`,
+  getDiscounts: `${prefix}/discount`,
+  getDiscount: `${prefix}/discount/:id`,
   getBestSelling: `${prefix}/best-selling`,
   registerMember: `${prefix}/register`,
   registerAdmin: `${prefix}/register-admin`,

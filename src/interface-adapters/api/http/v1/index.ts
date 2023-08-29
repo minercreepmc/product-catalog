@@ -20,6 +20,8 @@ export * from './get-order.http.dto.v1';
 export * from './get-orders.http.dto.v1';
 export * from './get-users.http.dto.v1';
 export * from './get-best-selling.http.dto.v1';
+export * from './get-discounts.http.dto.v1';
+export * from './get-discount.http.dto.v1';
 export * from './log-in.http.dto.v1';
 export * from './log-in-admin.dto.v1';
 export * from './create-cart.http.dto.v1';

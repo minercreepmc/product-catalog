@@ -1,4 +1,5 @@
 import { ReadOnlyRepositoryPort } from '@base/use-cases';
+import { PaginationParams } from '@base/use-cases/query-handler';
 import {
   ProductSchema,
   ProductWithDetailsSchema,
@@ -14,4 +15,5 @@ export interface ReadonlyProductRepositoryPort
   findByDiscountId(id: string): Promise<ProductSchema[]>;
   findByCategoryId(id: string): Promise<ProductSchema[]>;
   findByIdWithDetails(id: string): Promise<ProductWithDetailsSchema>;
+  findSortByBestSelling(params: PaginationParams): Promise<ProductSchema[]>;
 }

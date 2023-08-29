@@ -1,10 +1,12 @@
 import {
+    V1GetBestSellingHttpController,
   V1GetProductHttpController,
   V1GetProductsHttpController,
 } from '@controllers/http/v1';
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import {
+    GetBestSellingHandler,
   GetProductQueryHandler,
   GetProductsQueryHandler,
 } from '@use-cases/query/product';
@@ -12,9 +14,10 @@ import {
 const queryHandlers: Provider[] = [
   GetProductsQueryHandler,
   GetProductQueryHandler,
+  GetBestSellingHandler
 ];
 
-const controllers = [V1GetProductsHttpController, V1GetProductHttpController];
+const controllers = [V1GetProductsHttpController, V1GetProductHttpController, V1GetBestSellingHttpController];
 
 const sharedModules = [CqrsModule];
 

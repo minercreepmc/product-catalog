@@ -17,6 +17,22 @@ export class ReadOnlyProductRepository
     });
   }
 
+  async findSortByBestSelling(
+    params: PaginationParams,
+  ): Promise<ProductSchema[]> {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT id, name, price, description, image_url, discount_id, sold from product 
+        WHERE deleted_at is null
+        ORDER BY sold DESC
+        OFFSET $1 LIMIT $2
+      `,
+      [params.offset, params.limit],
+    );
+
+    return res.rows;
+  }
+
   async findByDiscountId(id: string): Promise<ProductSchema[]> {
     const res = await this.databaseService.runQuery(
       `

@@ -37,7 +37,6 @@ export class ReadOnlyDiscountRepository
       `,
       [offset, limit],
     );
-    console.log(res.rows);
 
     return res.rows;
   }

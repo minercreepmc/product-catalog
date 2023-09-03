@@ -46,7 +46,6 @@ export class ProductRepository
     }
 
     const saved = res.rows[0];
-    console.log(saved);
     return saved ? this.mapper.toDomain(saved) : null;
   }
 
@@ -151,7 +150,6 @@ export class ProductRepository
     newState: ProductAggregate,
   ): Promise<ProductAggregate | null> {
     const query = this.mapper.toPersistance(newState);
-    console.log(query);
 
     const res = await this.databaseService.runQuery(
       `UPDATE product 
@@ -170,9 +168,9 @@ export class ProductRepository
 
     const updated = res.rows[0];
 
-    if (query.category_ids && query.category_ids.length >= 0) {
-      updated.category_ids = await this.updateCategoryIds(query);
-    }
+    //if (query.category_ids && query.category_ids.length >= 0) {
+    //  updated.category_ids = await this.updateCategoryIds(query);
+    //}
 
     return updated ? this.mapper.toDomain(updated) : null;
   }

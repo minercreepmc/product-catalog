@@ -18,7 +18,6 @@ export class OrderSchemaMapper
 {
   toDomain(model: OrderSchema): OrderAggregate {
     const { status, address, user_id, id, total_price, product_ids } = model;
-    console.log(model);
     return new OrderAggregate({
       id: new OrderIdValueObject(id),
       address: new OrderAddressValueObject(address),

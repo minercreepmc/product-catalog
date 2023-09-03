@@ -29,7 +29,6 @@ export class GetDiscountsHandler
       limit: query.limit,
       offset: query.offset,
     });
-    console.log(discounts);
 
     return {
       discounts,

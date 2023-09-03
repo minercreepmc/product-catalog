@@ -30,10 +30,12 @@ export class CreateDiscountResponseDto {
   name: string;
   description?: string;
   percentage: number;
+  active: boolean;
   constructor(options: CreateDiscountResponseDto) {
     this.id = options.id;
     this.name = options.name;
     this.description = options.description;
     this.percentage = options.percentage;
+    this.active = options.active;
   }
 }

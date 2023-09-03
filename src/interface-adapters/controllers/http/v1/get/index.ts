@@ -5,6 +5,8 @@ export * from './get-categories.http.controller.v1';
 export * from './get-profile.http.controller.v1';
 export * from './get-cart.http.controller.v1';
 export * from './get-order.http.controller.v1';
+export * from './get-orders.http.controller.v1';
+export * from './get-orders-by-user.http.controller.v1';
 export * from './get-users.http.controller.v1';
 export * from './get-best-selling.http.controller.v1';
 export * from './get-discounts.http.controller.v1';

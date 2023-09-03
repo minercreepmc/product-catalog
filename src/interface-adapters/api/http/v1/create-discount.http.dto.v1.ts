@@ -14,6 +14,7 @@ export class V1CreateDiscountHttpResponse {
   name: string;
   description?: string;
   percentage: number;
+  active: boolean;
   message?: string;
 
   constructor(options: Omit<V1CreateDiscountHttpResponse, 'message'>) {
@@ -21,6 +22,7 @@ export class V1CreateDiscountHttpResponse {
     this.name = options.name;
     this.description = options.description;
     this.percentage = options.percentage;
+    this.active = options.active;
     this.message = 'Discount created successfully.';
   }
 }

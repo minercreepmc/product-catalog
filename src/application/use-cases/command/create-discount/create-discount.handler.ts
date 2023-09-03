@@ -30,6 +30,7 @@ export class CreateDiscountHandler extends CommandHandlerBase<
       name: data.name?.value,
       description: data.description?.value,
       percentage: data.percentage?.value,
+      active: data.active.value,
     });
   }
 

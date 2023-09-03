@@ -33,8 +33,8 @@ export class UpdateOrderHandler extends CommandHandlerBase<
   ): Promise<UpdateOrderResponseDto> {
     return new UpdateOrderResponseDto({
       id: data.id.value,
-      address: data.address.value,
-      status: data.status.value,
+      address: data.address?.value,
+      status: data.status?.value,
     });
   }
 }

@@ -13,14 +13,14 @@ export class UpdateOrderCommand implements CommandBase {
     this.status = options.status;
   }
   id: OrderIdValueObject;
-  address: OrderAddressValueObject;
-  status: OrderStatusValueObject;
+  address?: OrderAddressValueObject;
+  status?: OrderStatusValueObject;
 
   validate?(): DomainExceptionBase[] {
     return [
       this.id.validate?.(),
-      this.address.validate?.(),
-      this.status.validate?.(),
+      this.address?.validate?.(),
+      this.status?.validate?.(),
     ].filter((e) => e) as DomainExceptionBase[];
   }
 }

@@ -12,8 +12,6 @@ export class OrderUpdatedEventHandler
   ) {}
   async handle(event: OrderUpdatedDomainEvent) {
     const { productIds, status } = event;
-    console.log(event);
-    console.log(productIds);
 
     if (status.value === OrderStatusEnum.COMPLETED) {
       productIds.map(

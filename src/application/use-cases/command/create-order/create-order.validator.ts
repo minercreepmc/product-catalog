@@ -52,7 +52,6 @@ export class CreateOrderValidator extends ValidatorBase<
     const exist = await this.productVerificationService.doesProductIdsExist(
       this.command.productIds,
     );
-    console.log(exist);
 
     if (!exist) {
       note.addException(new ProductDomainExceptions.DoesNotExist());

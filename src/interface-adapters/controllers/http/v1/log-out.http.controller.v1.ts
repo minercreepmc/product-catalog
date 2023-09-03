@@ -23,7 +23,6 @@ export class V1LogOutHttpController {
   @Post()
   @HttpCode(HttpStatus.OK)
   execute(@Res() response: Response) {
-    console.log('Log out');
     response.setHeader('Set-Cookie', this.authService.getLogOutCookie());
     return response.json();
   }

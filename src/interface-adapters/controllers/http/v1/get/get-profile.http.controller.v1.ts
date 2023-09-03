@@ -8,7 +8,6 @@ import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 export class V1GetProfileHttpController {
   @Get()
   async execute(@Req() request: RequestWithUser): Promise<any> {
-    console.log(request.user);
     const user = request.user;
     return user;
   }

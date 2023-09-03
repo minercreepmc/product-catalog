@@ -23,25 +23,38 @@ export class ReadOnlyOrderRepository implements ReadOnlyOrderRepositoryPort {
 
     return found ? plainToInstance(OrderSchema, found) : null;
   }
-  findAll(filter: PaginationParams): Promise<OrderSchema[]> {
-    throw new Error('Method not implemented.');
+  async findAll(filter: PaginationParams): Promise<OrderSchema[]> {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT orders.total_price, orders.status, orders.id, orders.user_id, orders.updated_at, array_agg(product_orders.product_id) as product_ids FROM orders
+      JOIN product_orders ON orders.id = product_orders.order_id
+      GROUP BY orders.id
+      ORDER BY updated_at ASC
+      OFFSET $1 LIMIT $2
+    `,
+      [filter.offset, filter.limit],
+    );
+
+    return res.rows;
   }
 
   async findByUserId(
     userId: string,
     filter?: PaginationParams | undefined,
   ): Promise<OrderSchema[] | null> {
+    console.log(userId);
     const res = await this.databaseService.runQuery(
       `
-        SELECT *, array_agg(product_id) as product_ids FROM orders 
-        JOIN product_orders ON orders.id = product_orders.order_id
-        WHERE user_id = $1
-        GROUP BY orders.id, product_orders.product_id, product_orders.order_id
-        ORDER BY updated_at ASC
-        OFFSET $2 LIMIT $3;
+          SELECT orders.total_price, orders.status, orders.id, orders.user_id, orders.updated_at, array_agg(product_orders.product_id) as product_ids FROM orders 
+          JOIN product_orders ON orders.id = product_orders.order_id
+          WHERE user_id = $1
+          GROUP BY orders.id
+          ORDER BY updated_at ASC
+          OFFSET $2 LIMIT $3;
       `,
       [userId, filter?.offset, filter?.limit],
     );
+    console.log(res.rows);
 
     return res.rows;
   }

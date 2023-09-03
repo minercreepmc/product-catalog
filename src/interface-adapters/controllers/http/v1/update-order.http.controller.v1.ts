@@ -57,8 +57,8 @@ export class V1UpdateOrderHttpController extends HttpControllerBase<
     const { status, address } = options.request!;
     return new UpdateOrderCommand({
       id: new OrderIdValueObject(options.param!),
-      address: new OrderAddressValueObject(address),
-      status: new OrderStatusValueObject(status),
+      address: address ? new OrderAddressValueObject(address) : undefined,
+      status: status ? new OrderStatusValueObject(status) : undefined,
     });
   }
   extractResult(result: any): V1UpdateOrderHttpResponse {

@@ -1,8 +1,8 @@
 import { OrderStatusEnum } from '@value-objects/order';
 
 export class V1UpdateOrderHttpRequest {
-  status: OrderStatusEnum;
-  address: string;
+  status?: OrderStatusEnum;
+  address?: string;
 }
 
 export class V1UpdateOrderHttpResponse {

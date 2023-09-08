@@ -18,6 +18,7 @@ import {
 import { RegisterAdminModule } from './register-admin.module';
 import { RegisterMemberModule } from './register-member.module';
 import { RemoveCategoriesModule } from './remove-categories.module';
+import { RemoveCategoryModule } from './remove-category.module';
 import { RemoveDiscountsModule } from './remove-discounts.module';
 import { RemoveProductsModule } from './remove-products.module';
 import { UpdateCartModule } from './update-cart.module';
@@ -41,6 +42,7 @@ import { UploadModule } from './upload.module';
     RemoveProductsModule,
     UpdateCategoryModule,
     RemoveCategoriesModule,
+    RemoveCategoryModule,
     ProductQueryModule,
     CategoryQueryModule,
     RegisterMemberModule,

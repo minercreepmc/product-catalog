@@ -1,10 +1,4 @@
-import { readonlyCategoryRepositoryDiToken } from '@application/interface/category';
-import { readOnlyDiscountRepositoryDiToken } from '@application/interface/discount';
-import { readonlyOrderRepositoryDiToken } from '@application/interface/order';
-import {
-  readOnlyCartRepositoryDiToken,
-  readOnlyProductRepositoryDiToken,
-} from '@application/interface/product';
+import { readOnlyProductRepositoryDiToken } from '@application/interface/product';
 import { userRepositoryDiToken } from '@application/interface/user';
 import { UnitOfWork } from '@base/database/unit-of-work';
 import {
@@ -15,56 +9,20 @@ import {
   DATABASE_OPTIONS,
 } from '@config/pg';
 import {
-  CartItemRepository,
-  CartItemSchemaMapper,
-  CartRepository,
-  CartSchemaMapper,
-  ReadOnlyCartRepository,
-} from '@database/repositories/pg/cart';
-import {
-  CategoryRepository,
-  CategorySchemaMapper,
-  ReadOnlyCategoryRepository,
-} from '@database/repositories/pg/category';
-import {
-  DiscountRepository,
-  DiscountSchemaMapper,
-  ReadOnlyDiscountRepository,
-} from '@database/repositories/pg/discount';
-import {
-  OrderRepository,
-  OrderSchemaMapper,
-  ReadOnlyOrderRepository,
-} from '@database/repositories/pg/order';
-import {
   ProductRepository,
   ProductSchemaMapper,
   ReadOnlyProductRepository,
 } from '@database/repositories/pg/product';
 import { UserRepository } from '@database/repositories/pg/user';
-import {
-  cartRepositoryDiToken,
-  categoryRepositoryDiToken,
-  discountRepositoryDiToken,
-  productRepositoryDiToken,
-} from '@domain-interfaces';
+import { productRepositoryDiToken } from '@domain-interfaces';
 import { unitOfWorkDiToken } from '@domain-interfaces';
-import { orderRepositoryDiToken } from '@domain-interfaces/database/order-repository.interface';
 import { Global, Module, Provider } from '@nestjs/common';
 import { Pool } from 'pg';
 
 const repositories: Provider[] = [
   {
-    provide: categoryRepositoryDiToken,
-    useClass: CategoryRepository,
-  },
-  {
     provide: productRepositoryDiToken,
     useClass: ProductRepository,
-  },
-  {
-    provide: discountRepositoryDiToken,
-    useClass: DiscountRepository,
   },
   {
     provide: userRepositoryDiToken,
@@ -75,33 +33,8 @@ const repositories: Provider[] = [
     useClass: ReadOnlyProductRepository,
   },
   {
-    provide: readonlyCategoryRepositoryDiToken,
-    useClass: ReadOnlyCategoryRepository,
-  },
-  {
-    provide: cartRepositoryDiToken,
-    useClass: CartRepository,
-  },
-  CartItemRepository,
-  {
     provide: unitOfWorkDiToken,
     useClass: UnitOfWork,
-  },
-  {
-    provide: readOnlyCartRepositoryDiToken,
-    useClass: ReadOnlyCartRepository,
-  },
-  {
-    provide: orderRepositoryDiToken,
-    useClass: OrderRepository,
-  },
-  {
-    provide: readonlyOrderRepositoryDiToken,
-    useClass: ReadOnlyOrderRepository,
-  },
-  {
-    provide: readOnlyDiscountRepositoryDiToken,
-    useClass: ReadOnlyDiscountRepository,
   },
 ];
 
@@ -119,14 +52,7 @@ const poolProvider: Provider = {
   },
 };
 
-const mappers: Provider[] = [
-  ProductSchemaMapper,
-  CategorySchemaMapper,
-  DiscountSchemaMapper,
-  CartSchemaMapper,
-  CartItemSchemaMapper,
-  OrderSchemaMapper,
-];
+const mappers: Provider[] = [ProductSchemaMapper];
 
 @Global()
 @Module({

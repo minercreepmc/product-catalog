@@ -27,8 +27,6 @@ import {
   UpdateProductCommand,
   UpdateProductResponseDto,
 } from '@use-cases/command/update-product';
-import { CategoryIdValueObject } from '@value-objects/category';
-import { DiscountIdValueObject } from '@value-objects/discount';
 import { FileValueObject } from '@value-objects/file.value-object';
 import {
   ProductDescriptionValueObject,
@@ -87,12 +85,6 @@ export class V1UpdateProductHttpController extends HttpControllerBase<
           value: image?.buffer,
         }),
       price: price ? new ProductPriceValueObject(Number(price)) : undefined,
-      discountId: discountId
-        ? new DiscountIdValueObject(discountId)
-        : undefined,
-      categoryIds:
-        categoryIds &&
-        categoryIds?.map?.((id) => new CategoryIdValueObject(id)),
       sold: sold ? new ProductSoldValueObject(sold) : undefined,
     });
 

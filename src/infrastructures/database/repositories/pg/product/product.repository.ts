@@ -41,10 +41,6 @@ export class ProductRepository
       ],
     );
 
-    if (entity.categoryIds && entity.categoryIds.length > 0) {
-      model.category_ids = await this.updateCategoryIds(model);
-    }
-
     const saved = res.rows[0];
     return saved ? this.mapper.toDomain(saved) : null;
   }

@@ -1,9 +1,5 @@
 import {
   v1ApiEndpoints,
-  V1CreateCategoryHttpRequest,
-  V1CreateCategoryHttpResponse,
-  V1CreateDiscountHttpRequest,
-  V1CreateDiscountHttpResponse,
   V1CreateProductHttpRequest,
   V1CreateProductHttpResponse,
   V1GetProductHttpResponse,
@@ -42,36 +38,9 @@ describe('Get product', () => {
   });
 
   it('should get a product already created', async () => {
-    const createCategoryRequest: V1CreateCategoryHttpRequest = {
-      name: randomString(),
-    };
-    const createDiscountRequest: V1CreateDiscountHttpRequest = {
-      name: randomString(),
-      percentage: 12,
-    };
-
-    const createCategoryResponse = await request(app.getHttpServer())
-      .post(createCategoryUrl)
-      .set('Accept', 'application/json')
-      .send(createCategoryRequest)
-      .expect(HttpStatus.CREATED);
-
-    const createDiscountResponse = await request(app.getHttpServer())
-      .post(createDiscountUrl)
-      .set('Accept', 'application/json')
-      .send(createDiscountRequest)
-      .expect(HttpStatus.CREATED);
-
-    const { id: discountId } =
-      createDiscountResponse.body as V1CreateDiscountHttpResponse;
-    const { id: categoryId } =
-      createCategoryResponse.body as V1CreateCategoryHttpResponse;
-
     const createProductRequest: V1CreateProductHttpRequest = {
       name: randomString(),
       price: 12,
-      discountId,
-      categoryIds: [categoryId],
     };
 
     const createResponse = await request(app.getHttpServer())
@@ -91,8 +60,6 @@ describe('Get product', () => {
 
     const body: V1GetProductHttpResponse = response.body;
     expect(body.name).toBe(createBody.name);
-    expect(body.discount_id).toBe(discountId);
-    expect(body.category_ids?.[0]).toBe(categoryId);
   });
 
   // Add more test cases for other routes, if needed.

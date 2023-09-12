@@ -1,5 +1,3 @@
-import { CategoryIdValueObject } from '@value-objects/category';
-import { DiscountIdValueObject } from '@value-objects/discount';
 import {
   ProductDescriptionValueObject,
   ProductIdValueObject,
@@ -16,8 +14,6 @@ export interface ProductAggregateDetails {
   price: ProductPriceValueObject;
   sold?: ProductSoldValueObject;
   image?: ProductImageUrlValueObject;
-  categoryIds?: CategoryIdValueObject[];
-  discountId?: DiscountIdValueObject;
 }
 
 export interface CreateProductAggregateOptions {
@@ -25,8 +21,6 @@ export interface CreateProductAggregateOptions {
   price: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
   image?: ProductImageUrlValueObject;
-  discountId?: DiscountIdValueObject;
-  categoryIds?: CategoryIdValueObject[];
 }
 
 export interface UpdateProductAggregateOptions {
@@ -35,6 +29,4 @@ export interface UpdateProductAggregateOptions {
   price?: ProductPriceValueObject;
   sold?: ProductSoldValueObject;
   image?: ProductImageUrlValueObject;
-  discountId?: DiscountIdValueObject;
-  categoryIds?: CategoryIdValueObject[];
 }

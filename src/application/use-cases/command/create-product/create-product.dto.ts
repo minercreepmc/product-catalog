@@ -1,6 +1,4 @@
 import { DomainExceptionBase } from '@base/domain';
-import { CategoryIdValueObject } from '@value-objects/category';
-import { DiscountIdValueObject } from '@value-objects/discount';
 import type { FileValueObject } from '@value-objects/file.value-object';
 import type {
   ProductDescriptionValueObject,
@@ -13,8 +11,6 @@ export class CreateProductCommand {
   price: ProductPriceValueObject;
   description?: ProductDescriptionValueObject;
   image?: FileValueObject;
-  categoryIds?: CategoryIdValueObject[];
-  discountId?: DiscountIdValueObject;
 
   validate?(): DomainExceptionBase[] {
     return [
@@ -22,8 +18,6 @@ export class CreateProductCommand {
       this.price.validate(),
       this.description?.validate?.(),
       this.image?.validate?.(),
-      this.categoryIds?.map?.((id) => id?.validate?.())[0],
-      this.discountId?.validate?.(),
     ].filter((e) => e) as DomainExceptionBase[];
   }
 
@@ -32,8 +26,6 @@ export class CreateProductCommand {
     this.price = dto.price;
     this.description = dto.description;
     this.image = dto.image;
-    this.categoryIds = dto.categoryIds;
-    this.discountId = dto.discountId;
   }
 }
 export class CreateProductResponseDto {
@@ -42,8 +34,6 @@ export class CreateProductResponseDto {
   readonly price: number;
   readonly imageUrl?: string;
   readonly description?: string;
-  readonly categoryIds?: string[];
-  readonly discountId?: string;
 
   constructor(options: CreateProductResponseDto) {
     this.id = options.id;
@@ -51,7 +41,5 @@ export class CreateProductResponseDto {
     this.price = options.price;
     this.imageUrl = options.imageUrl;
     this.description = options.description;
-    this.discountId = options.discountId;
-    this.categoryIds = options.categoryIds;
   }
 }

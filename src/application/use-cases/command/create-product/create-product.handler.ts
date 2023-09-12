@@ -33,8 +33,6 @@ export class CreateProductHandler extends CommandHandlerBase<
       name: this.command.name,
       price: this.command.price,
       description: this.command.description,
-      discountId: this.command.discountId,
-      categoryIds: this.command.categoryIds,
       image: imageUrl,
     });
   }
@@ -48,8 +46,6 @@ export class CreateProductHandler extends CommandHandlerBase<
       name: data.name?.value,
       description: data.description?.value,
       imageUrl: data.image?.value,
-      categoryIds: data.categoryIds?.map((id) => id?.value),
-      discountId: data.discountId?.value,
     });
   }
 

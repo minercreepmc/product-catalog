@@ -28,8 +28,6 @@ import {
   HttpControllerBaseOption,
 } from '@base/inteface-adapters';
 import { MultipleExceptions } from '@base/domain';
-import { CategoryIdValueObject } from '@value-objects/category';
-import { DiscountIdValueObject } from '@value-objects/discount';
 import {
   v1ApiEndpoints,
   V1CreateProductHttpRequest,
@@ -77,12 +75,6 @@ export class V1CreateProductHttpController extends HttpControllerBase<
           name: image?.originalname,
           value: image?.buffer,
         }),
-      categoryIds:
-        categoryIds &&
-        categoryIds?.map?.((id) => new CategoryIdValueObject(id)),
-      discountId: discountId
-        ? new DiscountIdValueObject(discountId)
-        : undefined,
     });
   }
 

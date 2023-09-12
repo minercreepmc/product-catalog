@@ -28,8 +28,7 @@ export class UpdateProductHandler extends CommandHandlerBase<
     }
 
     const { command } = this;
-    const { id, name, price, description, discountId, categoryIds, sold } =
-      command;
+    const { id, name, price, description, sold } = command;
 
     return this.productManagementService.updateProduct({
       id,
@@ -38,8 +37,6 @@ export class UpdateProductHandler extends CommandHandlerBase<
         price,
         image: imageUrl,
         description,
-        discountId,
-        categoryIds,
         sold,
       },
     });
@@ -54,8 +51,6 @@ export class UpdateProductHandler extends CommandHandlerBase<
       price: event.price?.value,
       imageUrl: event.image?.value,
       description: event.description?.value,
-      discountId: event.discountId?.value,
-      categoryIds: event.categoryIds?.map((id) => id?.value),
       sold: event.sold?.value,
     });
   }

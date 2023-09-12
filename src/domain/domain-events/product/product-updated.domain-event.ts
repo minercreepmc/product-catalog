@@ -1,7 +1,5 @@
 import { ProductAggregate } from '@aggregates/product';
 import { DomainEventBase } from '@base/domain';
-import { CategoryIdValueObject } from '@value-objects/category';
-import { DiscountIdValueObject } from '@value-objects/discount';
 import type {
   ProductDescriptionValueObject,
   ProductIdValueObject,
@@ -18,8 +16,6 @@ export interface ProductUpdatedDomainEventDetails {
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
   readonly sold?: ProductSoldValueObject;
-  readonly discountId?: DiscountIdValueObject;
-  readonly categoryIds?: CategoryIdValueObject[];
 }
 
 export class ProductUpdatedDomainEvent
@@ -36,8 +32,6 @@ export class ProductUpdatedDomainEvent
     this.price = options.price;
     this.description = options.description;
     this.image = options.image;
-    this.discountId = options.discountId;
-    this.categoryIds = options.categoryIds;
   }
   readonly id: ProductIdValueObject;
   readonly name?: ProductNameValueObject;
@@ -45,6 +39,4 @@ export class ProductUpdatedDomainEvent
   readonly description?: ProductDescriptionValueObject;
   readonly image?: ProductImageUrlValueObject;
   readonly sold?: ProductSoldValueObject;
-  readonly discountId?: DiscountIdValueObject;
-  readonly categoryIds?: CategoryIdValueObject[];
 }

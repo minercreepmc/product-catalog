@@ -3,8 +3,6 @@ import {
   ProductCreatedDomainEvent,
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
-import { CategoryIdValueObject } from '@value-objects/category';
-import { DiscountIdValueObject } from '@value-objects/discount';
 import {
   ProductDescriptionValueObject,
   ProductIdValueObject,
@@ -29,8 +27,6 @@ export class ProductAggregate
       this.description = options.description;
       this.price = options.price;
       this.image = options.image;
-      this.categoryIds = options.categoryIds;
-      this.discountId = options.discountId;
       this.sold = options.sold;
     } else {
       this.id = new ProductIdValueObject();
@@ -44,8 +40,6 @@ export class ProductAggregate
   price: ProductPriceValueObject;
   image?: ProductImageUrlValueObject;
   sold?: ProductSoldValueObject;
-  categoryIds?: CategoryIdValueObject[];
-  discountId?: DiscountIdValueObject;
 
   createProduct(options: CreateProductAggregateOptions) {
     this.name = options.name;
@@ -57,13 +51,6 @@ export class ProductAggregate
     if (options.image) {
       this.image = options.image;
     }
-    if (options.categoryIds) {
-      this.categoryIds = options.categoryIds;
-    }
-
-    if (options.discountId) {
-      this.discountId = options.discountId;
-    }
 
     return new ProductCreatedDomainEvent({
       id: this.id,
@@ -71,8 +58,6 @@ export class ProductAggregate
       price: this.price,
       description: this.description,
       image: this.image,
-      categoryIds: this.categoryIds,
-      discountId: this.discountId,
     });
   }
 
@@ -89,12 +74,7 @@ export class ProductAggregate
     if (options.image) {
       this.image = options.image;
     }
-    if (options.discountId) {
-      this.discountId = options.discountId;
-    }
-    if (options.categoryIds) {
-      this.categoryIds = options.categoryIds;
-    }
+
     if (options.sold) {
       this.sold = options.sold;
     }
@@ -106,8 +86,6 @@ export class ProductAggregate
       description: this.description,
       sold: this.sold,
       image: this.image,
-      discountId: this.discountId,
-      categoryIds: this.categoryIds,
     });
   }
 
@@ -118,8 +96,6 @@ export class ProductAggregate
       price: this.price,
       description: this.description,
       image: this.image,
-      discountId: this.discountId,
-      categoryIds: this.categoryIds,
     });
   }
 
@@ -134,8 +110,6 @@ export class ProductAggregate
       description: this.description,
       sold: this.sold,
       image: this.image,
-      discountId: this.discountId,
-      categoryIds: this.categoryIds,
     });
   }
 }

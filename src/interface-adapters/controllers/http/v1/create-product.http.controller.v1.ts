@@ -62,7 +62,7 @@ export class V1CreateProductHttpController extends HttpControllerBase<
     options: HttpControllerBaseOption<V1CreateProductHttpRequest>,
   ): CreateProductCommand {
     const { request, image } = options;
-    const { name, description, price, categoryIds, discountId } = request!;
+    const { name, description, price } = request!;
     return new CreateProductCommand({
       name: new ProductNameValueObject(name),
       price: new ProductPriceValueObject(Number(price)),

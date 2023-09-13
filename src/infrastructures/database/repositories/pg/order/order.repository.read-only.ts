@@ -42,7 +42,6 @@ export class ReadOnlyOrderRepository implements ReadOnlyOrderRepositoryPort {
     userId: string,
     filter?: PaginationParams | undefined,
   ): Promise<OrderSchema[] | null> {
-    console.log(userId);
     const res = await this.databaseService.runQuery(
       `
           SELECT orders.total_price, orders.status, orders.id, orders.user_id, orders.updated_at, array_agg(product_orders.product_id) as product_ids FROM orders 
@@ -54,7 +53,6 @@ export class ReadOnlyOrderRepository implements ReadOnlyOrderRepositoryPort {
       `,
       [userId, filter?.offset, filter?.limit],
     );
-    console.log(res.rows);
 
     return res.rows;
   }

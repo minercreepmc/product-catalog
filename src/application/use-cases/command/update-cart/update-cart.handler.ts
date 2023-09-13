@@ -1,12 +1,7 @@
 import { CommandHandlerBase } from '@base/use-cases';
 import { CartUpdatedDomainEvent } from '@domain-events/cart';
-import {
-  productRepositoryDiToken,
-  ProductRepositoryPort,
-} from '@domain-interfaces';
 import { CartManagementDomainService } from '@domain-services';
 import { CartItemEntity } from '@entities';
-import { Inject } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { UpdateCartCommand, UpdateCartResponseDto } from './update-cart.dto';
 import { UpdateCartFailure, UpdateCartSuccess } from './update-cart.result';
@@ -20,8 +15,6 @@ export class UpdateCartHandler extends CommandHandlerBase<
 > {
   constructor(
     private readonly cartManagementService: CartManagementDomainService,
-    @Inject(productRepositoryDiToken)
-    private readonly productRepository: ProductRepositoryPort,
     validator: UpdateCartValidator,
   ) {
     super(validator);
@@ -46,26 +39,26 @@ export class UpdateCartHandler extends CommandHandlerBase<
     const { userId, items, totalPrice } = data;
 
     const itemsValue: {
-      product: {
-        name: string;
-        price: number;
-        id: string;
-      };
+      productId: string;
+      price: number;
+      name: string;
       amount: number;
       cartId: string;
+      discount: number;
+      totalPrice: number;
+      imageUrl?: string;
     }[] = [];
 
     for (const item of items) {
-      const product = await this.productRepository.findOneById(item.productId);
-
       itemsValue.push({
-        product: {
-          name: product!.name.value,
-          price: Number(product!.price.value),
-          id: product!.id.value,
-        },
+        productId: item.productId.value,
+        price: Number(item!.price.value),
+        name: item!.name.value,
         amount: item.amount.value,
         cartId: item.cartId.value,
+        discount: item.discount?.value,
+        totalPrice: item.getTotalPrice().value,
+        imageUrl: item.imageUrl?.value,
       });
     }
 

@@ -6,3 +6,4 @@ export * from './temp-file.util';
 export * from './random-string.util';
 export * from './has-duplicate.util';
 export * from './get-cookie-from-header';
+export * from './calculate-total-price';

@@ -25,7 +25,7 @@ export class CartAggregate implements AggregateRootBase, CartAggregateDetails {
     let cartTotal: CartPriceValueObject = new CartPriceValueObject(0);
     for (const item of items.values()) {
       if (!item.isEmpty()) {
-        cartTotal = cartTotal.plus(item.totalPrice);
+        cartTotal = cartTotal.plus(item.getTotalPrice());
       }
     }
 

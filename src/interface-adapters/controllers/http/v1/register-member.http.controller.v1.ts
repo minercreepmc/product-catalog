@@ -42,6 +42,7 @@ export class V1RegisterMemberHttpController extends HttpControllerBase<
     request,
   }: HttpControllerBaseOption<V1RegisterMemberHttpRequest>): RegisterMemberCommand {
     const { username, password, fullName } = request!;
+    console.log(request);
     return new RegisterMemberCommand({
       username: new UserNameValueObject(username),
       password: new UserPasswordValueObject(password),

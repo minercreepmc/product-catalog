@@ -10,6 +10,14 @@ export namespace CartDomainExceptions {
     readonly message = 'Amount does not valid';
     readonly code = CartDomainExceptionCodes.AmountDoesNotValid;
   }
+  export class DiscountDoesNotValid extends DomainExceptionBase {
+    readonly message = 'Discount does not valid';
+    readonly code = CartDomainExceptionCodes.DiscountDoesNotValid;
+  }
+  export class ItemNameDoesNotValid extends DomainExceptionBase {
+    readonly message = 'Item name does not valid';
+    readonly code = CartDomainExceptionCodes.ItemNameDoesNotValid;
+  }
   export class IdDoesNotValid extends DomainExceptionBase {
     readonly message = 'Id does not valid';
     readonly code = CartDomainExceptionCodes.IdDoesNotValid;

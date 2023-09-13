@@ -4,6 +4,9 @@ export class V1UpdateCartHttpRequest {
     productId: string;
     price: number;
     cartId: string;
+    discount: number;
+    name: string;
+    imageUrl?: string;
   }[];
 }
 
@@ -12,13 +15,14 @@ export class V1UpdateCartHttpResponse {
   userId: string;
   totalPrice: number;
   items: {
-    product: {
-      id: string;
-      price: number;
-      name: string;
-    };
+    productId: string;
+    name: string;
+    price: number;
     amount: number;
     cartId: string;
+    discount?: number;
+    totalPrice: number;
+    imageUrl?: string;
   }[];
   message: string;
   constructor(options: Omit<V1UpdateCartHttpResponse, 'message'>) {

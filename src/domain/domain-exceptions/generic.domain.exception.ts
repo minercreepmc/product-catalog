@@ -6,4 +6,8 @@ export namespace GenericDomainExceptions {
     readonly message = 'File does not valid';
     readonly code = GenericDomainExceptionCodes.FileDoesNotValid;
   }
+  export class ImageUrlDoesNotValid extends DomainExceptionBase {
+    readonly message = 'Image url does not valid';
+    readonly code = GenericDomainExceptionCodes.ImageUrlDoesNotValid;
+  }
 }

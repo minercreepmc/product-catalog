@@ -25,9 +25,12 @@ import {
   UpdateCartCommand,
   UpdateCartResponseDto,
 } from '@use-cases/command/update-cart';
+import { ImageUrlValueObject } from '@value-objects';
 import {
   CartAmountValueObject,
   CartIdValueObject,
+  CartItemDiscountValueObject,
+  CartItemNameValueObject,
   CartPriceValueObject,
 } from '@value-objects/cart';
 import { ProductIdValueObject } from '@value-objects/product';
@@ -68,6 +71,13 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
           amount: new CartAmountValueObject(item.amount),
           price: new CartPriceValueObject(item.price),
           productId: new ProductIdValueObject(item.productId),
+          discount: item.discount
+            ? new CartItemDiscountValueObject(item.discount)
+            : undefined,
+          name: new CartItemNameValueObject(item.name),
+          imageUrl: item.imageUrl
+            ? new ImageUrlValueObject(item.imageUrl)
+            : undefined,
         });
       }),
     });
@@ -80,11 +90,12 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
           items: response.items.map((item) => ({
             amount: item.amount,
             cartId: item.cartId,
-            product: {
-              id: item.product.id,
-              name: item.product.name,
-              price: item.product.price,
-            },
+            productId: item.productId,
+            name: item.name,
+            price: item.price,
+            discount: item.discount,
+            imageUrl: item.imageUrl,
+            totalPrice: item.totalPrice,
           })),
           id: response.id,
           userId: response.userId,

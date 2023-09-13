@@ -19,11 +19,21 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
     const model = this.mapper.toPersistance(entity);
     const res = await this.databaseService.runQuery(
       `
-        INSERT INTO cart_item (id, cart_id, product_id, amount) 
-        VALUES ($1, $2, $3, $4) 
+        INSERT INTO cart_item (id, cart_id, product_id, amount, discount, name, image_url, price, total_price) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
         RETURNING *;
       `,
-      [model.id, model.cart_id, model.product_id, model.amount],
+      [
+        model.id,
+        model.cart_id,
+        model.product_id,
+        model.amount,
+        model.discount,
+        model.name,
+        model.image_url,
+        model.price,
+        model.total_price,
+      ],
     );
 
     const cart = plainToInstance(CartItemSchema, res.rows[0]);
@@ -65,9 +75,16 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
 
     const res = await this.databaseService.runQuery(
       `
-      UPDATE cart_item SET amount=$1 WHERE id=$2 RETURNING *;
+      UPDATE cart_item SET amount=$1, discount=$3, name=$4, price=$5, total_price=$6  WHERE id=$2 RETURNING *;
     `,
-      [query.amount, query.id],
+      [
+        query.amount,
+        query.id,
+        query.discount,
+        query.name,
+        query.price,
+        query.total_price,
+      ],
     );
 
     const deleted = res.rows[0];
@@ -83,9 +100,16 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
 
     const res = await this.databaseService.runQuery(
       `
-      UPDATE cart_item SET amount=$1 WHERE cart_id=$2 RETURNING *;
+      UPDATE cart_item SET amount=$1, discount=$3, name=$4, price=$5, total_price=$6 WHERE cart_id=$2 RETURNING *;
     `,
-      [query.amount, query.cart_id],
+      [
+        query.amount,
+        query.cart_id,
+        query.discount,
+        query.name,
+        query.price,
+        query.total_price,
+      ],
     );
 
     const updated = res.rows[0];

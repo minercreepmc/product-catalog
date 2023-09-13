@@ -13,6 +13,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
 import {
+  calculateTotalPrice,
   getCookieFromHeader,
   mapDomainExceptionsToObjects,
   randomString,
@@ -73,12 +74,18 @@ describe('Update cart', () => {
           price: 2,
           amount: 2,
           cartId: '12345',
+          discount: 50,
+          name: randomString(),
+          imageUrl: 'https://example.com',
         },
         {
           productId: '12345',
           price: 2,
           amount: 2,
           cartId: '12345',
+          discount: 50,
+          name: randomString(),
+          imageUrl: 'https://example.com',
         },
       ],
     };
@@ -126,6 +133,7 @@ describe('Update cart', () => {
       name: productName,
     } = createProductRes.body as V1CreateProductHttpResponse;
 
+    console.log('1');
     const updateCartRequest1: V1UpdateCartHttpRequest = {
       items: [
         {
@@ -133,6 +141,8 @@ describe('Update cart', () => {
           price,
           amount: 2,
           cartId: getCartBody.id,
+          discount: 50,
+          name: productName,
         },
       ],
     };
@@ -145,11 +155,20 @@ describe('Update cart', () => {
 
     const cart = updateCartRes.body as V1UpdateCartHttpResponse;
 
-    expect(cart.items[0].product.name).toBe(productName);
+    expect(cart.items[0].name).toBe(productName);
     expect(cart.items[0].amount).toBe(updateCartRequest1.items[0].amount);
-    expect(cart.items[0].product.price).toBeCloseTo(price, 2);
-    expect(cart.totalPrice).toBe(price * updateCartRequest1.items[0].amount);
+    expect(cart.items[0].price).toBeCloseTo(price, 2);
+    expect(cart.items[0].discount).toBe(updateCartRequest1.items[0].discount);
+    expect(cart.items[0].totalPrice).toBeCloseTo(
+      calculateTotalPrice(
+        price,
+        updateCartRequest1.items[0].discount,
+        updateCartRequest1.items[0].amount,
+      ),
+    );
+    expect(cart.totalPrice).toBe(cart.items[0].totalPrice);
 
+    console.log('2');
     const updateCartRequest2: V1UpdateCartHttpRequest = {
       items: [
         {
@@ -157,6 +176,8 @@ describe('Update cart', () => {
           price,
           amount: 1,
           cartId: getCartBody.id,
+          discount: 50,
+          name: productName,
         },
       ],
     };
@@ -169,11 +190,19 @@ describe('Update cart', () => {
 
     const cart2 = updateCartRes2.body as V1UpdateCartHttpResponse;
 
-    expect(cart2.items[0].product.name).toBe(productName);
+    expect(cart2.items[0].name).toBe(productName);
     expect(cart2.items[0].amount).toBe(updateCartRequest2.items[0].amount);
-    expect(cart2.items[0].product.price).toBeCloseTo(price, 2);
-    expect(cart2.totalPrice).toBe(price * updateCartRequest2.items[0].amount);
+    expect(cart2.items[0].price).toBeCloseTo(price, 2);
+    expect(cart2.items[0].totalPrice).toBeCloseTo(
+      calculateTotalPrice(
+        price,
+        updateCartRequest2.items[0].discount,
+        updateCartRequest2.items[0].amount,
+      ),
+    );
+    expect(cart2.totalPrice).toBe(cart2.items[0].totalPrice);
 
+    console.log('3');
     const updateCartRequest3: V1UpdateCartHttpRequest = {
       items: [],
     };

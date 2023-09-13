@@ -12,7 +12,7 @@ export class UserFullNameValueObject implements ValueObjectBase {
     const exceptions = validateSync(this);
 
     if (exceptions.length > 0) {
-      return new UserDomainExceptions.UsernameDoesNotValid();
+      return new UserDomainExceptions.FullNameDoesNotValid();
     }
   }
 

@@ -1,9 +1,20 @@
+import { UpdateCartAggregateOptions } from '@aggregates/cart';
+import { DiscountAggregate } from '@aggregates/discount';
 import { CommandHandlerBase } from '@base/use-cases';
 import { CartUpdatedDomainEvent } from '@domain-events/cart';
-import { CartManagementDomainService } from '@domain-services';
+import {
+  CartManagementDomainService,
+  DiscountVerificationDomainService,
+  ProductVerificationDomainService,
+} from '@domain-services';
 import { CartItemEntity } from '@entities';
 import { CommandHandler } from '@nestjs/cqrs';
-import { UpdateCartCommand, UpdateCartResponseDto } from './update-cart.dto';
+import { ImageUrlValueObject } from '@value-objects';
+import {
+  UpdateCartCommand,
+  UpdateCartItem,
+  UpdateCartResponseDto,
+} from './update-cart.dto';
 import { UpdateCartFailure, UpdateCartSuccess } from './update-cart.result';
 import { UpdateCartValidator } from './update-cart.validator';
 
@@ -15,24 +26,58 @@ export class UpdateCartHandler extends CommandHandlerBase<
 > {
   constructor(
     private readonly cartManagementService: CartManagementDomainService,
+    private readonly productVerificationService: ProductVerificationDomainService,
+    private readonly discountVerificationService: DiscountVerificationDomainService,
     validator: UpdateCartValidator,
   ) {
     super(validator);
   }
   protected command: UpdateCartCommand;
-  handle(): Promise<CartUpdatedDomainEvent> {
+  async handle(): Promise<CartUpdatedDomainEvent> {
     const { items, userId } = this.command;
+    const itemsMap = await this.transformItemsToPayload(items);
     return this.cartManagementService.updateCart({
       userId,
-      payload: {
-        items: new Map(
-          items.map((item) => {
-            return [item.productId, new CartItemEntity(item)];
-          }),
-        ),
-      },
+      payload: itemsMap,
     });
   }
+
+  async transformItemsToPayload(
+    items: UpdateCartItem[],
+  ): Promise<UpdateCartAggregateOptions> {
+    const itemMap = new Map();
+    for (const item of items) {
+      const product = await this.productVerificationService.findProductOrThrow(
+        item.productId,
+      );
+
+      let discount: DiscountAggregate | undefined;
+      if (product.discountId) {
+        discount = await this.discountVerificationService.findDiscountOrThrow(
+          product.discountId,
+        );
+      }
+
+      itemMap.set(
+        item.productId,
+        new CartItemEntity({
+          productId: item.productId,
+          amount: item.amount,
+          cartId: item.cartId,
+          name: product.name,
+          price: product.price,
+          imageUrl: product.image
+            ? new ImageUrlValueObject(product.image.value)
+            : undefined,
+          discount: discount ? discount.percentage : undefined,
+        }),
+      );
+    }
+    return {
+      items: itemMap,
+    };
+  }
+
   async toResponseDto(
     data: CartUpdatedDomainEvent,
   ): Promise<UpdateCartResponseDto> {

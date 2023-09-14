@@ -5,6 +5,7 @@ import { CartItemEntity } from '@entities';
 import { Inject, Injectable } from '@nestjs/common';
 import { hasDuplicates } from '@utils/functions';
 import { CartIdValueObject } from '@value-objects/cart';
+import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject } from '@value-objects/user';
 
 @Injectable()
@@ -20,10 +21,8 @@ export class CartVerificationDomainService {
     return !!cart;
   }
 
-  async doesCartItemsDuplicate(cartItems: CartItemEntity[]) {
-    const ids = cartItems.map((item) => item.productId.value);
-
-    return hasDuplicates(ids);
+  async doesCartItemsDuplicate(productIds: ProductIdValueObject[]) {
+    return hasDuplicates(productIds.map((productId) => productId.value));
   }
 
   async findOneOrThrow(userId: UserIdValueObject): Promise<CartAggregate> {

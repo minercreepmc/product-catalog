@@ -28,15 +28,21 @@ export interface CartItemUpdateOptions {
   discount?: CartItemDiscountValueObject;
 }
 
+export interface CreateCartItemEntityOptions {
+  cartId: CartIdValueObject;
+  productId: ProductIdValueObject;
+  amount: CartAmountValueObject;
+}
+
 export class CartItemEntity implements EntityBase, CartItemEntityOptions {
   id: CartItemIdValueObject;
   productId: ProductIdValueObject;
-  cartId: CartIdValueObject;
   price: CartPriceValueObject;
   discount: CartItemDiscountValueObject;
   amount: CartAmountValueObject;
   name: CartItemNameValueObject;
   imageUrl?: ImageUrlValueObject;
+  cartId: CartIdValueObject;
 
   validate(): DomainExceptionBase[] {
     return [this.id?.validate?.(), this.productId?.validate()].filter(
@@ -49,16 +55,13 @@ export class CartItemEntity implements EntityBase, CartItemEntityOptions {
     this.price = options.price;
     this.amount = options.amount;
     this.productId = options.productId;
-    this.cartId = options.cartId;
     this.discount = options.discount || new CartItemDiscountValueObject(0);
     this.name = options.name;
     this.imageUrl = options.imageUrl;
+    this.cartId = options.cartId;
   }
 
   getTotalPrice(): CartPriceValueObject {
-    console.log(this.price.value);
-    console.log(this.discount.value);
-    console.log(this.amount.value);
     return new CartPriceValueObject(
       (this.price.value - (this.price.value * this.discount.value) / 100) *
         this.amount.value,

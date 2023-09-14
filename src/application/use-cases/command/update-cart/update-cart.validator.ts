@@ -79,7 +79,7 @@ export class UpdateCartValidator extends ValidatorBase<
     note: Notification<UpdateCartFailure>,
   ) {
     const itHave = await this.cartVerificationService.doesCartItemsDuplicate(
-      this.command.items,
+      this.command.items.map((item) => item.productId),
     );
     if (itHave) {
       note.addException(new CartDomainExceptions.ItemMustBeUnique());

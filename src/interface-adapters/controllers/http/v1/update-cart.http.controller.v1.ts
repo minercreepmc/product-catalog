@@ -11,7 +11,6 @@ import {
   HttpControllerBase,
   HttpControllerBaseOption,
 } from '@base/inteface-adapters';
-import { CartItemEntity } from '@entities';
 import {
   Body,
   ConflictException,
@@ -25,14 +24,7 @@ import {
   UpdateCartCommand,
   UpdateCartResponseDto,
 } from '@use-cases/command/update-cart';
-import { ImageUrlValueObject } from '@value-objects';
-import {
-  CartAmountValueObject,
-  CartIdValueObject,
-  CartItemDiscountValueObject,
-  CartItemNameValueObject,
-  CartPriceValueObject,
-} from '@value-objects/cart';
+import { CartAmountValueObject, CartIdValueObject } from '@value-objects/cart';
 import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject, UserRoleEnum } from '@value-objects/user';
 import { match } from 'oxide.ts';
@@ -66,19 +58,12 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
     return new UpdateCartCommand({
       userId: new UserIdValueObject(userId),
       items: items.map((item) => {
-        return new CartItemEntity({
-          cartId: new CartIdValueObject(item.cartId),
+        console.log(item);
+        return {
           amount: new CartAmountValueObject(item.amount),
-          price: new CartPriceValueObject(item.price),
           productId: new ProductIdValueObject(item.productId),
-          discount: item.discount
-            ? new CartItemDiscountValueObject(item.discount)
-            : undefined,
-          name: new CartItemNameValueObject(item.name),
-          imageUrl: item.imageUrl
-            ? new ImageUrlValueObject(item.imageUrl)
-            : undefined,
-        });
+          cartId: new CartIdValueObject(item.cartId),
+        };
       }),
     });
   }

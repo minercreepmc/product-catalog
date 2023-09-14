@@ -2,11 +2,7 @@ export class V1UpdateCartHttpRequest {
   items: {
     amount: number;
     productId: string;
-    price: number;
     cartId: string;
-    discount: number;
-    name: string;
-    imageUrl?: string;
   }[];
 }
 
@@ -20,7 +16,7 @@ export class V1UpdateCartHttpResponse {
     price: number;
     amount: number;
     cartId: string;
-    discount?: number;
+    discount: number;
     totalPrice: number;
     imageUrl?: string;
   }[];

@@ -1,15 +1,26 @@
 import { DomainExceptionBase } from '@base/domain';
 import { CommandBase } from '@base/use-cases';
-import { CartItemEntity } from '@entities';
+import { CartAmountValueObject, CartIdValueObject } from '@value-objects/cart';
+import { ProductIdValueObject } from '@value-objects/product';
 import { UserIdValueObject } from '@value-objects/user';
 
+export interface UpdateCartItem {
+  productId: ProductIdValueObject;
+  amount: CartAmountValueObject;
+  cartId: CartIdValueObject;
+}
+
 export class UpdateCartCommand implements CommandBase {
-  items: CartItemEntity[];
+  items: UpdateCartItem[];
   userId: UserIdValueObject;
 
   validate?(): DomainExceptionBase[] {
     for (const item of this.items) {
-      const exceptions = item.validate().filter((e) => e);
+      const exceptions = [
+        item.productId.validate(),
+        item.amount.validate?.(),
+        item.cartId.validate?.(),
+      ].filter((e) => e) as DomainExceptionBase[];
 
       if (exceptions.length > 0) {
         return exceptions;

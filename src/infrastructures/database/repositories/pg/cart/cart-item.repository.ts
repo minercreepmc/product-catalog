@@ -5,7 +5,7 @@ import { CartItemEntity } from '@entities';
 import { Injectable } from '@nestjs/common';
 import { CartIdValueObject, CartItemIdValueObject } from '@value-objects/cart';
 import { plainToInstance } from 'class-transformer';
-import { CartItemSchema } from './cart-item.schema';
+import { CartItemDetailsSchema } from './cart-item.schema';
 import { CartItemSchemaMapper } from './cart-item.schema.mapper';
 
 @Injectable()
@@ -19,8 +19,8 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
     const model = this.mapper.toPersistance(entity);
     const res = await this.databaseService.runQuery(
       `
-        INSERT INTO cart_item (id, cart_id, product_id, amount, discount, name, image_url, price, total_price) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+        INSERT INTO cart_item (id, cart_id, product_id, amount, total_price) 
+        VALUES ($1, $2, $3, $4, $5) 
         RETURNING *;
       `,
       [
@@ -28,17 +28,14 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
         model.cart_id,
         model.product_id,
         model.amount,
-        model.discount,
-        model.name,
-        model.image_url,
-        model.price,
         model.total_price,
       ],
     );
 
-    const cart = plainToInstance(CartItemSchema, res.rows[0]);
+    let cartItem = plainToInstance(CartItemDetailsSchema, res.rows[0]);
+    cartItem = await this.addDetails(cartItem);
 
-    return cart ? this.mapper.toDomain(cart) : null;
+    return cartItem ? this.mapper.toDomain(cartItem) : null;
   }
 
   async deleteOneById(id: any): Promise<CartItemEntity | null> {
@@ -75,21 +72,14 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
 
     const res = await this.databaseService.runQuery(
       `
-      UPDATE cart_item SET amount=$1, discount=$3, name=$4, price=$5, total_price=$6  WHERE id=$2 RETURNING *;
+      UPDATE cart_item SET amount=$1, total_price=$3  WHERE id=$2 RETURNING *;
     `,
-      [
-        query.amount,
-        query.id,
-        query.discount,
-        query.name,
-        query.price,
-        query.total_price,
-      ],
+      [query.amount, query.id, query.total_price],
     );
 
-    const deleted = res.rows[0];
-
-    return deleted ? this.mapper.toDomain(deleted) : null;
+    let updated = plainToInstance(CartItemDetailsSchema, res.rows[0]);
+    updated = await this.addDetails(updated);
+    return updated ? this.mapper.toDomain(updated) : null;
   }
 
   async updateOneByCartId(
@@ -100,19 +90,13 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
 
     const res = await this.databaseService.runQuery(
       `
-      UPDATE cart_item SET amount=$1, discount=$3, name=$4, price=$5, total_price=$6 WHERE cart_id=$2 RETURNING *;
+      UPDATE cart_item SET amount=$1, total_price=$2 WHERE cart_id=$3 RETURNING *;
     `,
-      [
-        query.amount,
-        query.cart_id,
-        query.discount,
-        query.name,
-        query.price,
-        query.total_price,
-      ],
+      [query.amount, query.total_price, query.cart_id],
     );
 
-    const updated = res.rows[0];
+    let updated = plainToInstance(CartItemDetailsSchema, res.rows[0]);
+    updated = await this.addDetails(updated);
 
     return updated ? this.mapper.toDomain(updated) : null;
   }
@@ -147,5 +131,39 @@ export class CartItemRepository implements RepositoryPort<CartItemEntity> {
     const items = res.rows;
 
     return items ? items.map((item) => this.mapper.toDomain(item)) : [];
+  }
+
+  private async addDetails(cartItem: CartItemDetailsSchema) {
+    cartItem.product = await this.getProduct(cartItem.product_id);
+    if (cartItem.product.discount_id) {
+      cartItem.discount = await this.getDiscount(cartItem.product.discount_id);
+    }
+    return cartItem;
+  }
+
+  private async getProduct(productId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT * from product WHERE id=$1
+    `,
+      [productId],
+    );
+
+    const product = res.rows[0];
+
+    return product;
+  }
+
+  private async getDiscount(discountId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT * from discount WHERE id=$1
+    `,
+      [discountId],
+    );
+
+    const discount = res.rows[0];
+
+    return discount;
   }
 }

@@ -98,7 +98,6 @@ describe('Get cart', () => {
       items: [
         {
           productId,
-          price,
           amount: 2,
           cartId,
         },

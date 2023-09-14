@@ -15,6 +15,10 @@ export class ProductPriceValueObject {
     }
   }
 
+  plus(value: ProductPriceValueObject) {
+    return new ProductPriceValueObject(this.value + value.value);
+  }
+
   constructor(value: number) {
     this.value = value;
   }

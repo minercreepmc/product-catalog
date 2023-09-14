@@ -1,4 +1,3 @@
-import { PaginationParams } from '@api/http';
 import {
   readOnlyCartRepositoryDiToken,
   ReadonlyCartRepositoryPort,
@@ -7,7 +6,7 @@ import { CartDetailsSchema } from '@database/repositories/pg/cart';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-export class GetCartQuery extends PaginationParams {
+export class GetCartQuery {
   userId: string;
 }
 export type GetCartResponseDto = CartDetailsSchema;

@@ -12,6 +12,7 @@ export * from './update-order.http.controller.v1';
 export * from './update-profile.http.controller.v1';
 export * from './remove-products.http.controller.v1';
 export * from './remove-discounts.http.controller.v1';
+export * from './remove-discount.http.controller.v1';
 export * from './remove-categories.http.controler.v1';
 export * from './remove-category.http.controller.v1';
 export * from './log-in.http.controller.v1';

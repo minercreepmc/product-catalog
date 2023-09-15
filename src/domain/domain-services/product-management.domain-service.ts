@@ -15,6 +15,8 @@ import {
 import { unitOfWorkDiToken, UnitOfWorkPort } from '@domain-interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import { ProductIdValueObject } from '@value-objects/product';
+import { CategoryVerificationDomainService } from './category-verification.domain-service';
+import { DiscountVerificationDomainService } from './discount-verification.domain-service';
 import { ProductVerificationDomainService } from './product-verification.domain-service';
 
 export type UpdateProductDomainServiceOptions = {
@@ -30,6 +32,8 @@ export class ProductManagementDomainService {
     @Inject(unitOfWorkDiToken)
     private readonly unitOfWork: UnitOfWorkPort,
     private readonly productVerificationService: ProductVerificationDomainService,
+    private readonly discountVerificationService: DiscountVerificationDomainService,
+    private readonly categoryVerificationService: CategoryVerificationDomainService,
   ) {}
 
   async createProduct(
@@ -52,11 +56,21 @@ export class ProductManagementDomainService {
   ): Promise<ProductUpdatedDomainEvent> {
     return this.unitOfWork.runInTransaction(async () => {
       const { id, payload } = options;
+      const { discountId, categoryIds } = payload;
       const product = await this.productVerificationService.findProductOrThrow(
         id,
       );
       const productUpdatedEvent = product.updateProduct(payload);
       // find categories and discount
+      discountId &&
+        (await this.discountVerificationService.findDiscountOrThrow(
+          discountId,
+        ));
+
+      categoryIds &&
+        (await this.categoryVerificationService.findCategoriesOrThrow(
+          categoryIds,
+        ));
       await this.productRepository.updateOneById(id, product);
       return productUpdatedEvent;
     });

@@ -58,7 +58,6 @@ export class V1UpdateCartHttpController extends HttpControllerBase<
     return new UpdateCartCommand({
       userId: new UserIdValueObject(userId),
       items: items.map((item) => {
-        console.log(item);
         return {
           amount: new CartAmountValueObject(item.amount),
           productId: new ProductIdValueObject(item.productId),

@@ -1,3 +1,5 @@
 import { ProductSchema } from '@database/repositories/pg/product';
 
-export type ProductViewModel = ProductSchema;
+export interface ProductViewModel extends ProductSchema {
+  discount: number;
+}

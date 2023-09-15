@@ -130,9 +130,11 @@ export class ReadOnlyProductRepository
 
     const res = await this.databaseService.runQuery(
       ` 
-        SELECT id, name, price, description, image_url, sold from product 
-        WHERE deleted_at is null
-        ORDER BY updated_at ASC
+        SELECT product.id, product.name, product.price, product.description,
+        product.image_url, product.sold, COALESCE(discount.percentage, 0) as discount
+        LEFT JOIN discount ON product.discount_id = discount.id
+        WHERE product.deleted_at is null
+        ORDER BY product.updated_at ASC
         OFFSET $1 LIMIT $2;
       `,
       [offset, limit],

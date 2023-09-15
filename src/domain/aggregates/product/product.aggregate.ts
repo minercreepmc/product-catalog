@@ -4,7 +4,10 @@ import {
   ProductUpdatedDomainEvent,
 } from '@domain-events/product';
 import { CategoryIdValueObject } from '@value-objects/category';
-import { DiscountIdValueObject } from '@value-objects/discount';
+import {
+  DiscountIdValueObject,
+  DiscountPercentageValueObject,
+} from '@value-objects/discount';
 import {
   ProductDescriptionValueObject,
   ProductIdValueObject,
@@ -89,12 +92,9 @@ export class ProductAggregate
     if (options.image) {
       this.image = options.image;
     }
-    if (options.discountId) {
-      this.discountId = options.discountId;
-    }
-    if (options.categoryIds) {
-      this.categoryIds = options.categoryIds;
-    }
+    this.discountId = options.discountId;
+    this.categoryIds = options.categoryIds;
+
     if (options.sold) {
       this.sold = options.sold;
     }

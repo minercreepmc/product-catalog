@@ -168,10 +168,42 @@ export class ProductRepository
 
     const updated = res.rows[0];
 
-    //if (query.category_ids && query.category_ids.length >= 0) {
-    //  updated.category_ids = await this.updateCategoryIds(query);
-    //}
+    if (query.category_ids && query.category_ids.length >= 0) {
+      updated.category_ids = await this.updateCategoryIds(query);
+    }
+
+    if (query.discount_id) {
+      updated.discount_id = await this.updateDiscount(query);
+    }
 
     return updated ? this.mapper.toDomain(updated) : null;
+  }
+
+  private async updateDiscount(query: Partial<ProductSchema>) {
+    console.log(query);
+    if (query.discount_id) {
+      const res = await this.databaseService.runQuery(
+        `
+        UPDATE product 
+        SET discount_id=$1
+        WHERE id=$2
+        RETURNING discount_id;
+      `,
+        [query.discount_id, query.id],
+      );
+      return res.rows[0].discount_id;
+    } else {
+      const res = await this.databaseService.runQuery(
+        `
+          UPDATE product
+          SET discount_id=null
+          WHERE id=$1
+          RETURNING discount_id;
+        `,
+        [query.id],
+      );
+      console.log(res.rows[0]);
+      return res.rows[0].discount_id;
+    }
   }
 }

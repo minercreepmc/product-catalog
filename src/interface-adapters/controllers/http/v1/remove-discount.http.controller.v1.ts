@@ -14,6 +14,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
   Param,
@@ -39,8 +40,7 @@ export class V1RemoveDiscountHttpController extends HttpControllerBase<
   constructor(commandBus: CommandBus) {
     super(commandBus);
   }
-  @Post()
-  @HttpCode(HttpStatus.OK)
+  @Delete()
   @Roles(UserRoleEnum.Admin)
   execute(
     @Body() request: V1RemoveDiscountHttpRequest,

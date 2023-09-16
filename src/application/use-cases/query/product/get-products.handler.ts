@@ -26,11 +26,15 @@ export class GetProductsQueryHandler
     let products: ProductViewModel[] | null = [];
 
     if (discount_id) {
-      products = await this.repository.findByDiscountId(discount_id);
+      products = (await this.repository.findByDiscountId(
+        discount_id,
+      )) as ProductViewModel[];
     } else if (category_id) {
-      products = await this.repository.findByCategoryId(category_id);
+      products = (await this.repository.findByCategoryId(
+        category_id,
+      )) as ProductViewModel[];
     } else {
-      products = await this.repository.findAll(query);
+      products = (await this.repository.findAll(query)) as ProductViewModel[];
     }
 
     return products ? { products } : { products: [] };

@@ -34,7 +34,7 @@ export class UserAggregate implements AggregateRootBase, UserAggregateDetails {
   password?: UserPasswordValueObject;
   role: UserRoleValueObject;
   fullName?: UserFullNameValueObject;
-  address?: UserAddressValueObject;
+  address?: UserAddressValueObject[];
   id: UserIdValueObject;
 
   registerMember(options: RegisterUserAggregateOptions) {

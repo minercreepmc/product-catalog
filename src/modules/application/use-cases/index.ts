@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AddressModule } from './address.module';
 import { CreateCartModule } from './create-cart.module';
 import { CreateCategoryModule } from './create-category.module';
 import { CreateDiscountModule } from './create-discount.module';
@@ -22,6 +23,7 @@ import { RemoveCategoryModule } from './remove-category.module';
 import { RemoveDiscountModule } from './remove-discount.module';
 import { RemoveDiscountsModule } from './remove-discounts.module';
 import { RemoveProductsModule } from './remove-products.module';
+import { ShippingModule } from './shipping.module';
 import { UpdateCartModule } from './update-cart.module';
 import { UpdateCategoryModule } from './update-category.module';
 import { UpdateDiscountModule } from './update-discount.module';
@@ -29,6 +31,7 @@ import { UpdateOrderModule } from './update-order.module';
 import { UpdateProductModule } from './update-product.module';
 import { UpdateProfileModule } from './update-profile.module';
 import { UploadModule } from './upload.module';
+import { UserModule } from './user.module';
 
 @Module({
   imports: [
@@ -60,6 +63,9 @@ import { UploadModule } from './upload.module';
     LogInModule,
     LogInAdminModule,
     UploadModule,
+    AddressModule,
+    ShippingModule,
+    UserModule,
   ],
 })
 export class UseCaseModule {}

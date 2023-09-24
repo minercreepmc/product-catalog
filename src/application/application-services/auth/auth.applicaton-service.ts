@@ -6,7 +6,6 @@ import {
 } from '@application/interface/user';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import {
-  UserAddressValueObject,
   UserFullNameValueObject,
   UserIdValueObject,
   UserNameValueObject,
@@ -46,9 +45,6 @@ export class AuthApplicationService implements AuthServicePort {
         ? new UserFullNameValueObject(model.full_name)
         : undefined,
       role: new UserRoleValueObject(model.role),
-      address: model?.address
-        ? new UserAddressValueObject(model.address)
-        : undefined,
     });
   }
 
@@ -76,7 +72,6 @@ export class AuthApplicationService implements AuthServicePort {
     }
 
     await this.userRepository.updateOneById(aggregate.id.value, {
-      address: aggregate.address?.value,
       full_name: aggregate.fullName?.value,
     });
   }
@@ -90,12 +85,12 @@ export class AuthApplicationService implements AuthServicePort {
     password: string,
   ): Promise<UserSchema> {
     const user = await this.userRepository.findOneByName(username);
-
     if (!user) {
       throw new UnauthorizedException();
     }
 
     const isPasswordMatching = await bcrypt.compare(password, user.hashed!);
+    console.log(isPasswordMatching);
 
     if (!isPasswordMatching) {
       throw new UnauthorizedException();
@@ -149,9 +144,6 @@ export class AuthApplicationService implements AuthServicePort {
       username: new UserNameValueObject(userSchema.username),
       fullName: userSchema.full_name
         ? new UserFullNameValueObject(userSchema.full_name)
-        : undefined,
-      address: userSchema.address
-        ? new UserAddressValueObject(userSchema.address)
         : undefined,
     });
   }

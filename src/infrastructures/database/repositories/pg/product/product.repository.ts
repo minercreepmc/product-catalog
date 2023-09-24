@@ -206,4 +206,21 @@ export class ProductRepository
       return res.rows[0].discount_id;
     }
   }
+
+  async findOneOrFail(id: string) {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT * FROM product WHERE id=$1;
+      `,
+      [id],
+    );
+
+    const product = res.rows[0];
+
+    if (product) {
+      throw new Error('Product not found');
+    }
+
+    return product;
+  }
 }

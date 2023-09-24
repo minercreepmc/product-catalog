@@ -29,7 +29,6 @@ export class UpdateProfileHandler extends CommandHandlerBase<
     return this.userRegistrationService.updateProfile({
       id: this.command.id,
       payload: {
-        address: this.command.address,
         fullName: this.command.fullName,
       },
     });
@@ -39,7 +38,6 @@ export class UpdateProfileHandler extends CommandHandlerBase<
   ): Promise<UpdateProfileResponseDto> {
     return new UpdateProfileResponseDto({
       fullName: data.fullName?.value,
-      address: data.address?.value,
       id: data.id.value,
     });
   }

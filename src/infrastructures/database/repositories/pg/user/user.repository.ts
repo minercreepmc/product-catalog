@@ -1,16 +1,12 @@
-import { PaginationParams } from '@api/http';
-import { UserRepositoryPort } from '@application/interface/user';
-import { ApplicationRepositoryBase } from '@base/database/repositories/pg';
+import { PaginationParams, UpdateUserDto } from '@api/http';
 import { DatabaseService } from '@config/pg';
 import { Injectable } from '@nestjs/common';
+import { UserRoleEnum } from '@value-objects/user';
 import { plainToInstance } from 'class-transformer';
 import { UserSchema } from './user.schema';
 
 @Injectable()
-export class UserRepository
-  extends ApplicationRepositoryBase<UserSchema>
-  implements UserRepositoryPort
-{
+export class UserRepository {
   async create(entity: UserSchema): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
@@ -59,13 +55,13 @@ export class UserRepository
   }
   async updateOneById(
     id: string,
-    newState: UserSchema,
+    newState: UpdateUserDto,
   ): Promise<UserSchema | null> {
     const res = await this.databaseService.runQuery(
       `
-      UPDATE "users" SET full_name=$2, address=$3 WHERE id=$1 AND deleted_at IS NULL 
+      UPDATE "users" SET full_name=coalesce($2, full_name), hashed=coalesce($3, hashed) WHERE id=$1 AND deleted_at IS NULL RETURNING *;
       `,
-      [id, newState.full_name, newState.address],
+      [id, newState.fullName, newState.password],
     );
 
     const updated = res.rows[0];
@@ -98,9 +94,32 @@ export class UserRepository
     return res.rows;
   }
 
-  constructor(databaseService: DatabaseService) {
-    super({
-      databaseService,
-    });
+  async findAllByRole(role: string): Promise<UserSchema[]> {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT * from "users" WHERE role=$1 AND deleted_at IS NULL
+      `,
+      [role],
+    );
+
+    return res.rows;
   }
+
+  async findShipperOrThrow(id: string): Promise<UserSchema> {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT * from "users" WHERE id=$1 AND role=$2
+      `,
+      [id, UserRoleEnum.Shipper],
+    );
+
+    const user = res.rows[0];
+
+    if (!user) {
+      throw new Error('Shipper not found');
+    }
+    return user;
+  }
+
+  constructor(private readonly databaseService: DatabaseService) {}
 }

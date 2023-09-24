@@ -1,22 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-
 export class V1RegisterAdminHttpRequest {
-  @ApiProperty({
-    example: 'username',
-    description: 'Username',
-  })
   username: string;
-
-  @ApiProperty({
-    example: 'password',
-    description: 'Password',
-  })
   password: string;
-
-  @ApiProperty({
-    example: 'fullName',
-    description: 'Full name',
-  })
   fullName?: string;
 }
 

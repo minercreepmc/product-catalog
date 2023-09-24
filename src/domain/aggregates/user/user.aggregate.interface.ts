@@ -13,7 +13,7 @@ export interface UserAggregateDetails {
   password?: UserPasswordValueObject;
   role: UserRoleValueObject;
   fullName?: UserFullNameValueObject;
-  address?: UserAddressValueObject;
+  address?: UserAddressValueObject[];
 }
 
 export interface RegisterUserAggregateOptions {
@@ -24,6 +24,6 @@ export interface RegisterUserAggregateOptions {
 
 export interface UpdateUserProfileAggregateOptions {
   fullName?: UserFullNameValueObject;
-  address?: UserAddressValueObject;
+  address?: UserAddressValueObject[];
   password?: UserPasswordValueObject;
 }

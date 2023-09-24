@@ -6,5 +6,6 @@ export type RemoveDiscountSuccess = RemoveDiscountResponseDto;
 export type RemoveDiscountFailure =
   Array<DiscountDomainExceptions.DoesNotExist>;
 export type RemoveDiscountResult = Result<
-  RemoveDiscountSuccess, RemoveDiscountFailure
+  RemoveDiscountSuccess,
+  RemoveDiscountFailure
 >;

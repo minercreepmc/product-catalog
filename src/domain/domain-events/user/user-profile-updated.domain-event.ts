@@ -9,7 +9,7 @@ import {
 
 export interface UserProfileUpdatedDomainEventDetails {
   id: UserIdValueObject;
-  address?: UserAddressValueObject;
+  address?: UserAddressValueObject[];
   fullName?: UserFullNameValueObject;
   password?: UserPasswordValueObject;
 }
@@ -31,7 +31,7 @@ export class ProfileUpdatedDomainEvent
     this.password = password;
   }
   id: UserIdValueObject;
-  address?: UserAddressValueObject;
+  address?: UserAddressValueObject[];
   fullName?: UserFullNameValueObject;
   password?: UserPasswordValueObject;
 }

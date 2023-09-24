@@ -5,6 +5,8 @@ import { IsDefined, IsEnum, validateSync } from 'class-validator';
 export enum UserRoleEnum {
   Member = 'member',
   Admin = 'admin',
+  Staff = 'staff',
+  Shipper = 'shipper',
 }
 
 export const reviewerRoles = Object.values(UserRoleEnum);

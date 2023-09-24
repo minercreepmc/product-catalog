@@ -28,7 +28,6 @@ import {
   UpdateProfileResponseDto,
 } from '@use-cases/command/update-profile';
 import {
-  UserAddressValueObject,
   UserFullNameValueObject,
   UserIdValueObject,
 } from '@value-objects/user';
@@ -60,11 +59,10 @@ export class V1UpdateProfileHttpController extends HttpControllerBase<
     options: HttpControllerBaseOption<V1UpdateProfileHttpRequest>,
   ): UpdateProfileCommand {
     const { request, user } = options;
-    const { fullName, address } = request!;
+    const { fullName } = request!;
     return new UpdateProfileCommand({
       id: new UserIdValueObject(user!.id),
       fullName: fullName ? new UserFullNameValueObject(fullName) : undefined,
-      address: address ? new UserAddressValueObject(address) : undefined,
     });
   }
   extractResult(result: any): V1UpdateProfileHttpResponse {

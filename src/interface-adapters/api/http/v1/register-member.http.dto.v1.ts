@@ -1,22 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsOptional,
+  IsString,
+  IsStrongPassword,
+  Length,
+} from 'class-validator';
 
 export class V1RegisterMemberHttpRequest {
-  @ApiProperty({
-    example: 'username',
-    description: 'Username',
-  })
+  @IsString()
+  @Length(3, 50)
   username: string;
 
-  @ApiProperty({
-    example: 'password',
-    description: 'Password',
-  })
+  @IsString()
+  @IsStrongPassword()
   password: string;
 
-  @ApiProperty({
-    example: 'fullName',
-    description: 'Full name',
-  })
+  @IsOptional()
+  @IsString()
   fullName?: string;
 }
 

@@ -32,6 +32,8 @@ services:
       #- ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     volumes:
       - ./data/db:/var/lib/postgresql/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - 8002:5432
     networks:

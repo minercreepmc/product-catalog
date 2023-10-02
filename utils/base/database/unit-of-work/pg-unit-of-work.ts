@@ -1,4 +1,4 @@
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { UnitOfWorkPort } from '@domain-interfaces';
 import { Injectable } from '@nestjs/common';
 

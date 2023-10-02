@@ -2,9 +2,9 @@ import {
   userRepositoryDiToken,
   UserRepositoryPort,
 } from '@application/interface/user';
-import { UserSchema } from '@database/repositories/pg/user';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { UserModel } from '@v2/users';
 
 export class GetUsersQuery {
   limit?: number;
@@ -15,7 +15,7 @@ export class GetUsersQuery {
   }
 }
 export type GetUsersResponse = {
-  users: UserSchema[];
+  users: UserModel[];
 };
 
 @QueryHandler(GetUsersQuery)
@@ -27,7 +27,7 @@ export class GetUsersHandler
     private readonly userRepository: UserRepositoryPort,
   ) {}
   async execute(query: GetUsersQuery): Promise<GetUsersResponse> {
-    const founds: UserSchema[] = await this.userRepository.findAll(query);
+    const founds: UserModel[] = await this.userRepository.findAll(query);
     return {
       users: founds,
     };

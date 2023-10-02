@@ -23,6 +23,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       forbidUnknownValues: false,
+      forbidNonWhitelisted: true,
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
         return new BadRequestException(
           validationErrors.map((error) => ({
@@ -34,7 +35,6 @@ async function bootstrap() {
     }),
   );
 
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors({
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-API-Key'],
     origin: ['http://localhost:4200', 'http://localhost:4201'],
@@ -49,6 +49,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT');
 
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   await app.listen(port || 4201);
 }
 

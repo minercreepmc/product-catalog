@@ -1,5 +1,8 @@
-import { CreateShippingStatusDto, UpdateShippingStatusDto } from '@api/http/v1';
-import { DatabaseService } from '@config/pg';
+import {
+  CreateShippingStatusDto,
+  UpdateShippingStatusDto,
+} from '@api/http/v1/shipping-status.http.dto.v1';
+import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
 import { randomString } from '@utils/functions';
 

@@ -5,7 +5,6 @@ import {
   readOnlyCartRepositoryDiToken,
   readOnlyProductRepositoryDiToken,
 } from '@application/interface/product';
-import { userRepositoryDiToken } from '@application/interface/user';
 import { UnitOfWork } from '@base/database/unit-of-work';
 import {
   ConfigurableDatabaseModule,
@@ -13,7 +12,7 @@ import {
   DatabaseConfigOptions,
   DatabaseService,
   DATABASE_OPTIONS,
-} from '@config/pg';
+} from '@config/database';
 import {
   CartItemRepository,
   CartItemSchemaMapper,
@@ -41,7 +40,6 @@ import {
   ProductSchemaMapper,
   ReadOnlyProductRepository,
 } from '@database/repositories/pg/product';
-import { UserRepository } from '@database/repositories/pg/user';
 import {
   cartRepositoryDiToken,
   categoryRepositoryDiToken,
@@ -51,6 +49,7 @@ import {
 import { unitOfWorkDiToken } from '@domain-interfaces';
 import { orderRepositoryDiToken } from '@domain-interfaces/database/order-repository.interface';
 import { Global, Module, Provider } from '@nestjs/common';
+import { UserRepository } from '@v2/users';
 import { Pool } from 'pg';
 
 const repositories: Provider[] = [
@@ -66,10 +65,7 @@ const repositories: Provider[] = [
     provide: discountRepositoryDiToken,
     useClass: DiscountRepository,
   },
-  {
-    provide: userRepositoryDiToken,
-    useClass: UserRepository,
-  },
+  UserRepository,
   {
     provide: readOnlyProductRepositoryDiToken,
     useClass: ReadOnlyProductRepository,
@@ -128,7 +124,6 @@ const mappers: Provider[] = [
   OrderSchemaMapper,
 ];
 
-@Global()
 @Module({
   imports: [],
   providers: [...repositories, DatabaseService, poolProvider, ...mappers],

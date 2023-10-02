@@ -1,7 +1,7 @@
 import { OrderAggregate } from '@aggregates/order';
 import { RepositoryBase } from '@base/database/repositories/pg';
 import { ID } from '@base/domain';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { OrderRepositoryPort } from '@domain-interfaces/database/order-repository.interface';
 import { Injectable } from '@nestjs/common';
 import {

@@ -1,5 +1,5 @@
 import { ID } from '@base/domain';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { RepositoryPort } from '@domain-interfaces';
 import { CartItemEntity } from '@entities';
 import { Injectable } from '@nestjs/common';

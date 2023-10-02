@@ -2,9 +2,9 @@ import {
   userRepositoryDiToken,
   UserRepositoryPort,
 } from '@application/interface/user';
-import { UserSchema } from '@database/repositories/pg/user';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { UserModel } from '@v2/users';
 
 export class GetProfileQuery {
   id: string;
@@ -13,7 +13,7 @@ export class GetProfileQuery {
   }
 }
 
-export type GetProfileResponseDto = UserSchema;
+export type GetProfileResponseDto = UserModel;
 
 @QueryHandler(GetProfileQuery)
 export class GetProfileQueryHandler

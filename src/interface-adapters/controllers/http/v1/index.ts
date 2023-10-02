@@ -18,8 +18,3 @@ export * from './remove-category.http.controller.v1';
 export * from './log-in.http.controller.v1';
 export * from './log-out.http.controller.v1';
 export * from './create-cart.http.controller.v1';
-export * from './user.http.controller.v1';
-export * from './address.http.controller.v1';
-export * from './shipping.http.controller.v1';
-export * from './shipping-status.http.controller.v1';
-export * from './shipping-fee.http.controller.v1';

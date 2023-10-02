@@ -1,9 +1,9 @@
-import { DatabaseService } from '@config/pg';
 import { RepositoryPort } from '@domain-interfaces';
 import { ID } from '@base/domain';
 import { SchemaMapperBase } from './schema.mapper.base';
 import { ReadOnlyRepositoryPort } from '@base/use-cases';
 import { PaginationParams } from '@base/use-cases/query-handler';
+import { DatabaseService } from '@config/database';
 
 export interface RepositoryBaseOptions<Domain, Schema> {
   databaseService: DatabaseService;

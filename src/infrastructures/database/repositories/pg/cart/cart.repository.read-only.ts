@@ -1,7 +1,7 @@
 import { ReadonlyCartRepositoryPort } from '@application/interface/product';
 import { ReadonlyRepositoryBase } from '@base/database/repositories/pg';
 import { PaginationParams } from '@base/use-cases/query-handler';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { CartDetailsSchema, CartSchema } from './cart.schema';

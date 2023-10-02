@@ -16,7 +16,7 @@ import { AuthServicePort } from '@domain-interfaces/services';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserSchema } from '@database/repositories/pg/user';
+import { UserModel } from '@v2/users';
 
 export interface TokenPayload {
   userId: string;
@@ -32,20 +32,21 @@ export class AuthApplicationService implements AuthServicePort {
   ) {}
 
   async findOneById(id: UserIdValueObject): Promise<UserAggregate | null> {
-    const model = await this.userRepository.findOneById(id.value);
-
-    if (!model) {
-      return null;
-    }
-
-    return new UserAggregate({
-      id: new UserIdValueObject(model.id),
-      username: new UserNameValueObject(model.username),
-      fullName: model?.full_name
-        ? new UserFullNameValueObject(model.full_name)
-        : undefined,
-      role: new UserRoleValueObject(model.role),
-    });
+    // const model = await this.userRepository.findOneById(id.value);
+    //
+    // if (!model) {
+    //   return null;
+    // }
+    //
+    // return new UserAggregate({
+    //   id: new UserIdValueObject(model.id),
+    //   username: new UserNameValueObject(model.username),
+    //   fullName: model?.full_name
+    //     ? new UserFullNameValueObject(model.full_name)
+    //     : undefined,
+    //   role: new UserRoleValueObject(model.role),
+    // });
+    throw new UnauthorizedException();
   }
 
   async doesUserIdExist(id: UserIdValueObject): Promise<boolean> {
@@ -54,26 +55,28 @@ export class AuthApplicationService implements AuthServicePort {
   }
 
   async handlerAuthAndSaveToDb(aggregate: UserAggregate): Promise<void> {
-    const hashed = await bcrypt.hash(aggregate.password!.value, 10);
-
-    await this.userRepository.create({
-      id: aggregate.id.value,
-      role: aggregate.role.value,
-      username: aggregate.username.value,
-      full_name: aggregate.fullName ? aggregate.fullName.value : undefined,
-      hashed,
-    });
+    // const hashed = await bcrypt.hash(aggregate.password!.value, 10);
+    //
+    // await this.userRepository.create({
+    //   id: aggregate.id.value,
+    //   role: aggregate.role.value,
+    //   username: aggregate.username.value,
+    //   full_name: aggregate.fullName ? aggregate.fullName.value : undefined,
+    //   hashed,
+    // });
+    throw new UnauthorizedException();
   }
 
   async handleAuthAndUpdateToDb(aggregate: UserAggregate): Promise<void> {
-    let hashed: string;
-    if (aggregate.password) {
-      hashed = await bcrypt.hash(aggregate.password.value, 10);
-    }
-
-    await this.userRepository.updateOneById(aggregate.id.value, {
-      full_name: aggregate.fullName?.value,
-    });
+    // let hashed: string;
+    // if (aggregate.password) {
+    //   hashed = await bcrypt.hash(aggregate.password.value, 10);
+    // }
+    //
+    // await this.userRepository.updateOneById(aggregate.id.value, {
+    //   full_name: aggregate.fullName?.value,
+    // });
+    throw new UnauthorizedException();
   }
 
   async doesUserNameExist(name: UserNameValueObject): Promise<boolean> {
@@ -83,20 +86,21 @@ export class AuthApplicationService implements AuthServicePort {
   async getAuthenticatedUser(
     username: string,
     password: string,
-  ): Promise<UserSchema> {
-    const user = await this.userRepository.findOneByName(username);
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    const isPasswordMatching = await bcrypt.compare(password, user.hashed!);
-    console.log(isPasswordMatching);
-
-    if (!isPasswordMatching) {
-      throw new UnauthorizedException();
-    }
-
-    return user;
+  ): Promise<UserModel> {
+    throw new UnauthorizedException();
+    // const user = await this.userRepository.findOneByName(username);
+    // if (!user) {
+    //   throw new UnauthorizedException();
+    // }
+    //
+    // const isPasswordMatching = await bcrypt.compare(password, user.hashed!);
+    // console.log(isPasswordMatching);
+    //
+    // if (!isPasswordMatching) {
+    //   throw new UnauthorizedException();
+    // }
+    //
+    // return user;
   }
 
   async verifyPassword(plainTextPassword: string, hashedPassword: string) {
@@ -107,13 +111,14 @@ export class AuthApplicationService implements AuthServicePort {
     username: UserNameValueObject,
     password: UserPasswordValueObject,
   ): Promise<boolean> {
-    const user = await this.userRepository.findOneByName(username.value);
-
-    if (!user) {
-      throw new UserDomainExceptions.CredentialDoesNotValid();
-    }
-
-    return this.verifyPassword(password.value, user.hashed!);
+    throw new UnauthorizedException();
+    // const user = await this.userRepository.findOneByName(username.value);
+    //
+    // if (!user) {
+    //   throw new UserDomainExceptions.CredentialDoesNotValid();
+    // }
+    //
+    // return this.verifyPassword(password.value, user.hashed!);
   }
 
   getAuthenticatedCookie(userId: UserIdValueObject): string {
@@ -135,16 +140,17 @@ export class AuthApplicationService implements AuthServicePort {
   async findOneByUsername(
     username: UserNameValueObject,
   ): Promise<UserAggregate | null> {
-    const userSchema = await this.userRepository.findOneByName(username.value);
-    if (!userSchema) return Promise.resolve(null);
-
-    return new UserAggregate({
-      id: new UserIdValueObject(userSchema?.id),
-      role: new UserRoleValueObject(userSchema.role),
-      username: new UserNameValueObject(userSchema.username),
-      fullName: userSchema.full_name
-        ? new UserFullNameValueObject(userSchema.full_name)
-        : undefined,
-    });
+    throw new UnauthorizedException();
+    // const userSchema = await this.userRepository.findOneByName(username.value);
+    // if (!userSchema) return Promise.resolve(null);
+    //
+    // return new UserAggregate({
+    //   id: new UserIdValueObject(userSchema?.id),
+    //   role: new UserRoleValueObject(userSchema.role),
+    //   username: new UserNameValueObject(userSchema.username),
+    //   fullName: userSchema.full_name
+    //     ? new UserFullNameValueObject(userSchema.full_name)
+    //     : undefined,
+    // });
   }
 }

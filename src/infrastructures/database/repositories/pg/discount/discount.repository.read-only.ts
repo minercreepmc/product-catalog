@@ -1,7 +1,7 @@
 import { ReadOnlyDiscountRepositoryPort } from '@application/interface/discount';
 import { ReadonlyRepositoryBase } from '@base/database/repositories/pg';
 import { PaginationParams } from '@base/use-cases/query-handler';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
 import { DiscountSchema } from './discount.schema';
 

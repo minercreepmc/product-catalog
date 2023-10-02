@@ -1,6 +1,6 @@
 import { DiscountAggregate } from '@aggregates/discount';
 import { RepositoryBase } from '@base/database/repositories/pg';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { DiscountRepositoryPort } from '@domain-interfaces';
 import { Injectable } from '@nestjs/common';
 import {

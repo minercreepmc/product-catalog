@@ -1,6 +1,6 @@
 import { CartAggregate } from '@aggregates/cart';
 import { ID } from '@base/domain';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { CartRepositoryPort } from '@domain-interfaces';
 import { Injectable } from '@nestjs/common';
 import { CartIdValueObject } from '@value-objects/cart';

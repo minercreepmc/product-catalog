@@ -15,6 +15,7 @@ export const RoleGuard = (...roles: UserRoleEnum[]): Type<CanActivate> => {
     canActivate(context: ExecutionContext) {
       const request = context.switchToHttp().getRequest<RequestWithUser>();
       const user = request.user;
+      console.log(user);
       return roles.some((role) => user?.role === role);
     }
   }

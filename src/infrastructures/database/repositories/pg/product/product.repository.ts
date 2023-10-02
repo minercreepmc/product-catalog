@@ -1,6 +1,6 @@
 import { ProductAggregate } from '@aggregates/product';
 import { RepositoryBase } from '@base/database/repositories/pg';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { ProductRepositoryPort } from '@domain-interfaces';
 import { Injectable } from '@nestjs/common';
 import {

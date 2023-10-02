@@ -1,6 +1,6 @@
 import { PaginationParams } from '@api/http';
 import { ReadOnlyOrderRepositoryPort } from '@application/interface/order';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { OrderSchema } from './order.schema';

@@ -13,7 +13,7 @@ const knexConfig: Knex.Config = {
     database: configService.get('POSTGRES_DB'),
   },
   migrations: {
-    directory: '../../src/infrastructures/database/migrations',
+    directory: '../../src/v2/migrations',
   },
   seeds: {
     directory: '../../src/infrastructures/database/seeds',

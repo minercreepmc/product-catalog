@@ -1,6 +1,6 @@
 import type { CategoryAggregate } from '@aggregates/category';
 import { RepositoryBase } from '@base/database/repositories/pg';
-import { DatabaseService } from '@config/pg';
+import { DatabaseService } from '@config/database';
 import { CategoryRepositoryPort } from '@domain-interfaces';
 import { Injectable } from '@nestjs/common';
 import {

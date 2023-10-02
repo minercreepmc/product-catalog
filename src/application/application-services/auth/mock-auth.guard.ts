@@ -1,7 +1,6 @@
-import { UserSchema } from '@database/repositories/pg/user';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 
-const myCustomUserObject: UserSchema = {
+const myCustomUserObject: any = {
   id: '123',
   role: 'admin',
   username: 'tinpham',

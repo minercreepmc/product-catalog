@@ -14,36 +14,41 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
 import { DiscountService } from './discount.service';
-import { CreateDiscountDto, UpdateDiscountDto } from './dtos';
+import { CreateDiscountDto, UpdateDiscountDto } from './dto';
+import { DiscountModel } from './model';
+import { DiscountRO } from './ro';
 
 @Controller(ApiApplication.DISCOUNT.CONTROLLER)
 export class DiscountController {
   constructor(private readonly discountService: DiscountService) {}
   @Post(ApiApplication.DISCOUNT.CREATE)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
-  create(@Body() dto: CreateDiscountDto) {
+  create(@Body() dto: CreateDiscountDto): Promise<DiscountModel> {
     return this.discountService.create(dto);
   }
 
   @Put(ApiApplication.DISCOUNT.UPDATE)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
-  update(@Param('id') id: string, @Body() dto: UpdateDiscountDto) {
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateDiscountDto,
+  ): Promise<DiscountModel> {
     return this.discountService.updateOneById(id, dto);
   }
 
   @Delete(ApiApplication.DISCOUNT.DELETE)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
-  deleteOneById(@Param('id') id: string) {
+  deleteOneById(@Param('id') id: string): Promise<DiscountModel> {
     return this.discountService.deleteOneById(id);
   }
 
   @Get(ApiApplication.DISCOUNT.GET_ALL)
-  getAll(@Query() params: PaginationParams) {
+  getAll(@Query() params: PaginationParams): Promise<DiscountModel[]> {
     return this.discountService.getAll(params);
   }
 
   @Get(ApiApplication.DISCOUNT.GET_ONE)
-  getOneById(@Param('id') id: string) {
+  getOneById(@Param('id') id: string): Promise<DiscountModel> {
     return this.discountService.getOneById(id);
   }
 }

@@ -1,7 +1,7 @@
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { DiscountRepository } from './discount.repository';
-import { CreateDiscountDto, UpdateDiscountDto } from './dtos';
+import { CreateDiscountDto, UpdateDiscountDto } from './dto';
 
 @Injectable()
 export class DiscountService {

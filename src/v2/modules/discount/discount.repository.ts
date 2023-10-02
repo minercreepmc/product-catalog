@@ -2,7 +2,7 @@ import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { randomString } from '@utils/functions';
-import { CreateDiscountDto, UpdateDiscountDto } from './dtos';
+import { CreateDiscountDto, UpdateDiscountDto } from './dto';
 
 @Injectable()
 export class DiscountRepository {
@@ -49,7 +49,9 @@ export class DiscountRepository {
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from discount WHERE id=$1 AND deleted_at IS NULL
+      SELECT *
+      FROM discount 
+      WHERE id=$1;
       `,
       [id],
     );

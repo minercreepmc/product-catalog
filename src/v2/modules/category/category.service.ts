@@ -1,7 +1,7 @@
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { CategoryRepository } from './category.repository';
-import { CreateCategoryDto, UpdateCategoryDto } from './dtos';
+import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
 @Injectable()
 export class CategoryService {

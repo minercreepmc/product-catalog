@@ -1,8 +1,8 @@
 import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { randomString } from '@utils/functions';
-import { CreateCategoryDto, UpdateCategoryDto } from './dtos';
+import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
 @Injectable()
 export class CategoryRepository {
@@ -46,11 +46,18 @@ export class CategoryRepository {
 
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
-      `SELECT * from category WHERE id=$1 AND deleted_at IS NULL`,
-      [id],
+      `SELECT *
+       FROM category c
+      WHERE id=$1;`[id],
     );
 
-    return res.rows[0];
+    const category = res.rows[0];
+
+    if (category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    return category;
   }
 
   async updateOneById(id: string, dto: UpdateCategoryDto) {

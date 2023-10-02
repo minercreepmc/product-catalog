@@ -1,6 +1,6 @@
 import { PaginationParams } from '@api/http';
 import { ApplicationRepositoryPort } from '@base/use-cases';
-import { UserModel } from '@v2/users';
+import { UserModel } from '@v2/users/model';
 
 export const userRepositoryDiToken = Symbol('USER_REPOSITORY');
 

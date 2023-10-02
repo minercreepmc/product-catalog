@@ -70,6 +70,7 @@ export const ApiApplication = {
   CART: {
     CONTROLLER: ApiBaseUrl + '/cart',
     CREATE: '',
+    UPDATE: ':id',
     GET: '',
     GET_ITEMS: 'items',
     GET_TOTAL_PRICE: 'total-price',

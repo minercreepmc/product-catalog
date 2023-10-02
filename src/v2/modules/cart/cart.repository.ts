@@ -1,7 +1,7 @@
 import { DatabaseService } from '@config/database';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { DefaultCatch } from 'catch-decorator-ts';
+import { UpdateCartDto } from './dto';
 import { CartRO } from './ro';
 
 @Injectable()
@@ -11,11 +11,25 @@ export class CartRepository {
   async create(userId: string) {
     const res = await this.databaseService.runQuery(
       `
-        INSERT INTO cart (id, user_id, total_price)
-        VALUES ($1, $2, $3) 
+        INSERT INTO cart (user_id)
+        VALUES ($1) 
         RETURNING *;
       `,
-      [randomString(), userId, 0],
+      [userId],
+    );
+
+    return res.rows[0];
+  }
+
+  async update(id: string, dto: UpdateCartDto) {
+    const res = await this.databaseService.runQuery(
+      `
+        UPDATE cart
+        SET shipping_fee_id = $1
+        WHERE id = $2
+        RETURNING *;
+      `,
+      [dto.shippingFeeId, id],
     );
 
     return res.rows[0];
@@ -43,12 +57,18 @@ export class CartRepository {
   async getItems(cartId: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT item.id, item.amount, product.id as product_id, product.name as product_name, product.price as product_price,
-        discount.id as discount_id, discount.name as discount_name, discount.percentage as discount_percentage
+        SELECT item.id as item_id, 
+               item.amount, 
+               product.id as product_id, 
+               product.name as product_name, 
+               product.price as product_price,
+               discount.id as discount_id, 
+               discount.name as discount_name, 
+               discount.percentage as discount_percentage
         FROM cart_item item 
         INNER JOIN product product ON product.id = item.product_id
         LEFT JOIN discount discount ON discount.id = product.discount_id
-        WHERE cart_id=$1;
+        WHERE item.cart_id = $1;
       `,
       [cartId],
     );
@@ -63,7 +83,7 @@ export class CartRepository {
   async getTotalPrice(cartId: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT SUM(f.fee + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
+      SELECT SUM(COALESCE(f.fee, 0) + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
       FROM cart_item i
       LEFT JOIN cart c ON c.id = $1 
       LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id 

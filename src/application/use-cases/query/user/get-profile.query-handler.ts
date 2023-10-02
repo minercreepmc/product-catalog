@@ -4,7 +4,7 @@ import {
 } from '@application/interface/user';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { UserModel } from '@v2/users';
+import { UserModel } from '@v2/users/model';
 
 export class GetProfileQuery {
   id: string;

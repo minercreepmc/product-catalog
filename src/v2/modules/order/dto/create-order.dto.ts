@@ -1,9 +1,4 @@
-import {
-  ADDRESS_SCHEMA,
-  CART_SCHEMA,
-  DATABASE_TABLE,
-  SHIPPING_FEE_SCHEMA,
-} from '@constants';
+import { ADDRESS_SCHEMA, CART_SCHEMA, DATABASE_TABLE } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
 import { IsString } from 'class-validator';
 
@@ -14,13 +9,6 @@ export class CreateOrderDto {
     column: ADDRESS_SCHEMA.ID,
   })
   addressId: string;
-
-  @IsString()
-  @isExistDb({
-    table: DATABASE_TABLE.SHIPPING_FEE,
-    column: SHIPPING_FEE_SCHEMA.ID,
-  })
-  shippingFeeId: string;
 
   @IsString()
   @isExistDb({

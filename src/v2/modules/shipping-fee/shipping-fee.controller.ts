@@ -17,7 +17,7 @@ import { ApiApplication } from '@constants';
 import { ShippingFeeModel } from './model';
 
 @Controller(ApiApplication.SHIPPING_FEE.CONTROLLER)
-@UseGuards(JwtGuard, RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+@UseGuards(JwtGuard)
 export class ShippingFeeController {
   constructor(private readonly shippingFeeService: ShippingFeeService) {}
 
@@ -26,11 +26,13 @@ export class ShippingFeeController {
     return this.shippingFeeService.getAll();
   }
   @Post(ApiApplication.SHIPPING_FEE.CREATE)
+  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
   create(@Body() dto: CreateShippingFeeDto): Promise<ShippingFeeModel> {
     return this.shippingFeeService.create(dto);
   }
 
   @Put(ApiApplication.SHIPPING_FEE.UPDATE)
+  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateShippingFeeDto,
@@ -39,6 +41,7 @@ export class ShippingFeeController {
   }
 
   @Delete(ApiApplication.SHIPPING_FEE.DELETE)
+  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
   delete(@Param('id') id: string): Promise<ShippingFeeModel> {
     return this.shippingFeeService.delete(id);
   }

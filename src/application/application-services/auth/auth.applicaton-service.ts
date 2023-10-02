@@ -16,7 +16,7 @@ import { AuthServicePort } from '@domain-interfaces/services';
 import { UserDomainExceptions } from '@domain-exceptions/user';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserModel } from '@v2/users';
+import { UserModel } from '@v2/users/model';
 
 export interface TokenPayload {
   userId: string;

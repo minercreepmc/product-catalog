@@ -10,8 +10,8 @@ export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(memberId: string, dto: CreateOrderDto): Promise<CreateOrderRO> {
-    const { cartId, shippingFeeId } = dto;
-    const totalPrice = await this.getTotalPrice(cartId, shippingFeeId);
+    const { cartId } = dto;
+    const totalPrice = await this.getTotalPrice(cartId);
     const orderDetails = await this.createOrderDetails(
       memberId,
       totalPrice,
@@ -82,17 +82,18 @@ export class OrderRepository {
     console.log('Cannot get total price', err);
     throw err;
   })
-  private async getTotalPrice(cartId: string, feeId: string) {
+  private async getTotalPrice(cartId: string) {
     const res = await this.databaseService.runQuery(
       `
       SELECT SUM(f.fee + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
       FROM cart_item i
-      INNER JOIN shipping_fee f ON f.id = $2
+      INNER JOIN cart c ON c.id = $1
+      INNER JOIN shipping_fee f ON c.shipping_fee_id = f.id
       INNER JOIN product p ON p.id = i.product_id
       LEFT JOIN discount d ON d.id = p.discount_id
       WHERE i.cart_id = $1;
     `,
-      [cartId, feeId],
+      [cartId],
     );
 
     return res.rows[0].sum;
@@ -107,14 +108,14 @@ export class OrderRepository {
     totalPrice: number,
     dto: CreateOrderDto,
   ) {
-    const { addressId, shippingFeeId } = dto;
+    const { addressId, cartId } = dto;
     const res = await this.databaseService.runQuery(
       `
       INSERT INTO order_details (status, member_id, address_id, total_price, fee_id) 
-        SELECT $1, $2, $3, $4, $5
+        VALUES ($1, $2, $3, $4, (SELECT shipping_fee_id FROM cart WHERE id = $5))
       RETURNING *; 
     `,
-      [OrderStatus.PROCESSING, memberId, addressId, totalPrice, shippingFeeId],
+      [OrderStatus.PROCESSING, memberId, addressId, totalPrice, cartId],
     );
 
     const orderDetails = res.rows[0];

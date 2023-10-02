@@ -46,7 +46,8 @@ export class UserRepository {
             COALESCE(json_agg(a) FILTER (WHERE a.id IS NOT NULL), '[]'::json) AS addresses
       FROM "users" u 
       LEFT JOIN address a ON u.id=a.user_id
-      WHERE id=$1 AND deleted_at IS NULL
+      WHERE u.id=$1
+      GROUP BY u.id
       `,
       [id],
     );

@@ -75,7 +75,6 @@ export class OrderRepository {
     };
 
     order.items = await this.getOrderItems(order.id);
-
     return order;
   }
 

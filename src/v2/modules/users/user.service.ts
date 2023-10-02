@@ -6,7 +6,7 @@ import {
   CreateShipperDto,
   CreateStaffDto,
   UpdateUserDto,
-} from './dtos';
+} from './dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { EventEmitter2 } from '@nestjs/event-emitter';

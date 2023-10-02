@@ -2,6 +2,7 @@ import { DatabaseService } from '@config/database';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { randomString } from '@utils/functions';
 import { DefaultCatch } from 'catch-decorator-ts';
+import { CartRO } from './ro';
 
 @Injectable()
 export class CartRepository {
@@ -23,24 +24,23 @@ export class CartRepository {
   async getByUserId(userId: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id FROM cart WHERE user_id=$1
+        SELECT * FROM cart WHERE user_id=$1
       `,
       [userId],
     );
 
-    const cart = res.rows[0];
+    const cart: CartRO = res.rows[0];
 
     if (!cart) {
       throw new NotFoundException('Cart not found');
     }
 
-    const items = await this.getItems(cart.id);
-    const totalPrice = await this.getTotalPrice(cart.id, cart.shipping_fee_id);
-
-    return { id: cart.id, items, total_price: totalPrice };
+    cart.items = await this.getItems(cart.id);
+    cart.total_price = await this.getTotalPrice(cart.id);
+    return cart;
   }
 
-  private async getItems(cartId: string) {
+  async getItems(cartId: string) {
     const res = await this.databaseService.runQuery(
       `
         SELECT item.id, item.amount, product.id as product_id, product.name as product_name, product.price as product_price,
@@ -48,7 +48,7 @@ export class CartRepository {
         FROM cart_item item 
         INNER JOIN product product ON product.id = item.product_id
         LEFT JOIN discount discount ON discount.id = product.discount_id
-        WHERE cart_id=$1
+        WHERE cart_id=$1;
       `,
       [cartId],
     );
@@ -60,17 +60,18 @@ export class CartRepository {
     console.log('Cannot get total price', err);
     throw err;
   })
-  private async getTotalPrice(cartId: string, feeId?: string) {
+  async getTotalPrice(cartId: string) {
     const res = await this.databaseService.runQuery(
       `
       SELECT SUM(f.fee + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
       FROM cart_item i
-      LEFT JOIN shipping_fee f ON f.id = $2
+      LEFT JOIN cart c ON c.id = $1 
+      LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id 
       INNER JOIN product p ON p.id = i.product_id
       LEFT JOIN discount d ON d.id = p.discount_id
       WHERE i.cart_id = $1;
     `,
-      [cartId, feeId],
+      [cartId],
     );
 
     return res.rows[0].sum;

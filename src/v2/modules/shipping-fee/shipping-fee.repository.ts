@@ -1,7 +1,7 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
 import { randomString } from '@utils/functions';
-import { CreateShippingFeeDto } from './dtos';
+import { CreateShippingFeeDto } from './dto';
 
 @Injectable()
 export class ShippingFeeRepository {

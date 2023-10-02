@@ -12,29 +12,34 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ShippingFeeService } from './shipping-fee.service';
-import { CreateShippingFeeDto, UpdateShippingFeeDto } from './dtos';
+import { CreateShippingFeeDto, UpdateShippingFeeDto } from './dto';
+import { ApiApplication } from '@constants';
+import { ShippingFeeModel } from './model';
 
-@Controller('/api/shipping-fee')
+@Controller(ApiApplication.SHIPPING_FEE.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(UserRole.STAFF, UserRole.ADMIN))
 export class ShippingFeeController {
   constructor(private readonly shippingFeeService: ShippingFeeService) {}
 
-  @Get()
-  getAll() {
+  @Get(ApiApplication.SHIPPING_FEE.GET_ALL)
+  getAll(): Promise<ShippingFeeModel[]> {
     return this.shippingFeeService.getAll();
   }
-  @Post()
-  create(@Body() dto: CreateShippingFeeDto) {
+  @Post(ApiApplication.SHIPPING_FEE.CREATE)
+  create(@Body() dto: CreateShippingFeeDto): Promise<ShippingFeeModel> {
     return this.shippingFeeService.create(dto);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateShippingFeeDto) {
+  @Put(ApiApplication.SHIPPING_FEE.UPDATE)
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateShippingFeeDto,
+  ): Promise<ShippingFeeModel> {
     return this.shippingFeeService.update(id, dto);
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
+  @Delete(ApiApplication.SHIPPING_FEE.DELETE)
+  delete(@Param('id') id: string): Promise<ShippingFeeModel> {
     return this.shippingFeeService.delete(id);
   }
 }

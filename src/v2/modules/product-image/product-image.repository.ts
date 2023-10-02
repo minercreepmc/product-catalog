@@ -1,6 +1,7 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { AddImageUrlsDto } from './dtos';
+import { AddImageUrlsDto } from './dto';
+import { ProductImageModel } from './model';
 
 @Injectable()
 export class ProductImageRepository {
@@ -16,7 +17,8 @@ export class ProductImageRepository {
       `,
       [productId, urls],
     );
-    return res.rows;
+    const images: ProductImageModel[] = res.rows;
+    return images;
   }
 
   async getProductImages(productId: string) {
@@ -27,6 +29,6 @@ export class ProductImageRepository {
       [productId],
     );
 
-    return res.rows;
+    return res.rows as ProductImageModel[];
   }
 }

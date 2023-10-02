@@ -4,7 +4,7 @@ import { RoleGuard } from '@guards/roles';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
 import { FormDataRequest } from 'nestjs-form-data';
-import { DestroyFileDto, UploadFilesDto } from './dtos';
+import { DestroyFileDto, UploadFilesDto } from './dto';
 import { UploadService } from './upload.service';
 
 @Controller(ApiApplication.UPLOAD.CONTROLLER)

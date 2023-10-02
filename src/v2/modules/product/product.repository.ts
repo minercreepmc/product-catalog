@@ -2,7 +2,8 @@ import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { randomString } from '@utils/functions';
-import { CreateProductDto, UpdateProductDto } from './dtos';
+import { CreateProductDto, UpdateProductDto } from './dto';
+import { CreateProductRO, UpdateProductRO } from './ro';
 
 export interface UpdateCategoryForProduct {
   id: string;
@@ -19,7 +20,6 @@ export class ProductRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(dto: CreateProductDto) {
-    console.log(dto);
     const res = await this.databaseService.runQuery(
       `INSERT into product 
           (id, name, price, description, discount_id, sold) 
@@ -29,7 +29,7 @@ export class ProductRepository {
       [randomString(), dto.name, dto.price, dto.description, dto.discountId, 0],
     );
 
-    const product = res.rows[0];
+    const product: CreateProductRO = res.rows[0];
 
     if (dto.categoryIds && dto.categoryIds.length > 0) {
       const res = await this.databaseService.runQuery(
@@ -108,7 +108,7 @@ export class ProductRepository {
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from product WHERE id=$1 AND deleted_at IS NULL
+      SELECT * from product WHERE id=$1;
     `,
       [id],
     );
@@ -142,7 +142,7 @@ export class ProductRepository {
       `,
       [id, name, price, description, discountId, sold],
     );
-    const updated = res.rows[0];
+    const updated: UpdateProductRO = res.rows[0];
 
     if (categoryIds && categoryIds.length >= 0) {
       updated.category_ids = await this.updateCategoryIds({
@@ -246,7 +246,8 @@ export class ProductRepository {
   async findByIdWithDetails(id: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT product.*, to_json(discount) AS discount,
+        SELECT product.*, discount.id as discount_id, discount.name as discount_name,
+      discount.percentage as discount_percentage,
             COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories
         FROM product
         LEFT JOIN discount ON product.discount_id = discount.id
@@ -269,9 +270,9 @@ export class ProductRepository {
     const res = await this.databaseService.runQuery(
       ` 
         SELECT product.id, product.name, product.price, product.description,
-        product.sold, COALESCE(discount.percentage, 0) as discount from product
+        product.sold, COALESCE(discount.percentage, 0) as discount_percentage
+        FROM product
         LEFT JOIN discount ON product.discount_id = discount.id
-        WHERE product.deleted_at is null
         ORDER BY product.updated_at ASC
         OFFSET $1 LIMIT $2;
       `,

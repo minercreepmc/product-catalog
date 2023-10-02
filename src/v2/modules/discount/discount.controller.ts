@@ -16,7 +16,6 @@ import { UserRole } from '@v2/users/constants';
 import { DiscountService } from './discount.service';
 import { CreateDiscountDto, UpdateDiscountDto } from './dto';
 import { DiscountModel } from './model';
-import { DiscountRO } from './ro';
 
 @Controller(ApiApplication.DISCOUNT.CONTROLLER)
 export class DiscountController {

@@ -25,6 +25,22 @@ export const ApiApplication = {
     GET_ALL: '',
     DELETE: ':id',
   },
+  SHIPPING: {
+    CONTROLLER: ApiBaseUrl + '/shipping',
+    CREATE: '',
+    UPDATE: ':id',
+    DELETE: ':id',
+    GET_ALL: '',
+    GET_ONE: ':id',
+  },
+  SHIPPING_FEE: {
+    CONTROLLER: ApiBaseUrl + '/shipping-fee',
+    CREATE: '',
+    UPDATE: ':id',
+    DELETE: ':id',
+    GET_ALL: '',
+    GET_ONE: ':id',
+  },
   PRODUCT: {
     CONTROLLER: ApiBaseUrl + '/product',
     CREATE: '',
@@ -56,12 +72,14 @@ export const ApiApplication = {
     CREATE: '',
     GET: '',
     GET_ITEMS: 'items',
+    GET_TOTAL_PRICE: 'total-price',
   },
   CART_ITEM: {
     CONTROLLER: ApiBaseUrl + '/cart-item',
     CREATE: '',
     UPDATE: ':id',
     DELETE: ':id',
+    GET_BY_CART_ID: ':cartId',
   },
   UPLOAD: {
     CONTROLLER: ApiBaseUrl + '/upload',

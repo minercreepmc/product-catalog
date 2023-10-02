@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
-import { DestroyFileDto, UploadFilesDto } from './dtos';
+import { DestroyFileDto, UploadFilesDto } from './dto';
 
 @Injectable()
 export class UploadService {

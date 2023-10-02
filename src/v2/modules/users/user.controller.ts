@@ -1,4 +1,4 @@
-import { RequestWithUser, UpdateUserDto } from '@api/http';
+import { UpdateUserDto } from '@api/http';
 import { JwtGuard } from '@guards/jwt';
 import {
   Body,
@@ -16,10 +16,12 @@ import {
   CreateShipperDto,
   CreateStaffDto,
   CreateAdminDto,
-} from './dtos';
+} from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { ApiApplication } from '@constants';
+import { UserModel } from './model';
+import { UserRO } from './ro';
 
 @Controller(ApiApplication.USER.CONTROLLER)
 export class UserController {
@@ -27,43 +29,43 @@ export class UserController {
 
   @Get(ApiApplication.USER.GET_ALL_USER)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
-  async getAllUsers() {
+  async getAllUsers(): Promise<UserModel[]> {
     return this.userService.getAllUsers();
   }
 
   @Post(ApiApplication.USER.CREATE_MEMBER)
-  async createMember(@Body() dto: CreateMemberDto) {
+  async createMember(@Body() dto: CreateMemberDto): Promise<UserModel> {
     return this.userService.createMember(dto);
   }
 
   @Post(ApiApplication.USER.CREATE_ADMIN)
   @UseGuards(AuthGuard('api-key'))
-  async createAdmin(@Body() dto: CreateAdminDto) {
+  async createAdmin(@Body() dto: CreateAdminDto): Promise<UserModel> {
     return this.userService.createAdmin(dto);
   }
 
   @Post(ApiApplication.USER.CREATE_STAFF)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
-  async createStaff(@Body() dto: CreateStaffDto) {
+  async createStaff(@Body() dto: CreateStaffDto): Promise<UserModel> {
     return this.userService.createStaff(dto);
+  }
+
+  @Post(ApiApplication.USER.GET_ALL_SHIPPER)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN, UserRole.STAFF))
+  async createShipper(@Body() dto: CreateShipperDto): Promise<UserModel> {
+    return this.userService.createShipper(dto);
   }
 
   @Get(ApiApplication.USER.GET_ALL_SHIPPER)
   @UseGuards(JwtGuard, RoleGuard(UserRole.STAFF, UserRole.ADMIN))
-  getAllShippers() {
+  getAllShippers(): Promise<UserModel[]> {
     return this.userService.getAllShippers();
   }
 
   @Get(ApiApplication.USER.GET_ONE)
   @UseGuards(JwtGuard, RoleGuard(UserRole.STAFF, UserRole.ADMIN))
-  getOne(@Param('id') id: string) {
+  getOne(@Param('id') id: string): Promise<UserRO> {
     return this.userService.getOne(id);
-  }
-
-  @Post(ApiApplication.USER.GET_ALL_SHIPPER)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN, UserRole.STAFF))
-  async createShipper(@Body() dto: CreateShipperDto) {
-    return this.userService.createShipper(dto);
   }
 
   @Put(ApiApplication.USER.UPDATE)
@@ -76,7 +78,10 @@ export class UserController {
       UserRole.MEMBER,
     ),
   )
-  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+  ): Promise<UserModel> {
     return this.userService.update(id, dto);
   }
 }

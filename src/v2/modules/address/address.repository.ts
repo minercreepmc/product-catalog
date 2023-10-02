@@ -60,21 +60,4 @@ export class AddressRepository {
 
     return res.rows[0];
   }
-
-  async findOneOrFail(id: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT * FROM address WHERE id = $1;
-    `,
-      [id],
-    );
-
-    const address = res.rows[0];
-
-    if (!address) {
-      throw new Error('Address not found');
-    }
-
-    return address;
-  }
 }

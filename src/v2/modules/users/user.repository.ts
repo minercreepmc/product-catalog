@@ -3,14 +3,13 @@ import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { randomString } from '@utils/functions';
 import { UserRole } from './constants';
-import { UpdateUserDto } from './dtos';
-import { UserModel } from './user.model';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly databaseService: DatabaseService) {}
-  async create(user: UserModel) {
-    const { username, password, fullName, role } = user;
+  async create(dto: CreateUserDto) {
+    const { username, password, fullName, role } = dto;
     const res = await this.databaseService.runQuery(
       `
       INSERT INTO "users" (
@@ -32,7 +31,7 @@ export class UserRepository {
   async deleteOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      UPDATE "users" SET deleted_at=now() WHERE id=$1 AND deleted_at IS NULL RETURNING *
+      DELETE FROM "users" WHERE id=$1 RETURNING *
     `,
       [id],
     );

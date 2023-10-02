@@ -1,6 +1,6 @@
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dtos';
+import { CreateProductDto } from './dto';
 import { ProductRepository } from './product.repository';
 
 @Injectable()

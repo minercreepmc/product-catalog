@@ -1,6 +1,7 @@
 import { DatabaseService } from '@config/database';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { randomString } from '@utils/functions';
+import { DefaultCatch } from 'catch-decorator-ts';
 
 @Injectable()
 export class CartRepository {
@@ -27,15 +28,16 @@ export class CartRepository {
       [userId],
     );
 
-    const cartId = res.rows[0]?.id;
+    const cart = res.rows[0];
 
-    if (!cartId) {
+    if (!cart) {
       throw new NotFoundException('Cart not found');
     }
 
-    const items = await this.getItems(cartId);
+    const items = await this.getItems(cart.id);
+    const totalPrice = await this.getTotalPrice(cart.id, cart.shipping_fee_id);
 
-    return { id: cartId, items };
+    return { id: cart.id, items, total_price: totalPrice };
   }
 
   private async getItems(cartId: string) {
@@ -52,5 +54,25 @@ export class CartRepository {
     );
 
     return res.rows;
+  }
+
+  @DefaultCatch((err) => {
+    console.log('Cannot get total price', err);
+    throw err;
+  })
+  private async getTotalPrice(cartId: string, feeId?: string) {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT SUM(f.fee + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
+      FROM cart_item i
+      LEFT JOIN shipping_fee f ON f.id = $2
+      INNER JOIN product p ON p.id = i.product_id
+      LEFT JOIN discount d ON d.id = p.discount_id
+      WHERE i.cart_id = $1;
+    `,
+      [cartId, feeId],
+    );
+
+    return res.rows[0].sum;
   }
 }

@@ -18,6 +18,13 @@ export const ApiApplication = {
     GET_ONE: ':id',
     UPDATE: ':id',
   },
+  ADDRESS: {
+    CONTROLLER: ApiBaseUrl + '/address',
+    CREATE: '',
+    UPDATE: ':id',
+    GET_ALL: '',
+    DELETE: ':id',
+  },
   PRODUCT: {
     CONTROLLER: ApiBaseUrl + '/product',
     CREATE: '',

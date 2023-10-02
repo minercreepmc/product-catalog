@@ -1,4 +1,5 @@
 import { RequestWithUser } from '@api/http';
+import { ApiApplication } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import {
@@ -14,29 +15,37 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
 import { AddressService } from './address.service';
-import { CreateAddressDto, UpdateAddressDto } from './dtos';
+import { CreateAddressDto, UpdateAddressDto } from './dto';
+import { AddressModel } from './model';
+import { GetAllAddressRO } from './ro';
 
-@Controller('/api/address')
+@Controller(ApiApplication.ADDRESS.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(UserRole.MEMBER))
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
-  @Post()
-  create(@Body() dto: CreateAddressDto, @Req() req: RequestWithUser) {
+  @Post(ApiApplication.ADDRESS.CREATE)
+  create(
+    @Body() dto: CreateAddressDto,
+    @Req() req: RequestWithUser,
+  ): Promise<AddressModel> {
     return this.addressService.create(req.user.id, dto);
   }
 
-  @Get()
-  getAll(@Req() req: RequestWithUser) {
+  @Get(ApiApplication.ADDRESS.GET_ALL)
+  getAll(@Req() req: RequestWithUser): Promise<GetAllAddressRO> {
     return this.addressService.getAll(req.user.id);
   }
 
-  @Delete('/:id')
-  delete(@Param('id') id: string) {
+  @Delete(ApiApplication.ADDRESS.DELETE)
+  delete(@Param('id') id: string): Promise<AddressModel> {
     return this.addressService.delete(id);
   }
 
-  @Put('/:id')
-  update(@Param('id') id: string, @Body() dto: UpdateAddressDto) {
+  @Put(ApiApplication.ADDRESS.UPDATE)
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateAddressDto,
+  ): Promise<AddressModel> {
     return this.addressService.update(id, dto);
   }
 }

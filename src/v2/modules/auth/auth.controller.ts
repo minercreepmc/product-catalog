@@ -6,6 +6,7 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { UserService } from '@v2/users/user.service';
 import { Response as ExpressResponse } from 'express';
 import { AuthService } from './auth.service';
+import { ProfileRO } from './ro';
 
 @Controller(ApiApplication.AUTH.CONTROLLER)
 export class AuthController {
@@ -38,7 +39,7 @@ export class AuthController {
 
   @UseGuards(JwtGuard)
   @Get(ApiApplication.AUTH.GET_PROFILE)
-  async getProfile(@Req() req: RequestWithUser) {
+  async getProfile(@Req() req: RequestWithUser): Promise<ProfileRO> {
     return this.userService.getOne(req.user.id);
   }
 }

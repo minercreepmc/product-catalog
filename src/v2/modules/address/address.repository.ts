@@ -1,7 +1,7 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
 import { randomString } from '@utils/functions';
-import { CreateAddressDto, UpdateAddressDto } from './dtos';
+import { CreateAddressDto, UpdateAddressDto } from './dto';
 
 @Injectable()
 export class AddressRepository {

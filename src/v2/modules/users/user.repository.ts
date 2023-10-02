@@ -43,7 +43,11 @@ export class UserRepository {
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from "users" WHERE id=$1 AND deleted_at IS NULL
+      SELECT u.*,
+            COALESCE(json_agg(a) FILTER (WHERE a.id IS NOT NULL), '[]'::json) AS addresses
+      FROM "users" u 
+      LEFT JOIN address a ON u.id=a.user_id
+      WHERE id=$1 AND deleted_at IS NULL
       `,
       [id],
     );

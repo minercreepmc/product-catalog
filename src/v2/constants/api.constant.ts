@@ -32,6 +32,7 @@ export const ApiApplication = {
     DELETE: ':id',
     GET_ALL: '',
     GET_ONE: ':id',
+    GET_BY_SHIPPER_ID: 'get-by-shipper',
   },
   SHIPPING_FEE: {
     CONTROLLER: ApiBaseUrl + '/shipping-fee',

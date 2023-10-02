@@ -17,4 +17,8 @@ export class ShippingService {
   async getOne(id: string) {
     return this.shippingRepository.findOne(id);
   }
+
+  async getByShipper(shipperId: string) {
+    return this.shippingRepository.findByShipper(shipperId);
+  }
 }

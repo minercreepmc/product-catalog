@@ -1,20 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateOrderDto, UpdateOrderDto } from './dtos';
+import { CreateOrderDto, UpdateOrderDto } from './dto';
 import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
-import {
-  OrderItemJointedModel,
-  OrderItemModel,
-  OrderModel,
-  OrderModelJointed,
-} from './models/order.model';
 import { DefaultCatch } from 'catch-decorator-ts';
+import { CreateOrderRO, OrderItemRO, OrderRO } from './ro';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(memberId: string, dto: CreateOrderDto): Promise<OrderModel> {
+  async create(memberId: string, dto: CreateOrderDto): Promise<CreateOrderRO> {
     const { cartId, shippingFeeId } = dto;
     const totalPrice = await this.getTotalPrice(cartId, shippingFeeId);
     const orderDetails = await this.createOrderDetails(
@@ -22,10 +17,10 @@ export class OrderRepository {
       totalPrice,
       dto,
     );
-    const order = new OrderModel({
+    const order: CreateOrderRO = {
       ...orderDetails,
       items: [],
-    });
+    };
 
     order.items = await this.createOrderItems(order.id, cartId);
     return order;
@@ -68,7 +63,7 @@ export class OrderRepository {
       throw new NotFoundException('Order not found');
     }
 
-    const order = new OrderModelJointed({
+    const order: OrderRO = {
       id: orderDetails.id,
       total_price: orderDetails.total_price,
       status: orderDetails.status,
@@ -77,7 +72,7 @@ export class OrderRepository {
       address_location: orderDetails.address_location,
       updated_at: orderDetails.updated_at,
       items: [],
-    });
+    };
 
     order.items = await this.getOrderItems(order.id);
 
@@ -139,7 +134,7 @@ export class OrderRepository {
   private async createOrderItems(
     orderId: string,
     cartId: string,
-  ): Promise<OrderItemModel[]> {
+  ): Promise<string[]> {
     const res = await this.databaseService.runQuery(
       `
         INSERT INTO order_item (order_id, price, amount, product_id)
@@ -147,7 +142,7 @@ export class OrderRepository {
           FROM cart_item i
           INNER JOIN product p ON p.id = i.product_id
           WHERE i.cart_id = $2
-        RETURNING *;
+        RETURNING order_item.id;
       `,
       [orderId, cartId],
     );
@@ -161,9 +156,7 @@ export class OrderRepository {
     return orderItems;
   }
 
-  private async getOrderItems(
-    orderId: string,
-  ): Promise<OrderItemJointedModel[]> {
+  private async getOrderItems(orderId: string): Promise<OrderItemRO[]> {
     const res = await this.databaseService.runQuery(
       `
         SELECT i.price, i.amount, p.name, p.description, c.name as category_name

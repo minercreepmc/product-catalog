@@ -13,8 +13,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { UpdateOrderDto, CreateOrderDto } from './dtos';
+import { UpdateOrderDto, CreateOrderDto } from './dto';
+import { OrderModel } from './model';
 import { OrderService } from './order.service';
+import { CreateOrderRO, OrderRO } from './ro';
 
 @Controller(ApiApplication.ORDER.CONTROLLER)
 @UseGuards(JwtGuard)
@@ -22,19 +24,25 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
   @Post(ApiApplication.ORDER.CREATE)
   @UseGuards(RoleGuard(UserRole.MEMBER))
-  create(@Req() req: RequestWithUser, @Body() dto: CreateOrderDto) {
+  create(
+    @Req() req: RequestWithUser,
+    @Body() dto: CreateOrderDto,
+  ): Promise<CreateOrderRO> {
     return this.orderService.create(req.user.id, dto);
   }
 
   @Put(ApiApplication.ORDER.UPDATE)
   @UseGuards(RoleGuard(UserRole.STAFF))
-  update(@Param('id') id: string, @Body() dto: UpdateOrderDto) {
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateOrderDto,
+  ): Promise<OrderModel> {
     return this.orderService.update(id, dto);
   }
 
   @Get(ApiApplication.ORDER.GET_ONE)
   @UseGuards(RoleGuard(UserRole.MEMBER, UserRole.STAFF))
-  get(@Param('orderId') id: string) {
+  get(@Param('orderId') id: string): Promise<OrderRO> {
     return this.orderService.getOne(id);
   }
 }

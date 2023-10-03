@@ -19,10 +19,10 @@ export class OrderRepository {
     );
     const order: CreateOrderRO = {
       ...orderDetails,
-      items: [],
+      itemIds: [],
     };
 
-    order.items = await this.createOrderItems(order.id, cartId);
+    order.itemIds = await this.createOrderItems(order.id, cartId);
     return order;
   }
 

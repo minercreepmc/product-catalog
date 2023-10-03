@@ -24,5 +24,5 @@ export class OrderItemRO {
 }
 
 export class CreateOrderRO extends OrderModel {
-  items: string[];
+  itemIds: string[];
 }

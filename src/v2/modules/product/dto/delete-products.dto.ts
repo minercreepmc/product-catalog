@@ -1,6 +1,6 @@
 import { ArrayMinSize, IsArray, IsString } from 'class-validator';
 
-export class DeleteProducts {
+export class DeleteProductsDto {
   @IsArray()
   @IsString({ each: true })
   @ArrayMinSize(1)

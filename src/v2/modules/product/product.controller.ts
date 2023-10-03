@@ -14,7 +14,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { CreateProductDto, DeleteProducts, UpdateProductDto } from './dto';
+import { CreateProductDto, DeleteProductsDto, UpdateProductDto } from './dto';
 import { ProductModel } from './model';
 import { ProductService } from './product.service';
 import { CreateProductRO, GetAllProductRO, UpdateProductRO } from './ro';
@@ -57,7 +57,7 @@ export class ProductController {
 
   @Post(ApiApplication.PRODUCT.DELETE_MANY)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
-  deleteProducts(@Body() dto: DeleteProducts): Promise<string[]> {
+  deleteProducts(@Body() dto: DeleteProductsDto): Promise<string[]> {
     return this.productService.deleteManyByIds(dto.ids);
   }
 }

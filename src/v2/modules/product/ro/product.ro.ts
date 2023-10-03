@@ -19,6 +19,7 @@ export class ProductRO {
   discount_id: string;
   discount_name: string;
   discount_percentage: number;
+  category_ids: string[];
   categories: CategoryModel[];
 }
 

@@ -78,6 +78,38 @@ export class OrderRepository {
     return order;
   }
 
+  async findByMember(memberId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT o.updated_at, o.id, o.total_price, o.status, 
+        a.location as address_location, f.name as fee_name,
+        f.fee as fee_price
+        FROM order_details o
+        INNER JOIN address a ON a.id = o.address_id
+        INNER JOIN shipping_fee f ON f.id = o.fee_id
+        WHERE o.member_id = $1;
+      `,
+      [memberId],
+    );
+
+    return res.rows;
+  }
+
+  async findAll() {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT o.updated_at, o.id, o.total_price, o.status, 
+        a.location as address_location, f.name as fee_name,
+        f.fee as fee_price
+        FROM order_details o
+        INNER JOIN address a ON a.id = o.address_id
+        INNER JOIN shipping_fee f ON f.id = o.fee_id;
+      `,
+    );
+
+    return res.rows;
+  }
+
   @DefaultCatch((err) => {
     console.log('Cannot get total price', err);
     throw err;

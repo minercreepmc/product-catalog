@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { UpdateOrderDto, CreateOrderDto } from './dto';
+import { UpdateOrderDto, CreateOrderDto, GetByMemberDto } from './dto';
 import { OrderModel } from './model';
 import { OrderService } from './order.service';
 import { CreateOrderRO, OrderRO } from './ro';
@@ -44,5 +44,24 @@ export class OrderController {
   @UseGuards(RoleGuard(UserRole.MEMBER, UserRole.STAFF))
   get(@Param('orderId') id: string): Promise<OrderRO> {
     return this.orderService.getOne(id);
+  }
+
+  @Get(ApiApplication.ORDER.GET_ALL)
+  @UseGuards(RoleGuard(UserRole.STAFF))
+  getAll(): Promise<OrderRO[]> {
+    return this.orderService.getAll();
+  }
+
+  @Post(ApiApplication.ORDER.GET_BY_MEMBER)
+  @UseGuards(RoleGuard(UserRole.MEMBER, UserRole.STAFF))
+  getByMember(
+    @Req() req: RequestWithUser,
+    @Body() dto: GetByMemberDto,
+  ): Promise<OrderRO[]> {
+    if (req.user) {
+      return this.orderService.getByMember(req.user.id);
+    } else {
+      return this.orderService.getByMember(dto.memberId);
+    }
   }
 }

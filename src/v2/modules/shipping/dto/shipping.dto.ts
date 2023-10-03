@@ -35,5 +35,5 @@ export class GetShippingByShipperDto {
     table: DATABASE_TABLE.USERS,
     column: USER_SCHEMA.ID,
   })
-  shipperId?: string;
+  shipperId: string;
 }

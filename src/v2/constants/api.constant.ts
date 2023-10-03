@@ -96,7 +96,7 @@ export const ApiApplication = {
   ORDER: {
     CONTROLLER: ApiBaseUrl + '/order',
     CREATE: '',
-    GET_BY_USER: 'get-by-user',
+    GET_BY_MEMBER: 'get-by-member',
     GET_ALL: '',
     UPDATE: ':id',
     GET_ONE: ':orderId',

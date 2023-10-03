@@ -16,4 +16,12 @@ export class OrderService {
   getOne(orderId: string) {
     return this.orderRepository.findOneById(orderId);
   }
+
+  getByMember(memberId: string) {
+    return this.orderRepository.findByMember(memberId);
+  }
+
+  getAll() {
+    return this.orderRepository.findAll();
+  }
 }

@@ -1,9 +1,9 @@
 import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { randomString } from '@utils/functions';
 import { CreateProductDto, UpdateProductDto } from './dto';
-import { CreateProductRO, UpdateProductRO } from './ro';
+import { CreateProductRO, ProductRO, UpdateProductRO } from './ro';
 
 export interface UpdateCategoryForProduct {
   id: string;
@@ -259,7 +259,13 @@ export class ProductRepository {
       [id],
     );
 
-    const model = res.rows[0];
+    const model: ProductRO = res.rows[0];
+
+    if (!model) {
+      throw new NotFoundException('Cannot find product');
+    }
+
+    model.category_ids = model.categories.map((c) => c.id);
 
     return model;
   }

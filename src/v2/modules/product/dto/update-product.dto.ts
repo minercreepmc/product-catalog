@@ -27,10 +27,6 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsString()
-  imageUrl?: string;
-
-  @IsOptional()
-  @IsString()
   discountId?: string;
 
   @IsOptional()

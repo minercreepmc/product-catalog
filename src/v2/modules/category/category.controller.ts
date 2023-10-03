@@ -16,7 +16,6 @@ import { UserRole } from '@v2/users/constants';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 import { CategoryModel } from './model';
-import { CategoryRO } from './ro';
 
 @Controller(ApiApplication.CATEGORY.CONTROLLER)
 export class CategoryController {

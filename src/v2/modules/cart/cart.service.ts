@@ -16,4 +16,8 @@ export class CartService {
   update(id: string, dto: UpdateCartDto) {
     return this.cartRepository.update(id, dto);
   }
+
+  clearCart(userId: string) {
+    return this.cartRepository.clearCart(userId);
+  }
 }

@@ -75,6 +75,7 @@ export const ApiApplication = {
     GET: '',
     GET_ITEMS: 'items',
     GET_TOTAL_PRICE: 'total-price',
+    CLEAR: 'clear',
   },
   CART_ITEM: {
     CONTROLLER: ApiBaseUrl + '/cart-item',

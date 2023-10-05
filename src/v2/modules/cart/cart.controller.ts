@@ -12,6 +12,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { CartItemModel } from '@v2/cart-item/model';
 import { UserRole } from '@v2/users/constants';
 import { CartService } from './cart.service';
 import { UpdateCartDto } from './dto';

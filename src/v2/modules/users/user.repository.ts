@@ -1,7 +1,6 @@
 import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { UserRole } from './constants';
 import { CreateUserDto, UpdateUserDto } from './dto';
 
@@ -13,16 +12,15 @@ export class UserRepository {
     const res = await this.databaseService.runQuery(
       `
       INSERT INTO "users" (
-        id,
         username,
         hashed,
         role,
         full_name
       ) VALUES (
-        $1, $2, $3, $4, $5
+        $1, $2, $3, $4
       ) RETURNING *
     `,
-      [randomString(), username, password, role, fullName],
+      [username, password, role, fullName],
     );
 
     return res.rows[0];

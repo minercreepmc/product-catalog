@@ -1,6 +1,5 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { CreateShippingFeeDto } from './dto';
 
 @Injectable()
@@ -10,9 +9,9 @@ export class ShippingFeeRepository {
   async create(dto: CreateShippingFeeDto) {
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO shipping_fee (name, fee, id) VALUES ($1, $2, $3) RETURNING *;
+      INSERT INTO shipping_fee (name, fee) VALUES ($1, $2) RETURNING *;
     `,
-      [dto.name, dto.fee, randomString()],
+      [dto.name, dto.fee],
     );
 
     return res.rows[0];

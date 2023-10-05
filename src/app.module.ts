@@ -13,7 +13,7 @@ import { CategoryModule } from '@v2/category';
 import { DiscountModule } from '@v2/discount';
 import { CartModule } from '@v2/cart';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { UserCreatedModule } from './v2/listeners';
+import { OrderCreatedModule, UserCreatedModule } from './v2/listeners';
 import { CartItemModule } from '@v2/cart-item';
 import { UploadModule } from '@v2/upload';
 import { ProductImageModule } from '@v2/product-image';
@@ -35,7 +35,7 @@ const modules = [
   OrderModule,
 ];
 
-const listeners = [UserCreatedModule];
+const listeners = [UserCreatedModule, OrderCreatedModule];
 
 @Module({
   imports: [

@@ -1,7 +1,6 @@
 import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { CreateDiscountDto, UpdateDiscountDto } from './dto';
 
 @Injectable()
@@ -12,11 +11,11 @@ export class DiscountRepository {
 
     const res = await this.databaseService.runQuery(
       `INSERT into discount 
-          (id, name, description, percentage, active) 
+          (name, description, percentage, active) 
       VALUES 
-          ($1, $2, $3, $4, $5)
+          ($1, $2, $3, $4)
       RETURNING *`,
-      [randomString(), name, description, percentage, true],
+      [name, description, percentage, true],
     );
 
     return res.rows[0];

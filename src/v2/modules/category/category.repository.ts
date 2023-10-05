@@ -1,7 +1,6 @@
 import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
 @Injectable()
@@ -11,11 +10,11 @@ export class CategoryRepository {
     const { description, name } = dto;
     const res = await this.databaseService.runQuery(
       `INSERT into category
-          (id, name, description)
+          (name, description)
       VALUES
-          ($1, $2, $3)
+          ($1, $2)
       RETURNING *`,
-      [randomString(), name, description],
+      [name, description],
     );
 
     return res.rows[0];

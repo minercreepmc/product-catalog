@@ -1,6 +1,5 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { CreateCartItemDto, UpdateCartItemDto } from './dtos';
 
 @Injectable()
@@ -11,9 +10,9 @@ export class CartItemRepository {
     const { cartId, productId, amount } = dto;
     const res = await this.databaseService.runQuery(
       `
-        INSERT INTO cart_item (id, cart_id, product_id, amount) VALUES ($1, $2, $3, $4) RETURNING *;
+        INSERT INTO cart_item (cart_id, product_id, amount) VALUES ($1, $2, $3) RETURNING *;
       `,
-      [randomString(), cartId, productId, amount],
+      [cartId, productId, amount],
     );
 
     return res.rows[0];

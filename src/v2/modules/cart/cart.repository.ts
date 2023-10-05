@@ -76,6 +76,17 @@ export class CartRepository {
     return res.rows;
   }
 
+  async clearCart(cartId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        DELETE FROM cart_item 
+        WHERE cart_id = $1
+      `,
+      [cartId],
+    );
+    return res.rows;
+  }
+
   @DefaultCatch((err) => {
     console.log('Cannot get total price', err);
     throw err;
@@ -94,6 +105,6 @@ export class CartRepository {
       [cartId],
     );
 
-    return res.rows[0].sum;
+    return res.rows[0].sum ? res.rows[0].sum : 0;
   }
 }

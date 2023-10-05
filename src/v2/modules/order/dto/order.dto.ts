@@ -5,7 +5,7 @@ import {
   USER_SCHEMA,
 } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { OrderStatus } from '../constants';
 
 export class CreateOrderDto {
@@ -31,6 +31,7 @@ export class UpdateOrderDto {
 }
 
 export class GetByMemberDto {
+  @IsOptional()
   @IsString()
   @isExistDb({
     table: DATABASE_TABLE.USERS,

@@ -1,6 +1,5 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { CreateAddressDto, UpdateAddressDto } from './dto';
 
 @Injectable()
@@ -10,9 +9,9 @@ export class AddressRepository {
   async create(userId: string, dto: CreateAddressDto) {
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO address (location, user_id, id) VALUES ($1, $2, $3) RETURNING *;
+      INSERT INTO address (location, user_id) VALUES ($1, $2) RETURNING *;
     `,
-      [dto.location, userId, randomString()],
+      [dto.location, userId],
     );
 
     return res.rows[0];

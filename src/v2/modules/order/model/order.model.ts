@@ -3,6 +3,7 @@ export class OrderModel {
   status: string;
   total_price: number;
   fee_id: string;
+  cart_id: string;
   address_id: string;
 
   constructor(dto: OrderModel) {
@@ -11,6 +12,7 @@ export class OrderModel {
     this.total_price = dto.total_price;
     this.fee_id = dto.fee_id;
     this.address_id = dto.address_id;
+    this.cart_id = dto.cart_id;
   }
 }
 

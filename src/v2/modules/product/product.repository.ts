@@ -1,7 +1,6 @@
 import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomString } from '@utils/functions';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { CreateProductRO, ProductRO, UpdateProductRO } from './ro';
 
@@ -22,11 +21,11 @@ export class ProductRepository {
   async create(dto: CreateProductDto) {
     const res = await this.databaseService.runQuery(
       `INSERT into product 
-          (id, name, price, description, discount_id, sold) 
+          (name, price, description, discount_id, sold) 
       VALUES 
-          ($1, $2, $3, $4, $5, $6)
+          ($1, $2, $3, $4, $5)
       RETURNING *`,
-      [randomString(), dto.name, dto.price, dto.description, dto.discountId, 0],
+      [dto.name, dto.price, dto.description, dto.discountId, 0],
     );
 
     const product: CreateProductRO = res.rows[0];

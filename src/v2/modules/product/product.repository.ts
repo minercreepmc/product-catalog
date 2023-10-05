@@ -45,6 +45,21 @@ export class ProductRepository {
         : [res.rows[0]?.category_ids];
     }
 
+    if (dto.imageUrls && dto.imageUrls.length > 0) {
+      const res = await this.databaseService.runQuery(
+        `
+            INSERT INTO product_image (product_id, image_url)
+            SELECT $1, unnest($2::varchar[]) AS image_urls
+            RETURNING image_url as image_urls
+          `,
+        [product.id, dto.imageUrls],
+      );
+
+      product.image_urls = Array.isArray(res.rows[0]?.image_urls)
+        ? res.rows[0]?.image_urls
+        : [res.rows[0]?.image_urls];
+    }
+
     return product;
   }
 
@@ -275,11 +290,14 @@ export class ProductRepository {
     const res = await this.databaseService.runQuery(
       ` 
         SELECT product.id, product.name, product.price, product.description,
-        product.sold, COALESCE(discount.percentage, 0) as discount_percentage
+        product.sold, discount.id as discount_id, COALESCE(discount.percentage, 0) as discount_percentage,
+        COALESCE(json_agg(product_image) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls
         FROM product
         LEFT JOIN discount ON product.discount_id = discount.id
+        LEFT JOIN product_image ON product_image.product_id = product.id
+        GROUP BY product.id, discount.id
         ORDER BY product.updated_at ASC
-        OFFSET $1 LIMIT $2;
+        OFFSET $1 LIMIT $2
       `,
       [offset, limit],
     );

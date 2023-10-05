@@ -30,6 +30,7 @@ export class CreateProductRO {
   price: number;
   discount_id: string;
   category_ids: string[];
+  image_urls: string[];
 }
 
 export class UpdateProductRO {

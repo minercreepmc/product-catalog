@@ -48,7 +48,6 @@ export class ProductController {
     return this.productService.getOne(id);
   }
 
-  @Post()
   @Delete(ApiApplication.PRODUCT.DELETE)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
   deleteProduct(@Param('id') id: string): Promise<ProductModel> {

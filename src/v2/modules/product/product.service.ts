@@ -19,7 +19,11 @@ export class ProductService {
   }
 
   getAll(params: PaginationParams) {
-    return this.productRepo.findAll(params);
+    return this.productRepo.findAllWithDetails(params);
+  }
+
+  getAllWithImages(params: PaginationParams) {
+    return this.productRepo.findAllWithImages(params);
   }
 
   deleteOneById(id: string) {

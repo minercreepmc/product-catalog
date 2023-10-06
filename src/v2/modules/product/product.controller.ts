@@ -17,7 +17,11 @@ import { UserRole } from '@v2/users/constants';
 import { CreateProductDto, DeleteProductsDto, UpdateProductDto } from './dto';
 import { ProductModel } from './model';
 import { ProductService } from './product.service';
-import { CreateProductRO, GetAllProductRO, UpdateProductRO } from './ro';
+import {
+  CreateProductRO,
+  GetAllProductWithImagesRO,
+  UpdateProductRO,
+} from './ro';
 
 @Controller(ApiApplication.PRODUCT.CONTROLLER)
 export class ProductController {
@@ -39,8 +43,17 @@ export class ProductController {
   }
 
   @Get(ApiApplication.PRODUCT.GET_ALL)
-  getAll(@Query() params: PaginationParams): Promise<GetAllProductRO[]> {
+  getAll(
+    @Query() params: PaginationParams,
+  ): Promise<GetAllProductWithImagesRO[]> {
     return this.productService.getAll(params);
+  }
+
+  @Post(ApiApplication.PRODUCT.GET_ALL_WITH_IMAGES)
+  getAllWithImages(
+    @Query() params: PaginationParams,
+  ): Promise<GetAllProductWithImagesRO[]> {
+    return this.productService.getAllWithImages(params);
   }
 
   @Get(ApiApplication.PRODUCT.GET_ONE)

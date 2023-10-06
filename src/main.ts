@@ -24,6 +24,7 @@ async function bootstrap() {
     new ValidationPipe({
       forbidUnknownValues: false,
       forbidNonWhitelisted: true,
+      stopAtFirstError: true,
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
         return new BadRequestException(
           validationErrors.map((error) => ({

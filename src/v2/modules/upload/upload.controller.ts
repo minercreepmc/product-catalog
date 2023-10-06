@@ -13,6 +13,7 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @FormDataRequest()
+  @Post(ApiApplication.UPLOAD.UPLOAD)
   upload(@Body() dto: UploadFilesDto) {
     return this.uploadService.upload(dto);
   }

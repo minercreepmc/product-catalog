@@ -49,6 +49,7 @@ export const ApiApplication = {
     DELETE: ':id',
     DELETE_MANY: 'delete-many',
     GET_ALL: '',
+    GET_ALL_WITH_IMAGES: 'get-all-with-images',
     GET_ONE: ':id',
   },
   CATEGORY: {

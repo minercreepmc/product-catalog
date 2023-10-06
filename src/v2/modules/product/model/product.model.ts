@@ -3,5 +3,5 @@ export class ProductModel {
   name: string;
   description: string;
   price: number;
-  discount_id: string;
+  discount_id?: string;
 }

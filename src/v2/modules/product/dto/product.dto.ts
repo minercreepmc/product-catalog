@@ -3,38 +3,41 @@ import { isExistDb, isUniqueDb } from '@youba/nestjs-dbvalidator';
 import {
   ArrayMinSize,
   IsArray,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
 
 export class CreateProductDto {
-  @IsString()
   @isUniqueDb({
     table: DATABASE_TABLE.PRODUCT,
     column: PRODUCT_SCHEMA.NAME,
   })
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsNumber()
+  @IsNotEmpty()
   price: number;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   description?: string;
 
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
   @ArrayMinSize(1)
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
   imageUrls?: string[];
 
-  @IsOptional()
-  @IsString()
   @isExistDb({
     table: DATABASE_TABLE.DISCOUNT,
     column: DISCOUNT_SCHEMA.ID,
   })
+  @IsString()
+  @IsOptional()
   discountId?: string;
 
   @IsOptional()

@@ -48,9 +48,9 @@ export class ProductRepository {
     if (dto.imageUrls && dto.imageUrls.length > 0) {
       const res = await this.databaseService.runQuery(
         `
-            INSERT INTO product_image (product_id, image_url)
+            INSERT INTO product_image (product_id, url)
             SELECT $1, unnest($2::varchar[]) AS image_urls
-            RETURNING image_url as image_urls
+            RETURNING url as image_urls
           `,
         [product.id, dto.imageUrls],
       );
@@ -284,20 +284,43 @@ export class ProductRepository {
     return model;
   }
 
-  async findAll(filter: PaginationParams) {
+  async findAllWithDetails(filter: PaginationParams) {
     const { limit = 0, offset = 1 } = filter;
 
     const res = await this.databaseService.runQuery(
       ` 
         SELECT product.id, product.name, product.price, product.description,
-        product.sold, discount.id as discount_id, COALESCE(discount.percentage, 0) as discount_percentage,
-        COALESCE(json_agg(product_image) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls
+          product.sold, discount.id as discount_id, COALESCE(discount.percentage, 0) as discount_percentage,
+          COALESCE(json_agg(product_image) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls, 
+          COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories
         FROM product
         LEFT JOIN discount ON product.discount_id = discount.id
         LEFT JOIN product_image ON product_image.product_id = product.id
+        LEFT JOIN product_category ON product_category.product_id = product.id
+        LEFT JOIN category ON category.id = product_category.category_id
         GROUP BY product.id, discount.id
         ORDER BY product.updated_at ASC
         OFFSET $1 LIMIT $2
+      `,
+      [offset, limit],
+    );
+
+    return res.rows;
+  }
+
+  async findAllWithImages(filter: PaginationParams) {
+    const { limit = 0, offset = 1 } = filter;
+
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT p.id, p.name, p.price, p.description, 
+          COALESCE(json_agg(p_image.url) FILTER (WHERE p_image.id IS NOT NULL), '[]'::json) AS image_urls
+        FROM product p
+        LEFT JOIN product_image p_image ON p_image.product_id = p.id
+        GROUP BY p.id
+        ORDER BY p.updated_at ASC
+        OFFSET $1 LIMIT $2
+      
       `,
       [offset, limit],
     );

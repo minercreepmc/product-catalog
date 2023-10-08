@@ -5,6 +5,7 @@ import {
   CreateMemberDto,
   CreateShipperDto,
   CreateStaffDto,
+  CreateUserDto,
   UpdateUserDto,
 } from './dto';
 import { UserRepository } from './user.repository';
@@ -24,14 +25,19 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
+  async getAllStaff() {
+    return this.userRepository.findAllByRole(UserRole.STAFF);
+  }
+
   async createMember(dto: CreateMemberDto) {
-    const { fullName, password, username } = dto;
+    const { fullName, password, username, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     try {
       const user = await this.userRepository.create({
         role: UserRole.MEMBER,
         username,
         fullName,
+        phone,
         password: hashed,
       });
 
@@ -47,12 +53,14 @@ export class UserService {
   }
 
   async createAdmin(dto: CreateAdminDto) {
-    const { username, fullName, password } = dto;
+    const { username, fullName, password, email, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     return this.userRepository.create({
       role: UserRole.ADMIN,
       username,
       fullName,
+      email,
+      phone,
       password: hashed,
     });
   }
@@ -66,13 +74,15 @@ export class UserService {
   }
 
   async createStaff(dto: CreateStaffDto) {
-    const { username, fullName, password } = dto;
+    const { username, fullName, password, email, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     const user = await this.userRepository.create({
       role: UserRole.STAFF,
       username,
       fullName: fullName ? fullName : undefined,
       password: hashed,
+      email,
+      phone,
     });
 
     user!.hashed = undefined;
@@ -80,13 +90,14 @@ export class UserService {
   }
 
   async createShipper(dto: CreateShipperDto) {
-    const { username, fullName, password } = dto;
+    const { username, fullName, password, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     const user = await this.userRepository.create({
       role: UserRole.SHIPPER,
       username,
       fullName: fullName ? fullName : undefined,
       password: hashed,
+      phone,
     });
 
     user!.hashed = undefined;
@@ -94,12 +105,14 @@ export class UserService {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    const { fullName, password } = dto;
+    const { fullName, password, email, phone } = dto;
     const hashed = password ? await bcrypt.hash(password, 10) : undefined;
 
     const user = await this.userRepository.updateOneById(id, {
       fullName,
       password: hashed,
+      email,
+      phone,
     });
 
     user!.hashed = undefined;

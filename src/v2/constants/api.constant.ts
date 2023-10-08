@@ -14,7 +14,8 @@ export const ApiApplication = {
     CREATE_STAFF: 'staff',
     CREATE_SHIPPER: 'shipper',
     GET_ALL_USER: '',
-    GET_ALL_SHIPPER: 'shipper',
+    GET_ALL_SHIPPER: 'get-all-shipper',
+    GET_ALL_STAFF: 'get-all-staff',
     GET_ONE: ':id',
     UPDATE: ':id',
   },
@@ -58,6 +59,7 @@ export const ApiApplication = {
     UPDATE: ':id',
     DELETE: ':id',
     GET_ALL: '',
+    GET_ALL_WITH_PRODUCT_COUNT: 'get-all-with-product-count',
     GET_ONE: ':id',
   },
   DISCOUNT: {

@@ -8,19 +8,21 @@ import { CreateUserDto, UpdateUserDto } from './dto';
 export class UserRepository {
   constructor(private readonly databaseService: DatabaseService) {}
   async create(dto: CreateUserDto) {
-    const { username, password, fullName, role } = dto;
+    const { username, password, fullName, role, email, phone } = dto;
     const res = await this.databaseService.runQuery(
       `
       INSERT INTO "users" (
         username,
         hashed,
         role,
-        full_name
+        full_name,
+        email,
+        phone
       ) VALUES (
-        $1, $2, $3, $4
+        $1, $2, $3, $4, $5, $6
       ) RETURNING *
     `,
-      [username, password, role, fullName],
+      [username, password, role, fullName, email, phone],
     );
 
     return res.rows[0];
@@ -53,11 +55,17 @@ export class UserRepository {
     return res.rows[0];
   }
   async updateOneById(id: string, newState: UpdateUserDto) {
+    const { email, phone, fullName, password } = newState;
     const res = await this.databaseService.runQuery(
       `
-      UPDATE "users" SET full_name=coalesce($2, full_name), hashed=coalesce($3, hashed) WHERE id=$1 AND deleted_at IS NULL RETURNING *;
+      UPDATE "users" 
+      SET full_name=coalesce($2, full_name), 
+          hashed=coalesce($3, hashed) 
+          phone=coalesce($4, phone),
+          email=coalesce($5, email)
+      WHERE id=$1 AND deleted_at IS NULL RETURNING *;
       `,
-      [id, newState.fullName, newState.password],
+      [id, fullName, password, phone, email],
     );
 
     return res.rows[0];
@@ -89,7 +97,8 @@ export class UserRepository {
   async findAllByRole(role: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from "users" WHERE role=$1 AND deleted_at IS NULL
+      SELECT u.id, u.username, u.full_name, u.email, u.phone, u.role
+      from "users" u WHERE role=$1 AND deleted_at IS NULL
       `,
       [role],
     );

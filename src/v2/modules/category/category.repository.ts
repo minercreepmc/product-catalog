@@ -45,14 +45,12 @@ export class CategoryRepository {
 
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
-      `SELECT *
-       FROM category c
-      WHERE id=$1;`[id],
+      `SELECT * FROM category WHERE id=$1;`,
+      [id],
     );
-
     const category = res.rows[0];
 
-    if (category) {
+    if (!category) {
       throw new NotFoundException('Category not found');
     }
 
@@ -158,6 +156,19 @@ export class CategoryRepository {
         LIMIT $1 OFFSET $2
       `,
       [limit, offset],
+    );
+
+    return res.rows;
+  }
+
+  async findAllWithProductCount() {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT c.id, c.name, COALESCE(COUNT(pc.product_id), 0) AS product_count
+        FROM category c 
+        LEFT JOIN product_category pc ON pc.category_id = c.id
+        GROUP BY c.id, c.name;
+      `,
     );
 
     return res.rows;

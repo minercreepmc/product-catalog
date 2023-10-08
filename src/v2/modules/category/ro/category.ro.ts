@@ -6,3 +6,9 @@ export class CategoryRO {
   description: string;
   products: ProductIncludeDiscountRO[];
 }
+
+export class CategoryIncludeProductCountRO {
+  id: string;
+  name: string;
+  product_count: number;
+}

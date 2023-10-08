@@ -3,14 +3,23 @@ import { isUniqueDb } from '@youba/nestjs-dbvalidator';
 import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsOptional()
   @isUniqueDb({
     table: DATABASE_TABLE.USERS,
     column: USER_SCHEMA.USERNAME,
   })
   @IsString()
-  password?: string;
   @IsOptional()
+  password?: string;
+
   @IsString()
+  @IsOptional()
   fullName?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsString()
+  @IsOptional()
+  email?: string;
 }

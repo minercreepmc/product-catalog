@@ -1,6 +1,7 @@
 import { DATABASE_TABLE, USER_SCHEMA } from '@constants';
 import { isUniqueDb } from '@youba/nestjs-dbvalidator';
 import {
+  IsNotEmpty,
   IsOptional,
   IsString,
   IsStrongPassword,
@@ -8,19 +9,28 @@ import {
 } from 'class-validator';
 
 export class CreateAdminDto {
-  @IsString()
-  @Length(3, 50)
   @isUniqueDb({
     table: DATABASE_TABLE.USERS,
     column: USER_SCHEMA.USERNAME,
   })
+  @Length(3, 50)
+  @IsString()
+  @IsNotEmpty()
   username: string;
 
-  @IsString()
   @IsStrongPassword()
+  @IsString()
   password: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   fullName? = 'Default User';
+
+  @IsString()
+  @IsOptional()
+  email?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
 }

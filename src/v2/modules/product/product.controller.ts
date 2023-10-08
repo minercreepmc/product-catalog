@@ -20,6 +20,7 @@ import { ProductService } from './product.service';
 import {
   CreateProductRO,
   GetAllProductWithImagesRO,
+  ProductRO,
   UpdateProductRO,
 } from './ro';
 
@@ -57,7 +58,7 @@ export class ProductController {
   }
 
   @Get(ApiApplication.PRODUCT.GET_ONE)
-  getOne(@Param('id') id: string): Promise<ProductModel> {
+  getOne(@Param('id') id: string): Promise<ProductRO> {
     return this.productService.getOne(id);
   }
 

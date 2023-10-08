@@ -16,6 +16,7 @@ import { UserRole } from '@v2/users/constants';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 import { CategoryModel } from './model';
+import { CategoryIncludeProductCountRO } from './ro';
 
 @Controller(ApiApplication.CATEGORY.CONTROLLER)
 export class CategoryController {
@@ -38,12 +39,18 @@ export class CategoryController {
 
   @Get(ApiApplication.CATEGORY.GET_ONE)
   getOne(@Param('id') id: string): Promise<CategoryModel> {
+    console.log(id);
     return this.categoryService.getOne(id);
   }
 
   @Get(ApiApplication.CATEGORY.GET_ALL)
   getAll(@Query() query: PaginationParams): Promise<CategoryModel[]> {
     return this.categoryService.getAll(query);
+  }
+
+  @Post(ApiApplication.CATEGORY.GET_ALL_WITH_PRODUCT_COUNT)
+  getAllWithProductCount(): Promise<CategoryIncludeProductCountRO[]> {
+    return this.categoryService.getAllWithProductCount();
   }
 
   @Delete(ApiApplication.CATEGORY.DELETE)

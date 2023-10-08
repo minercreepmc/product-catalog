@@ -16,11 +16,15 @@ export class CreateMemberDto {
   })
   username: string;
 
-  @IsString()
   @IsStrongPassword()
+  @IsString()
   password: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   fullName? = 'Default User';
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
 }

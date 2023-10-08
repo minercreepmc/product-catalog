@@ -33,6 +33,12 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
+  @Post(ApiApplication.USER.GET_ALL_STAFF)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  async getAllStaff(): Promise<UserRO[]> {
+    return this.userService.getAllStaff();
+  }
+
   @Post(ApiApplication.USER.CREATE_MEMBER)
   async createMember(@Body() dto: CreateMemberDto): Promise<UserModel> {
     return this.userService.createMember(dto);
@@ -50,13 +56,13 @@ export class UserController {
     return this.userService.createStaff(dto);
   }
 
-  @Post(ApiApplication.USER.GET_ALL_SHIPPER)
+  @Post(ApiApplication.USER.CREATE_SHIPPER)
   @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN, UserRole.STAFF))
   async createShipper(@Body() dto: CreateShipperDto): Promise<UserModel> {
     return this.userService.createShipper(dto);
   }
 
-  @Get(ApiApplication.USER.GET_ALL_SHIPPER)
+  @Post(ApiApplication.USER.GET_ALL_SHIPPER)
   @UseGuards(JwtGuard, RoleGuard(UserRole.STAFF, UserRole.ADMIN))
   getAllShippers(): Promise<UserModel[]> {
     return this.userService.getAllShippers();

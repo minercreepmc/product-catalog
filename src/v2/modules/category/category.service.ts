@@ -22,6 +22,10 @@ export class CategoryService {
     return this.categoryRepo.findAll(params);
   }
 
+  getAllWithProductCount() {
+    return this.categoryRepo.findAllWithProductCount();
+  }
+
   deleteOne(id: string) {
     return this.categoryRepo.deleteOneById(id);
   }

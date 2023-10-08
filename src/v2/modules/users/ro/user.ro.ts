@@ -5,5 +5,7 @@ export class UserRO {
   full_name: string;
   username: string;
   role: string;
-  addresses: AddressModel[];
+  addresses?: AddressModel[];
+  phone?: string;
+  email?: string;
 }

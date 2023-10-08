@@ -262,11 +262,13 @@ export class ProductRepository {
       `
         SELECT product.*, discount.id as discount_id, discount.name as discount_name,
       discount.percentage as discount_percentage,
-            COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories
+            COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories,
+            COALESCE(json_agg(product_image.url) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls
         FROM product
         LEFT JOIN discount ON product.discount_id = discount.id
         LEFT JOIN product_category ON product.id = product_category.product_id
         LEFT JOIN category ON category.id = product_category.category_id
+        LEFT JOIN product_image ON product.id = product_image.product_id
         WHERE product.id = $1
         GROUP BY product.id, discount.id;
       `,

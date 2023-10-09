@@ -45,7 +45,23 @@ export class CategoryRepository {
 
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
-      `SELECT * FROM category WHERE id=$1;`,
+      `SELECT c.id, c.name, c.description,
+        COALESCE(json_agg(json_build_object(
+            'id', p.id,
+            'name', p.name,
+            'description', p.description,
+            'price', p.price,
+            'image_urls', (
+                SELECT COALESCE(json_agg(pi.url), '[]'::json)
+                FROM product_image pi
+                WHERE pi.product_id = p.id
+              )
+        )) FILTER (WHERE p.id IS NOT NULL), '[]'::json) AS products
+       FROM category c
+      LEFT JOIN product_category pc ON c.id = pc.category_id
+      LEFT JOIN product p ON pc.product_id = p.id
+      WHERE c.id=$1
+      GROUP BY c.id;`,
       [id],
     );
     const category = res.rows[0];

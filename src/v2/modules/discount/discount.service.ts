@@ -26,4 +26,8 @@ export class DiscountService {
   getAll(params: PaginationParams) {
     return this.discountRepo.findAll(params);
   }
+
+  getAllWithProductCount() {
+    return this.discountRepo.findAllWithProductCount();
+  }
 }

@@ -1,6 +1,6 @@
 import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto';
+import { CreateProductDto, UpdateProductDto } from './dto';
 import { ProductRepository } from './product.repository';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ProductService {
     return this.productRepo.create(dto);
   }
 
-  update(id: string, dto: CreateProductDto) {
+  update(id: string, dto: UpdateProductDto) {
     return this.productRepo.updateOneById(id, dto);
   }
 

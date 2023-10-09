@@ -100,4 +100,17 @@ export class DiscountRepository {
 
     return res.rows;
   }
+
+  async findAllWithProductCount() {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT d.*, COUNT(p.id) as product_count
+        FROM discount d
+        LEFT JOIN product p ON d.id=p.discount_id
+        GROUP BY d.id
+      `,
+    );
+
+    return res.rows;
+  }
 }

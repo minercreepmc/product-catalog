@@ -51,7 +51,6 @@ export class UserRepository {
       `,
       [id],
     );
-
     return res.rows[0];
   }
   async updateOneById(id: string, newState: UpdateUserDto) {
@@ -60,7 +59,7 @@ export class UserRepository {
       `
       UPDATE "users" 
       SET full_name=coalesce($2, full_name), 
-          hashed=coalesce($3, hashed) 
+          hashed=coalesce($3, hashed),
           phone=coalesce($4, phone),
           email=coalesce($5, email)
       WHERE id=$1 AND deleted_at IS NULL RETURNING *;

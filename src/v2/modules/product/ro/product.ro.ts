@@ -1,4 +1,5 @@
 import type { CategoryModel } from '@v2/category/model';
+import type { DiscountModel } from '@v2/discount/model';
 
 export class ProductIncludeDiscountRO {
   id: string;
@@ -16,10 +17,8 @@ export class ProductRO {
   description: string;
   price: number;
   image_urls: string[];
-  discount_id: string;
-  discount_name: string;
-  discount_percentage: number;
   category_ids: string[];
+  discount: DiscountModel[];
   categories: CategoryModel[];
 }
 

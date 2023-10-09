@@ -64,33 +64,27 @@ export class ProductRepository {
   }
 
   private async updateCategoryIds(dto: UpdateCategoryForProduct) {
-    if (!dto.categoryIds || dto.categoryIds.length === 0) {
-      const res = await this.databaseService.runQuery(
-        `
-          DELETE 
-          FROM product_category
-          WHERE product_id = $1
-          AND category_id NOT IN (SELECT unnest($2::varchar[]))
-          RETURNING category_id as category_ids
-        `,
-        [dto.id, dto.categoryIds],
-      );
-      return res.rows[0]?.category_ids;
-    }
-
-    const res = await this.databaseService.runQuery(
+    await this.databaseService.runQuery(
       `
-          INSERT INTO product_category (product_id, category_id)
-          SELECT $1, unnest($2::varchar[]) AS category_ids
-          RETURNING category_id as category_ids
-
-      `,
+      -- First, remove existing associations except for the ones in the new list
+      DELETE FROM product_category
+      WHERE product_id = $1
+        AND category_id NOT IN (SELECT unnest($2::varchar[]));
+    `,
       [dto.id, dto.categoryIds],
     );
 
-    return Array.isArray(res.rows[0]?.category_ids)
-      ? res.rows[0]?.category_ids
-      : [res.rows[0].category_ids];
+    const res = await this.databaseService.runQuery(
+      `
+      -- Next, insert the new list of category IDs
+      INSERT INTO product_category (product_id, category_id)
+      SELECT $1, unnest($2::varchar[])
+      RETURNING category_id;
+    `,
+      [dto.id, dto.categoryIds],
+    );
+
+    return res.rows.map((row) => row.category_id);
   }
 
   async deleteOneById(id: string) {
@@ -141,6 +135,7 @@ export class ProductRepository {
 
   async updateOneById(id: string, dto: UpdateProductDto) {
     const { discountId, name, price, sold, description, categoryIds } = dto;
+    console.log(dto);
     const res = await this.databaseService.runQuery(
       `
         UPDATE product
@@ -260,8 +255,7 @@ export class ProductRepository {
   async findByIdWithDetails(id: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT product.*, discount.id as discount_id, discount.name as discount_name,
-      discount.percentage as discount_percentage,
+        SELECT product.*, to_json(discount) as discount, 
             COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories,
             COALESCE(json_agg(product_image.url) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls
         FROM product
@@ -292,7 +286,7 @@ export class ProductRepository {
     const res = await this.databaseService.runQuery(
       ` 
         SELECT product.id, product.name, product.price, product.description,
-          product.sold, discount.id as discount_id, COALESCE(discount.percentage, 0) as discount_percentage,
+          product.sold, to_json(discount) as discount,
           COALESCE(json_agg(product_image) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls, 
           COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories
         FROM product

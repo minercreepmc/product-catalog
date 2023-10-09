@@ -39,7 +39,6 @@ export class CategoryController {
 
   @Get(ApiApplication.CATEGORY.GET_ONE)
   getOne(@Param('id') id: string): Promise<CategoryModel> {
-    console.log(id);
     return this.categoryService.getOne(id);
   }
 

@@ -69,6 +69,7 @@ export const ApiApplication = {
     DELETE: ':id',
     DELETE_MANY: 'delete-many',
     GET_ALL: '',
+    GET_ALL_WITH_PRODUCT_COUNT: 'get-all-with-product-count',
     GET_ONE: ':id',
   },
   CART: {

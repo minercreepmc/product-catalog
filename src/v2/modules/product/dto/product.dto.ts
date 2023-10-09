@@ -1,5 +1,6 @@
 import { DATABASE_TABLE, DISCOUNT_SCHEMA, PRODUCT_SCHEMA } from '@constants';
 import { isExistDb, isUniqueDb } from '@youba/nestjs-dbvalidator';
+import { Transform } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -19,6 +20,7 @@ export class CreateProductDto {
   name: string;
 
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   @IsNotEmpty()
   price: number;
 
@@ -54,33 +56,33 @@ export class DeleteProductsDto {
   ids: string[];
 }
 export class UpdateProductDto {
-  @IsOptional()
-  @IsString()
   @isUniqueDb({
     table: DATABASE_TABLE.PRODUCT,
     column: PRODUCT_SCHEMA.NAME,
   })
+  @IsString()
+  @IsOptional()
   name: string;
 
-  @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => Number(value))
+  @IsOptional()
   price: number;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   description?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   discountId?: string;
 
-  @IsOptional()
-  @IsArray()
   @IsString({ each: true })
-  @ArrayMinSize(1)
+  @IsArray()
+  @IsOptional()
   categoryIds?: string[];
 
-  @IsOptional()
   @IsNumber()
+  @IsOptional()
   sold?: number;
 }

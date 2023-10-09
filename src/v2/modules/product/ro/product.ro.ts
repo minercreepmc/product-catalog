@@ -41,7 +41,7 @@ export class UpdateProductRO {
   category_ids: string[];
 }
 
-export class GetAllProductWithImagesRO {
+export class ProductWithImagesRO {
   id: string;
   name: string;
   description: string;

@@ -16,7 +16,7 @@ import { UserRole } from '@v2/users/constants';
 import { DiscountService } from './discount.service';
 import { CreateDiscountDto, UpdateDiscountDto } from './dto';
 import { DiscountModel } from './model';
-import { DiscountIncludeProductCountRO } from './ro';
+import { DiscountIncludeProductCountRO, DiscountRO } from './ro';
 
 @Controller(ApiApplication.DISCOUNT.CONTROLLER)
 export class DiscountController {
@@ -48,7 +48,7 @@ export class DiscountController {
   }
 
   @Get(ApiApplication.DISCOUNT.GET_ONE)
-  getOneById(@Param('id') id: string): Promise<DiscountModel> {
+  getOneById(@Param('id') id: string): Promise<DiscountRO> {
     return this.discountService.getOneById(id);
   }
 

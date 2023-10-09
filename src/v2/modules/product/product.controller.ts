@@ -19,7 +19,7 @@ import { ProductModel } from './model';
 import { ProductService } from './product.service';
 import {
   CreateProductRO,
-  GetAllProductWithImagesRO,
+  ProductWithImagesRO,
   ProductRO,
   UpdateProductRO,
 } from './ro';
@@ -46,14 +46,14 @@ export class ProductController {
   @Get(ApiApplication.PRODUCT.GET_ALL)
   getAll(
     @Query() params: PaginationParams,
-  ): Promise<GetAllProductWithImagesRO[]> {
+  ): Promise<ProductWithImagesRO[]> {
     return this.productService.getAll(params);
   }
 
   @Post(ApiApplication.PRODUCT.GET_ALL_WITH_IMAGES)
   getAllWithImages(
     @Query() params: PaginationParams,
-  ): Promise<GetAllProductWithImagesRO[]> {
+  ): Promise<ProductWithImagesRO[]> {
     return this.productService.getAllWithImages(params);
   }
 

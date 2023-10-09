@@ -22,10 +22,7 @@ export class DiscountRepository {
   }
   async deleteOneById(id: string) {
     const res = await this.databaseService.runQuery(
-      `
-      DELETE FROM discount WHERE id=$1 RETURNING *;
-      `,
-      [id],
+      `DELETE FROM discount WHERE id=$1 RETURNING *;`[id],
     );
 
     return res.rows[0];
@@ -48,9 +45,21 @@ export class DiscountRepository {
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT *
-      FROM discount 
-      WHERE id=$1;
+      SELECT d.*, COALESCE(json_agg(json_build_object(
+        'id', p.id,
+        'name', p.name,
+        'description', p.description,
+        'price', p.price,
+        'image_urls', (
+                SELECT COALESCE(json_agg(pi.url), '[]'::json)
+                FROM product_image pi
+                WHERE pi.product_id = p.id
+                )
+          )) FILTER (WHERE p.id IS NOT NULL), '[]'::json) AS products
+      FROM discount d
+      LEFT JOIN product p ON d.id=p.discount_id
+      WHERE d.id=$1
+      GROUP BY d.id;
       `,
       [id],
     );

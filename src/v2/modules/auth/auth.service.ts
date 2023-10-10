@@ -14,6 +14,17 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  async isLoggedIn(cookie: string) {
+    if(!cookie) {
+      return false;
+    }
+    const payload = this.jwtService.verify(cookie, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+    const user = await this.userRepository.findOneById(payload.userId);
+    return Boolean(user);
+  }
+
   async logIn(dto: LogInDto) {
     const user = await this.userRepository.findOneByName(dto.username);
     return this.getAuthenticatedCookie(user.id);

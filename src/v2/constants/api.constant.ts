@@ -4,8 +4,10 @@ export const ApiApplication = {
   AUTH: {
     CONTROLLER: ApiBaseUrl + '/auth',
     LOGIN: 'log-in',
+    LOGIN_DASHBOARD: 'log-in-dashboard',
     LOGOUT: 'log-out',
     GET_PROFILE: 'profile',
+    IS_LOGGED_IN: 'is-logged-in',
   },
   USER: {
     CONTROLLER: ApiBaseUrl + '/user',

@@ -25,6 +25,12 @@ export class ShippingFeeController {
   getAll(): Promise<ShippingFeeModel[]> {
     return this.shippingFeeService.getAll();
   }
+
+  @Get(ApiApplication.SHIPPING_FEE.GET_ONE)
+  getOne(@Param('id') id: string): Promise<ShippingFeeModel> {
+    return this.shippingFeeService.getOne(id);
+  }
+
   @Post(ApiApplication.SHIPPING_FEE.CREATE)
   @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
   create(@Body() dto: CreateShippingFeeDto): Promise<ShippingFeeModel> {

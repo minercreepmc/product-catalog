@@ -21,4 +21,8 @@ export class ShippingFeeService {
   async getAll() {
     return this.shippingFeeRepository.findAll();
   }
+
+  async getOne(id: string) {
+    return this.shippingFeeRepository.findOne(id);
+  }
 }

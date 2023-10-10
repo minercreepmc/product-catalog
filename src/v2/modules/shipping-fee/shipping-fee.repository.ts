@@ -49,36 +49,14 @@ export class ShippingFeeRepository {
     return res.rows;
   }
 
-  async findOneByNameOrFailIfExist(name: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT * FROM shipping_fee WHERE name = $1;
-    `,
-      [name],
-    );
-
-    const shippingFee = res.rows[0];
-
-    if (shippingFee) {
-      throw new Error('Shipping fee already exists');
-    }
-
-    return shippingFee;
-  }
-
-  async findOneOrFail(id: string) {
+  async findOne(id: string) {
     const res = await this.databaseService.runQuery(
       `
       SELECT * FROM shipping_fee WHERE id = $1;
     `,
       [id],
     );
-    const shippingFee = res.rows[0];
 
-    if (!shippingFee) {
-      throw new Error('Shipping fee not found');
-    }
-
-    return shippingFee;
+    return res.rows[0];
   }
 }

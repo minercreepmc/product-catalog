@@ -5,8 +5,8 @@ import { CreateCartItemDto, UpdateCartItemDto } from './dtos';
 @Injectable()
 export class CartItemService {
   constructor(private readonly cartItemRepo: CartItemRepository) {}
-  create(dto: CreateCartItemDto) {
-    return this.cartItemRepo.create(dto);
+  create(userId: string, dto: CreateCartItemDto) {
+    return this.cartItemRepo.create(userId, dto);
   }
 
   update(id: string, dto: UpdateCartItemDto) {

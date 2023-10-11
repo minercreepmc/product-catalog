@@ -108,4 +108,11 @@ export const ApiApplication = {
     UPDATE: ':id',
     GET_ONE: ':orderId',
   },
+  INCOME: {
+    CONTROLLER: ApiBaseUrl + '/income',
+    GET_DAILY: 'get-daily',
+    GET_WEEKLY: 'get-weekly',
+    GET_MONTHLY: 'get-monthly',
+    GET_YEARLY: 'get-yearly',
+  },
 };

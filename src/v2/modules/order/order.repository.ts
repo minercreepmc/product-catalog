@@ -10,10 +10,18 @@ export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(memberId: string, dto: CreateOrderDto): Promise<CreateOrderRO> {
-    const { cartId } = dto;
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT id FROM cart WHERE user_id = $1
+      `,
+      [memberId],
+    );
+
+    const cartId = res.rows[0].id;
     const totalPrice = await this.getTotalPrice(cartId);
     const orderDetails = await this.createOrderDetails(
       memberId,
+      cartId,
       totalPrice,
       dto,
     );
@@ -137,10 +145,12 @@ export class OrderRepository {
   })
   private async createOrderDetails(
     memberId: string,
+    cartId: string,
     totalPrice: number,
     dto: CreateOrderDto,
   ) {
-    const { addressId, cartId } = dto;
+    const { addressId } = dto;
+
     const res = await this.databaseService.runQuery(
       `
       INSERT INTO order_details (cart_id, status, member_id, address_id, total_price, fee_id) 

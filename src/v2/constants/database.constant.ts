@@ -1,4 +1,5 @@
 export enum DATABASE_TABLE {
+  SHIPPING = 'shipping',
   SHIPPING_FEE = 'shipping_fee',
   USERS = 'users',
   ADDRESS = 'address',
@@ -80,4 +81,11 @@ export enum ORDER_DETAILS_SCHEMA {
   STATUS = 'status',
   ADDRESS_ID = 'address_id',
   FEE_ID = 'fee_id',
+}
+
+export enum SHIPPING_SCHEMA {
+  ID = 'id',
+  STATUS = 'status',
+  ORDER_ID = 'order_id',
+  SHIPPER_ID = 'shipper_id',
 }

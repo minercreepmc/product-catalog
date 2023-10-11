@@ -48,9 +48,9 @@ export class ShippingRepository {
   async findOne(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT s.id, s.created_at, s.updated_at, 
+      SELECT s.id, s.created_at, s.updated_at, s.order_id,
       f.fee as fee_price, f.name as fee_name,
-      a.location as address, u.full_name as shipper
+      a.location as address, u.full_name as shipper 
       FROM shipping s
       INNER JOIN order_details o ON s.order_id = o.id
       INNER JOIN shipping_fee f ON f.id = o.fee_id 
@@ -68,7 +68,7 @@ export class ShippingRepository {
   async findAll() {
     const res = await this.databaseService.runQuery(
       `
-      SELECT s.id, s.created_at, s.updated_at, 
+      SELECT s.id, s.created_at, s.updated_at, s.order_id, 
       f.fee as fee_price, f.name as fee_name,
       a.location as address, u.full_name as shipper
       FROM shipping s
@@ -85,7 +85,7 @@ export class ShippingRepository {
   async findByShipper(shipperId: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT s.id, s.created_at, s.updated_at, 
+        SELECT s.id, s.created_at, s.updated_at, s.order_id,
         f.fee, f.name as fee_name,
         a.location as address, u.full_name as shipper
         FROM shipping s

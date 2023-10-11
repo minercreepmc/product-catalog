@@ -62,7 +62,7 @@ export class UserController {
     return this.userService.createShipper(dto);
   }
 
-  @Post(ApiApplication.USER.GET_ALL_SHIPPER)
+  @Get(ApiApplication.USER.GET_ALL_SHIPPER)
   @UseGuards(JwtGuard, RoleGuard(UserRole.STAFF, UserRole.ADMIN))
   getAllShippers(): Promise<UserModel[]> {
     return this.userService.getAllShippers();

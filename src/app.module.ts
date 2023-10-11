@@ -20,6 +20,7 @@ import { ProductImageModule } from '@v2/product-image';
 import { OrderModule } from '@v2/order';
 import { IncomeModule } from '@v2/income';
 import { ShippingCreatedModule } from './v2/listeners/shipping-created';
+import { ShippingStatusModule } from '@v2/shipping-status';
 
 const modules = [
   UserModule,
@@ -36,6 +37,7 @@ const modules = [
   ProductImageModule,
   OrderModule,
   IncomeModule,
+  ShippingStatusModule,
 ];
 
 const listeners = [

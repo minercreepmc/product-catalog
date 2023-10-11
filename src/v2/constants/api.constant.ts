@@ -116,4 +116,12 @@ export const ApiApplication = {
     GET_MONTHLY: 'get-monthly',
     GET_YEARLY: 'get-yearly',
   },
+  SHIPPING_STATUS: {
+    CONTROLLER: ApiBaseUrl + '/shipping-status',
+    CREATE: '',
+    UPDATE: ':id',
+    DELETE: ':id',
+    GET_BY_SHIPPING_ID: 'get-by-shipping-id',
+    GET_ONE: ':id',
+  },
 };

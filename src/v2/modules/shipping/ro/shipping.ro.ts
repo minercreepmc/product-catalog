@@ -6,4 +6,5 @@ export class ShippingRO {
   fee_price: number;
   address: string;
   shipper: string;
+  order_id: string;
 }

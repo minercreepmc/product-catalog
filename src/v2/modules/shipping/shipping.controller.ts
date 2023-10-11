@@ -47,6 +47,12 @@ export class ShippingController {
     return this.shippingService.getOne(id);
   }
 
+  @Get(ApiApplication.SHIPPING.GET_ALL)
+  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+  async getAll(): Promise<ShippingRO[]> {
+    return this.shippingService.getAll();
+  }
+
   @Post(ApiApplication.SHIPPING.GET_BY_SHIPPER_ID)
   @UseGuards(RoleGuard(UserRole.SHIPPER, UserRole.SHIPPER))
   async getShippingByShipperId(

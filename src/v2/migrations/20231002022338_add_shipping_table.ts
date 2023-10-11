@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
       created_at timestamp without time zone not null default now(),
       updated_at timestamp without time zone not null default now(),
       deleted_at timestamp without time zone,
+      status varchar(255) not null,
       order_id varchar(255) REFERENCES order_details(id),
       shipper_id varchar(255) REFERENCES users(id)
     );

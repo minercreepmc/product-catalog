@@ -17,7 +17,7 @@ export class OrderService {
     this.eventEmitter.emit(
       GlobalEvents.ORDER.ORDER_CREATED,
       new OrderCreatedEvent({
-        cartId: created.cart_id,
+        cartId: created.cartId,
       }),
     );
     return created;

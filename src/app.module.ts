@@ -19,6 +19,7 @@ import { UploadModule } from '@v2/upload';
 import { ProductImageModule } from '@v2/product-image';
 import { OrderModule } from '@v2/order';
 import { IncomeModule } from '@v2/income';
+import { ShippingCreatedModule } from './v2/listeners/shipping-created';
 
 const modules = [
   UserModule,
@@ -37,7 +38,11 @@ const modules = [
   IncomeModule,
 ];
 
-const listeners = [UserCreatedModule, OrderCreatedModule];
+const listeners = [
+  UserCreatedModule,
+  OrderCreatedModule,
+  ShippingCreatedModule,
+];
 
 @Module({
   imports: [

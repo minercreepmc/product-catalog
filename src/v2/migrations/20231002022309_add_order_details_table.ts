@@ -10,7 +10,6 @@ export async function up(knex: Knex): Promise<void> {
       member_id varchar(255) REFERENCES users(id),
       address_id varchar(255) REFERENCES address(id),
       fee_id varchar(255) REFERENCES shipping_fee(id),
-      cart_id varchar(255) REFERENCES cart(id),
       total_price float not null,
       status varchar(255) not null
     );

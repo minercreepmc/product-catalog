@@ -32,6 +32,7 @@ export const ApiApplication = {
     CONTROLLER: ApiBaseUrl + '/shipping',
     CREATE: '',
     UPDATE: ':id',
+    UPDATE_STATUS: 'update-status/:id',
     DELETE: ':id',
     GET_ALL: '',
     GET_ONE: ':id',

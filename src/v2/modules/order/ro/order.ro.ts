@@ -7,7 +7,12 @@ export class OrderRO {
   fee_name: string;
   fee_price: number;
   address_location: string;
+  member_name: string;
+  member_phone: string;
   updated_at: Date;
+}
+
+export class OrderDetailsRO extends OrderRO {
   items: OrderItemRO[];
 }
 
@@ -25,4 +30,5 @@ export class OrderItemRO {
 
 export class CreateOrderRO extends OrderModel {
   itemIds: string[];
+  cartId: string;
 }

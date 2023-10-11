@@ -32,7 +32,7 @@ export class OrderController {
   }
 
   @Put(ApiApplication.ORDER.UPDATE)
-  @UseGuards(RoleGuard(UserRole.STAFF))
+  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.SHIPPER))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateOrderDto,

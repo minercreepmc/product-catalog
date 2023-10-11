@@ -3,7 +3,8 @@ import { CreateOrderDto, UpdateOrderDto } from './dto';
 import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
 import { DefaultCatch } from 'catch-decorator-ts';
-import { CreateOrderRO, OrderItemRO, OrderRO } from './ro';
+import { CreateOrderRO, OrderDetailsRO, OrderItemRO, OrderRO } from './ro';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class OrderRepository {
@@ -31,7 +32,7 @@ export class OrderRepository {
     };
 
     order.itemIds = await this.createOrderItems(order.id, cartId);
-    return order;
+    return { ...order, cartId };
   }
 
   async update(id: string, dto: UpdateOrderDto) {
@@ -65,18 +66,20 @@ export class OrderRepository {
       [orderId],
     );
 
-    const orderDetails = res.rows[0];
+    const orderDetails = plainToInstance(OrderRO, res.rows[0]);
 
     if (!orderDetails) {
       throw new NotFoundException('Order not found');
     }
 
-    const order: OrderRO = {
+    const order: OrderDetailsRO = {
       id: orderDetails.id,
       total_price: orderDetails.total_price,
       status: orderDetails.status,
       fee_price: orderDetails.fee_price,
       fee_name: orderDetails.fee_name,
+      member_name: orderDetails.member_name,
+      member_phone: orderDetails.member_phone,
       address_location: orderDetails.address_location,
       updated_at: orderDetails.updated_at,
       items: [],
@@ -108,10 +111,11 @@ export class OrderRepository {
       `
         SELECT o.updated_at, o.id, o.total_price, o.status, 
         a.location as address_location, f.name as fee_name,
-        f.fee as fee_price
+        f.fee as fee_price, u.full_name as member_name, u.phone as member_phone
         FROM order_details o
         INNER JOIN address a ON a.id = o.address_id
-        INNER JOIN shipping_fee f ON f.id = o.fee_id;
+        INNER JOIN shipping_fee f ON f.id = o.fee_id
+        INNER JOIN users u ON u.id = o.member_id
       `,
     );
 
@@ -153,11 +157,11 @@ export class OrderRepository {
 
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO order_details (cart_id, status, member_id, address_id, total_price, fee_id) 
-        VALUES ($1, $2, $3, $4, $5, (SELECT shipping_fee_id FROM cart WHERE id = $6))
+      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id) 
+        VALUES ($1, $2, $3, $4, (SELECT shipping_fee_id FROM cart WHERE id = $5))
       RETURNING *; 
     `,
-      [cartId, OrderStatus.PROCESSING, memberId, addressId, totalPrice, cartId],
+      [OrderStatus.PROCESSING, memberId, addressId, totalPrice, cartId],
     );
 
     const orderDetails = res.rows[0];

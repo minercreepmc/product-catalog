@@ -18,6 +18,7 @@ import { CartItemModule } from '@v2/cart-item';
 import { UploadModule } from '@v2/upload';
 import { ProductImageModule } from '@v2/product-image';
 import { OrderModule } from '@v2/order';
+import { IncomeModule } from '@v2/income';
 
 const modules = [
   UserModule,
@@ -33,6 +34,7 @@ const modules = [
   UploadModule,
   ProductImageModule,
   OrderModule,
+  IncomeModule,
 ];
 
 const listeners = [UserCreatedModule, OrderCreatedModule];

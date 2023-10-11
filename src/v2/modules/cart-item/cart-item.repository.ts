@@ -6,13 +6,16 @@ import { CreateCartItemDto, UpdateCartItemDto } from './dtos';
 export class CartItemRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(dto: CreateCartItemDto) {
-    const { cartId, productId, amount } = dto;
+  async create(userId: string, dto: CreateCartItemDto) {
+    const { productId, amount } = dto;
     const res = await this.databaseService.runQuery(
       `
-        INSERT INTO cart_item (cart_id, product_id, amount) VALUES ($1, $2, $3) RETURNING *;
+        INSERT INTO cart_item (cart_id, product_id, amount) VALUES ((
+          SELECT id FROM cart
+          WHERE user_id = $1
+        ), $2, $3) RETURNING *;
       `,
-      [cartId, productId, amount],
+      [userId, productId, amount],
     );
 
     return res.rows[0];

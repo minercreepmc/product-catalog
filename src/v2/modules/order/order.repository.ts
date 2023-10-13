@@ -205,12 +205,14 @@ export class OrderRepository {
   private async getOrderItems(orderId: string): Promise<OrderItemRO[]> {
     const res = await this.databaseService.runQuery(
       `
-        SELECT i.price, i.amount, p.name, p.description, c.name as category_name
+        SELECT i.id, i.price, i.amount, p.id, p.name, p.description, c.id, c.name as category_name, json_agg(pi.url) as image_urls
         FROM order_item i
         INNER JOIN product p ON p.id = i.product_id
         LEFT JOIN product_category pc ON pc.product_id = p.id
+        LEFT JOIN product_image pi ON pi.product_id = p.id
         LEFT JOIN category c ON c.id = pc.category_id
-        WHERE i.order_id = $1;
+        WHERE i.order_id = $1
+        GROUP BY i.id, p.id, c.id
       `,
       [orderId],
     );

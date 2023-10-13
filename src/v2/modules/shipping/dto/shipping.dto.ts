@@ -15,6 +15,9 @@ export class CreateShippingDto {
     column: USER_SCHEMA.ID,
   })
   shipperId: string;
+
+  @IsDateString()
+  dueDate: Date;
 }
 export class UpdateShippingDto {
   @IsString()
@@ -26,6 +29,9 @@ export class UpdateShippingDto {
 
   @IsDateString()
   deletedAt?: Date;
+
+  @IsDateString()
+  dueDate: Date;
 }
 
 export class GetShippingByShipperDto {

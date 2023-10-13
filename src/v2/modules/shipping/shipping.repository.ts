@@ -8,12 +8,12 @@ export class ShippingRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(dto: CreateShippingDto): Promise<ShippingModel> {
-    const { shipperId, orderId } = dto;
+    const { shipperId, orderId, dueDate } = dto;
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO shipping (order_id, shipper_id) VALUES ($1, $2) RETURNING *;
+      INSERT INTO shipping (order_id, shipper_id, due_date) VALUES ($1, $2, $3) RETURNING *;
     `,
-      [orderId, shipperId],
+      [orderId, shipperId, dueDate],
     );
 
     return res.rows[0];
@@ -25,7 +25,8 @@ export class ShippingRepository {
       UPDATE shipping 
       SET 
           shipper_id = COALESCE($2, shipper_id),
-          deleted_at = COALESCE($3, deleted_at)
+          deleted_at = COALESCE($3, deleted_at),
+          due_date = COALESCE($4, due_date)
       WHERE id = $1 RETURNING *;
     `,
       [id, dto.shipperId, dto.deletedAt],
@@ -34,21 +35,10 @@ export class ShippingRepository {
     return res.rows[0];
   }
 
-  async updateStatus(id: string, status: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      UPDATE shipping SET status = $1 WHERE id = $2 RETURNING *;
-    `,
-      [status, id],
-    );
-
-    return res.rows[0];
-  }
-
   async findOne(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT s.id, s.created_at, s.updated_at, s.order_id,
+      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date,
       f.fee as fee_price, f.name as fee_name,
       a.location as address, u.full_name as shipper 
       FROM shipping s
@@ -68,7 +58,7 @@ export class ShippingRepository {
   async findAll() {
     const res = await this.databaseService.runQuery(
       `
-      SELECT s.id, s.created_at, s.updated_at, s.order_id, 
+      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date,
       f.fee as fee_price, f.name as fee_name,
       a.location as address, u.full_name as shipper
       FROM shipping s

@@ -33,9 +33,10 @@ export const ApiApplication = {
     CREATE: '',
     UPDATE: ':id',
     UPDATE_STATUS: 'update-status/:id',
-    DELETE: ':id',
+    DELETE_BY_ORDER: ':orderId',
     GET_ALL: '',
     GET_ONE: ':id',
+    GET_BY_ORDER_ID: 'get-by-order',
     GET_BY_SHIPPER_ID: 'get-by-shipper',
   },
   SHIPPING_FEE: {
@@ -78,7 +79,7 @@ export const ApiApplication = {
   CART: {
     CONTROLLER: ApiBaseUrl + '/cart',
     CREATE: '',
-    UPDATE: ':id',
+    UPDATE: '',
     GET: '',
     GET_ITEMS: 'items',
     GET_TOTAL_PRICE: 'total-price',

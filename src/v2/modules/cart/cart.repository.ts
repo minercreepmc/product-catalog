@@ -21,15 +21,15 @@ export class CartRepository {
     return res.rows[0];
   }
 
-  async update(id: string, dto: UpdateCartDto) {
+  async update(userId: string, dto: UpdateCartDto) {
     const res = await this.databaseService.runQuery(
       `
         UPDATE cart
         SET shipping_fee_id = $1
-        WHERE id = $2
+        WHERE user_id = $2
         RETURNING *;
       `,
-      [dto.shippingFeeId, id],
+      [dto.shippingFeeId, userId],
     );
 
     return res.rows[0];

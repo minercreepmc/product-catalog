@@ -42,7 +42,7 @@ export class UserService {
       });
 
       this.eventEmitter.emit(
-        GlobalEvents.USER.MEMBER_CREATED,
+        GlobalEvents.USER.CREATED,
         new UserCreatedEvent({ userId: user.id }),
       );
 

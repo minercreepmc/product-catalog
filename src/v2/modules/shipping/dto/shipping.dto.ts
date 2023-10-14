@@ -43,3 +43,13 @@ export class GetShippingByShipperDto {
   })
   shipperId: string;
 }
+
+export class GetShippingByOrderDto {
+  @IsOptional()
+  @IsString()
+  @isExistDb({
+    table: DATABASE_TABLE.ORDER_DETAILS,
+    column: ORDER_DETAILS_SCHEMA.ID,
+  })
+  orderId: string;
+}

@@ -13,8 +13,8 @@ export class CartService {
     return this.cartRepository.getByUserId(userId);
   }
 
-  update(id: string, dto: UpdateCartDto) {
-    return this.cartRepository.update(id, dto);
+  update(userId: string, dto: UpdateCartDto) {
+    return this.cartRepository.update(userId, dto);
   }
 
   clearCart(userId: string) {

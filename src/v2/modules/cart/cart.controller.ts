@@ -12,7 +12,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CartItemModel } from '@v2/cart-item/model';
 import { UserRole } from '@v2/users/constants';
 import { CartService } from './cart.service';
 import { UpdateCartDto } from './dto';
@@ -20,7 +19,7 @@ import { CartModel } from './model';
 import { CartRO } from './ro';
 
 @Controller(ApiApplication.CART.CONTROLLER)
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, RoleGuard(UserRole.MEMBER))
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
@@ -30,8 +29,8 @@ export class CartController {
   }
 
   @Put(ApiApplication.CART.UPDATE)
-  update(@Param('id') id: string, @Body() dto: UpdateCartDto) {
-    return this.cartService.update(id, dto);
+  update(@Req() req: RequestWithUser, @Body() dto: UpdateCartDto) {
+    return this.cartService.update(req.user.id, dto);
   }
 
   @Get(ApiApplication.CART.GET)

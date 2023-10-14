@@ -35,12 +35,25 @@ export class ShippingRepository {
     return res.rows[0];
   }
 
+  async deleteByOrderId(id: string) {
+    const res = await this.databaseService.runQuery(
+      `
+      DELETE FROM shipping s
+      INNER JOIN order o ON o.id = s.order_id
+      WHERE order_id = $1 RETURNING s.*, o.status
+    `,
+      [id],
+    );
+
+    return res.rows[0];
+  }
+
   async findOne(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date,
+      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date,
       f.fee as fee_price, f.name as fee_name,
-      a.location as address, u.full_name as shipper 
+      a.location as address, u.full_name as shipper
       FROM shipping s
       INNER JOIN order_details o ON s.order_id = o.id
       INNER JOIN shipping_fee f ON f.id = o.fee_id 
@@ -50,6 +63,25 @@ export class ShippingRepository {
       
     `,
       [id],
+    );
+
+    return res.rows[0];
+  }
+
+  async findOneByOrderId(orderId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date,
+      f.fee as fee_price, f.name as fee_name,
+      a.location as address, u.full_name as shipper
+      FROM shipping s
+      INNER JOIN order_details o ON s.order_id = o.id
+      INNER JOIN shipping_fee f ON f.id = o.fee_id 
+      INNER JOIN address a ON a.id = o.address_id
+      INNER JOIN users u ON u.id = s.shipper_id
+      WHERE s.order_id = $1
+     `,
+      [orderId],
     );
 
     return res.rows[0];

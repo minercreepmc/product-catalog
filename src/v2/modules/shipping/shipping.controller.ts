@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -11,6 +12,7 @@ import {
 import { ShippingService } from './shipping.service';
 import {
   CreateShippingDto,
+  GetShippingByOrderDto,
   GetShippingByShipperDto,
   UpdateShippingDto,
 } from './dto';
@@ -43,8 +45,15 @@ export class ShippingController {
   }
 
   @Get(ApiApplication.SHIPPING.GET_ONE)
-  async getOne(@Param('id') id: string): Promise<ShippingRO> {
+  async getOne(@Param('shippingId') id: string): Promise<ShippingRO> {
     return this.shippingService.getOne(id);
+  }
+
+  @Post(ApiApplication.SHIPPING.GET_BY_ORDER_ID)
+  async getOneByOrderId(
+    @Body() dto: GetShippingByOrderDto,
+  ): Promise<ShippingRO> {
+    return this.shippingService.getOneByOrderId(dto.orderId);
   }
 
   @Get(ApiApplication.SHIPPING.GET_ALL)
@@ -64,5 +73,10 @@ export class ShippingController {
     } else {
       return this.shippingService.getByShipper(dto.shipperId);
     }
+  }
+
+  @Delete(ApiApplication.SHIPPING.DELETE_BY_ORDER)
+  async delete(@Param('orderId') orderId: string): Promise<void> {
+    return this.shippingService.deleteByOrderId(orderId);
   }
 }

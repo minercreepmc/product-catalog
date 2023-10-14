@@ -8,7 +8,7 @@ import { OrderCreatedEvent } from '@v2/order/event';
 export class OrderCreatedListener {
   constructor(private readonly cartService: CartService) {}
 
-  @OnEvent(GlobalEvents.ORDER.ORDER_CREATED)
+  @OnEvent(GlobalEvents.ORDER.CREATED)
   async clearCart(event: OrderCreatedEvent) {
     await this.cartService.clearCart(event.cartId);
   }

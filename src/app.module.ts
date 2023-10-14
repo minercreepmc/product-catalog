@@ -13,14 +13,19 @@ import { CategoryModule } from '@v2/category';
 import { DiscountModule } from '@v2/discount';
 import { CartModule } from '@v2/cart';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { OrderCreatedModule, UserCreatedModule } from './v2/listeners';
+import {
+  OrderCreatedModule,
+  ShippingCreatedModule,
+  ShippingDeletedModule,
+  UserCreatedModule,
+} from './v2/listeners';
 import { CartItemModule } from '@v2/cart-item';
 import { UploadModule } from '@v2/upload';
 import { ProductImageModule } from '@v2/product-image';
 import { OrderModule } from '@v2/order';
 import { IncomeModule } from '@v2/income';
-import { ShippingCreatedModule } from './v2/listeners/shipping-created';
 import { ShippingStatusModule } from '@v2/shipping-status';
+import { OrderUpdatedModule } from './v2/listeners/order-updated';
 
 const modules = [
   UserModule,
@@ -44,6 +49,8 @@ const listeners = [
   UserCreatedModule,
   OrderCreatedModule,
   ShippingCreatedModule,
+  ShippingDeletedModule,
+  OrderUpdatedModule,
 ];
 
 @Module({

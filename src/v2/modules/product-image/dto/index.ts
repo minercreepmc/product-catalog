@@ -1,1 +1,1 @@
-export * from './add-image-urls.dto';
+export * from './product-image.dto';

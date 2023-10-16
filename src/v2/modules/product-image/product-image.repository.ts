@@ -1,6 +1,6 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { AddImageUrlsDto } from './dto';
+import { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
 import { ProductImageModel } from './model';
 
 @Injectable()
@@ -19,6 +19,18 @@ export class ProductImageRepository {
     );
     const images: ProductImageModel[] = res.rows;
     return images;
+  }
+
+  async removeImageUrl(dto: RemoveImageUrlDto) {
+    const { url, productId } = dto;
+    const res = await this.databaseService.runQuery(
+      `
+        DELETE FROM product_image WHERE product_id=$1 AND url=$2;
+      `,
+      [productId, url],
+    );
+
+    return res.rows;
   }
 
   async getProductImages(productId: string) {

@@ -15,3 +15,15 @@ export class AddImageUrlsDto {
   })
   productId: string;
 }
+
+export class RemoveImageUrlDto {
+  @IsString()
+  url: string;
+
+  @IsString()
+  @isExistDb({
+    table: DATABASE_TABLE.PRODUCT,
+    column: PRODUCT_SCHEMA.ID,
+  })
+  productId: string;
+}

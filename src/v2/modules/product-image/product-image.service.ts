@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AddImageUrlsDto } from './dto';
+import { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
 import { ProductImageRepository } from './product-image.repository';
 
 @Injectable()
@@ -10,6 +10,10 @@ export class ProductImageService {
 
   async addImageUrls(dto: AddImageUrlsDto) {
     return this.productImageRepository.addImageUrls(dto);
+  }
+
+  async removeImageUrls(dto: RemoveImageUrlDto) {
+    return this.productImageRepository.removeImageUrl(dto);
   }
 
   async getProductImages(productId: string) {

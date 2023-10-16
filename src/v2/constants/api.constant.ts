@@ -101,6 +101,7 @@ export const ApiApplication = {
     CONTROLLER: ApiBaseUrl + '/product-image',
     ADD: '',
     GET_PRODUCT_IMAGES: ':productId',
+    REMOVE: 'remove',
   },
   ORDER: {
     CONTROLLER: ApiBaseUrl + '/order',

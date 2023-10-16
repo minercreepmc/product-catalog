@@ -6,6 +6,7 @@ export enum DATABASE_TABLE {
   PRODUCT = 'product',
   DISCOUNT = 'discount',
   CATEGORY = 'category',
+  PRODUCT_IMAGE = 'product_image',
   PRODUCT_CATEGORY = 'product_category',
   CART = 'cart',
   CART_ITEM = 'cart_item',
@@ -88,4 +89,10 @@ export enum SHIPPING_SCHEMA {
   STATUS = 'status',
   ORDER_ID = 'order_id',
   SHIPPER_ID = 'shipper_id',
+}
+
+export enum PRODUCT_IMAGE_SHEMA {
+  ID = 'id',
+  PRODUCT_ID = 'product_id',
+  URL = 'url',
 }

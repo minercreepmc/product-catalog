@@ -45,7 +45,7 @@ export class ShippingController {
   }
 
   @Get(ApiApplication.SHIPPING.GET_ONE)
-  async getOne(@Param('shippingId') id: string): Promise<ShippingRO> {
+  async getOne(@Param('id') id: string): Promise<ShippingRO> {
     return this.shippingService.getOne(id);
   }
 

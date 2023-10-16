@@ -45,7 +45,7 @@ export class ShippingStatusRepository {
   async findByShippingId(shippingId: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * FROM shipping_status WHERE shipping_id = $1;
+      SELECT * FROM shipping_status WHERE shipping_id = $1 ORDER BY created_at;
       `,
       [shippingId],
     );

@@ -16,6 +16,7 @@ export class ProductRO {
   name: string;
   description: string;
   price: number;
+  new_price: number;
   image_urls: string[];
   category_ids: string[];
   discount: DiscountModel[];

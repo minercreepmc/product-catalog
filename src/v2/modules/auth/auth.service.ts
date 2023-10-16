@@ -15,7 +15,7 @@ export class AuthService {
   ) {}
 
   async isLoggedIn(cookie: string) {
-    if(!cookie) {
+    if (!cookie) {
       return false;
     }
     const payload = this.jwtService.verify(cookie, {
@@ -27,7 +27,12 @@ export class AuthService {
 
   async logIn(dto: LogInDto) {
     const user = await this.userRepository.findOneByName(dto.username);
-    return this.getAuthenticatedCookie(user.id);
+    const cookie = this.getAuthenticatedCookie(user.id);
+
+    return {
+      cookie,
+      user,
+    };
   }
 
   async getAuthenticatedUser(username: string, password: string) {

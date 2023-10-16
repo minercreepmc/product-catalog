@@ -1,10 +1,10 @@
-import { ProductIncludeDiscountRO } from '@v2/product/ro';
+import type { ProductRO } from '@v2/product/ro';
 
 export class CategoryRO {
   id: string;
   name: string;
   description: string;
-  products: ProductIncludeDiscountRO[];
+  products: ProductRO[];
 }
 
 export class CategoryIncludeProductCountRO {

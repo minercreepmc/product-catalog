@@ -11,7 +11,7 @@ export interface UpdateCategoryForProduct {
 
 export interface UpdateDiscountForProduct {
   id: string;
-  discountId: string;
+  discountId: string | null;
 }
 
 @Injectable()
@@ -160,7 +160,7 @@ export class ProductRepository {
       });
     }
 
-    if (discountId) {
+    if (discountId || discountId === null) {
       updated.discount_id = await this.updateDiscount({
         id,
         discountId,
@@ -172,6 +172,8 @@ export class ProductRepository {
 
   private async updateDiscount(dto: UpdateDiscountForProduct) {
     const { discountId, id } = dto;
+    console.log(discountId);
+    console.log('oke');
     if (discountId) {
       const res = await this.databaseService.runQuery(
         `
@@ -285,10 +287,16 @@ export class ProductRepository {
 
     const res = await this.databaseService.runQuery(
       ` 
-        SELECT product.id, product.name, product.price, product.description,
-          product.sold, to_json(discount) as discount,
-          COALESCE(json_agg(product_image) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls, 
-          COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories
+        SELECT 
+          product.id, 
+          product.name, 
+          product.price, 
+          product.description,  
+          product.sold, 
+          to_json(discount) as discount,
+          COALESCE(json_agg(product_image.url) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls, 
+          COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories,
+          product.price - (product.price * discount.percentage / 100) AS new_price 
         FROM product
         LEFT JOIN discount ON product.discount_id = discount.id
         LEFT JOIN product_image ON product_image.product_id = product.id

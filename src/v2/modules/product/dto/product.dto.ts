@@ -73,9 +73,8 @@ export class UpdateProductDto {
   @IsOptional()
   description?: string;
 
-  @IsString()
   @IsOptional()
-  discountId?: string;
+  discountId?: string | null;
 
   @IsString({ each: true })
   @IsArray()

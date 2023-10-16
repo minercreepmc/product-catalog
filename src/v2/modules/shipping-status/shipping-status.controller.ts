@@ -44,6 +44,7 @@ export class ShippingStatusController {
   @Post(ApiApplication.SHIPPING_STATUS.GET_BY_SHIPPING_ID)
   @UseGuards(RoleGuard(UserRole.SHIPPER, UserRole.STAFF))
   getByShippingId(@Body() dto: GetByShippingIdDto) {
+    console.log(dto);
     return this.shippingStatusService.findByShippingId(dto.shippingId);
   }
 }

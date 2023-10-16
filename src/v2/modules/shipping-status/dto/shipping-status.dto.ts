@@ -1,6 +1,11 @@
 import { DATABASE_TABLE, SHIPPING_SCHEMA } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
-import { IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateShippingStatusDto {
   @IsString()
@@ -15,6 +20,7 @@ export class CreateShippingStatusDto {
 
 export class UpdateShippingStatusDto {
   @IsString()
+  @IsOptional()
   status: string;
 }
 

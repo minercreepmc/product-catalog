@@ -40,13 +40,12 @@ export class ProductController {
     @Param('id') id: string,
     @Body() dto: UpdateProductDto,
   ): Promise<UpdateProductRO> {
+    console.log(dto);
     return this.productService.update(id, dto);
   }
 
   @Get(ApiApplication.PRODUCT.GET_ALL)
-  getAll(
-    @Query() params: PaginationParams,
-  ): Promise<ProductWithImagesRO[]> {
+  getAll(@Query() params: PaginationParams): Promise<ProductRO[]> {
     return this.productService.getAll(params);
   }
 

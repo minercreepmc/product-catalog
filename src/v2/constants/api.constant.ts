@@ -89,8 +89,10 @@ export const ApiApplication = {
     CONTROLLER: ApiBaseUrl + '/cart-item',
     CREATE: '',
     UPDATE: ':id',
+    UPSERT: 'upsert',
     DELETE: ':id',
     GET_BY_CART_ID: ':cartId',
+    GET_BY_USER_ID: 'get-by-user-id',
   },
   UPLOAD: {
     CONTROLLER: ApiBaseUrl + '/upload',

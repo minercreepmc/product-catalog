@@ -13,3 +13,21 @@ export class CreateCartItemDto {
   @IsPositive()
   amount: number;
 }
+
+export class UpdateCartItemDto {
+  @IsNumber()
+  @IsPositive()
+  amount: number;
+}
+
+export class UpsertCartItemDto {
+  @IsString()
+  @isExistDb({
+    table: DATABASE_TABLE.PRODUCT,
+    column: PRODUCT_SCHEMA.ID,
+  })
+  productId: string;
+  @IsNumber()
+  @IsPositive()
+  amount: number;
+}

@@ -14,8 +14,13 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
 import { CartItemService } from './cart-item.service';
-import { CreateCartItemDto, UpdateCartItemDto } from './dtos';
+import {
+  CreateCartItemDto,
+  UpdateCartItemDto,
+  UpsertCartItemDto,
+} from './dtos';
 import { CartItemModel } from './model';
+import { CartItemRO } from './ro';
 
 @Controller(ApiApplication.CART_ITEM.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(UserRole.MEMBER))
@@ -37,8 +42,18 @@ export class CartItemController {
     return this.cartItemService.update(id, dto);
   }
 
+  @Post(ApiApplication.CART_ITEM.UPSERT)
+  upsert(@Body() dto: UpsertCartItemDto) {
+    return this.cartItemService.upsert(dto);
+  }
+
   @Delete(ApiApplication.CART_ITEM.DELETE)
   delete(@Param('id') id: string): Promise<CartItemModel> {
     return this.cartItemService.delete(id);
+  }
+
+  @Post(ApiApplication.CART_ITEM.GET_BY_USER_ID)
+  getbyUserId(@Req() req: RequestWithUser): Promise<CartItemRO[]> {
+    return this.cartItemService.getByUserId(req.user.id);
   }
 }

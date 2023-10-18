@@ -38,6 +38,7 @@ export class ShippingStatusController {
   @Delete(ApiApplication.SHIPPING_STATUS.DELETE)
   @UseGuards(RoleGuard(UserRole.SHIPPER))
   delete(@Param('id') id: string) {
+    console.log(id);
     return this.shippingStatusService.delete(id);
   }
 

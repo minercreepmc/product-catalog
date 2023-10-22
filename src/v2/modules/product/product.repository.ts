@@ -172,8 +172,6 @@ export class ProductRepository {
 
   private async updateDiscount(dto: UpdateDiscountForProduct) {
     const { discountId, id } = dto;
-    console.log(discountId);
-    console.log('oke');
     if (discountId) {
       const res = await this.databaseService.runQuery(
         `

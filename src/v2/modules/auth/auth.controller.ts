@@ -1,5 +1,4 @@
-import { RequestWithUser } from '@api/http';
-import { ApiApplication } from '@constants';
+import { ApiApplication, RequestWithUser } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { LocalAuthenticationGuard } from '@guards/local';
 import { RoleGuard } from '@guards/roles';
@@ -10,7 +9,6 @@ import { Response as ExpressResponse } from 'express';
 import { AuthService } from './auth.service';
 import { ProfileRO } from './ro';
 import { Request } from 'express';
-import { UserModel } from '@v2/users/model';
 
 @Controller(ApiApplication.AUTH.CONTROLLER)
 export class AuthController {

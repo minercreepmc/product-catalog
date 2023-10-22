@@ -18,6 +18,7 @@ export class AuthService {
     if (!cookie) {
       return false;
     }
+    console.log('cookie', cookie);
     const payload = this.jwtService.verify(cookie, {
       secret: this.configService.get('JWT_SECRET'),
     });

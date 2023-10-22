@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import HealthModule from './modules/infrastructures/health-check/health.module';
 import { UserModule } from '@v2/users/user.module';
 import { AuthModule } from '@v2/auth/auth.module';
 import { ShippingFeeModule } from '@v2/shipping-fee';
@@ -26,6 +25,7 @@ import { OrderModule } from '@v2/order';
 import { IncomeModule } from '@v2/income';
 import { ShippingStatusModule } from '@v2/shipping-status';
 import { OrderUpdatedModule } from './v2/listeners/order-updated';
+import { OrderItemModule } from '@v2/order-item';
 
 const modules = [
   UserModule,
@@ -43,6 +43,7 @@ const modules = [
   OrderModule,
   IncomeModule,
   ShippingStatusModule,
+  OrderItemModule,
 ];
 
 const listeners = [
@@ -68,7 +69,6 @@ const listeners = [
       password: databaseConfig.password,
     }),
     DatabaseModule.forRoot(databaseConfig),
-    HealthModule,
     ...modules,
     ...listeners,
   ],

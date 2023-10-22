@@ -25,11 +25,13 @@ export class CartRepository {
     const res = await this.databaseService.runQuery(
       `
         UPDATE cart
-        SET shipping_fee_id = $1
-        WHERE user_id = $2
+        SET 
+          shipping_fee_id = COALESCE($2, shipping_fee_id),
+          address_id = COALESCE($3, address_id)
+        WHERE user_id = $1
         RETURNING *;
       `,
-      [dto.shippingFeeId, userId],
+      [userId, dto.shippingFeeId, dto.addressId],
     );
 
     return res.rows[0];
@@ -38,7 +40,10 @@ export class CartRepository {
   async getByUserId(userId: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT * FROM cart WHERE user_id=$1
+        SELECT c.*, f.fee as shipping_fee
+        FROM cart c 
+        LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id
+        WHERE c.user_id=$1
       `,
       [userId],
     );
@@ -80,7 +85,11 @@ export class CartRepository {
     const res = await this.databaseService.runQuery(
       `
         DELETE FROM cart_item 
-        WHERE cart_id = $1
+        WHERE cart_id = $1;
+  
+        UPDATE cart
+        SET shipping_fee_id = null
+        WHERE id = $1;
       `,
       [cartId],
     );
@@ -92,6 +101,7 @@ export class CartRepository {
     throw err;
   })
   async getTotalPrice(cartId: string) {
+    console.log(cartId);
     const res = await this.databaseService.runQuery(
       `
       SELECT SUM(COALESCE(f.fee, 0) + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
@@ -104,6 +114,8 @@ export class CartRepository {
     `,
       [cartId],
     );
+
+    console.log(res.rows[0].sum);
 
     return res.rows[0].sum ? res.rows[0].sum : 0;
   }

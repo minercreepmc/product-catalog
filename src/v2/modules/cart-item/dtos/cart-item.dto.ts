@@ -1,6 +1,12 @@
 import { DATABASE_TABLE, PRODUCT_SCHEMA } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
-import { IsNumber, IsPositive, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsNumber,
+  IsNumberString,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class CreateCartItemDto {
   @IsString()
@@ -9,14 +15,15 @@ export class CreateCartItemDto {
     column: PRODUCT_SCHEMA.ID,
   })
   productId: string;
-  @IsNumber()
+
   @IsPositive()
+  @Transform(({ value }) => Number(value))
   amount: number;
 }
 
 export class UpdateCartItemDto {
-  @IsNumber()
   @IsPositive()
+  @Transform(({ value }) => Number(value))
   amount: number;
 }
 

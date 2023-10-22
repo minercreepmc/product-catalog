@@ -1,10 +1,12 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import {
   CreateCartItemDto,
   UpdateCartItemDto,
   UpsertCartItemDto,
 } from './dtos';
+import { CartItemRO } from './ro';
 
 @Injectable()
 export class CartItemRepository {
@@ -28,31 +30,31 @@ export class CartItemRepository {
   async update(cartItemId: string, dto: UpdateCartItemDto) {
     const { amount } = dto;
 
-    const res = await this.databaseService.runQuery(
+    await this.databaseService.runQuery(
       `
-        UPDATE cart_item SET amount=$1 WHERE id=$2 RETURNING *;
+        UPDATE cart_item SET amount=$1 WHERE id=$2;
       `,
       [amount, cartItemId],
     );
 
-    return res.rows[0];
+    return this.getDetailByCartItemId(cartItemId);
   }
 
-  async upsert(dto: UpsertCartItemDto) {
+  async upsert(userId: string, dto: UpsertCartItemDto) {
     const { productId, amount } = dto;
 
-    const res = await this.databaseService.runQuery(
+    const upsertRes = await this.databaseService.runQuery(
       `
-        INSERT INTO cart_item (product_id, amount) 
-        VALUES ($1, $2) 
-          ON CONFLICT (product_id) 
-        DO UPDATE SET amount = cart_item.amount + $3
-        RETURNING *;
+        INSERT INTO cart_item (product_id, amount, cart_id) 
+        VALUES ($1, $2, (SELECT id FROM cart WHERE user_id = $3)) 
+          ON CONFLICT (product_id, cart_id) 
+        DO UPDATE SET amount = cart_item.amount + $2
+        RETURNING product_id;
       `,
-      [productId, amount, amount],
+      [productId, amount, userId],
     );
 
-    return res.rows[0];
+    return this.getDetailByUserId(userId, upsertRes.rows[0].product_id);
   }
 
   async delete(cartItemId: string) {
@@ -71,18 +73,72 @@ export class CartItemRepository {
       `
         SELECT 
           i.id, i.amount,
-          p.id as product_id, p.name as product_name, p.price as product_price,  
-        d.id as discount_id, d.name as discount_name, d.percentage as discount_percentage
+          p.id as product_id, p.name as product_name, p.price as product_price, 
+        d.id as discount_id, d.name as discount_name, d.percentage as discount_percentage,
+          COALESCE(json_agg(pi.url) FILTER (WHERE pi.id IS NOT NULL), '[]'::json) AS image_urls,
+          p.price - (p.price * d.percentage / 100) AS product_new_price 
         FROM cart_item i 
         INNER JOIN product p ON p.id = i.product_id
+        LEFT JOIN product_image pi ON pi.product_id = p.id
         LEFT JOIN discount d ON d.id = p.discount_id
         WHERE cart_id = (
           SELECT id FROM cart WHERE user_id = $1
-        );
+        )
+        GROUP BY i.id, p.id, d.id
       `,
       [userId],
     );
 
     return res.rows;
+  }
+
+  private async getDetailByUserId(userId: string, productId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT 
+          i.id, i.amount,
+          p.id as product_id, p.name as product_name, p.price as product_price, 
+        d.id as discount_id, d.name as discount_name, d.percentage as discount_percentage,
+          COALESCE(json_agg(pi.url) FILTER (WHERE pi.id IS NOT NULL), '[]'::json) AS image_urls,
+          p.price - (p.price * d.percentage / 100) AS product_new_price 
+        FROM cart_item i 
+        INNER JOIN product p ON p.id = i.product_id
+        LEFT JOIN product_image pi ON pi.product_id = p.id
+        LEFT JOIN discount d ON d.id = p.discount_id
+        WHERE cart_id = (
+          SELECT id FROM cart WHERE user_id = $1
+        ) AND i.product_id = $2 
+        GROUP BY i.id, p.id, d.id
+    `,
+      [userId, productId],
+    );
+
+    return plainToInstance(CartItemRO, res.rows[0], {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  private async getDetailByCartItemId(cartItemId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT 
+          i.id, i.amount,
+          p.id as product_id, p.name as product_name, p.price as product_price, 
+        d.id as discount_id, d.name as discount_name, d.percentage as discount_percentage,
+          COALESCE(json_agg(pi.url) FILTER (WHERE pi.id IS NOT NULL), '[]'::json) AS image_urls,
+          p.price - (p.price * d.percentage / 100) AS product_new_price 
+        FROM cart_item i 
+        INNER JOIN product p ON p.id = i.product_id
+        LEFT JOIN product_image pi ON pi.product_id = p.id
+        LEFT JOIN discount d ON d.id = p.discount_id
+        WHERE i.id = $1
+        GROUP BY i.id, p.id, d.id
+    `,
+      [cartItemId],
+    );
+
+    return plainToInstance(CartItemRO, res.rows[0], {
+      excludeExtraneousValues: true,
+    });
   }
 }

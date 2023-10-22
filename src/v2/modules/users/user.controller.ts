@@ -1,4 +1,3 @@
-import { UpdateUserDto } from '@api/http';
 import { JwtGuard } from '@guards/jwt';
 import {
   Body,
@@ -7,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from './constants';
@@ -16,10 +16,11 @@ import {
   CreateShipperDto,
   CreateStaffDto,
   CreateAdminDto,
+  UpdateUserDto,
 } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
-import { ApiApplication } from '@constants';
+import { ApiApplication, RequestWithUser } from '@constants';
 import { UserModel } from './model';
 import { UserRO } from './ro';
 
@@ -89,5 +90,22 @@ export class UserController {
     @Body() dto: UpdateUserDto,
   ): Promise<UserModel> {
     return this.userService.update(id, dto);
+  }
+
+  @Post(ApiApplication.USER.UPDATE_PROFILE)
+  @UseGuards(
+    JwtGuard,
+    RoleGuard(
+      UserRole.STAFF,
+      UserRole.ADMIN,
+      UserRole.SHIPPER,
+      UserRole.MEMBER,
+    ),
+  )
+  async updateProfile(
+    @Req() req: RequestWithUser,
+    @Body() dto: UpdateUserDto,
+  ): Promise<UserModel> {
+    return this.userService.update(req.user.id, dto);
   }
 }

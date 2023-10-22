@@ -11,6 +11,7 @@ export enum DATABASE_TABLE {
   CART = 'cart',
   CART_ITEM = 'cart_item',
   ORDER_DETAILS = 'order_details',
+  ORDER_ITEM = 'order_item',
 }
 
 export enum PRODUCT_SCHEMA {
@@ -95,4 +96,12 @@ export enum PRODUCT_IMAGE_SHEMA {
   ID = 'id',
   PRODUCT_ID = 'product_id',
   URL = 'url',
+}
+
+export enum ORDER_ITEM_SCHEMA {
+  ID = 'id',
+  ORDER_ID = 'order_id',
+  PRODUCT_ID = 'product_id',
+  AMOUNT = 'amount',
+  PRICE = 'price',
 }

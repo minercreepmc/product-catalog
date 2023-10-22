@@ -1,15 +1,16 @@
-import { CART_SCHEMA, DATABASE_TABLE, SHIPPING_FEE_SCHEMA } from '@constants';
+import { CART_SCHEMA, DATABASE_TABLE } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateCartDto {}
 export class UpdateCartDto {
   @IsString()
-  @isExistDb({
-    table: DATABASE_TABLE.SHIPPING_FEE,
-    column: SHIPPING_FEE_SCHEMA.ID,
-  })
-  shippingFeeId: string;
+  @IsOptional()
+  shippingFeeId?: string;
+
+  @IsString()
+  @IsOptional()
+  addressId: string;
 }
 
 export class GetCartItemsDto {

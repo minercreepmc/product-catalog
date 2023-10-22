@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { CartItemRepository } from './cart-item.repository';
 import {
   CreateCartItemDto,
   UpdateCartItemDto,
   UpsertCartItemDto,
 } from './dtos';
+import { CartItemRO } from './ro';
 
 @Injectable()
 export class CartItemService {
@@ -17,15 +19,19 @@ export class CartItemService {
     return this.cartItemRepo.update(id, dto);
   }
 
-  upsert(dto: UpsertCartItemDto) {
-    return this.cartItemRepo.upsert(dto);
+  upsert(userId: string, dto: UpsertCartItemDto) {
+    return this.cartItemRepo.upsert(userId, dto);
   }
 
   delete(id: string) {
     return this.cartItemRepo.delete(id);
   }
 
-  getByUserId(userId: string) {
-    return this.cartItemRepo.findByUserId(userId);
+  async getByUserId(userId: string) {
+    const items = await this.cartItemRepo.findByUserId(userId);
+
+    return plainToInstance(CartItemRO, items, {
+      excludeExtraneousValues: true,
+    });
   }
 }

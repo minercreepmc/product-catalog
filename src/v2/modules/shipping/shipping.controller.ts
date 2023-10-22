@@ -19,10 +19,9 @@ import {
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { UserRole } from '@v2/users/constants';
-import { ApiApplication } from '@constants';
+import { ApiApplication, RequestWithUser } from '@constants';
 import { ShippingModel } from './model';
 import { ShippingRO } from './ro';
-import { RequestWithUser } from '@api/http';
 
 @Controller(ApiApplication.SHIPPING.CONTROLLER)
 @UseGuards(JwtGuard)

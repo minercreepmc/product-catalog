@@ -1,5 +1,4 @@
-import { RequestWithUser } from '@api/http';
-import { ApiApplication } from '@constants';
+import { ApiApplication, RequestWithUser } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import {
@@ -38,13 +37,16 @@ export class CartItemController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateCartItemDto,
-  ): Promise<CartItemModel> {
+  ): Promise<CartItemRO> {
     return this.cartItemService.update(id, dto);
   }
 
   @Post(ApiApplication.CART_ITEM.UPSERT)
-  upsert(@Body() dto: UpsertCartItemDto) {
-    return this.cartItemService.upsert(dto);
+  upsert(
+    @Body() dto: UpsertCartItemDto,
+    @Req() req: RequestWithUser,
+  ): Promise<CartItemRO> {
+    return this.cartItemService.upsert(req.user.id, dto);
   }
 
   @Delete(ApiApplication.CART_ITEM.DELETE)

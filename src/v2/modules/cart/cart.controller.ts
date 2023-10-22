@@ -1,12 +1,10 @@
-import { RequestWithUser } from '@api/http';
-import { ApiApplication } from '@constants';
+import { ApiApplication, RequestWithUser } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
   Put,
   Req,
@@ -29,7 +27,10 @@ export class CartController {
   }
 
   @Put(ApiApplication.CART.UPDATE)
-  update(@Req() req: RequestWithUser, @Body() dto: UpdateCartDto) {
+  update(
+    @Req() req: RequestWithUser,
+    @Body() dto: UpdateCartDto,
+  ): Promise<CartModel> {
     return this.cartService.update(req.user.id, dto);
   }
 

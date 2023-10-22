@@ -1,5 +1,4 @@
-import { RequestWithUser } from '@api/http';
-import { ApiApplication } from '@constants';
+import { ApiApplication, RequestWithUser } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import {

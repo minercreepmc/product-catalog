@@ -10,6 +10,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
 import { useContainer } from 'class-validator';
+import 'source-map-support/register';
 
 async function bootstrap() {
   // Create the NestJS app instance

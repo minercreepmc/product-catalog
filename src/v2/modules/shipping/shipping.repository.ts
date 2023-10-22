@@ -64,7 +64,6 @@ export class ShippingRepository {
     `,
       [id],
     );
-    console.log(res.rows[0], id);
 
     return res.rows[0];
   }
@@ -109,7 +108,7 @@ export class ShippingRepository {
   async findByShipper(shipperId: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date, u2.full_name as member_name, u.phone as member_phone, o.total_price, o.id as order_id, o.status,
+      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date, u2.full_name as member_name, u2.phone as member_phone, o.total_price, o.id as order_id, o.status,
       f.fee as fee_price, f.name as fee_name,
       a.location as address, u.full_name as shipper
       FROM shipping s

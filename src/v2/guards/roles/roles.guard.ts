@@ -1,4 +1,4 @@
-import { RequestWithUser } from '@api/http';
+import { RequestWithUser } from '@constants';
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
 

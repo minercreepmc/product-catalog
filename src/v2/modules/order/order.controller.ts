@@ -1,5 +1,4 @@
-import { RequestWithUser } from '@api/http';
-import { ApiApplication } from '@constants';
+import { ApiApplication, RequestWithUser } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import {
@@ -13,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { UpdateOrderDto, CreateOrderDto, GetByMemberDto } from './dto';
+import { UpdateOrderDto, GetByMemberDto } from './dto';
 import { OrderModel } from './model';
 import { OrderService } from './order.service';
 import { CreateOrderRO, OrderRO } from './ro';
@@ -24,11 +23,8 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
   @Post(ApiApplication.ORDER.CREATE)
   @UseGuards(RoleGuard(UserRole.MEMBER))
-  create(
-    @Req() req: RequestWithUser,
-    @Body() dto: CreateOrderDto,
-  ): Promise<CreateOrderRO> {
-    return this.orderService.create(req.user.id, dto);
+  create(@Req() req: RequestWithUser): Promise<CreateOrderRO> {
+    return this.orderService.create(req.user.id);
   }
 
   @Put(ApiApplication.ORDER.UPDATE)

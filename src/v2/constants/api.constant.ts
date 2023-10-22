@@ -20,6 +20,7 @@ export const ApiApplication = {
     GET_ALL_STAFF: 'get-all-staff',
     GET_ONE: ':id',
     UPDATE: ':id',
+    UPDATE_PROFILE: 'update-profile',
   },
   ADDRESS: {
     CONTROLLER: ApiBaseUrl + '/address',
@@ -112,6 +113,10 @@ export const ApiApplication = {
     GET_ALL: '',
     UPDATE: ':id',
     GET_ONE: ':orderId',
+  },
+  ORDER_ITEM: {
+    CONTROLLER: ApiBaseUrl + '/order-item',
+    GET_BY_ORDER_ID: 'get-by-order-id',
   },
   INCOME: {
     CONTROLLER: ApiBaseUrl + '/income',

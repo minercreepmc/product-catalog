@@ -1,16 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateOrderDto, UpdateOrderDto } from './dto';
+import { UpdateOrderDto } from './dto';
 import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
 import { DefaultCatch } from 'catch-decorator-ts';
-import { CreateOrderRO, OrderDetailsRO, OrderItemRO, OrderRO } from './ro';
+import { CreateOrderRO, OrderDetailsRO, OrderRO } from './ro';
 import { plainToInstance } from 'class-transformer';
+import { OrderItemRO } from '@v2/order-item/ro';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(memberId: string, dto: CreateOrderDto): Promise<CreateOrderRO> {
+  async create(memberId: string): Promise<CreateOrderRO> {
     const res = await this.databaseService.runQuery(
       `
         SELECT id FROM cart WHERE user_id = $1
@@ -24,7 +25,6 @@ export class OrderRepository {
       memberId,
       cartId,
       totalPrice,
-      dto,
     );
     const order: CreateOrderRO = {
       ...orderDetails,
@@ -57,10 +57,11 @@ export class OrderRepository {
       `
         SELECT o.updated_at, o.id, o.total_price, o.status, 
         a.location as address_location, f.name as fee_name,
-        f.fee as fee_price
+        f.fee as fee_price, u.full_name as member_name, u.phone as member_phone
         FROM order_details o
         INNER JOIN address a ON a.id = o.address_id
         INNER JOIN shipping_fee f ON f.id = o.fee_id
+        INNER JOIN users u ON u.id = o.member_id
         WHERE o.id = $1;
       `,
       [orderId],
@@ -92,13 +93,20 @@ export class OrderRepository {
   async findByMember(memberId: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT o.updated_at, o.id, o.total_price, o.status, 
-        a.location as address_location, f.name as fee_name,
-        f.fee as fee_price
-        FROM order_details o
-        INNER JOIN address a ON a.id = o.address_id
-        INNER JOIN shipping_fee f ON f.id = o.fee_id
-        WHERE o.member_id = $1;
+        SELECT
+          o.updated_at,
+          o.id,
+          o.total_price,
+          o.status,
+          a.location AS address_location,
+          f.name AS fee_name,
+          f.fee AS fee_price
+      FROM order_details o
+      INNER JOIN address a ON a.id = o.address_id
+      INNER JOIN shipping_fee f ON f.id = o.fee_id
+      INNER JOIN order_item oi ON oi.order_id = o.id
+      WHERE o.member_id = $1
+      GROUP BY o.updated_at, o.id, o.total_price, o.status, a.location, f.name, f.fee;
       `,
       [memberId],
     );
@@ -151,17 +159,14 @@ export class OrderRepository {
     memberId: string,
     cartId: string,
     totalPrice: number,
-    dto: CreateOrderDto,
   ) {
-    const { addressId } = dto;
-
     const res = await this.databaseService.runQuery(
       `
       INSERT INTO order_details (status, member_id, address_id, total_price, fee_id) 
-        VALUES ($1, $2, $3, $4, (SELECT shipping_fee_id FROM cart WHERE id = $5))
+        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3))
       RETURNING *; 
     `,
-      [OrderStatus.PROCESSING, memberId, addressId, totalPrice, cartId],
+      [OrderStatus.PROCESSING, memberId, cartId, totalPrice],
     );
 
     const orderDetails = res.rows[0];

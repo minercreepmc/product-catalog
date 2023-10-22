@@ -1,7 +1,7 @@
 import { GlobalEvents } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CreateOrderDto, UpdateOrderDto } from './dto';
+import { UpdateOrderDto } from './dto';
 import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
 import { OrderRepository } from './order.repository';
 
@@ -11,8 +11,8 @@ export class OrderService {
     private readonly orderRepository: OrderRepository,
     private readonly eventEmitter: EventEmitter2,
   ) {}
-  async create(memberId: string, dto: CreateOrderDto) {
-    const created = await this.orderRepository.create(memberId, dto);
+  async create(memberId: string) {
+    const created = await this.orderRepository.create(memberId);
 
     this.eventEmitter.emit(
       GlobalEvents.ORDER.CREATED,

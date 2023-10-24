@@ -1,4 +1,8 @@
-import { DATABASE_TABLE, SHIPPING_SCHEMA } from '@constants';
+import {
+  DATABASE_TABLE,
+  ORDER_DETAILS_SCHEMA,
+  SHIPPING_SCHEMA,
+} from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
 import {
   IsDateString,
@@ -31,4 +35,13 @@ export class GetByShippingIdDto {
   })
   @IsString()
   shippingId: string;
+}
+
+export class GetByOrderIdDto {
+  @isExistDb({
+    table: DATABASE_TABLE.ORDER_DETAILS,
+    column: ORDER_DETAILS_SCHEMA.ID,
+  })
+  @IsNotEmpty()
+  orderId: string;
 }

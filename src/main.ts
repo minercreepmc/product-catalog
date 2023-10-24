@@ -41,6 +41,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-API-Key'],
     origin: ['http://localhost:4200', 'http://localhost:4201'],
     credentials: true,
+    exposedHeaders: ['Set-Cookie'],
   });
 
   app.use(cookieParser());

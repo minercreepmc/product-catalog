@@ -52,4 +52,18 @@ export class ShippingStatusRepository {
 
     return res.rows;
   }
+
+  async findByOrderId(orderId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT ss.* 
+      FROM shipping_status ss
+      INNER JOIN shipping s ON ss.shipping_id = s.id 
+      WHERE s.order_id = $1 ORDER BY ss.created_at DESC; 
+      `,
+      [orderId],
+    );
+
+    return res.rows;
+  }
 }

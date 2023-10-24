@@ -120,4 +120,44 @@ export class UserRepository {
     }
     return user;
   }
+
+  async countDailyMember() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) as count
+      FROM users
+      WHERE role = $1
+        AND date_trunc('day', created_at) = date_trunc('day', current_date) 
+      `,
+      [UserRole.MEMBER],
+    );
+    return res.rows[0].count;
+  }
+
+  async countMonthlyMember() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) as count
+      FROM users
+      WHERE role = $1
+        AND date_trunc('month', created_at) = date_trunc('month', current_date) 
+      `,
+      [UserRole.MEMBER],
+    );
+    return res.rows[0].count;
+  }
+
+  async countWeeklyMember() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) as count
+      FROM users
+      WHERE role = $1
+        AND date_trunc('week', created_at) = date_trunc('week', current_date) 
+      `,
+      [UserRole.MEMBER],
+    );
+    console.log(res.rows[0].count);
+    return res.rows[0].count;
+  }
 }

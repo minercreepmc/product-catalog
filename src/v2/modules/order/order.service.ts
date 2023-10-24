@@ -48,4 +48,16 @@ export class OrderService {
   getAll() {
     return this.orderRepository.findAll();
   }
+
+  countDaily() {
+    return this.orderRepository.countDaily();
+  }
+
+  countMonthly() {
+    return this.orderRepository.countMonthly();
+  }
+
+  countWeekly() {
+    return this.orderRepository.countWeekly();
+  }
 }

@@ -72,4 +72,22 @@ export class ProductController {
   deleteProducts(@Body() dto: DeleteProductsDto): Promise<string[]> {
     return this.productService.deleteManyByIds(dto.ids);
   }
+
+  @Post(ApiApplication.PRODUCT.GET_DAILY_SOLD)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  getSoldProductDaily() {
+    return this.productService.getSoldProductDaily();
+  }
+
+  @Post(ApiApplication.PRODUCT.GET_MONTHLY_SOLD)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  getSoldProductMonthly() {
+    return this.productService.getSoldProductMonthly();
+  }
+
+  @Post(ApiApplication.PRODUCT.GET_WEEKLY_SOLD)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  getSoldProductWeekly() {
+    return this.productService.getSoldProductWeekly();
+  }
 }

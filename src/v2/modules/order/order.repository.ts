@@ -52,6 +52,42 @@ export class OrderRepository {
     return order;
   }
 
+  async countDaily() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) AS count
+      FROM order_details
+      WHERE date_trunc('day', created_at) = date_trunc('day', current_date)
+      `,
+    );
+
+    return res.rows[0].count;
+  }
+
+  async countMonthly() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) AS count
+      FROM order_details
+      WHERE date_trunc('month', created_at) = date_trunc('month', current_date)
+      `,
+    );
+
+    return res.rows[0].count;
+  }
+
+  async countWeekly() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) AS count
+      FROM order_details
+      WHERE date_trunc('week', created_at) = date_trunc('week', current_date)
+      `,
+    );
+
+    return res.rows[0].count;
+  }
+
   async findOneById(orderId: string) {
     const res = await this.databaseService.runQuery(
       `

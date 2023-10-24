@@ -20,4 +20,8 @@ export class ShippingStatusService {
   findByShippingId(shippingId: string) {
     return this.shippingStatusRepo.findByShippingId(shippingId);
   }
+
+  findByOrderId(orderId: string) {
+    return this.shippingStatusRepo.findByOrderId(orderId);
+  }
 }

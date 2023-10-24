@@ -118,4 +118,16 @@ export class UserService {
     user!.hashed = undefined;
     return user;
   }
+
+  async countDailyMember() {
+    return this.userRepository.countDailyMember();
+  }
+
+  async countMonthlyMember() {
+    return this.userRepository.countMonthlyMember();
+  }
+
+  async countWeeklyMember() {
+    return this.userRepository.countWeeklyMember();
+  }
 }

@@ -28,7 +28,7 @@ export class OrderController {
   }
 
   @Put(ApiApplication.ORDER.UPDATE)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.SHIPPER))
+  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.SHIPPER, UserRole.MEMBER))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateOrderDto,
@@ -59,5 +59,23 @@ export class OrderController {
     } else {
       return this.orderService.getByMember(dto.memberId);
     }
+  }
+
+  @Post(ApiApplication.ORDER.COUNT_DAILY)
+  @UseGuards(RoleGuard(UserRole.ADMIN))
+  countDaily() {
+    return this.orderService.countDaily();
+  }
+
+  @Post(ApiApplication.ORDER.COUNT_MONTHLY)
+  @UseGuards(RoleGuard(UserRole.ADMIN))
+  countMonthly() {
+    return this.orderService.countMonthly();
+  }
+
+  @Post(ApiApplication.ORDER.COUNT_WEEKLY)
+  @UseGuards(RoleGuard(UserRole.ADMIN))
+  countWeekly() {
+    return this.orderService.countWeekly();
   }
 }

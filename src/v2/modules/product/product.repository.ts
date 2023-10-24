@@ -1,6 +1,7 @@
 import { DatabaseService } from '@config/database';
 import { PaginationParams } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { OrderStatus } from '@v2/order/constants';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { CreateProductRO, ProductRO, UpdateProductRO } from './ro';
 
@@ -328,5 +329,44 @@ export class ProductRepository {
     );
 
     return res.rows;
+  }
+
+  async getSoldProductDaily() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) as sold
+      FROM order_details
+      WHERE status = $1
+        AND date_trunc('day', updated_at) = date_trunc('day', current_date)
+    `,
+      [OrderStatus.COMPLETED],
+    );
+    return res.rows[0].sold;
+  }
+
+  async getSoldProductMonthly() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) as sold
+      FROM order_details
+      WHERE status = $1
+        AND date_trunc('month', updated_at) = date_trunc('month', current_date)
+    `,
+      [OrderStatus.COMPLETED],
+    );
+    return res.rows[0].sold;
+  }
+
+  async getSoldProductWeekly() {
+    const res = await this.databaseService.runQuery(
+      `
+      SELECT COUNT(*) as sold
+      FROM order_details
+      WHERE status = $1
+        AND date_trunc('week', updated_at) = date_trunc('week', current_date)
+    `,
+      [OrderStatus.COMPLETED],
+    );
+    return res.rows[0].sold;
   }
 }

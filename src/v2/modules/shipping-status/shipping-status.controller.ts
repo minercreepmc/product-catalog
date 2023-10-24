@@ -13,6 +13,7 @@ import {
 import { UserRole } from '@v2/users/constants';
 import {
   CreateShippingStatusDto,
+  GetByOrderIdDto,
   GetByShippingIdDto,
   UpdateShippingStatusDto,
 } from './dto';
@@ -38,14 +39,18 @@ export class ShippingStatusController {
   @Delete(ApiApplication.SHIPPING_STATUS.DELETE)
   @UseGuards(RoleGuard(UserRole.SHIPPER))
   delete(@Param('id') id: string) {
-    console.log(id);
     return this.shippingStatusService.delete(id);
   }
 
   @Post(ApiApplication.SHIPPING_STATUS.GET_BY_SHIPPING_ID)
   @UseGuards(RoleGuard(UserRole.SHIPPER, UserRole.STAFF))
   getByShippingId(@Body() dto: GetByShippingIdDto) {
-    console.log(dto);
     return this.shippingStatusService.findByShippingId(dto.shippingId);
+  }
+
+  @Post(ApiApplication.SHIPPING_STATUS.GET_BY_ORDER_ID)
+  @UseGuards(RoleGuard(UserRole.MEMBER))
+  getByOrderId(@Body() dto: GetByOrderIdDto) {
+    return this.shippingStatusService.findByOrderId(dto.orderId);
   }
 }

@@ -26,6 +26,18 @@ export class ProductService {
     return this.productRepo.findAllWithImages(params);
   }
 
+  getSoldProductDaily() {
+    return this.productRepo.getSoldProductDaily();
+  }
+
+  getSoldProductMonthly() {
+    return this.productRepo.getSoldProductMonthly();
+  }
+
+  getSoldProductWeekly() {
+    return this.productRepo.getSoldProductWeekly();
+  }
+
   deleteOneById(id: string) {
     return this.productRepo.deleteOneById(id);
   }

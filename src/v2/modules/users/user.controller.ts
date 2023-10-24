@@ -108,4 +108,22 @@ export class UserController {
   ): Promise<UserModel> {
     return this.userService.update(req.user.id, dto);
   }
+
+  @Post(ApiApplication.USER.COUNT_DAILY_MEMBER)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  countDailyMember() {
+    return this.userService.countDailyMember();
+  }
+
+  @Post(ApiApplication.USER.COUNT_MONTHLY_MEMBER)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  countMonthlyMember() {
+    return this.userService.countMonthlyMember();
+  }
+
+  @Post(ApiApplication.USER.COUNT_WEEKLY_MEMBER)
+  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  countWeeklyMember() {
+    return this.userService.countWeeklyMember();
+  }
 }

@@ -8,7 +8,9 @@ export class CreateCategoryDto {
     column: CATEGORY_SCHEMA.NAME,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Tên danh mục không được để trống',
+  })
   name: string;
 
   @IsString()

@@ -1,8 +1,4 @@
-import {
-  DATABASE_TABLE,
-  DISCOUNT_SCHEMA,
-  PRODUCT_SCHEMA,
-} from '@constants';
+import { DATABASE_TABLE, DISCOUNT_SCHEMA, PRODUCT_SCHEMA } from '@constants';
 import { isExistDb, isUniqueDb } from '@youba/nestjs-dbvalidator';
 import { Transform } from 'class-transformer';
 import {
@@ -20,12 +16,16 @@ export class CreateProductDto {
     column: PRODUCT_SCHEMA.NAME,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Tên không được để trống',
+  })
   name: string;
 
   @IsNumber()
   @Transform(({ value }) => Number(value))
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Giá không được để trống',
+  })
   price: number;
 
   @IsString()
@@ -63,12 +63,19 @@ export class UpdateProductDto {
   @isUniqueDb({
     table: DATABASE_TABLE.PRODUCT,
     column: PRODUCT_SCHEMA.NAME,
+    message: 'Tên hàng hóa đã tồn tại',
   })
   @IsString()
+  @IsNotEmpty({
+    message: 'Tên không được để trống',
+  })
   @IsOptional()
   name: string;
 
   @IsNumber()
+  @IsNotEmpty({
+    message: 'Giá không được để trống',
+  })
   @Transform(({ value }) => Number(value))
   @IsOptional()
   price: number;

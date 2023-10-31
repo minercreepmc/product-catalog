@@ -6,6 +6,7 @@ export class UpdateUserDto {
   @isUniqueDb({
     table: DATABASE_TABLE.USERS,
     column: USER_SCHEMA.USERNAME,
+    message: 'Tên người dùng đã tồn tại',
   })
   @IsString()
   @IsOptional()
@@ -20,6 +21,11 @@ export class UpdateUserDto {
   phone?: string;
 
   @IsString()
+  @isUniqueDb({
+    table: DATABASE_TABLE.USERS,
+    column: USER_SCHEMA.EMAIL,
+    message: 'Email đã tồn tại',
+  })
   @IsOptional()
   email?: string;
 }

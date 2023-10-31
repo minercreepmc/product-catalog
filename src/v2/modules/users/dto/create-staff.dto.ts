@@ -6,12 +6,18 @@ export class CreateStaffDto {
   @isUniqueDb({
     table: DATABASE_TABLE.USERS,
     column: USER_SCHEMA.USERNAME,
+    message: 'Tên người dùng đã tồn tại',
   })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Tên người dùng không được trống',
+  })
   username: string;
 
   @IsString()
+  @IsNotEmpty({
+    message: 'Mật khẩu không được trống',
+  })
   password: string;
 
   @IsString()
@@ -23,6 +29,11 @@ export class CreateStaffDto {
   phone?: string;
 
   @IsString()
+  @isUniqueDb({
+    table: DATABASE_TABLE.USERS,
+    column: USER_SCHEMA.EMAIL,
+    message: 'Email đã tồn tại',
+  })
   @IsOptional()
   email?: string;
 }

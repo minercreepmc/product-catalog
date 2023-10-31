@@ -74,6 +74,8 @@ export enum USER_SCHEMA {
   PASSWORD = 'password',
   FULL_NAME = 'full_name',
   ROLE = 'role',
+  EMAIL = 'email',
+  PHONE = 'phone',
 }
 
 export enum ORDER_DETAILS_SCHEMA {

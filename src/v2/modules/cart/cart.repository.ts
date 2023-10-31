@@ -82,18 +82,22 @@ export class CartRepository {
   }
 
   async clearCart(cartId: string) {
-    const res = await this.databaseService.runQuery(
+    await this.databaseService.runQuery(
       `
         DELETE FROM cart_item 
         WHERE cart_id = $1;
-  
+      `,
+      [cartId],
+    );
+
+    await this.databaseService.runQuery(
+      `
         UPDATE cart
         SET shipping_fee_id = null
         WHERE id = $1;
       `,
       [cartId],
     );
-    return res.rows;
   }
 
   @DefaultCatch((err) => {
@@ -118,5 +122,16 @@ export class CartRepository {
     console.log(res.rows[0].sum);
 
     return res.rows[0].sum ? res.rows[0].sum : 0;
+  }
+
+  async getIdByUserId(userId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT id FROM cart WHERE user_id = $1;
+      `,
+      [userId],
+    );
+
+    return res.rows[0].id;
   }
 }

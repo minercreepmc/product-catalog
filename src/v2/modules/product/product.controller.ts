@@ -40,7 +40,6 @@ export class ProductController {
     @Param('id') id: string,
     @Body() dto: UpdateProductDto,
   ): Promise<UpdateProductRO> {
-    console.log(dto);
     return this.productService.update(id, dto);
   }
 

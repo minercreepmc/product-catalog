@@ -1,4 +1,9 @@
-import { DATABASE_TABLE, DISCOUNT_SCHEMA, PRODUCT_SCHEMA } from '@constants';
+import {
+  CATEGORY_SCHEMA,
+  DATABASE_TABLE,
+  DISCOUNT_SCHEMA,
+  PRODUCT_SCHEMA,
+} from '@constants';
 import { isExistDb, isUniqueDb } from '@youba/nestjs-dbvalidator';
 import { Transform } from 'class-transformer';
 import {

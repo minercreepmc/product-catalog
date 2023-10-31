@@ -8,11 +8,16 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { UpdateOrderDto, GetByMemberDto } from './dto';
+import {
+  UpdateOrderDto,
+  GetByMemberDto,
+  OrderGetByMemberStatusQueryDto,
+} from './dto';
 import { OrderModel } from './model';
 import { OrderService } from './order.service';
 import { CreateOrderRO, OrderRO } from './ro';
@@ -53,11 +58,12 @@ export class OrderController {
   getByMember(
     @Req() req: RequestWithUser,
     @Body() dto: GetByMemberDto,
+    @Query() query: OrderGetByMemberStatusQueryDto,
   ): Promise<OrderRO[]> {
     if (req.user) {
-      return this.orderService.getByMember(req.user.id);
+      return this.orderService.getByMember(req.user.id, query);
     } else {
-      return this.orderService.getByMember(dto.memberId);
+      return this.orderService.getByMember(dto.memberId, query);
     }
   }
 

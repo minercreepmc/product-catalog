@@ -18,3 +18,10 @@ export class GetByMemberDto {
   })
   memberId: string;
 }
+
+export class OrderGetByMemberStatusQueryDto {
+  @IsString()
+  @IsEnum(OrderStatus)
+  @IsOptional()
+  status?: OrderStatus;
+}

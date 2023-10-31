@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
       created_at timestamp without time zone not null default now(),
       updated_at timestamp without time zone not null default now(),
       url varchar(255) not null,
-      product_id varchar(255) REFERENCES product(id)
+      product_id varchar(255) REFERENCES product(id) ON DELETE CASCADE
     );
   `);
 }

@@ -58,6 +58,7 @@ export const ApiApplication = {
     DELETE: ':id',
     DELETE_MANY: 'delete-many',
     GET_ALL: '',
+    GET_ALL_BY_CATEGORY: 'get-all-by-category',
     GET_ALL_WITH_IMAGES: 'get-all-with-images',
     GET_ONE: ':id',
     GET_DAILY_SOLD: 'get-daily-sold',
@@ -72,6 +73,10 @@ export const ApiApplication = {
     GET_ALL: '',
     GET_ALL_WITH_PRODUCT_COUNT: 'get-all-with-product-count',
     GET_ONE: ':id',
+  },
+  PRODUCT_CATEGORY: {
+    CONTROLLER: ApiBaseUrl + '/product-category',
+    GET_PRODUCTS_BY_CATEGORY: 'get-products-by-category',
   },
   DISCOUNT: {
     CONTROLLER: ApiBaseUrl + '/discount',

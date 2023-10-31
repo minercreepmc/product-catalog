@@ -20,9 +20,12 @@ export class ShippingFeeRepository {
   async update(id: string, dto: CreateShippingFeeDto) {
     const res = await this.databaseService.runQuery(
       `
-      UPDATE shipping_fee SET fee = $1 WHERE id = $2 RETURNING *;
+      UPDATE shipping_fee 
+      SET fee = COALESCE($2, fee),
+          name = COALESCE($3, name)
+      WHERE id = $1 RETURNING *;
     `,
-      [dto.fee, id],
+      [id, dto.fee, dto.name],
     );
 
     return res.rows[0];

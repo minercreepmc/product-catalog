@@ -2,6 +2,7 @@ import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { ProductRepository } from './product.repository';
+import { UpdateProductRO } from './ro';
 
 @Injectable()
 export class ProductService {
@@ -10,8 +11,29 @@ export class ProductService {
     return this.productRepo.create(dto);
   }
 
-  update(id: string, dto: UpdateProductDto) {
-    return this.productRepo.updateOneById(id, dto);
+  async update(id: string, dto: UpdateProductDto) {
+    const { categoryIds, discountId } = dto;
+    const updated = await this.productRepo.updateOneById(id, dto);
+    const updateRO: UpdateProductRO = {
+      ...updated,
+      category_ids: [],
+      discount_id: '',
+    };
+    if (categoryIds && categoryIds.length >= 0) {
+      updateRO.category_ids = await this.productRepo.updateCategoryIds({
+        id,
+        categoryIds,
+      });
+    }
+
+    if (discountId || discountId === null) {
+      updateRO.discount_id = await this.productRepo.updateDiscount({
+        id,
+        discountId,
+      });
+    }
+
+    return updateRO;
   }
 
   getOne(id: string) {

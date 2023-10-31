@@ -1,5 +1,6 @@
 import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
+import { DefaultCatch } from 'catch-decorator-ts';
 
 @Injectable()
 export class OrderItemRepository {
@@ -23,5 +24,32 @@ export class OrderItemRepository {
       [orderId],
     );
     return res.rows;
+  }
+
+  @DefaultCatch((err) => {
+    console.log('Cannot create order items', err);
+    throw err;
+  })
+  async createOrderItems(orderId: string, cartId: string): Promise<string[]> {
+    const res = await this.databaseService.runQuery(
+      `
+        INSERT INTO order_item (order_id, price, amount, product_id)
+          SELECT $2, p.price - (p.price * COALESCE(d.percentage, 0) / 100), i.amount, i.product_id 
+          FROM cart_item i
+          INNER JOIN product p ON p.id = i.product_id
+          LEFT JOIN discount d ON d.id = p.discount_id
+          WHERE i.cart_id = $1
+        RETURNING order_item.id;
+      `,
+      [cartId, orderId],
+    );
+
+    const orderItems = res.rows;
+
+    if (orderItems.length === 0) {
+      throw new Error('Cannot create order items');
+    }
+
+    return orderItems;
   }
 }

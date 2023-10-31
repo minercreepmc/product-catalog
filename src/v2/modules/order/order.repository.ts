@@ -3,7 +3,7 @@ import { UpdateOrderDto } from './dto';
 import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
 import { DefaultCatch } from 'catch-decorator-ts';
-import { CreateOrderRO, OrderDetailsRO, OrderRO } from './ro';
+import { OrderDetailsRO, OrderRO } from './ro';
 import { plainToInstance } from 'class-transformer';
 import { OrderItemRO } from '@v2/order-item/ro';
 
@@ -11,28 +11,27 @@ import { OrderItemRO } from '@v2/order-item/ro';
 export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(memberId: string): Promise<CreateOrderRO> {
+  @DefaultCatch((err) => {
+    console.log('Cannot create order details', err);
+    throw err;
+  })
+  async create(memberId: string, cartId: string, totalPrice: number) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id FROM cart WHERE user_id = $1
-      `,
-      [memberId],
+      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id) 
+        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3))
+      RETURNING *; 
+    `,
+      [OrderStatus.PROCESSING, memberId, cartId, totalPrice],
     );
 
-    const cartId = res.rows[0].id;
-    const totalPrice = await this.getTotalPrice(cartId);
-    const orderDetails = await this.createOrderDetails(
-      memberId,
-      cartId,
-      totalPrice,
-    );
-    const order: CreateOrderRO = {
-      ...orderDetails,
-      itemIds: [],
-    };
+    const orderDetails = res.rows[0];
 
-    order.itemIds = await this.createOrderItems(order.id, cartId);
-    return { ...order, cartId };
+    if (!orderDetails) {
+      throw new Error('Cannot create order details');
+    }
+
+    return orderDetails;
   }
 
   async update(id: string, dto: UpdateOrderDto) {
@@ -57,7 +56,7 @@ export class OrderRepository {
       `
       SELECT COUNT(*) AS count
       FROM order_details
-      WHERE date_trunc('day', created_at) = date_trunc('day', current_date)
+      WHERE date_trunc('day', ) = date_trunc('day', current_date)
       `,
     );
 
@@ -126,7 +125,8 @@ export class OrderRepository {
     return order;
   }
 
-  async findByMember(memberId: string) {
+  async findByMemberAndStatus(memberId: string, status?: OrderStatus) {
+    console.log(status);
     const res = await this.databaseService.runQuery(
       `
         SELECT
@@ -141,11 +141,14 @@ export class OrderRepository {
       INNER JOIN address a ON a.id = o.address_id
       INNER JOIN shipping_fee f ON f.id = o.fee_id
       INNER JOIN order_item oi ON oi.order_id = o.id
-      WHERE o.member_id = $1
+      WHERE o.member_id = $1 AND 
+(o.status = $2 OR ($2 IS NULL AND o.status != $3))
       GROUP BY o.updated_at, o.id, o.total_price, o.status, a.location, f.name, f.fee;
       `,
-      [memberId],
+      [memberId, status, OrderStatus.CANCELED],
     );
+
+    console.log(res.rows);
 
     return res.rows;
   }
@@ -185,62 +188,6 @@ export class OrderRepository {
     );
 
     return res.rows[0].sum;
-  }
-
-  @DefaultCatch((err) => {
-    console.log('Cannot create order details', err);
-    throw err;
-  })
-  private async createOrderDetails(
-    memberId: string,
-    cartId: string,
-    totalPrice: number,
-  ) {
-    const res = await this.databaseService.runQuery(
-      `
-      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id) 
-        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3))
-      RETURNING *; 
-    `,
-      [OrderStatus.PROCESSING, memberId, cartId, totalPrice],
-    );
-
-    const orderDetails = res.rows[0];
-
-    if (!orderDetails) {
-      throw new Error('Cannot create order details');
-    }
-
-    return orderDetails;
-  }
-
-  @DefaultCatch((err) => {
-    console.log('Cannot create order items', err);
-    throw err;
-  })
-  private async createOrderItems(
-    orderId: string,
-    cartId: string,
-  ): Promise<string[]> {
-    const res = await this.databaseService.runQuery(
-      `
-        INSERT INTO order_item (order_id, price, amount, product_id)
-          SELECT $1, p.price, i.amount, i.product_id 
-          FROM cart_item i
-          INNER JOIN product p ON p.id = i.product_id
-          WHERE i.cart_id = $2
-        RETURNING order_item.id;
-      `,
-      [orderId, cartId],
-    );
-
-    const orderItems = res.rows;
-
-    if (orderItems.length === 0) {
-      throw new Error('Cannot create order items');
-    }
-
-    return orderItems;
   }
 
   private async getOrderItems(orderId: string): Promise<OrderItemRO[]> {

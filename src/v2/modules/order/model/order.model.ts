@@ -5,15 +5,6 @@ export class OrderModel {
   fee_id: string;
   member_id: string;
   address_id: string;
-
-  constructor(dto: OrderModel) {
-    this.id = dto.id;
-    this.status = dto.status;
-    this.total_price = dto.total_price;
-    this.fee_id = dto.fee_id;
-    this.member_id = dto.member_id;
-    this.address_id = dto.address_id;
-  }
 }
 
 export class OrderItemModel {

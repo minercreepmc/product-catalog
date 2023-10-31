@@ -26,6 +26,7 @@ import { IncomeModule } from '@v2/income';
 import { ShippingStatusModule } from '@v2/shipping-status';
 import { OrderUpdatedModule } from './v2/listeners/order-updated';
 import { OrderItemModule } from '@v2/order-item';
+import { ProductCategoryModule } from '@v2/product-category';
 
 const modules = [
   UserModule,
@@ -44,6 +45,7 @@ const modules = [
   IncomeModule,
   ShippingStatusModule,
   OrderItemModule,
+  ProductCategoryModule,
 ];
 
 const listeners = [

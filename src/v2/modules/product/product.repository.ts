@@ -3,6 +3,7 @@ import { PaginationParams } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrderStatus } from '@v2/order/constants';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { ProductModel } from './model';
 import { CreateProductRO, ProductRO, UpdateProductRO } from './ro';
 
 export interface UpdateCategoryForProduct {
@@ -64,7 +65,7 @@ export class ProductRepository {
     return product;
   }
 
-  private async updateCategoryIds(dto: UpdateCategoryForProduct) {
+  async updateCategoryIds(dto: UpdateCategoryForProduct) {
     await this.databaseService.runQuery(
       `
       -- First, remove existing associations except for the ones in the new list
@@ -80,6 +81,7 @@ export class ProductRepository {
       -- Next, insert the new list of category IDs
       INSERT INTO product_category (product_id, category_id)
       SELECT $1, unnest($2::varchar[])
+       ON CONFLICT (product_id, category_id) DO NOTHING
       RETURNING category_id;
     `,
       [dto.id, dto.categoryIds],
@@ -134,9 +136,11 @@ export class ProductRepository {
     return res.rows[0];
   }
 
-  async updateOneById(id: string, dto: UpdateProductDto) {
-    const { discountId, name, price, sold, description, categoryIds } = dto;
-    console.log(dto);
+  async updateOneById(
+    id: string,
+    dto: UpdateProductDto,
+  ): Promise<ProductModel> {
+    const { discountId, name, price, sold, description } = dto;
     const res = await this.databaseService.runQuery(
       `
         UPDATE product
@@ -152,26 +156,10 @@ export class ProductRepository {
       `,
       [id, name, price, description, discountId, sold],
     );
-    const updated: UpdateProductRO = res.rows[0];
-
-    if (categoryIds && categoryIds.length >= 0) {
-      updated.category_ids = await this.updateCategoryIds({
-        id,
-        categoryIds,
-      });
-    }
-
-    if (discountId || discountId === null) {
-      updated.discount_id = await this.updateDiscount({
-        id,
-        discountId,
-      });
-    }
-
-    return updated;
+    return res.rows[0];
   }
 
-  private async updateDiscount(dto: UpdateDiscountForProduct) {
+  async updateDiscount(dto: UpdateDiscountForProduct) {
     const { discountId, id } = dto;
     if (discountId) {
       const res = await this.databaseService.runQuery(
@@ -257,7 +245,7 @@ export class ProductRepository {
     const res = await this.databaseService.runQuery(
       `
         SELECT product.*, to_json(discount) as discount, 
-            COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories,
+            COALESCE(json_agg(DISTINCT category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories,
             COALESCE(json_agg(product_image.url) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls
         FROM product
         LEFT JOIN discount ON product.discount_id = discount.id

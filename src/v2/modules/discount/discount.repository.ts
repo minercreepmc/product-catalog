@@ -28,20 +28,6 @@ export class DiscountRepository {
     return res.rows[0];
   }
 
-  async deleteManyByIds(ids: string[]) {
-    const deleteds: any = [];
-
-    for (const id of ids) {
-      const deleted = await this.deleteOneById(id);
-      if (deleted) {
-        deleteds.push(deleted);
-      } else {
-        break;
-      }
-    }
-
-    return deleteds ? deleteds : [];
-  }
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `

@@ -44,6 +44,8 @@
       "@base/*": ["./utils/base/*"],
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
+      "@util": ["./src/v2/utils"],
+      "@util/*": ["./src/v2/utils/*"],
       "@shared": ["./shared"],
       "@shared/*": ["./shared/*"]
     }

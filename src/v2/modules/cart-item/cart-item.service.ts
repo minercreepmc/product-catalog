@@ -15,12 +15,14 @@ export class CartItemService {
     return this.cartItemRepo.create(userId, dto);
   }
 
-  update(id: string, dto: UpdateCartItemDto) {
-    return this.cartItemRepo.update(id, dto);
+  async update(cartItemId: string, dto: UpdateCartItemDto) {
+    await this.cartItemRepo.update(cartItemId, dto);
+    return this.cartItemRepo.getDetailByCartItemId(cartItemId);
   }
 
-  upsert(userId: string, dto: UpsertCartItemDto) {
-    return this.cartItemRepo.upsert(userId, dto);
+  async upsert(userId: string, dto: UpsertCartItemDto) {
+    const productId = await this.cartItemRepo.upsert(userId, dto);
+    return this.cartItemRepo.getDetailByUserIdAndProductId(userId, productId);
   }
 
   delete(id: string) {

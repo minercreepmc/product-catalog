@@ -4,7 +4,7 @@
     "project": "tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "@ts-safeql/eslint-plugin"],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
@@ -33,23 +33,6 @@
       "error",
       {
         "endOfLine": "auto"
-      }
-    ],
-    "@ts-safeql/check-sql": [
-      "error",
-      {
-        "connections": [
-          {
-            // The URL of the database:
-            "databaseUrl": "postgres://username:password@postgres:5432/product-catalog-database",
-            "targets": [
-              {
-                // Check all of the queries that are used with the `sql` tag:
-                "wrapper": "this.databaseService.runQuery"
-              }
-            ]
-          }
-        ]
       }
     ]
   }

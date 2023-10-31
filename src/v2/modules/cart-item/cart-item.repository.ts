@@ -36,14 +36,11 @@ export class CartItemRepository {
       `,
       [amount, cartItemId],
     );
-
-    return this.getDetailByCartItemId(cartItemId);
   }
 
   async upsert(userId: string, dto: UpsertCartItemDto) {
     const { productId, amount } = dto;
-
-    const upsertRes = await this.databaseService.runQuery(
+    const res = await this.databaseService.runQuery(
       `
         INSERT INTO cart_item (product_id, amount, cart_id) 
         VALUES ($1, $2, (SELECT id FROM cart WHERE user_id = $3)) 
@@ -53,8 +50,7 @@ export class CartItemRepository {
       `,
       [productId, amount, userId],
     );
-
-    return this.getDetailByUserId(userId, upsertRes.rows[0].product_id);
+    return res.rows[0].product_id;
   }
 
   async delete(cartItemId: string) {
@@ -92,7 +88,7 @@ export class CartItemRepository {
     return res.rows;
   }
 
-  private async getDetailByUserId(userId: string, productId: string) {
+  async getDetailByUserIdAndProductId(userId: string, productId: string) {
     const res = await this.databaseService.runQuery(
       `
         SELECT 
@@ -118,7 +114,7 @@ export class CartItemRepository {
     });
   }
 
-  private async getDetailByCartItemId(cartItemId: string) {
+  async getDetailByCartItemId(cartItemId: string) {
     const res = await this.databaseService.runQuery(
       `
         SELECT 

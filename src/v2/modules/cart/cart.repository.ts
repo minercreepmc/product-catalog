@@ -1,8 +1,7 @@
 import { DatabaseService } from '@config/database';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DefaultCatch } from 'catch-decorator-ts';
 import { UpdateCartDto } from './dto';
-import { CartRO } from './ro';
 
 @Injectable()
 export class CartRepository {
@@ -48,15 +47,7 @@ export class CartRepository {
       [userId],
     );
 
-    const cart: CartRO = res.rows[0];
-
-    if (!cart) {
-      throw new NotFoundException('Cart not found');
-    }
-
-    cart.items = await this.getItems(cart.id);
-    cart.total_price = await this.getTotalPrice(cart.id);
-    return cart;
+    return res.rows[0];
   }
 
   async getItems(cartId: string) {
@@ -118,9 +109,6 @@ export class CartRepository {
     `,
       [cartId],
     );
-
-    console.log(res.rows[0].sum);
-
     return res.rows[0].sum ? res.rows[0].sum : 0;
   }
 

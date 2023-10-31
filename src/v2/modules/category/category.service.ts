@@ -1,5 +1,5 @@
 import { PaginationParams } from '@constants';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoryRepository } from './category.repository';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
@@ -10,12 +10,28 @@ export class CategoryService {
     return this.categoryRepo.create(dto);
   }
 
-  update(id: string, dto: UpdateCategoryDto) {
-    return this.categoryRepo.updateOneById(id, dto);
+  async update(id: string, dto: UpdateCategoryDto) {
+    const { productIds } = dto;
+    const category = await this.categoryRepo.updateOneById(id, dto);
+
+    if (productIds) {
+      const result = await this.categoryRepo.updateProductsFromCategory(
+        category.id,
+        productIds,
+      );
+      const productsUpdated = result ? result : { productIds };
+      category.productIds = productsUpdated?.productIds;
+    }
+
+    return category;
   }
 
-  getOne(id: string) {
-    return this.categoryRepo.findOneById(id);
+  async getOne(id: string) {
+    const category = await this.categoryRepo.findOneById(id);
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+    return category;
   }
 
   getAll(params: PaginationParams) {
@@ -30,7 +46,18 @@ export class CategoryService {
     return this.categoryRepo.deleteOneById(id);
   }
 
-  deleteMany(ids: string[]) {
-    return this.categoryRepo.deleteManyByIds(ids);
+  async deleteMany(ids: string[]) {
+    const deleteds: string[] = [];
+
+    for (const id of ids) {
+      const deleted = await this.categoryRepo.deleteOneById(id);
+      if (deleted) {
+        deleteds.push(deleted);
+      } else {
+        break;
+      }
+    }
+
+    return deleteds ? deleteds : [];
   }
 }

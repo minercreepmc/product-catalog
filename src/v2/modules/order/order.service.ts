@@ -1,5 +1,5 @@
 import { GlobalEvents } from '@constants';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CartRepository } from '@v2/cart';
 import { OrderItemRepository } from '@v2/order-item/order-item.repository';
@@ -32,6 +32,7 @@ export class OrderService {
     private readonly orderItemRepository: OrderItemRepository,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
   async create(memberId: string) {
     const cartId = await this.cartRepository.getIdByUserId(memberId);
     const totalPrice = await this.cartRepository.getTotalPrice(cartId);
@@ -41,11 +42,14 @@ export class OrderService {
       totalPrice,
     );
 
+    if (!created) {
+      throw new Error('Cannot create order details');
+    }
+
     created.items = await this.orderItemRepository.createOrderItems(
       created.id,
       cartId,
     );
-    console.log(created);
 
     const order = plainToInstance(
       CreateOrderRO,
@@ -68,6 +72,10 @@ export class OrderService {
   async update(id: string, dto: UpdateOrderDto) {
     const updated = await this.orderRepository.update(id, dto);
 
+    if (!updated) {
+      throw new NotFoundException('Order not found');
+    }
+
     this.eventEmitter.emit(
       GlobalEvents.ORDER.UPDATED,
       new OrderUpdatedEvent({
@@ -79,8 +87,28 @@ export class OrderService {
     return updated;
   }
 
-  getOne(orderId: string) {
-    return this.orderRepository.findOneById(orderId);
+  async getOne(orderId: string) {
+    const orderDetails = await this.orderRepository.findOneById(orderId);
+
+    if (!orderDetails) {
+      throw new NotFoundException('Order not found');
+    }
+
+    const order: OrderDetailsRO = {
+      id: orderDetails.id,
+      total_price: orderDetails.total_price,
+      status: orderDetails.status,
+      fee_price: orderDetails.fee_price,
+      fee_name: orderDetails.fee_name,
+      member_name: orderDetails.member_name,
+      member_phone: orderDetails.member_phone,
+      address_location: orderDetails.address_location,
+      updated_at: orderDetails.updated_at,
+      items: [],
+    };
+
+    order.items = await this.orderItemRepository.getByOrderId(order.id);
+    return order;
   }
 
   getByMember(memberId: string, query: OrderGetByMemberStatusQueryDto) {

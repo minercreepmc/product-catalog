@@ -1,20 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UpdateOrderDto } from './dto';
 import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
 import { DefaultCatch } from 'catch-decorator-ts';
-import { OrderDetailsRO, OrderRO } from './ro';
-import { plainToInstance } from 'class-transformer';
-import { OrderItemRO } from '@v2/order-item/ro';
+import { handleError } from '@util';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  @DefaultCatch((err) => {
-    console.log('Cannot create order details', err);
-    throw err;
-  })
+  @DefaultCatch((e) => handleError(e, logger))
   async create(memberId: string, cartId: string, totalPrice: number) {
     const res = await this.databaseService.runQuery(
       `
@@ -24,16 +19,10 @@ export class OrderRepository {
     `,
       [OrderStatus.PROCESSING, memberId, cartId, totalPrice],
     );
-
-    const orderDetails = res.rows[0];
-
-    if (!orderDetails) {
-      throw new Error('Cannot create order details');
-    }
-
-    return orderDetails;
+    return res.rows[0];
   }
 
+  @DefaultCatch((e) => handleError(e, logger))
   async update(id: string, dto: UpdateOrderDto) {
     const res = await this.databaseService.runQuery(
       `
@@ -41,16 +30,10 @@ export class OrderRepository {
       `,
       [dto.status, id],
     );
-
-    const order = res.rows[0];
-
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    }
-
-    return order;
+    return res.rows[0];
   }
 
+  @DefaultCatch((e) => handleError(e, logger))
   async countDaily() {
     const res = await this.databaseService.runQuery(
       `
@@ -63,6 +46,7 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
+  @DefaultCatch((e) => handleError(e, logger))
   async countMonthly() {
     const res = await this.databaseService.runQuery(
       `
@@ -75,6 +59,7 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
+  @DefaultCatch((e) => handleError(e, logger))
   async countWeekly() {
     const res = await this.databaseService.runQuery(
       `
@@ -87,6 +72,7 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
+  @DefaultCatch((e) => handleError(e, logger))
   async findOneById(orderId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -101,32 +87,11 @@ export class OrderRepository {
       `,
       [orderId],
     );
-
-    const orderDetails = plainToInstance(OrderRO, res.rows[0]);
-
-    if (!orderDetails) {
-      throw new NotFoundException('Order not found');
-    }
-
-    const order: OrderDetailsRO = {
-      id: orderDetails.id,
-      total_price: orderDetails.total_price,
-      status: orderDetails.status,
-      fee_price: orderDetails.fee_price,
-      fee_name: orderDetails.fee_name,
-      member_name: orderDetails.member_name,
-      member_phone: orderDetails.member_phone,
-      address_location: orderDetails.address_location,
-      updated_at: orderDetails.updated_at,
-      items: [],
-    };
-
-    order.items = await this.getOrderItems(order.id);
-    return order;
+    return res.rows[0];
   }
 
+  @DefaultCatch((e) => handleError(e, logger))
   async findByMemberAndStatus(memberId: string, status?: OrderStatus) {
-    console.log(status);
     const res = await this.databaseService.runQuery(
       `
         SELECT
@@ -147,12 +112,10 @@ export class OrderRepository {
       `,
       [memberId, status, OrderStatus.CANCELED],
     );
-
-    console.log(res.rows);
-
     return res.rows;
   }
 
+  @DefaultCatch((e) => handleError(e, logger))
   async findAll() {
     const res = await this.databaseService.runQuery(
       `
@@ -165,46 +128,8 @@ export class OrderRepository {
         INNER JOIN users u ON u.id = o.member_id
       `,
     );
-
-    return res.rows;
-  }
-
-  @DefaultCatch((err) => {
-    console.log('Cannot get total price', err);
-    throw err;
-  })
-  private async getTotalPrice(cartId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT SUM(f.fee + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
-      FROM cart_item i
-      INNER JOIN cart c ON c.id = $1
-      INNER JOIN shipping_fee f ON c.shipping_fee_id = f.id
-      INNER JOIN product p ON p.id = i.product_id
-      LEFT JOIN discount d ON d.id = p.discount_id
-      WHERE i.cart_id = $1;
-    `,
-      [cartId],
-    );
-
-    return res.rows[0].sum;
-  }
-
-  private async getOrderItems(orderId: string): Promise<OrderItemRO[]> {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT i.id, i.price, i.amount, p.id, p.name, p.description, c.id, c.name as category_name, json_agg(pi.url) as image_urls
-        FROM order_item i
-        INNER JOIN product p ON p.id = i.product_id
-        LEFT JOIN product_category pc ON pc.product_id = p.id
-        LEFT JOIN product_image pi ON pi.product_id = p.id
-        LEFT JOIN category c ON c.id = pc.category_id
-        WHERE i.order_id = $1
-        GROUP BY i.id, p.id, c.id
-      `,
-      [orderId],
-    );
-
     return res.rows;
   }
 }
+
+const logger = new Logger(OrderRepository.name);

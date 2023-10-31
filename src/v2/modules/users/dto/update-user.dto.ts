@@ -6,6 +6,7 @@ export class UpdateUserDto {
   @isUniqueDb({
     table: DATABASE_TABLE.USERS,
     column: USER_SCHEMA.USERNAME,
+    message: 'Tên người dùng đã tồn tại',
   })
   @IsString()
   @IsOptional()

@@ -1,4 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { GlobalErrors } from '@constants';
+import { Injectable } from '@nestjs/common';
+import { formatError } from '@src/v2/utils';
 import { CartRepository } from './cart.repository';
 import { UpdateCartDto } from './dto';
 
@@ -7,13 +9,16 @@ export class CartService {
   constructor(private readonly cartRepository: CartRepository) {}
   create(userId: string) {
     return this.cartRepository.create(userId);
-
   }
 
   async getByUserId(userId: string) {
     const cart = await this.cartRepository.getByUserId(userId);
     if (!cart) {
-      throw new NotFoundException('Cart not found');
+      formatError(
+        GlobalErrors.CART.NOT_FOUND.status,
+        GlobalErrors.CART.NOT_FOUND.code,
+        GlobalErrors.CART.NOT_FOUND.message,
+      );
     }
 
     cart.items = await this.cartRepository.getItems(cart.id);

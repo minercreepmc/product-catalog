@@ -27,6 +27,11 @@ export class CreateAdminDto {
   fullName? = 'Default User';
 
   @IsString()
+  @isUniqueDb({
+    table: DATABASE_TABLE.USERS,
+    column: USER_SCHEMA.EMAIL,
+    message: 'Email đã tồn tại',
+  })
   @IsOptional()
   email?: string;
 

@@ -39,7 +39,7 @@ export class OrderRepository {
       `
       SELECT COUNT(*) AS count
       FROM order_details
-      WHERE date_trunc('day', ) = date_trunc('day', current_date)
+      WHERE date_trunc('day', created_at) = date_trunc('day', current_date)
       `,
     );
 

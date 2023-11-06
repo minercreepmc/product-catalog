@@ -21,6 +21,11 @@ export class UpdateUserDto {
   phone?: string;
 
   @IsString()
+  @isUniqueDb({
+    table: DATABASE_TABLE.USERS,
+    column: USER_SCHEMA.EMAIL,
+    message: 'Email đã tồn tại',
+  })
   @IsOptional()
   email?: string;
 }

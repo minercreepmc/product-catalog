@@ -27,6 +27,7 @@ import { ShippingStatusModule } from '@v2/shipping-status';
 import { OrderUpdatedModule } from './v2/listeners/order-updated';
 import { OrderItemModule } from '@v2/order-item';
 import { ProductCategoryModule } from '@v2/product-category';
+import { ShippingMethodModule } from '@v2/shipping-method';
 
 const modules = [
   UserModule,
@@ -46,6 +47,7 @@ const modules = [
   ShippingStatusModule,
   OrderItemModule,
   ProductCategoryModule,
+  ShippingMethodModule,
 ];
 
 const listeners = [

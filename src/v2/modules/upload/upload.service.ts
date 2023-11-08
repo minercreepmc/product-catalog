@@ -6,17 +6,18 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
-import type { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import type { DestroyFileDto, UploadFilesDto } from './dto';
 
 @Injectable()
 export class UploadService {
-  private readonly s3Client = new S3Client({
-    region: this.configService.getOrThrow('AWS_S3_REGION'),
-  });
-
+  private readonly s3Client: S3Client;
   private readonly logger = new Logger(UploadService.name);
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.s3Client = new S3Client({
+      region: this.configService.getOrThrow('AWS_S3_REGION'),
+    });
+  }
 
   async upload(dto: UploadFilesDto): Promise<string[]> {
     const { files } = dto;

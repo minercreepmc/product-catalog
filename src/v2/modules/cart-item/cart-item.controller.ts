@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { CartItemService } from './cart-item.service';
+import { CartItemService } from './cart-item.service';
 import type {
   CreateCartItemDto,
   UpdateCartItemDto,

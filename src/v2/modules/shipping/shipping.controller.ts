@@ -13,7 +13,7 @@ import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { UserRole } from '@v2/users/constants';
 import { ApiApplication, RequestWithUser } from '@constants';
-import type { ShippingService } from './shipping.service';
+import { ShippingService } from './shipping.service';
 import type { ShippingModel } from './model';
 import type {
   CreateShippingDto,

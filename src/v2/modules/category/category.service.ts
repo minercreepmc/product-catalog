@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { PaginationParams } from '@constants';
-import type { CategoryRepository } from './category.repository';
+import { CategoryRepository } from './category.repository';
 import type { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
 @Injectable()

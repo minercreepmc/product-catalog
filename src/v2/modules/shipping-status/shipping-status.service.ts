@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { ShippingStatusRepository } from './shipping-status.repository';
+import { ShippingStatusRepository } from './shipping-status.repository';
 import type { CreateShippingStatusDto, UpdateShippingStatusDto } from './dto';
 
 @Injectable()

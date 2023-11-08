@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { DiscountService } from './discount.service';
+import { DiscountService } from './discount.service';
 import type { DiscountModel } from './model';
 import type { CreateDiscountDto, UpdateDiscountDto } from './dto';
 import type { DiscountIncludeProductCountRO, DiscountRO } from './ro';

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { DatabaseService } from '@config/database';
+import { DatabaseService } from '@config/database';
 import type { PaginationParams } from '@constants';
 import { UserRole } from './constants';
 import type { CreateUserDto, UpdateUserDto } from './dto';

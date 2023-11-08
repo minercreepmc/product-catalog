@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { DatabaseService } from '@config/database';
+import { DatabaseService } from '@config/database';
 import type { UpdateCartDto } from './dto';
 
 @Injectable()

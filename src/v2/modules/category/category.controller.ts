@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { CategoryService } from './category.service';
+import { CategoryService } from './category.service';
 import type { CategoryModel } from './model';
 import type { CreateCategoryDto, UpdateCategoryDto } from './dto';
 import type { CategoryIncludeProductCountRO } from './ro';

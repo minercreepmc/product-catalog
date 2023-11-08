@@ -1,6 +1,6 @@
 import { Global, Module, Provider } from '@nestjs/common';
 import { Pool } from 'pg';
-import { DatabaseConfigOptions } from './database.config';
+import type { DatabaseConfigOptions } from './database.config';
 import {
   ConfigurableDatabaseModule,
   CONNECTION_POOL,

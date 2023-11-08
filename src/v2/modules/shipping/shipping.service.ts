@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import type { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { GlobalEvents } from '@constants';
 import { ShippingCreatedEvent, ShippingDeletedEvent } from './event';
 import type { CreateShippingDto, UpdateShippingDto } from './dto';
-import type { ShippingRepository } from './shipping.repository';
+import { ShippingRepository } from './shipping.repository';
 
 @Injectable()
 export class ShippingService {

@@ -3,7 +3,7 @@ import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { ProductImageService } from './product-image.service';
+import { ProductImageService } from './product-image.service';
 import type { ProductImageModel } from './model';
 import type { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
 

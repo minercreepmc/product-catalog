@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserRole } from './constants';
 import { RoleGuard } from '@guards/roles';
 import { ApiApplication, RequestWithUser } from '@constants';
-import type { UserService } from './user.service';
+import { UserService } from './user.service';
 import type { UserModel } from './model';
 import type {
   CreateMemberDto,

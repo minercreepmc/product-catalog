@@ -3,7 +3,7 @@ import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { Controller, Post, UseGuards } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { IncomeService } from './income.service';
+import { IncomeService } from './income.service';
 
 @Controller(ApiApplication.INCOME.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))

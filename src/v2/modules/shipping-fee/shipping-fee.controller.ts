@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiApplication } from '@constants';
 import type { ShippingFeeModel } from './model';
-import type { ShippingFeeService } from './shipping-fee.service';
+import { ShippingFeeService } from './shipping-fee.service';
 import type { CreateShippingFeeDto, UpdateShippingFeeDto } from './dto';
 
 @Controller(ApiApplication.SHIPPING_FEE.CONTROLLER)

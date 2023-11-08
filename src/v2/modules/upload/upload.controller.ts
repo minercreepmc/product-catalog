@@ -4,7 +4,7 @@ import { UserRole } from '@v2/users/constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { ApiApplication } from '@constants';
-import type { UploadService } from './upload.service';
+import { UploadService } from './upload.service';
 import type { DestroyFileDto, UploadFilesDto } from './dto';
 
 @Controller(ApiApplication.UPLOAD.CONTROLLER)

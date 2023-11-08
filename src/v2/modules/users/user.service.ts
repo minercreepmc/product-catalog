@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { EventEmitter2 } from '@nestjs/event-emitter';
+import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as bcrypt from 'bcrypt';
 import { GlobalEvents } from '@constants';
 import { UserRole } from './constants';
@@ -11,7 +11,7 @@ import type {
   CreateStaffDto,
   UpdateUserDto,
 } from './dto';
-import type { UserRepository } from './user.repository';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
@@ -126,5 +126,3 @@ export class UserService {
     return this.userRepository.countWeeklyMember();
   }
 }
-
-const logger = new Logger(UserService.name);

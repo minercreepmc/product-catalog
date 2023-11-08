@@ -1,9 +1,0 @@
-- **Product information**: The service stores and manages detailed information about each product, including name, description, images, price, attributes, and variants.
-- **Categorization**: Products are organized into a hierarchical category structure to help customers browse and discover items.
-- **Search and filtering**: Customers can search for products using keywords, and filter results based on various criteria like price, category, brand, or attributes.
-- **Inventory management integration**: The Product Catalog service communicates with the Inventory Management service to display product availability and to reserve or release inventory when needed.
-- **Pricing and discounts**: The service handles product pricing, including regional pricing, discounts, and promotions.
-- **Product recommendations**: The service provides recommendations for related or complementary products based on customer preferences or browsing history.
-- **External data sources**: The service can import and export product data to and from external systems, such as ERP or PIM systems, using appropriate integration patterns.
-- **Content management**: The service allows administrators to manage product content, including uploading images, editing descriptions, and updating attributes or variants.
-- **Analytics**: The service tracks customer interactions with products, such as views, clicks, and purchases, to provide insights for marketing and sales teams.

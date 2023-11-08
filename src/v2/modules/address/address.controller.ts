@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { AddressService } from './address.service';
+import { AddressService } from './address.service';
 import type { CreateAddressDto, UpdateAddressDto } from './dto';
 import type { AddressModel } from './model';
 import type { GetAllAddressRO } from './ro';

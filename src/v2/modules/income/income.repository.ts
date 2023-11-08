@@ -1,4 +1,4 @@
-import type { DatabaseService } from '@config/database';
+import { DatabaseService } from '@config/database';
 import { ApiApplication } from '@constants';
 import { Get, Injectable } from '@nestjs/common';
 import { OrderStatus } from '@v2/order/constants';

@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { BaseService } from '@base-class';
+import { BaseService } from '@base';
 import { GlobalErrors } from '@constants';
-import type { ShippingMethodRepository } from './shipping-method.repository';
+import { ShippingMethodRepository } from './shipping-method.repository';
 import { ShippingMethodGetAllRO } from './ro';
 
 @Injectable()

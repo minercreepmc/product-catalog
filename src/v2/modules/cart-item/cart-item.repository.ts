@@ -1,4 +1,4 @@
-import type { DatabaseService } from '@config/database';
+import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import type {

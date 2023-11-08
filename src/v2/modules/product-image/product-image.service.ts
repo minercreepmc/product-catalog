@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { ProductImageRepository } from './product-image.repository';
+import { ProductImageRepository } from './product-image.repository';
 import type { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
 
 @Injectable()

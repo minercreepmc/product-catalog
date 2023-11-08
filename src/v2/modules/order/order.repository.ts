@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { UpdateOrderDto } from './dto';
-import type { DatabaseService } from '@config/database';
+import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
 
 @Injectable()

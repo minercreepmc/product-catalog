@@ -10,21 +10,21 @@ export class UpdateUserDto {
   })
   @IsString()
   @IsOptional()
-  password?: string;
+  password?: string | undefined;
 
   @IsString()
   @IsNotEmpty({
     message: 'Tên không được trống',
   })
   @IsOptional()
-  fullName?: string;
+  fullName?: string | undefined;
 
   @IsString()
   @IsNotEmpty({
     message: 'Số điện thoại không được trống',
   })
   @IsOptional()
-  phone?: string;
+  phone?: string | undefined;
 
   @IsString()
   @isUniqueDb({
@@ -33,5 +33,5 @@ export class UpdateUserDto {
     message: 'Email đã tồn tại',
   })
   @IsOptional()
-  email?: string;
+  email?: string | undefined;
 }

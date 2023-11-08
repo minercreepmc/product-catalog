@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { CartService } from './cart.service';
+import { CartService } from './cart.service';
 import type { CartModel } from './model';
 import type { UpdateCartDto } from './dto';
 import type { CartRO } from './ro';

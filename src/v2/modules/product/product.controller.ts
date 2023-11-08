@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
 import type { PaginationParams } from '@constants';
-import type { ProductService } from './product.service';
+import { ProductService } from './product.service';
 import type { ProductModel } from './model';
 import type {
   CreateProductDto,

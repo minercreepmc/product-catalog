@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { DatabaseService } from '@config/database';
+import { DatabaseService } from '@config/database';
 import type { PaginationParams } from '@constants';
 import { OrderStatus } from '@v2/order/constants';
 import type { ProductModel } from './model';

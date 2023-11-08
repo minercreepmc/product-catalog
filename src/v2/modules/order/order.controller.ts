@@ -19,7 +19,7 @@ import type {
   OrderGetByMemberStatusQueryDto,
 } from './dto';
 import type { OrderModel } from './model';
-import type { OrderService } from './order.service';
+import { OrderService } from './order.service';
 import type { CreateOrderRO, OrderRO } from './ro';
 
 @Controller(ApiApplication.ORDER.CONTROLLER)

@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import type { ShippingStatusService } from './shipping-status.service';
+import { ShippingStatusService } from './shipping-status.service';
 import type {
   CreateShippingStatusDto,
   GetByOrderIdDto,

@@ -1,7 +1,7 @@
-import { BaseService } from '@base-class';
+import { BaseService } from '@base';
 import { GlobalErrors } from '@constants';
 import { Injectable } from '@nestjs/common';
-import type { CartRepository } from './cart.repository';
+import { CartRepository } from './cart.repository';
 import type { UpdateCartDto } from './dto';
 
 @Injectable()

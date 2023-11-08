@@ -13,14 +13,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import {
+import type {
   UpdateOrderDto,
   GetByMemberDto,
   OrderGetByMemberStatusQueryDto,
 } from './dto';
-import { OrderModel } from './model';
-import { OrderService } from './order.service';
-import { CreateOrderRO, OrderRO } from './ro';
+import type { OrderModel } from './model';
+import type { OrderService } from './order.service';
+import type { CreateOrderRO, OrderRO } from './ro';
 
 @Controller(ApiApplication.ORDER.CONTROLLER)
 @UseGuards(JwtGuard)

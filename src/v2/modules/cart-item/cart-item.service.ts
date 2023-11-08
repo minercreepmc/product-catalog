@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { CartItemRepository } from './cart-item.repository';
-import {
+import type { CartItemRepository } from './cart-item.repository';
+import type {
   CreateCartItemDto,
   UpdateCartItemDto,
   UpsertCartItemDto,
 } from './dtos';
-import { CartItemRO } from './ro';
+import type { CartItemRO } from './ro';
 
 @Injectable()
 export class CartItemService {

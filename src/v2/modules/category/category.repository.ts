@@ -1,7 +1,7 @@
-import { DatabaseService } from '@config/database';
-import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto, UpdateCategoryDto } from './dto';
+import type { DatabaseService } from '@config/database';
+import type { PaginationParams } from '@constants';
+import type { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
 @Injectable()
 export class CategoryRepository {

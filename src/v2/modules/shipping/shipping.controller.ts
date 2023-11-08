@@ -9,19 +9,19 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ShippingService } from './shipping.service';
-import {
+import { JwtGuard } from '@guards/jwt';
+import { RoleGuard } from '@guards/roles';
+import { UserRole } from '@v2/users/constants';
+import { ApiApplication, RequestWithUser } from '@constants';
+import type { ShippingService } from './shipping.service';
+import type { ShippingModel } from './model';
+import type {
   CreateShippingDto,
   GetShippingByOrderDto,
   GetShippingByShipperDto,
   UpdateShippingDto,
 } from './dto';
-import { JwtGuard } from '@guards/jwt';
-import { RoleGuard } from '@guards/roles';
-import { UserRole } from '@v2/users/constants';
-import { ApiApplication, RequestWithUser } from '@constants';
-import { ShippingModel } from './model';
-import { ShippingRO } from './ro';
+import type { ShippingRO } from './ro';
 
 @Controller(ApiApplication.SHIPPING.CONTROLLER)
 @UseGuards(JwtGuard)

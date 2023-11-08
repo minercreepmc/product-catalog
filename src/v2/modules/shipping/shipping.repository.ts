@@ -1,7 +1,7 @@
-import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { CreateShippingDto, UpdateShippingDto } from './dto';
-import { ShippingModel } from './model';
+import type { DatabaseService } from '@config/database';
+import type { CreateShippingDto, UpdateShippingDto } from './dto';
+import type { ShippingModel } from './model';
 
 @Injectable()
 export class ShippingRepository {

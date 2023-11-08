@@ -1,7 +1,7 @@
 import { ApiApplication, PaginationParams } from '@constants';
 import { Body, Controller, Post, Query } from '@nestjs/common';
-import { ProductGetAllByCategoryDto } from './dto/product-category.dto';
-import { ProductCategoryService } from './product-category.service';
+import type { ProductGetAllByCategoryDto } from './dto/product-category.dto';
+import type { ProductCategoryService } from './product-category.service';
 
 @Controller(ApiApplication.PRODUCT_CATEGORY.CONTROLLER)
 export class ProductCategoryController {

@@ -11,10 +11,10 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ShippingFeeService } from './shipping-fee.service';
-import { CreateShippingFeeDto, UpdateShippingFeeDto } from './dto';
 import { ApiApplication } from '@constants';
-import { ShippingFeeModel } from './model';
+import type { ShippingFeeModel } from './model';
+import type { ShippingFeeService } from './shipping-fee.service';
+import type { CreateShippingFeeDto, UpdateShippingFeeDto } from './dto';
 
 @Controller(ApiApplication.SHIPPING_FEE.CONTROLLER)
 @UseGuards(JwtGuard)

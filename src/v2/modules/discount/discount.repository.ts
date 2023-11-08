@@ -1,7 +1,7 @@
-import { DatabaseService } from '@config/database';
-import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { CreateDiscountDto, UpdateDiscountDto } from './dto';
+import type { DatabaseService } from '@config/database';
+import type { PaginationParams } from '@constants';
+import type { CreateDiscountDto, UpdateDiscountDto } from './dto';
 
 @Injectable()
 export class DiscountRepository {
@@ -22,7 +22,8 @@ export class DiscountRepository {
   }
   async deleteOneById(id: string) {
     const res = await this.databaseService.runQuery(
-      `DELETE FROM discount WHERE id=$1 RETURNING *;`[id],
+      `DELETE FROM discount WHERE id=$1 RETURNING *;`,
+      [id],
     );
 
     return res.rows[0];

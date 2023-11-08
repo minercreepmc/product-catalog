@@ -5,20 +5,28 @@ import { Expose, Type } from 'class-transformer';
 export class OrderItemRO {
   @Expose()
   id: string;
+
   @Expose()
   price: number;
+
   @Expose()
   order_id: string;
+
   @Expose()
   product_id: string;
+
   @Expose()
   amount: number;
+
   @Expose()
   name: string;
+
   @Expose()
   image_urls: string[];
+
   @Expose()
   description: string;
+
   @Expose()
   @Type(() => CategoryRO)
   categories: CategoryRO[];
@@ -26,8 +34,8 @@ export class OrderItemRO {
 
 class CategoryRO extends PickType(CategoryModel, ['id', 'name']) {
   @Expose()
-  id: string;
+  override id: string;
 
   @Expose()
-  name: string;
+  override name: string;
 }

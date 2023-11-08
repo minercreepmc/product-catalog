@@ -1,8 +1,8 @@
-import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto, UpdateProductDto } from './dto';
-import { ProductRepository } from './product.repository';
-import { UpdateProductRO } from './ro';
+import type { PaginationParams } from '@constants';
+import type { ProductRepository } from './product.repository';
+import type { CreateProductDto, UpdateProductDto } from './dto';
+import type { UpdateProductRO } from './ro';
 
 @Injectable()
 export class ProductService {

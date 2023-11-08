@@ -32,4 +32,11 @@ export const GlobalErrors = {
       status: HttpStatus.NOT_FOUND,
     },
   },
+  SHIPPING_METHOD: {
+    GET_ALL_FAILED: {
+      code: 'SHIPPING_METHOD.GET_ALL_FAILED',
+      message: 'Shipping method get all failed',
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+    },
+  },
 };

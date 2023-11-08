@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateShippingStatusDto, UpdateShippingStatusDto } from './dto';
-import { ShippingStatusRepository } from './shipping-status.repository';
+import type { ShippingStatusRepository } from './shipping-status.repository';
+import type { CreateShippingStatusDto, UpdateShippingStatusDto } from './dto';
 
 @Injectable()
 export class ShippingStatusService {

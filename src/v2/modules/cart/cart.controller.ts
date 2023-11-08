@@ -11,10 +11,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { CartService } from './cart.service';
-import { UpdateCartDto } from './dto';
-import { CartModel } from './model';
-import { CartRO } from './ro';
+import type { CartService } from './cart.service';
+import type { CartModel } from './model';
+import type { UpdateCartDto } from './dto';
+import type { CartRO } from './ro';
 
 @Controller(ApiApplication.CART.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(UserRole.MEMBER))

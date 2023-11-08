@@ -11,13 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import {
+import type { ShippingStatusService } from './shipping-status.service';
+import type {
   CreateShippingStatusDto,
   GetByOrderIdDto,
   GetByShippingIdDto,
   UpdateShippingStatusDto,
 } from './dto';
-import { ShippingStatusService } from './shipping-status.service';
 
 @Controller(ApiApplication.SHIPPING_STATUS.CONTROLLER)
 @UseGuards(JwtGuard)

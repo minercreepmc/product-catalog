@@ -1,15 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { UpdateOrderDto } from './dto';
-import { DatabaseService } from '@config/database';
+import { Injectable } from '@nestjs/common';
+import type { UpdateOrderDto } from './dto';
+import type { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { handleError } from '@util';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  @DefaultCatch((e) => handleError(e, logger))
   async create(memberId: string, cartId: string, totalPrice: number) {
     const res = await this.databaseService.runQuery(
       `
@@ -22,7 +19,6 @@ export class OrderRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async update(id: string, dto: UpdateOrderDto) {
     const res = await this.databaseService.runQuery(
       `
@@ -33,7 +29,6 @@ export class OrderRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countDaily() {
     const res = await this.databaseService.runQuery(
       `
@@ -46,7 +41,6 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countMonthly() {
     const res = await this.databaseService.runQuery(
       `
@@ -59,7 +53,6 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countWeekly() {
     const res = await this.databaseService.runQuery(
       `
@@ -72,7 +65,6 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findOneById(orderId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -90,7 +82,6 @@ export class OrderRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findByMemberAndStatus(memberId: string, status?: OrderStatus) {
     const res = await this.databaseService.runQuery(
       `
@@ -115,7 +106,6 @@ export class OrderRepository {
     return res.rows;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findAll() {
     const res = await this.databaseService.runQuery(
       `
@@ -131,5 +121,3 @@ export class OrderRepository {
     return res.rows;
   }
 }
-
-const logger = new Logger(OrderRepository.name);

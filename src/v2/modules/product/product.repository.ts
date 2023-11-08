@@ -1,10 +1,10 @@
-import { DatabaseService } from '@config/database';
-import { PaginationParams } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import type { DatabaseService } from '@config/database';
+import type { PaginationParams } from '@constants';
 import { OrderStatus } from '@v2/order/constants';
-import { CreateProductDto, UpdateProductDto } from './dto';
-import { ProductModel } from './model';
-import { CreateProductRO, ProductRO, UpdateProductRO } from './ro';
+import type { ProductModel } from './model';
+import type { CreateProductDto, UpdateProductDto } from './dto';
+import type { CreateProductRO, ProductRO } from './ro';
 
 export interface UpdateCategoryForProduct {
   id: string;

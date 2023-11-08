@@ -1,11 +1,11 @@
-import { ApiApplication } from '@constants';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { FormDataRequest } from 'nestjs-form-data';
+import { UserRole } from '@v2/users/constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
-import { FormDataRequest } from 'nestjs-form-data';
-import { DestroyFileDto, UploadFilesDto } from './dto';
-import { UploadService } from './upload.service';
+import { ApiApplication } from '@constants';
+import type { UploadService } from './upload.service';
+import type { DestroyFileDto, UploadFilesDto } from './dto';
 
 @Controller(ApiApplication.UPLOAD.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))

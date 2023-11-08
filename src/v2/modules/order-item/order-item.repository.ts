@@ -1,6 +1,5 @@
-import { DatabaseService } from '@config/database';
+import type { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { DefaultCatch } from 'catch-decorator-ts';
 
 @Injectable()
 export class OrderItemRepository {
@@ -26,10 +25,6 @@ export class OrderItemRepository {
     return res.rows;
   }
 
-  @DefaultCatch((err) => {
-    console.log('Cannot create order items', err);
-    throw err;
-  })
   async createOrderItems(orderId: string, cartId: string): Promise<string[]> {
     const res = await this.databaseService.runQuery(
       `

@@ -3,12 +3,12 @@ import { JwtGuard } from '@guards/jwt';
 import { LocalAuthenticationGuard } from '@guards/local';
 import { RoleGuard } from '@guards/roles';
 import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import type { Request } from 'express';
 import { UserRole } from '@v2/users/constants';
-import { UserService } from '@v2/users/user.service';
-import { Response as ExpressResponse } from 'express';
-import { AuthService } from './auth.service';
-import { ProfileRO } from './ro';
-import { Request } from 'express';
+import type { UserService } from '@v2/users/user.service';
+import type { Response as ExpressResponse } from 'express';
+import type { AuthService } from './auth.service';
+import type { ProfileRO } from './ro';
 
 @Controller(ApiApplication.AUTH.CONTROLLER)
 export class AuthController {

@@ -13,10 +13,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { CategoryService } from './category.service';
-import { CreateCategoryDto, UpdateCategoryDto } from './dto';
-import { CategoryModel } from './model';
-import { CategoryIncludeProductCountRO } from './ro';
+import type { CategoryService } from './category.service';
+import type { CategoryModel } from './model';
+import type { CreateCategoryDto, UpdateCategoryDto } from './dto';
+import type { CategoryIncludeProductCountRO } from './ro';
 
 @Controller(ApiApplication.CATEGORY.CONTROLLER)
 export class CategoryController {

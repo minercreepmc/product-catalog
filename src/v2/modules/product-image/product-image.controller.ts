@@ -3,9 +3,9 @@ import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
-import { ProductImageModel } from './model';
-import { ProductImageService } from './product-image.service';
+import type { ProductImageService } from './product-image.service';
+import type { ProductImageModel } from './model';
+import type { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
 
 @Controller(ApiApplication.PRODUCT_IMAGE.CONTROLLER)
 export class ProductImageController {

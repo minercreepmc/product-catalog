@@ -1,20 +1,17 @@
-import { DatabaseService } from '@config/database';
-import { Injectable, Logger } from '@nestjs/common';
+import type { DatabaseService } from '@config/database';
+import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import {
+import type {
   CreateCartItemDto,
   UpdateCartItemDto,
   UpsertCartItemDto,
 } from './dtos';
 import { CartItemRO } from './ro';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { handleError } from '@util';
 
 @Injectable()
 export class CartItemRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  @DefaultCatch((e) => handleError(e, logger))
   async create(userId: string, dto: CreateCartItemDto) {
     const { productId, amount } = dto;
     const res = await this.databaseService.runQuery(
@@ -30,7 +27,6 @@ export class CartItemRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async update(cartItemId: string, dto: UpdateCartItemDto) {
     const { amount } = dto;
 
@@ -42,7 +38,6 @@ export class CartItemRepository {
     );
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async upsert(userId: string, dto: UpsertCartItemDto) {
     const { productId, amount } = dto;
     const res = await this.databaseService.runQuery(
@@ -58,7 +53,6 @@ export class CartItemRepository {
     return res.rows[0].product_id;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async delete(cartItemId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -70,7 +64,6 @@ export class CartItemRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findByUserId(userId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -95,7 +88,6 @@ export class CartItemRepository {
     return res.rows;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async getDetailByUserIdAndProductId(userId: string, productId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -122,7 +114,6 @@ export class CartItemRepository {
     });
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async getDetailByCartItemId(cartItemId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -147,5 +138,3 @@ export class CartItemRepository {
     });
   }
 }
-
-const logger = new Logger(CartItemRepository.name);

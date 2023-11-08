@@ -17,7 +17,7 @@ export class CreateUserDto {
   password: string;
   @IsString()
   @IsOptional()
-  fullName?: string;
+  fullName?: string | undefined;
 
   @IsEnum(UserRole)
   @IsString()

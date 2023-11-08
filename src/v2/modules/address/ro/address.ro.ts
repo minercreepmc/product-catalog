@@ -1,3 +1,3 @@
-import { AddressModel } from '../model';
+import type { AddressModel } from '../model';
 
 export type GetAllAddressRO = AddressModel[];

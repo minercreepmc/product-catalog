@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IncomeRepository } from './income.repository';
+import type { IncomeRepository } from './income.repository';
 
 @Injectable()
 export class IncomeService {

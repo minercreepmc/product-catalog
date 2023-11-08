@@ -1,28 +1,13 @@
 import { GlobalEvents } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CartRepository } from '@v2/cart';
-import { OrderItemRepository } from '@v2/order-item/order-item.repository';
 import { plainToInstance } from 'class-transformer';
-import { OrderGetByMemberStatusQueryDto, UpdateOrderDto } from './dto';
+import type { EventEmitter2 } from '@nestjs/event-emitter';
+import type { CartRepository } from '@v2/cart';
+import type { OrderItemRepository } from '@v2/order-item/order-item.repository';
+import type { OrderRepository } from './order.repository';
 import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
-import { OrderRepository } from './order.repository';
+import type { OrderGetByMemberStatusQueryDto, UpdateOrderDto } from './dto';
 import { CreateOrderRO, OrderDetailsRO } from './ro';
-
-// const cartId = res.rows[0].id;
-// const totalPrice = await this.getTotalPrice(cartId);
-// const orderDetails = await this.createOrderDetails(
-//   memberId,
-//   cartId,
-//   totalPrice,
-// );
-// const order: CreateOrderRO = {
-//   ...orderDetails,
-//   itemIds: [],
-// };
-//
-// order.itemIds = await this.createOrderItems(order.id, cartId);
-// return { ...order, cartId };
 
 @Injectable()
 export class OrderService {

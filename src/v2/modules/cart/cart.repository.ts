@@ -80,6 +80,7 @@ export class CartRepository {
 
   @DefaultCatch((e) => handleError(e, logger))
   async clearCart(cartId: string) {
+    console.log(cartId);
     await this.databaseService.runQuery(
       `
         DELETE FROM cart_item 
@@ -123,7 +124,6 @@ export class CartRepository {
       `,
       [userId],
     );
-
     return res.rows[0].id;
   }
 }

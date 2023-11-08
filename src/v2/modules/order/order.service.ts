@@ -63,10 +63,10 @@ export class OrderService {
     this.eventEmitter.emit(
       GlobalEvents.ORDER.CREATED,
       new OrderCreatedEvent({
-        cartId: order.cartId,
+        cartId,
       }),
     );
-    return created;
+    return order;
   }
 
   async update(id: string, dto: UpdateOrderDto) {
@@ -79,8 +79,8 @@ export class OrderService {
     this.eventEmitter.emit(
       GlobalEvents.ORDER.UPDATED,
       new OrderUpdatedEvent({
-        status: updated.status,
-        orderId: updated.id,
+        status: dto.status,
+        orderId: id,
       }),
     );
 

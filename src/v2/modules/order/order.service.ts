@@ -21,10 +21,14 @@ export class OrderService {
   async create(memberId: string) {
     const cartId = await this.cartRepository.getIdByUserId(memberId);
     const totalPrice = await this.cartRepository.getTotalPrice(cartId);
+    const shippingMethodId = await this.cartRepository.getShippingMethodId(
+      cartId,
+    );
     const created = await this.orderRepository.create(
       memberId,
       cartId,
       totalPrice,
+      shippingMethodId,
     );
 
     if (!created) {

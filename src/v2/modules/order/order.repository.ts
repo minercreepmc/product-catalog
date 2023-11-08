@@ -7,14 +7,19 @@ import { OrderStatus } from './constants';
 export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(memberId: string, cartId: string, totalPrice: number) {
+  async create(
+    memberId: string,
+    cartId: string,
+    totalPrice: number,
+    shippingMethodId: string,
+  ) {
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id) 
-        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3))
+      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id, shipping_method_id) 
+        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3), $5)
       RETURNING *; 
     `,
-      [OrderStatus.PROCESSING, memberId, cartId, totalPrice],
+      [OrderStatus.PROCESSING, memberId, cartId, totalPrice, shippingMethodId],
     );
     return res.rows[0];
   }

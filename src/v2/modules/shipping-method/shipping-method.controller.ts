@@ -1,7 +1,7 @@
 import { ApiApplication } from '@constants';
 import { Res } from '@nestjs/common';
 import { Controller, Get } from '@nestjs/common';
-import type { Response } from 'express';
+import { Response } from 'express';
 import { ShippingMethodService } from './shipping-method.service';
 
 @Controller(ApiApplication.SHIPPING_METHOD.CONTROLLER)

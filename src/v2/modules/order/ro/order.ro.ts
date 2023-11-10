@@ -2,7 +2,7 @@ import type { OrderItemRO } from '@v2/order-item/ro';
 import { Expose } from 'class-transformer';
 import { OrderModel } from '../model';
 
-export class OrderRO {
+export class OrderGetAllRO {
   @Expose()
   id: string;
 
@@ -31,7 +31,7 @@ export class OrderRO {
   updated_at: Date;
 }
 
-export class OrderDetailsRO extends OrderRO {
+export class OrderDetailsRO extends OrderGetAllRO {
   @Expose()
   items: OrderItemRO[];
 }

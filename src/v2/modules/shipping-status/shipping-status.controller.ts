@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
 import { ShippingStatusService } from './shipping-status.service';
-import type {
+import {
   CreateShippingStatusDto,
   GetByOrderIdDto,
   GetByShippingIdDto,

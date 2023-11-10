@@ -6,9 +6,9 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import type { Request } from 'express';
 import { USERS_ROLE } from '@v2/users/constants';
 import { UserService } from '@v2/users/user.service';
-import type { Response as ExpressResponse } from 'express';
+import { Response as ExpressResponse } from 'express';
 import { AuthService } from './auth.service';
-import type { ProfileRO } from './ro';
+import { ProfileRO } from './ro';
 
 @Controller(ApiApplication.AUTH.CONTROLLER)
 export class AuthController {

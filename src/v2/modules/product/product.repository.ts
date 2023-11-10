@@ -23,11 +23,11 @@ export class ProductRepository {
   async create(dto: CreateProductDto) {
     const res = await this.databaseService.runQuery(
       `INSERT into product 
-          (name, price, description, discount_id, sold) 
+          (name, price, description, discount_id) 
       VALUES 
-          ($1, $2, $3, $4, $5)
+          ($1, $2, $3, $4)
       RETURNING *`,
-      [dto.name, dto.price, dto.description, dto.discountId, 0],
+      [dto.name, dto.price, dto.description, dto.discountId],
     );
 
     const product: CreateProductRO = res.rows[0];
@@ -129,7 +129,7 @@ export class ProductRepository {
 
   async findOneByName(name: string) {
     const res = await this.databaseService.runQuery(
-      `SELECT * from product WHERE name=$1 AND deleted_at IS NULL`,
+      `SELECT * from product WHERE name=$1`,
       [name],
     );
 
@@ -140,7 +140,7 @@ export class ProductRepository {
     id: string,
     dto: UpdateProductDto,
   ): Promise<ProductModel> {
-    const { discountId, name, price, sold, description } = dto;
+    const { discountId, name, price, description } = dto;
     const res = await this.databaseService.runQuery(
       `
         UPDATE product
@@ -149,12 +149,11 @@ export class ProductRepository {
             price = COALESCE($3, price),
             description = COALESCE($4, description),
             discount_id = COALESCE($5, discount_id),
-            sold = COALESCE($6, sold)
         WHERE
             id = $1
         RETURNING *;
       `,
-      [id, name, price, description, discountId, sold],
+      [id, name, price, description, discountId],
     );
     return res.rows[0];
   }
@@ -189,9 +188,9 @@ export class ProductRepository {
   async findSortByBestDiscount(params: PaginationParams) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT product.id, product.name, product.price, product.description, product.discount_id, product.sold from product 
+        SELECT product.id, product.name, product.price, product.description, product.discount_id from product 
         JOIN discount ON product.discount_id = discount.id
-        WHERE product.deleted_at is null AND discount.active = true
+        WHERE discount.active = true
         ORDER BY discount.percentage DESC
         OFFSET $1 LIMIT $2
       `,
@@ -204,9 +203,7 @@ export class ProductRepository {
   async findSortByBestSelling(params: PaginationParams) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id, name, price, description, discount_id, sold from product 
-        WHERE deleted_at is null
-        ORDER BY sold DESC
+        SELECT id, name, price, description, discount_id from product 
         OFFSET $1 LIMIT $2
       `,
       [params.offset, params.limit],
@@ -218,7 +215,7 @@ export class ProductRepository {
   async findByDiscountId(id: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT id, name, price, description, discount_id, sold from product WHERE discount_id=$1 and deleted_at is null
+        SELECT id, name, price, description, discount_id from product WHERE discount_id=$1 
       `,
       [id],
     );
@@ -229,11 +226,11 @@ export class ProductRepository {
   async findByCategoryId(categoryId: string) {
     const res = await this.databaseService.runQuery(
       `
-        SELECT product.id, product.name, product.price, product.description, product.discount_id, product.sold 
+        SELECT product.id, product.name, product.price, product.description, product.discount_id
         FROM product 
         JOIN product_category 
         ON product_category.product_id = product.id
-        WHERE product_category.category_id=$1 and deleted_at is null
+        WHERE product_category.category_id=$1;
       `,
       [categoryId],
     );
@@ -278,8 +275,7 @@ export class ProductRepository {
           product.id, 
           product.name, 
           product.price, 
-          product.description,  
-          product.sold, 
+          product.description,
           to_json(discount) as discount,
           COALESCE(json_agg(product_image.url) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls, 
           COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories,

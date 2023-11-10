@@ -5,7 +5,7 @@ import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { ApiApplication } from '@constants';
 import { UploadService } from './upload.service';
-import type { DestroyFileDto, UploadFilesDto } from './dto';
+import { DestroyFileDto, UploadFilesDto } from './dto';
 
 @Controller(ApiApplication.UPLOAD.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))

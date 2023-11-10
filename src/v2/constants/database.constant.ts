@@ -24,7 +24,8 @@ export const DATABASE_TABLE = {
     NAME: 'shipping_status',
     SCHEMA: {
       ID: 'id',
-      NAME: 'name',
+      STATUS: 'status',
+      SHIPPING_ID: 'shipping_id',
       CREATED_AT: 'created_at',
       UPDATED_AT: 'updated_at',
     },
@@ -122,7 +123,7 @@ export const DATABASE_TABLE = {
     SCHEMA: {
       ID: 'id',
       TOTAL_PRICE: 'total_price',
-      MEMBER_ID: 'member_id',
+      USER_ID: 'user_id',
       SHIPPING_FEE_ID: 'shipping_fee_id',
       ADDRESS_ID: 'address_id',
       SHIPPING_METHOD_ID: 'shipping_method_id',

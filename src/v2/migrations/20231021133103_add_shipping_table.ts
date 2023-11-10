@@ -9,7 +9,7 @@ const { NAME: USERS_NAME, SCHEMA: USERS_SCHEMA } = DATABASE_TABLE.USERS;
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
     .createTable(NAME)
-    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
     .addColumn(SCHEMA.DUE_DATE, 'timestamp', (column) => column.notNull())
@@ -19,13 +19,13 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
-    .addColumn(SCHEMA.ORDER_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ORDER_ID, 'varchar(50)', (column) =>
       column
         .references(`${ORDER_DETAILS_NAME}.${ORDER_DETAILS_SCHEMA.ID}`)
         .onDelete('cascade')
         .notNull(),
     )
-    .addColumn(SCHEMA.SHIPPER_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.SHIPPER_ID, 'varchar(50)', (column) =>
       column
         .references(`${USERS_NAME}.${USERS_SCHEMA.ID}`)
         .onDelete('set null')

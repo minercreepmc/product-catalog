@@ -5,20 +5,6 @@ export class OrderModel {
   shipping_fee_id: string;
   member_id: string;
   address_id: string;
-}
-
-export class OrderItemModel {
-  id: string;
-  price: number;
-  order_id: string;
-  product_id: string;
-  amount: number;
-
-  constructor(dto: OrderItemModel) {
-    this.id = dto.id;
-    this.price = dto.price;
-    this.order_id = dto.order_id;
-    this.product_id = dto.product_id;
-    this.amount = dto.amount;
-  }
+  created_at: Date;
+  updated_at: Date;
 }

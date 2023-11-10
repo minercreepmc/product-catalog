@@ -13,15 +13,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '@guards/roles';
 import { ApiApplication, RequestWithUser } from '@constants';
 import { UserService } from './user.service';
-import type { UserModel } from './model';
-import type {
+import { UserModel } from './model';
+import {
   CreateMemberDto,
   CreateShipperDto,
   CreateStaffDto,
   CreateAdminDto,
   UpdateUserDto,
 } from './dto';
-import type { UserRO } from './ro';
+import { UserRO } from './ro';
 import { USERS_ROLE } from './constants';
 
 @Controller(ApiApplication.USER.CONTROLLER)

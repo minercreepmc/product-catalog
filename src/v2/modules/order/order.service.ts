@@ -7,7 +7,7 @@ import { OrderItemRepository } from '@v2/order-item/order-item.repository';
 import { OrderRepository } from './order.repository';
 import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
 import type { OrderGetByMemberStatusQueryDto, UpdateOrderDto } from './dto';
-import { CreateOrderRO, OrderDetailsRO } from './ro';
+import { CreateOrderRO, OrderDetailsRO, OrderGetAllRO } from './ro';
 
 @Injectable()
 export class OrderService {
@@ -105,8 +105,12 @@ export class OrderService {
     return this.orderRepository.findByMemberAndStatus(memberId, status);
   }
 
-  getAll() {
-    return this.orderRepository.findAll();
+  async getAll() {
+    const response = await this.orderRepository.findAll();
+
+    return plainToInstance(OrderGetAllRO, response, {
+      excludeExtraneousValues: true,
+    });
   }
 
   countDaily() {

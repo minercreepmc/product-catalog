@@ -1,5 +1,5 @@
 import { isExistDb, isUniqueDb } from '@youba/nestjs-dbvalidator';
-import { Type } from 'class-transformer';
+import {  Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,

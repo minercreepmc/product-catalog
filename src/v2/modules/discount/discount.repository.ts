@@ -75,7 +75,7 @@ export class DiscountRepository {
 
   async findOneByName(name: string) {
     const res = await this.databaseService.runQuery(
-      `SELECT * from discount WHERE name=$1 AND deleted_at IS NULL`,
+      `SELECT * from discount WHERE name=$1;`,
       [name],
     );
 
@@ -88,7 +88,6 @@ export class DiscountRepository {
     const res = await this.databaseService.runQuery(
       `
         SELECT * from discount 
-        WHERE deleted_at is null
         OFFSET $1 LIMIT $2
       `,
       [offset, limit],

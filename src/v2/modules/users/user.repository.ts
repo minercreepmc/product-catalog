@@ -64,7 +64,7 @@ export class UserRepository {
           hashed=coalesce($3, hashed),
           phone=coalesce($4, phone),
           email=coalesce($5, email)
-      WHERE id=$1 AND deleted_at IS NULL RETURNING *;
+      WHERE id=$1 RETURNING *;
       `,
       [id, fullName, password, phone, email],
     );
@@ -75,7 +75,7 @@ export class UserRepository {
   async findOneByName(name: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from "users" WHERE username=$1 AND deleted_at IS NULL
+      SELECT * from "users" WHERE username=$1;
       `,
       [name],
     );
@@ -86,7 +86,7 @@ export class UserRepository {
   async findAll(filter?: PaginationParams) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from "users" WHERE deleted_at IS NULL
+      SELECT * from "users"
       OFFSET $1 LIMIT $2
       `,
       [filter?.offset, filter?.limit],
@@ -99,8 +99,7 @@ export class UserRepository {
     const res = await this.databaseService.runQuery(
       `
       SELECT u.id, u.username, u.full_name, u.email, u.phone, u.role
-      from "users" u WHERE role=$1 AND deleted_at IS NULL
-      `,
+      from "users" u WHERE role=$1`,
       [role],
     );
 

@@ -13,14 +13,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
-import type {
+import {
   UpdateOrderDto,
   GetByMemberDto,
   OrderGetByMemberStatusQueryDto,
 } from './dto';
-import type { OrderModel } from './model';
+import { OrderModel } from './model';
 import { OrderService } from './order.service';
-import type { CreateOrderRO, OrderRO } from './ro';
+import { CreateOrderRO, OrderGetAllRO } from './ro';
 
 @Controller(ApiApplication.ORDER.CONTROLLER)
 @UseGuards(JwtGuard)
@@ -43,13 +43,13 @@ export class OrderController {
 
   @Get(ApiApplication.ORDER.GET_ONE)
   @UseGuards(RoleGuard(USERS_ROLE.MEMBER, USERS_ROLE.STAFF))
-  get(@Param('orderId') id: string): Promise<OrderRO> {
+  get(@Param('orderId') id: string): Promise<OrderGetAllRO> {
     return this.orderService.getOne(id);
   }
 
   @Get(ApiApplication.ORDER.GET_ALL)
   @UseGuards(RoleGuard(USERS_ROLE.STAFF))
-  getAll(): Promise<OrderRO[]> {
+  getAll(): Promise<OrderGetAllRO[]> {
     return this.orderService.getAll();
   }
 
@@ -59,7 +59,7 @@ export class OrderController {
     @Req() req: RequestWithUser,
     @Body() dto: GetByMemberDto,
     @Query() query: OrderGetByMemberStatusQueryDto,
-  ): Promise<OrderRO[]> {
+  ): Promise<OrderGetAllRO[]> {
     if (req.user) {
       return this.orderService.getByMember(req.user.id, query);
     } else {

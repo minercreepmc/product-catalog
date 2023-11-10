@@ -8,7 +8,7 @@ const { NAME: DISCOUNT_NAME, SCHEMA: DISCOUNT_SCHEMA } =
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
     .createTable(NAME)
-    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
     .addColumn(SCHEMA.NAME, 'varchar(255)', (column) =>
@@ -22,7 +22,7 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
-    .addColumn(SCHEMA.DISCOUNT_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.DISCOUNT_ID, 'varchar(50)', (column) =>
       column.references(`${DISCOUNT_NAME}.${DISCOUNT_SCHEMA.ID}`),
     )
     .execute();

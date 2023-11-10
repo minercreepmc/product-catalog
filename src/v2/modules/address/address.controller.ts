@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
 import { AddressService } from './address.service';
-import type { CreateAddressDto, UpdateAddressDto } from './dto';
-import type { AddressModel } from './model';
-import type { GetAllAddressRO } from './ro';
+import { CreateAddressDto, UpdateAddressDto } from './dto';
+import { AddressModel } from './model';
+import { GetAllAddressRO } from './ro';
 
 @Controller(ApiApplication.ADDRESS.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.MEMBER))

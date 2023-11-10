@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
 import { CategoryService } from './category.service';
-import type { CategoryModel } from './model';
-import type { CreateCategoryDto, UpdateCategoryDto } from './dto';
-import type { CategoryIncludeProductCountRO } from './ro';
+import { CategoryModel } from './model';
+import { CreateCategoryDto, UpdateCategoryDto } from './dto';
+import { CategoryIncludeProductCountRO } from './ro';
 
 @Controller(ApiApplication.CATEGORY.CONTROLLER)
 export class CategoryController {

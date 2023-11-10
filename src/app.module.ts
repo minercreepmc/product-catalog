@@ -29,6 +29,7 @@ import { OrderUpdatedModule } from './v2/listeners/order-updated';
 import { OrderItemModule } from '@v2/order-item';
 import { ProductCategoryModule } from '@v2/product-category';
 import { ShippingMethodModule } from '@v2/shipping-method';
+import { KyselyModule } from '@config/kysely/database.module';
 
 const modules = [
   UserModule,
@@ -81,6 +82,7 @@ const listeners = [
       password: databaseConfig.password,
     }),
     DatabaseModule.forRoot(databaseConfig),
+    KyselyModule.forRoot(databaseConfig),
     ...modules,
     ...listeners,
   ],

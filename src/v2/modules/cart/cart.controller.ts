@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
 import { CartService } from './cart.service';
-import type { CartModel } from './model';
-import type { UpdateCartDto } from './dto';
-import type { CartRO } from './ro';
+import { CartModel } from './model';
+import { UpdateCartDto } from './dto';
+import { CartRO } from './ro';
 
 @Controller(ApiApplication.CART.CONTROLLER)
 @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.MEMBER))

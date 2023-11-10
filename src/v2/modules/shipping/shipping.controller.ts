@@ -14,14 +14,14 @@ import { RoleGuard } from '@guards/roles';
 import { USERS_ROLE } from '@v2/users/constants';
 import { ApiApplication, RequestWithUser } from '@constants';
 import { ShippingService } from './shipping.service';
-import type { ShippingModel } from './model';
-import type {
+import { ShippingModel } from './model';
+import {
   CreateShippingDto,
   GetShippingByOrderDto,
   GetShippingByShipperDto,
   UpdateShippingDto,
 } from './dto';
-import type { ShippingRO } from './ro';
+import { ShippingRO } from './ro';
 
 @Controller(ApiApplication.SHIPPING.CONTROLLER)
 @UseGuards(JwtGuard)

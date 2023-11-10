@@ -4,8 +4,8 @@ import { RoleGuard } from '@guards/roles';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
 import { ProductImageService } from './product-image.service';
-import type { ProductImageModel } from './model';
-import type { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
+import { ProductImageModel } from './model';
+import { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
 
 @Controller(ApiApplication.PRODUCT_IMAGE.CONTROLLER)
 export class ProductImageController {

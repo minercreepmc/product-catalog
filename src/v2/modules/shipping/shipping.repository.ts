@@ -25,7 +25,6 @@ export class ShippingRepository {
       UPDATE shipping 
       SET 
           shipper_id = COALESCE($2, shipper_id),
-          deleted_at = COALESCE($3, deleted_at),
           due_date = COALESCE($4, due_date)
       WHERE id = $1 RETURNING *;
     `,

@@ -9,16 +9,16 @@ const { NAME: CATEGORY_NAME, SCHEMA: CATEGORY_SCHEMA } =
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
     .createTable(NAME)
-    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
-    .addColumn(SCHEMA.PRODUCT_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.PRODUCT_ID, 'varchar(50)', (column) =>
       column
         .references(`${PRODUCT_NAME}.${PRODUCT_SCHEMA.ID}`)
         .onDelete('cascade')
         .notNull(),
     )
-    .addColumn(SCHEMA.CATEGORY_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.CATEGORY_ID, 'varchar(50)', (column) =>
       column
         .references(`${CATEGORY_NAME}.${CATEGORY_SCHEMA.ID}`)
         .onDelete('cascade')

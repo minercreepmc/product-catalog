@@ -12,7 +12,7 @@ const { NAME: SHIPPING_METHOD_NAME, SCHEMA: SHIPPING_METHOD_SCHEMA } =
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
     .createTable(NAME)
-    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
     .addColumn(SCHEMA.TOTAL_PRICE, 'bigint', (column) =>
@@ -24,29 +24,26 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
-    .addColumn(SCHEMA.MEMBER_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.USER_ID, 'varchar(50)', (column) =>
       column
         .references(`${USERS_NAME}.${USERS_SCHEMA.ID}`)
         .onDelete('cascade')
         .notNull(),
     )
-    .addColumn(SCHEMA.ADDRESS_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ADDRESS_ID, 'varchar(50)', (column) =>
       column
         .references(`${ADDRESS_NAME}.${ADDRESS_SCHEMA.ID}`)
-        .onDelete('set null')
-        .notNull(),
+        .onDelete('set null'),
     )
-    .addColumn(SCHEMA.SHIPPING_FEE_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.SHIPPING_FEE_ID, 'varchar(50)', (column) =>
       column
         .references(`${SHIPPING_FEE_NAME}.${SHIPPING_FEE_SCHEMA.ID}`)
-        .onDelete('set null')
-        .notNull(),
+        .onDelete('set null'),
     )
-    .addColumn(SCHEMA.SHIPPING_METHOD_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.SHIPPING_METHOD_ID, 'varchar(50)', (column) =>
       column
         .references(`${SHIPPING_METHOD_NAME}.${SHIPPING_METHOD_SCHEMA.ID}`)
-        .onDelete('set null')
-        .notNull(),
+        .onDelete('set null'),
     )
     .execute();
 }

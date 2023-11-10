@@ -6,7 +6,7 @@ const { NAME, SCHEMA } = DATABASE_TABLE.SHIPPING_FEE;
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
     .createTable(NAME)
-    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
     .addColumn(SCHEMA.NAME, 'varchar(50)', (column) =>

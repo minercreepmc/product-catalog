@@ -13,15 +13,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
-import type { PaginationParams } from '@constants';
+import { PaginationParams } from '@constants';
 import { ProductService } from './product.service';
-import type { ProductModel } from './model';
-import type {
-  CreateProductDto,
-  DeleteProductsDto,
-  UpdateProductDto,
-} from './dto';
-import type {
+import { ProductModel } from './model';
+import { CreateProductDto, DeleteProductsDto, UpdateProductDto } from './dto';
+import {
   CreateProductRO,
   ProductWithImagesRO,
   ProductRO,

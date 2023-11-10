@@ -7,14 +7,14 @@ const { NAME: PRODUCT_NAME, SCHEMA: PRODUCT_SCHEMA } = DATABASE_TABLE.PRODUCT;
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
     .createTable(NAME)
-    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
     .addColumn(SCHEMA.URL, 'varchar(255)', (column) => column.notNull())
     .addColumn(SCHEMA.CREATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
-    .addColumn(SCHEMA.PRODUCT_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.PRODUCT_ID, 'varchar(50)', (column) =>
       column
         .references(`${PRODUCT_NAME}.${PRODUCT_SCHEMA.ID}`)
         .onDelete('cascade')

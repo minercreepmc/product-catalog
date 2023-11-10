@@ -9,7 +9,7 @@ const { NAME: ORDER_DETAILS_NAME, SCHEMA: ORDER_DETAILS_SCHEMA } =
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
     .createTable(NAME)
-    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
     .addColumn(SCHEMA.PRICE, 'bigint', (column) => column.notNull())
@@ -20,13 +20,13 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
-    .addColumn(SCHEMA.PRODUCT_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.PRODUCT_ID, 'varchar(50)', (column) =>
       column
         .references(`${PRODUCT_NAME}.${PRODUCT_SCHEMA.ID}`)
         .onDelete('set null')
         .notNull(),
     )
-    .addColumn(SCHEMA.ORDER_ID, 'uuid', (column) =>
+    .addColumn(SCHEMA.ORDER_ID, 'varchar(50)', (column) =>
       column
         .references(`${ORDER_DETAILS_NAME}.${ORDER_DETAILS_SCHEMA.ID}`)
         .onDelete('cascade')

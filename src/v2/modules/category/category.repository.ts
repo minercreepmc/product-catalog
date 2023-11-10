@@ -97,7 +97,6 @@ export class CategoryRepository {
     const res = await this.databaseService.runQuery(
       `
         SELECT id, name, description FROM category 
-        WHERE deleted_at is null
         ORDER BY updated_at asc
         LIMIT $1 OFFSET $2
       `,

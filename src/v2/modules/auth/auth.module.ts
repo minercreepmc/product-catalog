@@ -26,7 +26,7 @@ const controllers = [AuthController];
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: configService.get('JWT_SECRET'),
+      secret: configService.get('JWT_SECRET')!,
       signOptions: {
         expiresIn: configService.get('JWT_EXPIRATION_TIME'),
       },

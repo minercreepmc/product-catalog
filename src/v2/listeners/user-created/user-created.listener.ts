@@ -2,7 +2,7 @@ import { GlobalEvents } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { CartService } from '@v2/cart';
-import { UserCreatedEvent } from '@v2/users/events';
+import type { UserCreatedEvent } from '@v2/users/events';
 
 @Injectable()
 export class UserCreatedListener {

@@ -1,8 +1,8 @@
-import { GlobalEvents } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CreateShippingDto, UpdateShippingDto } from './dto';
+import { GlobalEvents } from '@constants';
 import { ShippingCreatedEvent, ShippingDeletedEvent } from './event';
+import type { CreateShippingDto, UpdateShippingDto } from './dto';
 import { ShippingRepository } from './shipping.repository';
 
 @Injectable()

@@ -2,7 +2,7 @@ import { GlobalEvents } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { OrderStatus } from '@v2/order/constants';
-import { OrderUpdatedEvent } from '@v2/order/event';
+import type { OrderUpdatedEvent } from '@v2/order/event';
 import { ShippingService } from '@v2/shipping';
 
 @Injectable()

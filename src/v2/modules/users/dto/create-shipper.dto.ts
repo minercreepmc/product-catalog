@@ -1,6 +1,6 @@
 import { DATABASE_TABLE, USER_SCHEMA } from '@constants';
 import { isUniqueDb } from '@youba/nestjs-dbvalidator';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
 
 export class CreateShipperDto {
   @isUniqueDb({
@@ -21,10 +21,14 @@ export class CreateShipperDto {
   password: string;
 
   @IsString()
-  @IsOptional()
-  fullName?: string;
+  @IsNotEmpty({
+    message: 'Tên không được trống',
+  })
+  fullName: string;
 
-  @IsString()
-  @IsOptional()
-  phone?: string;
+  @IsNumberString()
+  @IsNotEmpty({
+    message: 'Số điện thoại không được trống',
+  })
+  phone: string;
 }

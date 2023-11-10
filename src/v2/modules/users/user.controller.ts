@@ -9,20 +9,20 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserRole } from './constants';
 import { RoleGuard } from '@guards/roles';
-import {
+import { ApiApplication, RequestWithUser } from '@constants';
+import { UserService } from './user.service';
+import type { UserModel } from './model';
+import type {
   CreateMemberDto,
   CreateShipperDto,
   CreateStaffDto,
   CreateAdminDto,
   UpdateUserDto,
 } from './dto';
-import { AuthGuard } from '@nestjs/passport';
-import { UserService } from './user.service';
-import { ApiApplication, RequestWithUser } from '@constants';
-import { UserModel } from './model';
-import { UserRO } from './ro';
+import type { UserRO } from './ro';
 
 @Controller(ApiApplication.USER.CONTROLLER)
 export class UserController {

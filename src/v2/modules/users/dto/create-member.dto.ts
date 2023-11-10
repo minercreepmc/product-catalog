@@ -2,15 +2,14 @@ import { DATABASE_TABLE, USER_SCHEMA } from '@constants';
 import { isUniqueDb } from '@youba/nestjs-dbvalidator';
 import {
   IsNotEmpty,
-  IsOptional,
   IsString,
   IsStrongPassword,
   Length,
 } from 'class-validator';
 
 export class CreateMemberDto {
-  @IsString()
   @Length(3, 50)
+  @IsString()
   @isUniqueDb({
     table: DATABASE_TABLE.USERS,
     column: USER_SCHEMA.USERNAME,
@@ -29,10 +28,14 @@ export class CreateMemberDto {
   password: string;
 
   @IsString()
-  @IsOptional()
-  fullName? = 'Default User';
+  @IsNotEmpty({
+    message: 'Tên người dùng không được trống',
+  })
+  fullName: string;
 
   @IsString()
-  @IsOptional()
-  phone?: string;
+  @IsNotEmpty({
+    message: 'Số điện thoại không được trống',
+  })
+  phone: string;
 }

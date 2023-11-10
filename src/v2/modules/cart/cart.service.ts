@@ -1,12 +1,14 @@
+import { BaseService } from '@base';
 import { GlobalErrors } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { formatError } from '@src/v2/utils';
 import { CartRepository } from './cart.repository';
-import { UpdateCartDto } from './dto';
+import type { UpdateCartDto } from './dto';
 
 @Injectable()
-export class CartService {
-  constructor(private readonly cartRepository: CartRepository) {}
+export class CartService extends BaseService {
+  constructor(private readonly cartRepository: CartRepository) {
+    super();
+  }
   create(userId: string) {
     return this.cartRepository.create(userId);
   }
@@ -14,7 +16,7 @@ export class CartService {
   async getByUserId(userId: string) {
     const cart = await this.cartRepository.getByUserId(userId);
     if (!cart) {
-      formatError(
+      this.formatError(
         GlobalErrors.CART.NOT_FOUND.status,
         GlobalErrors.CART.NOT_FOUND.code,
         GlobalErrors.CART.NOT_FOUND.message,

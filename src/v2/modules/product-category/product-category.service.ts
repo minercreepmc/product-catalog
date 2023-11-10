@@ -1,7 +1,7 @@
-import { PaginationParams } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { ProductGetAllByCategoryDto } from './dto/product-category.dto';
+import type { PaginationParams } from '@constants';
 import { ProductCategoryRepository } from './product-category.repository';
+import type { ProductGetAllByCategoryDto } from './dto/product-category.dto';
 
 @Injectable()
 export class ProductCategoryService {

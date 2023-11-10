@@ -5,24 +5,25 @@ import {
   PutObjectCommandOutput,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
-import { DestroyFileDto, UploadFilesDto } from './dto';
+import { ConfigService } from '@nestjs/config';
+import type { DestroyFileDto, UploadFilesDto } from './dto';
 
 @Injectable()
 export class UploadService {
-  private readonly s3Client = new S3Client({
-    region: this.configService.getOrThrow('AWS_S3_REGION'),
-  });
-
+  private readonly s3Client: S3Client;
   private readonly logger = new Logger(UploadService.name);
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.s3Client = new S3Client({
+      region: this.configService.getOrThrow('AWS_S3_REGION'),
+    });
+  }
 
   async upload(dto: UploadFilesDto): Promise<string[]> {
     const { files } = dto;
     const bucket = this.configService.getOrThrow('AWS_S3_BUCKET');
 
-    const sanitizeFilename = (filename) => {
+    const sanitizeFilename = (filename: string) => {
       // Remove special characters and replace spaces with underscores
       return filename.replace(/[^\w.-]/g, '_');
     };

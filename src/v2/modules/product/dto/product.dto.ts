@@ -14,6 +14,7 @@ export class CreateProductDto {
   @isUniqueDb({
     table: DATABASE_TABLE.PRODUCT,
     column: PRODUCT_SCHEMA.NAME,
+    message: 'Tên hàng đã tồn tại',
   })
   @IsString()
   @IsNotEmpty({

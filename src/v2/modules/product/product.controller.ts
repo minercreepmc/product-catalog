@@ -1,4 +1,3 @@
-import { PaginationParams } from '@constants';
 import { ApiApplication } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
@@ -14,10 +13,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
-import { CreateProductDto, DeleteProductsDto, UpdateProductDto } from './dto';
-import { ProductModel } from './model';
+import type { PaginationParams } from '@constants';
 import { ProductService } from './product.service';
-import {
+import type { ProductModel } from './model';
+import type {
+  CreateProductDto,
+  DeleteProductsDto,
+  UpdateProductDto,
+} from './dto';
+import type {
   CreateProductRO,
   ProductWithImagesRO,
   ProductRO,

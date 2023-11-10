@@ -1,6 +1,6 @@
-import { RequestWithUser } from '@constants';
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import type { RequestWithUser } from '@constants';
+import type { UserRole } from '@v2/users/constants';
 
 export const RoleGuard = (...roles: UserRole[]): Type<CanActivate> => {
   class RoleGuardMixin implements CanActivate {

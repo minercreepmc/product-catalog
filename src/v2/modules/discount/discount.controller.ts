@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@v2/users/constants';
 import { DiscountService } from './discount.service';
-import { CreateDiscountDto, UpdateDiscountDto } from './dto';
-import { DiscountModel } from './model';
-import { DiscountIncludeProductCountRO, DiscountRO } from './ro';
+import type { DiscountModel } from './model';
+import type { CreateDiscountDto, UpdateDiscountDto } from './dto';
+import type { DiscountIncludeProductCountRO, DiscountRO } from './ro';
 
 @Controller(ApiApplication.DISCOUNT.CONTROLLER)
 export class DiscountController {

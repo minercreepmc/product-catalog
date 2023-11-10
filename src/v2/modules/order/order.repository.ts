@@ -1,28 +1,29 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { UpdateOrderDto } from './dto';
+import { Injectable } from '@nestjs/common';
+import type { UpdateOrderDto } from './dto';
 import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { handleError } from '@util';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  @DefaultCatch((e) => handleError(e, logger))
-  async create(memberId: string, cartId: string, totalPrice: number) {
+  async create(
+    memberId: string,
+    cartId: string,
+    totalPrice: number,
+    shippingMethodId: string,
+  ) {
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id) 
-        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3))
+      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id, shipping_method_id) 
+        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3), $5)
       RETURNING *; 
     `,
-      [OrderStatus.PROCESSING, memberId, cartId, totalPrice],
+      [OrderStatus.PROCESSING, memberId, cartId, totalPrice, shippingMethodId],
     );
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async update(id: string, dto: UpdateOrderDto) {
     const res = await this.databaseService.runQuery(
       `
@@ -33,20 +34,18 @@ export class OrderRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countDaily() {
     const res = await this.databaseService.runQuery(
       `
       SELECT COUNT(*) AS count
       FROM order_details
-      WHERE date_trunc('day', ) = date_trunc('day', current_date)
+      WHERE date_trunc('day', created_at) = date_trunc('day', current_date)
       `,
     );
 
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countMonthly() {
     const res = await this.databaseService.runQuery(
       `
@@ -59,7 +58,6 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countWeekly() {
     const res = await this.databaseService.runQuery(
       `
@@ -72,7 +70,6 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findOneById(orderId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -90,7 +87,6 @@ export class OrderRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findByMemberAndStatus(memberId: string, status?: OrderStatus) {
     const res = await this.databaseService.runQuery(
       `
@@ -115,7 +111,6 @@ export class OrderRepository {
     return res.rows;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findAll() {
     const res = await this.databaseService.runQuery(
       `
@@ -131,5 +126,3 @@ export class OrderRepository {
     return res.rows;
   }
 }
-
-const logger = new Logger(OrderRepository.name);

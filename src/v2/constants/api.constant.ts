@@ -148,4 +148,8 @@ export const ApiApplication = {
     GET_BY_ORDER_ID: 'get-by-order-id',
     GET_ONE: ':id',
   },
+  SHIPPING_METHOD: {
+    CONTROLLER: ApiBaseUrl + '/shipping-method',
+    GET_ALL: '',
+  },
 };

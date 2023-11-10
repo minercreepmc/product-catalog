@@ -1,15 +1,12 @@
-import { DatabaseService } from '@config/database';
 import { Injectable, Logger } from '@nestjs/common';
-import { handleError } from '@src/v2/utils';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { UpdateCartDto } from './dto';
+import { DatabaseService } from '@config/database';
+import type { UpdateCartDto } from './dto';
 
 @Injectable()
 export class CartRepository {
   constructor(private readonly databaseService: DatabaseService) {}
   logger = new Logger(CartRepository.name);
 
-  @DefaultCatch((e) => handleError(e, logger))
   async create(userId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -23,7 +20,6 @@ export class CartRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async update(userId: string, dto: UpdateCartDto) {
     const res = await this.databaseService.runQuery(
       `
@@ -40,7 +36,6 @@ export class CartRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async getByUserId(userId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -55,7 +50,6 @@ export class CartRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async getItems(cartId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -78,7 +72,6 @@ export class CartRepository {
     return res.rows;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async clearCart(cartId: string) {
     await this.databaseService.runQuery(
       `
@@ -98,7 +91,6 @@ export class CartRepository {
     );
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async getTotalPrice(cartId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -115,7 +107,6 @@ export class CartRepository {
     return res.rows[0].sum ? res.rows[0].sum : 0;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async getIdByUserId(userId: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -123,9 +114,17 @@ export class CartRepository {
       `,
       [userId],
     );
-
     return res.rows[0].id;
   }
-}
 
-const logger = new Logger(CartRepository.name);
+  async getShippingMethodId(cartId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT shipping_method_id FROM cart WHERE id = $1;
+      `,
+      [cartId],
+    );
+
+    return res.rows[0].shipping_method_id;
+  }
+}

@@ -1,28 +1,13 @@
 import { GlobalEvents } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CartRepository } from '@v2/cart';
 import { OrderItemRepository } from '@v2/order-item/order-item.repository';
-import { plainToInstance } from 'class-transformer';
-import { OrderGetByMemberStatusQueryDto, UpdateOrderDto } from './dto';
-import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
 import { OrderRepository } from './order.repository';
+import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
+import type { OrderGetByMemberStatusQueryDto, UpdateOrderDto } from './dto';
 import { CreateOrderRO, OrderDetailsRO } from './ro';
-
-// const cartId = res.rows[0].id;
-// const totalPrice = await this.getTotalPrice(cartId);
-// const orderDetails = await this.createOrderDetails(
-//   memberId,
-//   cartId,
-//   totalPrice,
-// );
-// const order: CreateOrderRO = {
-//   ...orderDetails,
-//   itemIds: [],
-// };
-//
-// order.itemIds = await this.createOrderItems(order.id, cartId);
-// return { ...order, cartId };
 
 @Injectable()
 export class OrderService {
@@ -36,10 +21,14 @@ export class OrderService {
   async create(memberId: string) {
     const cartId = await this.cartRepository.getIdByUserId(memberId);
     const totalPrice = await this.cartRepository.getTotalPrice(cartId);
+    const shippingMethodId = await this.cartRepository.getShippingMethodId(
+      cartId,
+    );
     const created = await this.orderRepository.create(
       memberId,
       cartId,
       totalPrice,
+      shippingMethodId,
     );
 
     if (!created) {
@@ -63,10 +52,10 @@ export class OrderService {
     this.eventEmitter.emit(
       GlobalEvents.ORDER.CREATED,
       new OrderCreatedEvent({
-        cartId: order.cartId,
+        cartId,
       }),
     );
-    return created;
+    return order;
   }
 
   async update(id: string, dto: UpdateOrderDto) {
@@ -79,8 +68,8 @@ export class OrderService {
     this.eventEmitter.emit(
       GlobalEvents.ORDER.UPDATED,
       new OrderUpdatedEvent({
-        status: updated.status,
-        orderId: updated.id,
+        status: dto.status,
+        orderId: id,
       }),
     );
 

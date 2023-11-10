@@ -1,7 +1,7 @@
-import { DatabaseService } from '@config/database';
 import { Injectable } from '@nestjs/common';
-import { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
-import { ProductImageModel } from './model';
+import { DatabaseService } from '@config/database';
+import type { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
+import type { ProductImageModel } from './model';
 
 @Injectable()
 export class ProductImageRepository {

@@ -62,6 +62,6 @@ export class IncomeRepository {
       [OrderStatus.COMPLETED],
     );
 
-    return res[0]?.total_price;
+    return res.rows[0].total_price || 0;
   }
 }

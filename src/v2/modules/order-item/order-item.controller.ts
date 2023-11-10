@@ -2,9 +2,9 @@ import { UseInterceptors } from '@nestjs/common';
 import { Body, Controller, Post } from '@nestjs/common';
 import { TransformDataInterceptor } from '@interceptors';
 import { ApiApplication } from '@constants';
-import { OrderItemGetByOrderIdDto } from './dto/order-item.dto';
-import { OrderItemRO } from './ro';
 import { OrderItemService } from './order-item.service';
+import type { OrderItemGetByOrderIdDto } from './dto/order-item.dto';
+import { OrderItemRO } from './ro';
 
 @Controller(ApiApplication.ORDER_ITEM.CONTROLLER)
 export class OrderItemController {

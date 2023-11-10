@@ -1,16 +1,13 @@
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@config/database';
-import { PaginationParams } from '@constants';
-import { Injectable, Logger } from '@nestjs/common';
-import { handleError } from '@util';
-import { DefaultCatch } from 'catch-decorator-ts';
+import type { PaginationParams } from '@constants';
 import { UserRole } from './constants';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import type { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  @DefaultCatch((e) => handleError(e, logger))
   async create(dto: CreateUserDto) {
     const { username, password, fullName, role, email, phone } = dto;
     const res = await this.databaseService.runQuery(
@@ -32,7 +29,6 @@ export class UserRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async deleteOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -44,7 +40,6 @@ export class UserRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -60,7 +55,6 @@ export class UserRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async updateOneById(id: string, newState: UpdateUserDto) {
     const { email, phone, fullName, password } = newState;
     const res = await this.databaseService.runQuery(
@@ -78,7 +72,6 @@ export class UserRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findOneByName(name: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -90,7 +83,6 @@ export class UserRepository {
     return res.rows[0];
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findAll(filter?: PaginationParams) {
     const res = await this.databaseService.runQuery(
       `
@@ -103,7 +95,6 @@ export class UserRepository {
     return res.rows;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findAllByRole(role: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -116,7 +107,6 @@ export class UserRepository {
     return res.rows;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async findShipperOrThrow(id: string) {
     const res = await this.databaseService.runQuery(
       `
@@ -133,7 +123,6 @@ export class UserRepository {
     return user;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countDailyMember() {
     const res = await this.databaseService.runQuery(
       `
@@ -147,7 +136,6 @@ export class UserRepository {
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countMonthlyMember() {
     const res = await this.databaseService.runQuery(
       `
@@ -161,7 +149,6 @@ export class UserRepository {
     return res.rows[0].count;
   }
 
-  @DefaultCatch((e) => handleError(e, logger))
   async countWeeklyMember() {
     const res = await this.databaseService.runQuery(
       `
@@ -172,9 +159,6 @@ export class UserRepository {
       `,
       [UserRole.MEMBER],
     );
-    console.log(res.rows[0].count);
     return res.rows[0].count;
   }
 }
-
-const logger = new Logger(UserRepository.name);

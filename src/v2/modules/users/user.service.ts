@@ -1,6 +1,10 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import * as bcrypt from 'bcrypt';
+import { GlobalEvents } from '@constants';
 import { UserRole } from './constants';
-import {
+import { UserCreatedEvent } from './events';
+import type {
   CreateAdminDto,
   CreateMemberDto,
   CreateShipperDto,
@@ -8,12 +12,6 @@ import {
   UpdateUserDto,
 } from './dto';
 import { UserRepository } from './user.repository';
-import * as bcrypt from 'bcrypt';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { GlobalErrors, GlobalEvents } from '@constants';
-import { UserCreatedEvent } from './events';
-import { DefaultCatch } from 'catch-decorator-ts';
-import { formatError } from '@src/v2/utils';
 
 @Injectable()
 export class UserService {
@@ -30,15 +28,6 @@ export class UserService {
     return this.userRepository.findAllByRole(UserRole.STAFF);
   }
 
-  @DefaultCatch((e) =>
-    formatError(
-      GlobalErrors.USER.CREATE_FAILED.status,
-      GlobalErrors.USER.CREATE_FAILED.code,
-      GlobalErrors.USER.CREATE_FAILED.message,
-      logger,
-      e,
-    ),
-  )
   async createMember(dto: CreateMemberDto) {
     const { fullName, password, username, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
@@ -58,15 +47,6 @@ export class UserService {
     return user;
   }
 
-  @DefaultCatch((e) =>
-    formatError(
-      GlobalErrors.USER.CREATE_FAILED.status,
-      GlobalErrors.USER.CREATE_FAILED.code,
-      GlobalErrors.USER.CREATE_FAILED.message,
-      logger,
-      e,
-    ),
-  )
   async createAdmin(dto: CreateAdminDto) {
     const { username, fullName, password, email, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
@@ -88,15 +68,6 @@ export class UserService {
     return this.userRepository.findOneById(id);
   }
 
-  @DefaultCatch((e) =>
-    formatError(
-      GlobalErrors.USER.CREATE_FAILED.status,
-      GlobalErrors.USER.CREATE_FAILED.code,
-      GlobalErrors.USER.CREATE_FAILED.message,
-      logger,
-      e,
-    ),
-  )
   async createStaff(dto: CreateStaffDto) {
     const { username, fullName, password, email, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
@@ -113,15 +84,6 @@ export class UserService {
     return user;
   }
 
-  @DefaultCatch((e) =>
-    formatError(
-      GlobalErrors.USER.CREATE_FAILED.status,
-      GlobalErrors.USER.CREATE_FAILED.code,
-      GlobalErrors.USER.CREATE_FAILED.message,
-      logger,
-      e,
-    ),
-  )
   async createShipper(dto: CreateShipperDto) {
     const { username, fullName, password, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
@@ -137,15 +99,6 @@ export class UserService {
     return user;
   }
 
-  @DefaultCatch((e) => {
-    formatError(
-      GlobalErrors.USER.UPDATE_FAILED.status,
-      GlobalErrors.USER.UPDATE_FAILED.code,
-      GlobalErrors.USER.UPDATE_FAILED.message,
-      logger,
-      e,
-    );
-  })
   async update(id: string, dto: UpdateUserDto) {
     const { fullName, password, email, phone } = dto;
     const hashed = password ? await bcrypt.hash(password, 10) : undefined;
@@ -173,5 +126,3 @@ export class UserService {
     return this.userRepository.countWeeklyMember();
   }
 }
-
-const logger = new Logger(UserService.name);

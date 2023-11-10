@@ -1,5 +1,5 @@
 import { ConfigurableModuleBuilder } from '@nestjs/common';
-import { DatabaseConfigOptions } from './database.config';
+import type { DatabaseConfigOptions } from './database.config';
 
 export const CONNECTION_POOL = Symbol('CONNECTION_POOL');
 

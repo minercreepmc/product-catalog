@@ -1,9 +1,9 @@
 import { GlobalEvents } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { OrderService } from '@v2/order';
 import { OrderStatus } from '@v2/order/constants';
-import { ShippingDeletedEvent } from '@v2/shipping/event';
+import { OrderService } from '@v2/order';
+import type { ShippingDeletedEvent } from '@v2/shipping/event';
 
 @Injectable()
 export class ShippingDeletedListener {

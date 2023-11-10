@@ -17,7 +17,7 @@ export class CreateUserDto {
   password: string;
   @IsString()
   @IsOptional()
-  fullName?: string;
+  fullName?: string | undefined;
 
   @IsEnum(UserRole)
   @IsString()
@@ -25,9 +25,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  email?: string;
+  email?: string | undefined;
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone?: string | undefined;
 }

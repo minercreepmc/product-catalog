@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateShippingFeeDto } from './dto';
 import { ShippingFeeRepository } from './shipping-fee.repository';
+import type { CreateShippingFeeDto } from './dto';
 
 @Injectable()
 export class ShippingFeeService {

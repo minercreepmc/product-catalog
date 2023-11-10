@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 import { UserRepository } from '@v2/users';
-import { TokenPayload } from './constants';
-import { LogInDto } from './dto';
 import * as bcrypt from 'bcrypt';
+import type { TokenPayload } from './constants';
+import type { LogInDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -18,10 +18,11 @@ export class AuthService {
     if (!cookie) {
       return false;
     }
-    console.log('cookie', cookie);
-    const payload = this.jwtService.verify(cookie, {
-      secret: this.configService.get('JWT_SECRET'),
-    });
+    const jwtVerifyOptions: JwtVerifyOptions = {
+      // TODO: verify config
+      secret: this.configService.get('JWT_SECRET')!,
+    };
+    const payload = this.jwtService.verify(cookie, jwtVerifyOptions);
     const user = await this.userRepository.findOneById(payload.userId);
     return Boolean(user);
   }

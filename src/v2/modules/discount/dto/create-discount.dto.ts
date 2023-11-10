@@ -9,7 +9,9 @@ export class CreateDiscountDto {
     column: DISCOUNT_SCHEMA.NAME,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Tên giảm giá không được để trống',
+  })
   name: string;
 
   @IsOptional()
@@ -18,6 +20,8 @@ export class CreateDiscountDto {
 
   @IsNumber()
   @Transform(({ value }) => Number(value))
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Phầm trăm không được để trống',
+  })
   percentage: number;
 }

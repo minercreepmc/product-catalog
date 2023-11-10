@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       deleted_at timestamp without time zone,
       shipping_fee_id varchar(255) REFERENCES shipping_fee(id),
       address_id varchar(255) REFERENCES address(id),
-      user_id varchar(255) REFERENCES users(id)
+      user_id varchar(255) REFERENCES users(id),
       shipping_method_id varchar(255) REFERENCES shipping_method(id)
     );
   `);

@@ -2,7 +2,7 @@ export class OrderModel {
   id: string;
   status: string;
   total_price: number;
-  fee_id: string;
+  shipping_fee_id: string;
   member_id: string;
   address_id: string;
 }

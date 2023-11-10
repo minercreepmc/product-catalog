@@ -56,7 +56,7 @@ export class ShippingRepository {
       a.location as address, u1.full_name as shipper
       FROM shipping s
       INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.fee_id 
+      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
       INNER JOIN address a ON a.id = o.address_id
       INNER JOIN users u1 ON u1.id = s.shipper_id
       INNER JOIN users u2 ON u2.id = o.member_id
@@ -78,7 +78,7 @@ export class ShippingRepository {
       a.location as address, u.full_name as shipper
       FROM shipping s
       INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.fee_id 
+      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
       INNER JOIN address a ON a.id = o.address_id
       INNER JOIN users u ON u.id = s.shipper_id
       WHERE s.order_id = $1
@@ -97,7 +97,7 @@ export class ShippingRepository {
       a.location as address, u.full_name as shipper
       FROM shipping s
       INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.fee_id 
+      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
       INNER JOIN address a ON a.id = o.address_id
       INNER JOIN users u ON u.id = s.shipper_id
     `,
@@ -114,7 +114,7 @@ export class ShippingRepository {
       a.location as address, u.full_name as shipper
       FROM shipping s
       INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.fee_id 
+      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
       INNER JOIN address a ON a.id = o.address_id
       INNER JOIN users u ON u.id = s.shipper_id
       INNER JOIN users u2 ON u2.id = o.member_id

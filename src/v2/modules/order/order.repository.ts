@@ -15,7 +15,7 @@ export class OrderRepository {
   ) {
     const res = await this.databaseService.runQuery(
       `
-      INSERT INTO order_details (status, member_id, address_id, total_price, fee_id, shipping_method_id) 
+      INSERT INTO order_details (status, member_id, address_id, total_price, shipping_fee_id, shipping_method_id) 
         VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3), $5)
       RETURNING *; 
     `,
@@ -78,7 +78,7 @@ export class OrderRepository {
         f.fee as fee_price, u.full_name as member_name, u.phone as member_phone
         FROM order_details o
         INNER JOIN address a ON a.id = o.address_id
-        INNER JOIN shipping_fee f ON f.id = o.fee_id
+        INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id
         INNER JOIN users u ON u.id = o.member_id
         WHERE o.id = $1;
       `,
@@ -100,7 +100,7 @@ export class OrderRepository {
           f.fee AS fee_price
       FROM order_details o
       INNER JOIN address a ON a.id = o.address_id
-      INNER JOIN shipping_fee f ON f.id = o.fee_id
+      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id
       INNER JOIN order_item oi ON oi.order_id = o.id
       WHERE o.member_id = $1 AND 
 (o.status = $2 OR ($2 IS NULL AND o.status != $3))
@@ -119,7 +119,7 @@ export class OrderRepository {
         f.fee as fee_price, u.full_name as member_name, u.phone as member_phone
         FROM order_details o
         INNER JOIN address a ON a.id = o.address_id
-        INNER JOIN shipping_fee f ON f.id = o.fee_id
+        INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id
         INNER JOIN users u ON u.id = o.member_id
       `,
     );

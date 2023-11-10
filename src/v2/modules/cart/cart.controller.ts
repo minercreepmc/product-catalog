@@ -10,14 +10,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { CartService } from './cart.service';
 import type { CartModel } from './model';
 import type { UpdateCartDto } from './dto';
 import type { CartRO } from './ro';
 
 @Controller(ApiApplication.CART.CONTROLLER)
-@UseGuards(JwtGuard, RoleGuard(UserRole.MEMBER))
+@UseGuards(JwtGuard, RoleGuard(USERS_ROLE.MEMBER))
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
@@ -35,7 +35,7 @@ export class CartController {
   }
 
   @Get(ApiApplication.CART.GET)
-  @UseGuards(RoleGuard(UserRole.MEMBER))
+  @UseGuards(RoleGuard(USERS_ROLE.MEMBER))
   getByUserId(@Req() req: RequestWithUser): Promise<CartRO> {
     return this.cartService.getByUserId(req.user.id);
   }

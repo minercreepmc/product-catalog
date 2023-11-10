@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@config/database';
 import type { PaginationParams } from '@constants';
-import { UserRole } from './constants';
+import { USERS_ROLE } from './constants';
 import type { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
@@ -112,7 +112,7 @@ export class UserRepository {
       `
       SELECT * from "users" WHERE id=$1 AND role=$2
       `,
-      [id, UserRole.SHIPPER],
+      [id, USERS_ROLE.SHIPPER],
     );
 
     const user = res.rows[0];
@@ -131,7 +131,7 @@ export class UserRepository {
       WHERE role = $1
         AND date_trunc('day', created_at) = date_trunc('day', current_date) 
       `,
-      [UserRole.MEMBER],
+      [USERS_ROLE.MEMBER],
     );
     return res.rows[0].count;
   }
@@ -144,7 +144,7 @@ export class UserRepository {
       WHERE role = $1
         AND date_trunc('month', created_at) = date_trunc('month', current_date) 
       `,
-      [UserRole.MEMBER],
+      [USERS_ROLE.MEMBER],
     );
     return res.rows[0].count;
   }
@@ -157,7 +157,7 @@ export class UserRepository {
       WHERE role = $1
         AND date_trunc('week', created_at) = date_trunc('week', current_date) 
       `,
-      [UserRole.MEMBER],
+      [USERS_ROLE.MEMBER],
     );
     return res.rows[0].count;
   }

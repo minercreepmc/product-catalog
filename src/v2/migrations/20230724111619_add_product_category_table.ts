@@ -1,15 +1,38 @@
-import type { Knex } from 'knex';
+import { Kysely, sql } from 'kysely';
+import { DATABASE_TABLE } from '@constants';
 
-export async function up(knex: Knex): Promise<void> {
-  return knex.raw(`
-    CREATE TABLE product_category ( 
-      product_id varchar(255) REFERENCES product(id) ON DELETE CASCADE,
-      category_id varchar(255) REFERENCES category(id) ON DELETE CASCADE,
-      PRIMARY KEY (product_id, category_id)
-    );
-  `);
+const { NAME, SCHEMA } = DATABASE_TABLE.PRODUCT_CATEGORY;
+const { NAME: PRODUCT_NAME, SCHEMA: PRODUCT_SCHEMA } = DATABASE_TABLE.PRODUCT;
+const { NAME: CATEGORY_NAME, SCHEMA: CATEGORY_SCHEMA } =
+  DATABASE_TABLE.CATEGORY;
+
+export async function up(database: Kysely<unknown>): Promise<void> {
+  await database.schema
+    .createTable(NAME)
+    .addColumn(SCHEMA.ID, 'uuid', (column) =>
+      column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
+    )
+    .addColumn(SCHEMA.PRODUCT_ID, 'uuid', (column) =>
+      column
+        .references(`${PRODUCT_NAME}.${PRODUCT_SCHEMA.ID}`)
+        .onDelete('cascade')
+        .notNull(),
+    )
+    .addColumn(SCHEMA.CATEGORY_ID, 'uuid', (column) =>
+      column
+        .references(`${CATEGORY_NAME}.${CATEGORY_SCHEMA.ID}`)
+        .onDelete('cascade')
+        .notNull(),
+    )
+    .addColumn(SCHEMA.CREATED_AT, 'timestamp', (column) =>
+      column.defaultTo(sql`now()`),
+    )
+    .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
+      column.defaultTo(sql`now()`),
+    )
+    .execute();
 }
 
-export async function down(knex: Knex): Promise<void> {
-  return knex.raw('DROP TABLE product_category;');
+export async function down(database: Kysely<unknown>): Promise<void> {
+  await database.schema.dropTable(NAME).execute();
 }

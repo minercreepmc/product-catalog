@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { CategoryService } from './category.service';
 import type { CategoryModel } from './model';
 import type { CreateCategoryDto, UpdateCategoryDto } from './dto';
@@ -23,13 +23,13 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post(ApiApplication.CATEGORY.CREATE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   create(@Body() dto: CreateCategoryDto): Promise<CategoryModel> {
     return this.categoryService.create(dto);
   }
 
   @Put(ApiApplication.CATEGORY.UPDATE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateCategoryDto,
@@ -53,7 +53,7 @@ export class CategoryController {
   }
 
   @Delete(ApiApplication.CATEGORY.DELETE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   delete(@Param('id') id: string): Promise<CategoryModel> {
     return this.categoryService.deleteOne(id);
   }

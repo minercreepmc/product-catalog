@@ -1,6 +1,8 @@
-import { CART_SCHEMA, DATABASE_TABLE } from '@constants';
+import { DATABASE_TABLE } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
 import { IsOptional, IsString } from 'class-validator';
+
+const { NAME, SCHEMA } = DATABASE_TABLE.CART;
 
 export class CreateCartDto {}
 export class UpdateCartDto {
@@ -16,8 +18,8 @@ export class UpdateCartDto {
 export class GetCartItemsDto {
   @IsString()
   @isExistDb({
-    table: DATABASE_TABLE.CART,
-    column: CART_SCHEMA.ID,
+    table: NAME,
+    column: SCHEMA.ID,
   })
   cartId: string;
 }

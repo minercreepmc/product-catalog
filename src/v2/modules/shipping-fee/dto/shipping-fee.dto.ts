@@ -1,12 +1,14 @@
-import { DATABASE_TABLE, SHIPPING_FEE_SCHEMA } from '@constants';
+import { DATABASE_TABLE } from '@constants';
 import { isUniqueDb } from '@youba/nestjs-dbvalidator';
-import { Transform } from 'class-transformer';
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+
+const { NAME, SCHEMA } = DATABASE_TABLE.SHIPPING_FEE;
 
 export class CreateShippingFeeDto {
   @isUniqueDb({
-    table: DATABASE_TABLE.SHIPPING_FEE,
-    column: SHIPPING_FEE_SCHEMA.NAME,
+    table: NAME,
+    column: SCHEMA.NAME,
     message: 'Tên phí đã tồn tại',
   })
   @IsString()
@@ -16,7 +18,7 @@ export class CreateShippingFeeDto {
   name: string;
 
   @IsNumber()
-  @Transform(({ value }) => Number(value))
+  @Type(() => Number)
   @IsNotEmpty({
     message: 'Phí không được để trống',
   })
@@ -25,8 +27,8 @@ export class CreateShippingFeeDto {
 
 export class UpdateShippingFeeDto {
   @isUniqueDb({
-    table: DATABASE_TABLE.SHIPPING_FEE,
-    column: SHIPPING_FEE_SCHEMA.NAME,
+    table: NAME,
+    column: SCHEMA.NAME,
     message: 'Tên phí đã tồn tại',
   })
   @IsString()
@@ -37,7 +39,7 @@ export class UpdateShippingFeeDto {
   name: string;
 
   @IsNumber()
-  @Transform(({ value }) => Number(value))
+  @Type(() => Number)
   @IsNotEmpty({
     message: 'Phí không được để trống',
   })

@@ -11,18 +11,18 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { CartItemService } from './cart-item.service';
 import type {
   CreateCartItemDto,
   UpdateCartItemDto,
   UpsertCartItemDto,
-} from './dtos';
+} from './dto';
 import type { CartItemModel } from './model';
 import type { CartItemRO } from './ro';
 
 @Controller(ApiApplication.CART_ITEM.CONTROLLER)
-@UseGuards(JwtGuard, RoleGuard(UserRole.MEMBER))
+@UseGuards(JwtGuard, RoleGuard(USERS_ROLE.MEMBER))
 export class CartItemController {
   constructor(private readonly cartItemService: CartItemService) {}
   @Post(ApiApplication.CART_ITEM.CREATE)

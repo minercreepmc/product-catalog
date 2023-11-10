@@ -4,7 +4,7 @@ import { LocalAuthenticationGuard } from '@guards/local';
 import { RoleGuard } from '@guards/roles';
 import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import type { Request } from 'express';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { UserService } from '@v2/users/user.service';
 import type { Response as ExpressResponse } from 'express';
 import { AuthService } from './auth.service';
@@ -40,7 +40,7 @@ export class AuthController {
   @Post(ApiApplication.AUTH.LOGIN_DASHBOARD)
   @UseGuards(
     LocalAuthenticationGuard,
-    RoleGuard(UserRole.ADMIN, UserRole.STAFF, UserRole.SHIPPER),
+    RoleGuard(USERS_ROLE.ADMIN, USERS_ROLE.STAFF, USERS_ROLE.SHIPPER),
   )
   async logInDashboard(
     @Req() req: RequestWithUser,

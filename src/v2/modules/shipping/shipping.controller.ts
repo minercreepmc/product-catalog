@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { ApiApplication, RequestWithUser } from '@constants';
 import { ShippingService } from './shipping.service';
 import type { ShippingModel } from './model';
@@ -29,13 +29,13 @@ export class ShippingController {
   constructor(private readonly shippingService: ShippingService) {}
 
   @Post(ApiApplication.SHIPPING.CREATE)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
   async create(@Body() dto: CreateShippingDto): Promise<ShippingModel> {
     return this.shippingService.create(dto);
   }
 
   @Put(ApiApplication.SHIPPING.UPDATE)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateShippingDto,
@@ -56,13 +56,13 @@ export class ShippingController {
   }
 
   @Get(ApiApplication.SHIPPING.GET_ALL)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
   async getAll(): Promise<ShippingRO[]> {
     return this.shippingService.getAll();
   }
 
   @Post(ApiApplication.SHIPPING.GET_BY_SHIPPER_ID)
-  @UseGuards(RoleGuard(UserRole.SHIPPER, UserRole.SHIPPER))
+  @UseGuards(RoleGuard(USERS_ROLE.SHIPPER, USERS_ROLE.SHIPPER))
   async getShippingByShipperId(
     @Req() req: RequestWithUser,
     @Body() dto: GetShippingByShipperDto,

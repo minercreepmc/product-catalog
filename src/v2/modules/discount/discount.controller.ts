@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { DiscountService } from './discount.service';
 import type { DiscountModel } from './model';
 import type { CreateDiscountDto, UpdateDiscountDto } from './dto';
@@ -22,13 +22,13 @@ import type { DiscountIncludeProductCountRO, DiscountRO } from './ro';
 export class DiscountController {
   constructor(private readonly discountService: DiscountService) {}
   @Post(ApiApplication.DISCOUNT.CREATE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   create(@Body() dto: CreateDiscountDto): Promise<DiscountModel> {
     return this.discountService.create(dto);
   }
 
   @Put(ApiApplication.DISCOUNT.UPDATE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateDiscountDto,
@@ -37,7 +37,7 @@ export class DiscountController {
   }
 
   @Delete(ApiApplication.DISCOUNT.DELETE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   deleteOneById(@Param('id') id: string): Promise<DiscountModel> {
     return this.discountService.deleteOneById(id);
   }

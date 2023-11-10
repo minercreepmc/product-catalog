@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import type { PaginationParams } from '@constants';
 import { ProductService } from './product.service';
 import type { ProductModel } from './model';
@@ -33,13 +33,13 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post(ApiApplication.PRODUCT.CREATE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   create(@Body() dto: CreateProductDto): Promise<CreateProductRO> {
     return this.productService.create(dto);
   }
 
   @Put(ApiApplication.PRODUCT.UPDATE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateProductDto,
@@ -65,31 +65,31 @@ export class ProductController {
   }
 
   @Delete(ApiApplication.PRODUCT.DELETE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   deleteProduct(@Param('id') id: string): Promise<ProductModel> {
     return this.productService.deleteOneById(id);
   }
 
   @Post(ApiApplication.PRODUCT.DELETE_MANY)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   deleteProducts(@Body() dto: DeleteProductsDto): Promise<string[]> {
     return this.productService.deleteManyByIds(dto.ids);
   }
 
   @Post(ApiApplication.PRODUCT.GET_DAILY_SOLD)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   getSoldProductDaily() {
     return this.productService.getSoldProductDaily();
   }
 
   @Post(ApiApplication.PRODUCT.GET_MONTHLY_SOLD)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   getSoldProductMonthly() {
     return this.productService.getSoldProductMonthly();
   }
 
   @Post(ApiApplication.PRODUCT.GET_WEEKLY_SOLD)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   getSoldProductWeekly() {
     return this.productService.getSoldProductWeekly();
   }

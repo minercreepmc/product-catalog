@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { FormDataRequest } from 'nestjs-form-data';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { ApiApplication } from '@constants';
@@ -8,7 +8,7 @@ import { UploadService } from './upload.service';
 import type { DestroyFileDto, UploadFilesDto } from './dto';
 
 @Controller(ApiApplication.UPLOAD.CONTROLLER)
-@UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+@UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 

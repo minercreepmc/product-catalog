@@ -12,7 +12,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import type {
   UpdateOrderDto,
   GetByMemberDto,
@@ -27,13 +27,13 @@ import type { CreateOrderRO, OrderRO } from './ro';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
   @Post(ApiApplication.ORDER.CREATE)
-  @UseGuards(RoleGuard(UserRole.MEMBER))
+  @UseGuards(RoleGuard(USERS_ROLE.MEMBER))
   create(@Req() req: RequestWithUser): Promise<CreateOrderRO> {
     return this.orderService.create(req.user.id);
   }
 
   @Put(ApiApplication.ORDER.UPDATE)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.SHIPPER, UserRole.MEMBER))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.SHIPPER, USERS_ROLE.MEMBER))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateOrderDto,
@@ -42,19 +42,19 @@ export class OrderController {
   }
 
   @Get(ApiApplication.ORDER.GET_ONE)
-  @UseGuards(RoleGuard(UserRole.MEMBER, UserRole.STAFF))
+  @UseGuards(RoleGuard(USERS_ROLE.MEMBER, USERS_ROLE.STAFF))
   get(@Param('orderId') id: string): Promise<OrderRO> {
     return this.orderService.getOne(id);
   }
 
   @Get(ApiApplication.ORDER.GET_ALL)
-  @UseGuards(RoleGuard(UserRole.STAFF))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF))
   getAll(): Promise<OrderRO[]> {
     return this.orderService.getAll();
   }
 
   @Post(ApiApplication.ORDER.GET_BY_MEMBER)
-  @UseGuards(RoleGuard(UserRole.MEMBER, UserRole.STAFF))
+  @UseGuards(RoleGuard(USERS_ROLE.MEMBER, USERS_ROLE.STAFF))
   getByMember(
     @Req() req: RequestWithUser,
     @Body() dto: GetByMemberDto,
@@ -68,19 +68,19 @@ export class OrderController {
   }
 
   @Post(ApiApplication.ORDER.COUNT_DAILY)
-  @UseGuards(RoleGuard(UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.ADMIN))
   countDaily() {
     return this.orderService.countDaily();
   }
 
   @Post(ApiApplication.ORDER.COUNT_MONTHLY)
-  @UseGuards(RoleGuard(UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.ADMIN))
   countMonthly() {
     return this.orderService.countMonthly();
   }
 
   @Post(ApiApplication.ORDER.COUNT_WEEKLY)
-  @UseGuards(RoleGuard(UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.ADMIN))
   countWeekly() {
     return this.orderService.countWeekly();
   }

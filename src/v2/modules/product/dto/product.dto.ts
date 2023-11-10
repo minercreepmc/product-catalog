@@ -1,6 +1,5 @@
-import { DATABASE_TABLE, DISCOUNT_SCHEMA, PRODUCT_SCHEMA } from '@constants';
 import { isExistDb, isUniqueDb } from '@youba/nestjs-dbvalidator';
-import { Transform } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -9,11 +8,16 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { DATABASE_TABLE } from '@constants';
+
+const { NAME, SCHEMA } = DATABASE_TABLE.PRODUCT;
+const { NAME: DISCOUNT_NAME, SCHEMA: DISCOUNT_SCHEMA } =
+  DATABASE_TABLE.DISCOUNT;
 
 export class CreateProductDto {
   @isUniqueDb({
-    table: DATABASE_TABLE.PRODUCT,
-    column: PRODUCT_SCHEMA.NAME,
+    table: NAME,
+    column: SCHEMA.NAME,
     message: 'Tên hàng đã tồn tại',
   })
   @IsString()
@@ -23,7 +27,7 @@ export class CreateProductDto {
   name: string;
 
   @IsNumber()
-  @Transform(({ value }) => Number(value))
+  @Type(() => Number)
   @IsNotEmpty({
     message: 'Giá không được để trống',
   })
@@ -40,7 +44,7 @@ export class CreateProductDto {
   imageUrls?: string[];
 
   @isExistDb({
-    table: DATABASE_TABLE.DISCOUNT,
+    table: DISCOUNT_NAME,
     column: DISCOUNT_SCHEMA.ID,
   })
   @IsString()
@@ -62,8 +66,8 @@ export class DeleteProductsDto {
 }
 export class UpdateProductDto {
   @isUniqueDb({
-    table: DATABASE_TABLE.PRODUCT,
-    column: PRODUCT_SCHEMA.NAME,
+    table: NAME,
+    column: SCHEMA.NAME,
     message: 'Tên hàng hóa đã tồn tại',
   })
   @IsString()
@@ -77,7 +81,7 @@ export class UpdateProductDto {
   @IsNotEmpty({
     message: 'Giá không được để trống',
   })
-  @Transform(({ value }) => Number(value))
+  @Type(() => Number)
   @IsOptional()
   price: number;
 

@@ -1,16 +1,17 @@
-import {
-  DATABASE_TABLE,
-  ORDER_DETAILS_SCHEMA,
-  SHIPPING_SCHEMA,
-} from '@constants';
+import { DATABASE_TABLE } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+const { NAME: ORDER_DETAILS_NAME, SCHEMA: ORDER_DETAILS_SCHEMA } =
+  DATABASE_TABLE.ORDER_DETAILS;
+const { NAME: SHIPPING_NAME, SCHEMA: SHIPPING_SCHEMA } =
+  DATABASE_TABLE.SHIPPING;
 
 export class CreateShippingStatusDto {
   @IsString()
   status: string;
   @isExistDb({
-    table: DATABASE_TABLE.SHIPPING,
+    table: SHIPPING_NAME,
     column: SHIPPING_SCHEMA.ID,
   })
   @IsString()
@@ -25,7 +26,7 @@ export class UpdateShippingStatusDto {
 
 export class GetByShippingIdDto {
   @isExistDb({
-    table: DATABASE_TABLE.SHIPPING,
+    table: SHIPPING_NAME,
     column: SHIPPING_SCHEMA.ID,
   })
   @IsString()
@@ -34,7 +35,7 @@ export class GetByShippingIdDto {
 
 export class GetByOrderIdDto {
   @isExistDb({
-    table: DATABASE_TABLE.ORDER_DETAILS,
+    table: ORDER_DETAILS_NAME,
     column: ORDER_DETAILS_SCHEMA.ID,
   })
   @IsNotEmpty()

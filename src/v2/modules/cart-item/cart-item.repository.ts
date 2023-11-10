@@ -5,7 +5,7 @@ import type {
   CreateCartItemDto,
   UpdateCartItemDto,
   UpsertCartItemDto,
-} from './dtos';
+} from './dto';
 import { CartItemRO } from './ro';
 
 @Injectable()

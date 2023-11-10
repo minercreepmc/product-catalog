@@ -1,6 +1,6 @@
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import {
   Body,
   Controller,
@@ -32,13 +32,13 @@ export class ShippingFeeController {
   }
 
   @Post(ApiApplication.SHIPPING_FEE.CREATE)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
   create(@Body() dto: CreateShippingFeeDto): Promise<ShippingFeeModel> {
     return this.shippingFeeService.create(dto);
   }
 
   @Put(ApiApplication.SHIPPING_FEE.UPDATE)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
   update(
     @Param('id') id: string,
     @Body() dto: UpdateShippingFeeDto,
@@ -47,7 +47,7 @@ export class ShippingFeeController {
   }
 
   @Delete(ApiApplication.SHIPPING_FEE.DELETE)
-  @UseGuards(RoleGuard(UserRole.STAFF, UserRole.ADMIN))
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
   delete(@Param('id') id: string): Promise<ShippingFeeModel> {
     return this.shippingFeeService.delete(id);
   }

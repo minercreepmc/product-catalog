@@ -1,13 +1,15 @@
-import { DATABASE_TABLE, PRODUCT_SCHEMA } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
 import { Transform } from 'class-transformer';
 import { IsNumber, IsPositive, IsString } from 'class-validator';
+import { DATABASE_TABLE } from '@constants';
+
+const { NAME, SCHEMA } = DATABASE_TABLE.PRODUCT;
 
 export class CreateCartItemDto {
   @IsString()
   @isExistDb({
-    table: DATABASE_TABLE.PRODUCT,
-    column: PRODUCT_SCHEMA.ID,
+    table: NAME,
+    column: SCHEMA.ID,
   })
   productId: string;
 
@@ -25,8 +27,8 @@ export class UpdateCartItemDto {
 export class UpsertCartItemDto {
   @IsString()
   @isExistDb({
-    table: DATABASE_TABLE.PRODUCT,
-    column: PRODUCT_SCHEMA.ID,
+    table: NAME,
+    column: SCHEMA.ID,
   })
   productId: string;
   @IsNumber()

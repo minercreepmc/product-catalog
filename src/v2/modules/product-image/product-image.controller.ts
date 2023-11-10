@@ -2,7 +2,7 @@ import { ApiApplication } from '@constants';
 import { JwtGuard } from '@guards/jwt';
 import { RoleGuard } from '@guards/roles';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { UserRole } from '@v2/users/constants';
+import { USERS_ROLE } from '@v2/users/constants';
 import { ProductImageService } from './product-image.service';
 import type { ProductImageModel } from './model';
 import type { AddImageUrlsDto, RemoveImageUrlDto } from './dto';
@@ -12,13 +12,13 @@ export class ProductImageController {
   constructor(private readonly productImageService: ProductImageService) {}
 
   @Post(ApiApplication.PRODUCT_IMAGE.ADD)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   add(@Body() dto: AddImageUrlsDto): Promise<ProductImageModel[]> {
     return this.productImageService.addImageUrls(dto);
   }
 
   @Post(ApiApplication.PRODUCT_IMAGE.REMOVE)
-  @UseGuards(JwtGuard, RoleGuard(UserRole.ADMIN))
+  @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
   remove(@Body() dto: RemoveImageUrlDto): Promise<ProductImageModel[]> {
     return this.productImageService.removeImageUrls(dto);
   }

@@ -1,109 +1,170 @@
-export enum DATABASE_TABLE {
-  SHIPPING = 'shipping',
-  SHIPPING_FEE = 'shipping_fee',
-  USERS = 'users',
-  ADDRESS = 'address',
-  PRODUCT = 'product',
-  DISCOUNT = 'discount',
-  CATEGORY = 'category',
-  PRODUCT_IMAGE = 'product_image',
-  PRODUCT_CATEGORY = 'product_category',
-  CART = 'cart',
-  CART_ITEM = 'cart_item',
-  ORDER_DETAILS = 'order_details',
-  ORDER_ITEM = 'order_item',
-}
-
-export enum PRODUCT_SCHEMA {
-  ID = 'id',
-  NAME = 'name',
-  PRICE = 'price',
-  DESCRIPTION = 'description',
-  IMAGE_URL = 'image_url',
-  DISCOUNT_ID = 'discount_id',
-}
-
-export enum ADDRESS_SCHEMA {
-  ID = 'id',
-  LOCATION = 'location',
-  USER_ID = 'user_id',
-}
-
-export enum CART_SCHEMA {
-  ID = 'id',
-  USER_ID = 'user_id',
-  TOTAL_PRICE = 'total_price',
-}
-
-export enum CART_ITEM_SCHEMA {
-  ID = 'id',
-  CART_ID = 'cart_id',
-  PRODUCT_ID = 'product_id',
-  AMOUNT = 'amount',
-}
-
-export enum CATEGORY_SCHEMA {
-  ID = 'id',
-  NAME = 'name',
-  DESCRIPTION = 'description',
-}
-
-export enum PRODUCT_CATEGORY_SCHEMA {
-  ID = 'id',
-  PRODUCT_ID = 'product_id',
-  CATEGORY_ID = 'category_id',
-}
-
-export enum DISCOUNT_SCHEMA {
-  ID = 'id',
-  NAME = 'name',
-  DESCRIPTION = 'description',
-  PERCENTAGE = 'percentage',
-  ACTIVE = 'active',
-}
-
-export enum SHIPPING_FEE_SCHEMA {
-  ID = 'id',
-  NAME = 'name',
-  FEE = 'fee',
-}
-
-export enum USER_SCHEMA {
-  ID = 'id',
-  USERNAME = 'username',
-  PASSWORD = 'password',
-  FULL_NAME = 'full_name',
-  ROLE = 'role',
-  PHONE = 'phone',
-  EMAIL = 'email',
-}
-
-export enum ORDER_DETAILS_SCHEMA {
-  ID = 'id',
-  MEMBER_ID = 'member_id',
-  TOTAL_PRICE = 'total_price',
-  STATUS = 'status',
-  ADDRESS_ID = 'address_id',
-  FEE_ID = 'fee_id',
-}
-
-export enum SHIPPING_SCHEMA {
-  ID = 'id',
-  STATUS = 'status',
-  ORDER_ID = 'order_id',
-  SHIPPER_ID = 'shipper_id',
-}
-
-export enum PRODUCT_IMAGE_SHEMA {
-  ID = 'id',
-  PRODUCT_ID = 'product_id',
-  URL = 'url',
-}
-
-export enum ORDER_ITEM_SCHEMA {
-  ID = 'id',
-  ORDER_ID = 'order_id',
-  PRODUCT_ID = 'product_id',
-  AMOUNT = 'amount',
-  PRICE = 'price',
-}
+export const DATABASE_TABLE = {
+  SHIPPING: {
+    NAME: 'shipping',
+    SCHEMA: {
+      ID: 'id',
+      DUE_DATE: 'due_date',
+      ORDER_ID: 'order_id',
+      SHIPPER_ID: 'shipper_id',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  SHIPPING_FEE: {
+    NAME: 'shipping_fee',
+    SCHEMA: {
+      ID: 'id',
+      NAME: 'name',
+      FEE: 'fee',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  SHIPPING_STATUS: {
+    NAME: 'shipping_status',
+    SCHEMA: {
+      ID: 'id',
+      NAME: 'name',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  SHIPPING_METHOD: {
+    NAME: 'shipping_method',
+    SCHEMA: {
+      ID: 'id',
+      NAME: 'name',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  USERS: {
+    NAME: 'users',
+    SCHEMA: {
+      ID: 'id',
+      USERNAME: 'username',
+      HASHED: 'hashed',
+      PASSWORD: 'password',
+      FULL_NAME: 'full_name',
+      ROLE: 'role',
+      PHONE: 'phone',
+      EMAIL: 'email',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  ADDRESS: {
+    NAME: 'address',
+    SCHEMA: {
+      ID: 'id',
+      LOCATION: 'location',
+      USER_ID: 'user_id',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  PRODUCT: {
+    NAME: 'product',
+    SCHEMA: {
+      ID: 'id',
+      NAME: 'name',
+      PRICE: 'price',
+      DESCRIPTION: 'description',
+      IMAGE_URL: 'image_url',
+      DISCOUNT_ID: 'discount_id',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  DISCOUNT: {
+    NAME: 'discount',
+    SCHEMA: {
+      ID: 'id',
+      NAME: 'name',
+      DESCRIPTION: 'description',
+      PERCENTAGE: 'percentage',
+      ACTIVE: 'active',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  CATEGORY: {
+    NAME: 'category',
+    SCHEMA: {
+      ID: 'id',
+      NAME: 'name',
+      DESCRIPTION: 'description',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  PRODUCT_IMAGE: {
+    NAME: 'product_image',
+    SCHEMA: {
+      ID: 'id',
+      PRODUCT_ID: 'product_id',
+      URL: 'url',
+      CREATED_AT: 'created_at',
+    },
+  },
+  PRODUCT_CATEGORY: {
+    NAME: 'product_category',
+    SCHEMA: {
+      ID: 'id',
+      PRODUCT_ID: 'product_id',
+      CATEGORY_ID: 'category_id',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  CART: {
+    NAME: 'cart',
+    SCHEMA: {
+      ID: 'id',
+      TOTAL_PRICE: 'total_price',
+      MEMBER_ID: 'member_id',
+      SHIPPING_FEE_ID: 'shipping_fee_id',
+      ADDRESS_ID: 'address_id',
+      SHIPPING_METHOD_ID: 'shipping_method_id',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  CART_ITEM: {
+    NAME: 'cart_item',
+    SCHEMA: {
+      ID: 'id',
+      CART_ID: 'cart_id',
+      PRODUCT_ID: 'product_id',
+      AMOUNT: 'amount',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  ORDER_DETAILS: {
+    NAME: 'order_details',
+    SCHEMA: {
+      ID: 'id',
+      MEMBER_ID: 'member_id',
+      TOTAL_PRICE: 'total_price',
+      STATUS: 'status',
+      ADDRESS_ID: 'address_id',
+      SHIPPING_FEE_ID: 'shipping_fee_id',
+      SHIPPING_METHOD_ID: 'shipping_method_id',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+  ORDER_ITEM: {
+    NAME: 'order_item',
+    SCHEMA: {
+      ID: 'id',
+      ORDER_ID: 'order_id',
+      PRODUCT_ID: 'product_id',
+      AMOUNT: 'amount',
+      PRICE: 'price',
+      CREATED_AT: 'created_at',
+      UPDATED_AT: 'updated_at',
+    },
+  },
+};

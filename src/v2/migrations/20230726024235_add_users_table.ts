@@ -1,9 +1,7 @@
 import { Kysely, sql } from 'kysely';
 import { DATABASE_TABLE } from '@constants';
 
-const { NAME, SCHEMA } = DATABASE_TABLE.PRODUCT;
-const { NAME: DISCOUNT_NAME, SCHEMA: DISCOUNT_SCHEMA } =
-  DATABASE_TABLE.DISCOUNT;
+const { NAME, SCHEMA } = DATABASE_TABLE.USERS;
 
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
@@ -11,19 +9,19 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.ID, 'uuid', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
-    .addColumn(SCHEMA.NAME, 'varchar(255)', (column) =>
+    .addColumn(SCHEMA.USERNAME, 'varchar(255)', (column) =>
       column.notNull().unique(),
     )
-    .addColumn(SCHEMA.PRICE, 'bigint', (column) => column.notNull())
-    .addColumn(SCHEMA.DESCRIPTION, 'varchar(500)')
+    .addColumn(SCHEMA.HASHED, 'varchar(255)', (column) => column.notNull())
+    .addColumn(SCHEMA.ROLE, 'varchar(10)', (column) => column.notNull())
+    .addColumn(SCHEMA.EMAIL, 'varchar(50)', (column) => column.unique())
+    .addColumn(SCHEMA.PHONE, 'varchar(50)', (column) => column.unique())
+    .addColumn(SCHEMA.FULL_NAME, 'varchar(50)')
     .addColumn(SCHEMA.CREATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
-    )
-    .addColumn(SCHEMA.DISCOUNT_ID, 'uuid', (column) =>
-      column.references(`${DISCOUNT_NAME}.${DISCOUNT_SCHEMA.ID}`),
     )
     .execute();
 }

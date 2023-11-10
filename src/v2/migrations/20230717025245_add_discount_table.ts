@@ -1,8 +1,7 @@
 import { Kysely, sql } from 'kysely';
 import { DATABASE_TABLE } from '@constants';
 
-const { NAME, SCHEMA } = DATABASE_TABLE.PRODUCT_IMAGE;
-const { NAME: PRODUCT_NAME, SCHEMA: PRODUCT_SCHEMA } = DATABASE_TABLE.PRODUCT;
+const { NAME, SCHEMA } = DATABASE_TABLE.DISCOUNT;
 
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
@@ -10,15 +9,17 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.ID, 'uuid', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
-    .addColumn(SCHEMA.URL, 'varchar(255)', (column) => column.notNull())
+    .addColumn(SCHEMA.NAME, 'varchar(255)', (column) =>
+      column.notNull().unique(),
+    )
+    .addColumn(SCHEMA.DESCRIPTION, 'varchar(500)')
+    .addColumn(SCHEMA.PERCENTAGE, 'integer', (column) => column.notNull())
+    .addColumn(SCHEMA.ACTIVE, 'boolean')
     .addColumn(SCHEMA.CREATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
-    .addColumn(SCHEMA.PRODUCT_ID, 'uuid', (column) =>
-      column
-        .references(`${PRODUCT_NAME}.${PRODUCT_SCHEMA.ID}`)
-        .onDelete('cascade')
-        .notNull(),
+    .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
+      column.defaultTo(sql`now()`),
     )
     .execute();
 }

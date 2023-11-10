@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as bcrypt from 'bcrypt';
 import { GlobalEvents } from '@constants';
-import { UserRole } from './constants';
+import { USERS_ROLE } from './constants';
 import { UserCreatedEvent } from './events';
 import type {
   CreateAdminDto,
@@ -25,14 +25,14 @@ export class UserService {
   }
 
   async getAllStaff() {
-    return this.userRepository.findAllByRole(UserRole.STAFF);
+    return this.userRepository.findAllByRole(USERS_ROLE.STAFF);
   }
 
   async createMember(dto: CreateMemberDto) {
     const { fullName, password, username, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     const user = await this.userRepository.create({
-      role: UserRole.MEMBER,
+      role: USERS_ROLE.MEMBER,
       username,
       fullName,
       phone,
@@ -51,7 +51,7 @@ export class UserService {
     const { username, fullName, password, email, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     return this.userRepository.create({
-      role: UserRole.ADMIN,
+      role: USERS_ROLE.ADMIN,
       username,
       fullName,
       email,
@@ -61,7 +61,7 @@ export class UserService {
   }
 
   getAllShippers() {
-    return this.userRepository.findAllByRole(UserRole.SHIPPER);
+    return this.userRepository.findAllByRole(USERS_ROLE.SHIPPER);
   }
 
   getOne(id: string) {
@@ -72,7 +72,7 @@ export class UserService {
     const { username, fullName, password, email, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     const user = await this.userRepository.create({
-      role: UserRole.STAFF,
+      role: USERS_ROLE.STAFF,
       username,
       fullName: fullName ? fullName : undefined,
       password: hashed,
@@ -88,7 +88,7 @@ export class UserService {
     const { username, fullName, password, phone } = dto;
     const hashed = await bcrypt.hash(password, 10);
     const user = await this.userRepository.create({
-      role: UserRole.SHIPPER,
+      role: USERS_ROLE.SHIPPER,
       username,
       fullName: fullName ? fullName : undefined,
       password: hashed,

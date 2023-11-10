@@ -116,4 +116,15 @@ export class CartRepository {
     );
     return res.rows[0].id;
   }
+
+  async getShippingMethodId(cartId: string) {
+    const res = await this.databaseService.runQuery(
+      `
+        SELECT shipping_method_id FROM cart WHERE id = $1;
+      `,
+      [cartId],
+    );
+
+    return res.rows[0].shipping_method_id;
+  }
 }

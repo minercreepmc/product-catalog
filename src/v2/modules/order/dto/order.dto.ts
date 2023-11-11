@@ -1,4 +1,5 @@
 import { DATABASE_TABLE } from '@constants';
+import { PaginationParams } from '@common/dto';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { OrderStatus } from '../constants';
@@ -26,4 +27,10 @@ export class OrderGetByMemberStatusQueryDto {
   @IsEnum(OrderStatus)
   @IsOptional()
   status?: OrderStatus;
+}
+
+export class OrderGetAllDto extends PaginationParams {
+  @IsString()
+  @IsOptional()
+  status? = 'PROCESSING';
 }

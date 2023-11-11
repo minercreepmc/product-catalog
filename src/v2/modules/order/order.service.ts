@@ -6,8 +6,12 @@ import { CartRepository } from '@v2/cart';
 import { OrderItemRepository } from '@v2/order-item/order-item.repository';
 import { OrderRepository } from './order.repository';
 import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
-import type { OrderGetByMemberStatusQueryDto, UpdateOrderDto } from './dto';
-import { CreateOrderRO, OrderDetailsRO, OrderGetAllRO } from './ro';
+import type {
+  OrderGetAllDto,
+  OrderGetByMemberStatusQueryDto,
+  UpdateOrderDto,
+} from './dto';
+import { CreateOrderRO, OrderGetDetailsRO, OrderGetAllRO } from './ro';
 
 @Injectable()
 export class OrderService {
@@ -83,7 +87,7 @@ export class OrderService {
       throw new NotFoundException('Order not found');
     }
 
-    const order: OrderDetailsRO = {
+    const order: OrderGetDetailsRO = {
       id: orderDetails.id,
       total_price: orderDetails.total_price,
       status: orderDetails.status,
@@ -92,7 +96,7 @@ export class OrderService {
       member_name: orderDetails.member_name,
       member_phone: orderDetails.member_phone,
       address_location: orderDetails.address_location,
-      updated_at: orderDetails.updated_at,
+      created_at: orderDetails.created_at,
       items: [],
     };
 
@@ -105,8 +109,8 @@ export class OrderService {
     return this.orderRepository.findByMemberAndStatus(memberId, status);
   }
 
-  async getAll() {
-    const response = await this.orderRepository.findAll();
+  async getAll(dto: OrderGetAllDto) {
+    const response = await this.orderRepository.findAll(dto);
 
     return plainToInstance(OrderGetAllRO, response, {
       excludeExtraneousValues: true,

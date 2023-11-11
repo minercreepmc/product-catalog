@@ -1,8 +1,9 @@
+import { PaginateRO } from '@common/ro';
 import type { OrderItemRO } from '@v2/order-item/ro';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { OrderModel } from '../model';
 
-export class OrderGetAllRO {
+export class OrderGetAllDataRO {
   @Expose()
   id: string;
 
@@ -22,16 +23,22 @@ export class OrderGetAllRO {
   address_location: string;
 
   @Expose()
-  member_name: string;
+  member_name?: string | undefined;
 
   @Expose()
-  member_phone: string;
+  member_phone?: string | undefined;
 
   @Expose()
-  updated_at: Date;
+  created_at: Date;
 }
 
-export class OrderDetailsRO extends OrderGetAllRO {
+export class OrderGetAllRO extends PaginateRO<OrderGetAllDataRO> {
+  @Expose()
+  @Type(() => OrderGetAllDataRO)
+  data: OrderGetAllDataRO[];
+}
+
+export class OrderGetDetailsRO extends OrderGetAllDataRO {
   @Expose()
   items: OrderItemRO[];
 }

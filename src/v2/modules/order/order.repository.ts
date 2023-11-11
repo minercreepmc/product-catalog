@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import type { UpdateOrderDto } from './dto';
+import type { OrderGetAllDto, UpdateOrderDto } from './dto';
 import { DatabaseService } from '@config/database';
 import { OrderStatus } from './constants';
 import { KyselyDatabase } from '@config/kysely';
+import { paginate } from '@common/function';
 
 @Injectable()
 export class OrderRepository {
@@ -115,35 +116,36 @@ export class OrderRepository {
     return res.rows;
   }
 
-  findAll() {
-    return this.database
+  async findAll(dto: OrderGetAllDto) {
+    const { limit, page, status } = dto;
+
+    let query = this.database
       .selectFrom('order_details as o')
       .innerJoin('address as a', 'a.id', 'o.address_id')
       .innerJoin('shipping_fee as f', 'f.id', 'o.shipping_fee_id')
       .innerJoin('users as u', 'u.id', 'o.member_id')
+      .orderBy('o.created_at')
       .select([
         'o.id',
         'o.total_price',
         'o.status',
-        'o.updated_at',
+        'o.created_at',
         'a.location as address_location',
         'f.name as fee_name',
         'f.fee as fee_price',
         'u.full_name as member_name',
         'u.phone as member_phone',
-      ])
-      .execute();
-    // const res = await this.databaseService.runQuery(
-    //   `
-    //     SELECT o.updated_at, o.id, o.total_price, o.status,
-    //     a.location as address_location, f.name as fee_name,
-    //     f.fee as fee_price, u.full_name as member_name, u.phone as member_phone
-    //     FROM order_details o
-    //     INNER JOIN address a ON a.id = o.address_id
-    //     INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id
-    //     INNER JOIN users u ON u.id = o.member_id
-    //   `,
-    // );
-    // return res.rows;
+      ]);
+
+    if (status) {
+      query = query.where('o.status', '=', status);
+    }
+
+    return paginate(query, this.database, {
+      limit,
+      page,
+      tableName: 'order_details',
+      getOriginalTotalItems: true,
+    });
   }
 }

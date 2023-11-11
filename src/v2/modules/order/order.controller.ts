@@ -17,10 +17,11 @@ import {
   UpdateOrderDto,
   GetByMemberDto,
   OrderGetByMemberStatusQueryDto,
+  OrderGetAllDto,
 } from './dto';
 import { OrderModel } from './model';
 import { OrderService } from './order.service';
-import { CreateOrderRO, OrderGetAllRO } from './ro';
+import { CreateOrderRO, OrderGetAllRO, OrderGetDetailsRO } from './ro';
 
 @Controller(ApiApplication.ORDER.CONTROLLER)
 @UseGuards(JwtGuard)
@@ -43,14 +44,15 @@ export class OrderController {
 
   @Get(ApiApplication.ORDER.GET_ONE)
   @UseGuards(RoleGuard(USERS_ROLE.MEMBER, USERS_ROLE.STAFF))
-  get(@Param('orderId') id: string): Promise<OrderGetAllRO> {
+  get(@Param('orderId') id: string): Promise<OrderGetDetailsRO> {
     return this.orderService.getOne(id);
   }
 
   @Get(ApiApplication.ORDER.GET_ALL)
   @UseGuards(RoleGuard(USERS_ROLE.STAFF))
-  getAll(): Promise<OrderGetAllRO[]> {
-    return this.orderService.getAll();
+  getAll(@Query() dto: OrderGetAllDto): Promise<OrderGetAllRO> {
+    console.log(dto);
+    return this.orderService.getAll(dto);
   }
 
   @Post(ApiApplication.ORDER.GET_BY_MEMBER)

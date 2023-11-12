@@ -92,39 +92,15 @@ export class OrderRepository {
     return res.rows[0];
   }
 
-  async findByMemberAndStatus(memberId: string, status?: OrderStatus) {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT
-          o.updated_at,
-          o.id,
-          o.total_price,
-          o.status,
-          a.location AS address_location,
-          f.name AS fee_name,
-          f.fee AS fee_price
-      FROM order_details o
-      INNER JOIN address a ON a.id = o.address_id
-      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id
-      INNER JOIN order_item oi ON oi.order_id = o.id
-      WHERE o.member_id = $1 AND 
-(o.status = $2 OR ($2 IS NULL AND o.status != $3))
-      GROUP BY o.updated_at, o.id, o.total_price, o.status, a.location, f.name, f.fee;
-      `,
-      [memberId, status, OrderStatus.CANCELED],
-    );
-    return res.rows;
-  }
-
-  async findAll(dto: OrderGetAllDto) {
-    const { limit, page, status } = dto;
+  async findAll(dto: OrderGetAllDto, userId?: string) {
+    const { limit, page, status, orderBy, direction } = dto;
 
     let query = this.database
       .selectFrom('order_details as o')
       .innerJoin('address as a', 'a.id', 'o.address_id')
       .innerJoin('shipping_fee as f', 'f.id', 'o.shipping_fee_id')
       .innerJoin('users as u', 'u.id', 'o.member_id')
-      .orderBy('o.created_at')
+      .orderBy(`o.${orderBy}`, direction)
       .select([
         'o.id',
         'o.total_price',
@@ -139,6 +115,10 @@ export class OrderRepository {
 
     if (status) {
       query = query.where('o.status', '=', status);
+    }
+
+    if (userId) {
+      query = query.where('o.member_id', '=', userId);
     }
 
     return paginate(query, this.database, {

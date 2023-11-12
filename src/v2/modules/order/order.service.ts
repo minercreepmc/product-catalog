@@ -1,4 +1,4 @@
-import { GlobalEvents } from '@constants';
+import { GlobalEvents, RequestWithUser } from '@constants';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -8,10 +8,10 @@ import { OrderRepository } from './order.repository';
 import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
 import type {
   OrderGetAllDto,
-  OrderGetByMemberStatusQueryDto,
   UpdateOrderDto,
 } from './dto';
 import { CreateOrderRO, OrderGetDetailsRO, OrderGetAllRO } from './ro';
+import { USERS_ROLE } from '@v2/users/constants';
 
 @Injectable()
 export class OrderService {
@@ -104,13 +104,10 @@ export class OrderService {
     return order;
   }
 
-  getByMember(memberId: string, query: OrderGetByMemberStatusQueryDto) {
-    const { status } = query;
-    return this.orderRepository.findByMemberAndStatus(memberId, status);
-  }
-
-  async getAll(dto: OrderGetAllDto) {
-    const response = await this.orderRepository.findAll(dto);
+  async getAll(dto: OrderGetAllDto, req: RequestWithUser) {
+    const userId =
+      req.user.role === USERS_ROLE.MEMBER ? req.user.id : undefined;
+    const response = await this.orderRepository.findAll(dto, userId);
 
     return plainToInstance(OrderGetAllRO, response, {
       excludeExtraneousValues: true,

@@ -13,12 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { USERS_ROLE } from '@v2/users/constants';
-import {
-  UpdateOrderDto,
-  GetByMemberDto,
-  OrderGetByMemberStatusQueryDto,
-  OrderGetAllDto,
-} from './dto';
+import { UpdateOrderDto, OrderGetAllDto } from './dto';
 import { OrderModel } from './model';
 import { OrderService } from './order.service';
 import { CreateOrderRO, OrderGetAllRO, OrderGetDetailsRO } from './ro';
@@ -49,24 +44,12 @@ export class OrderController {
   }
 
   @Get(ApiApplication.ORDER.GET_ALL)
-  @UseGuards(RoleGuard(USERS_ROLE.STAFF))
-  getAll(@Query() dto: OrderGetAllDto): Promise<OrderGetAllRO> {
-    console.log(dto);
-    return this.orderService.getAll(dto);
-  }
-
-  @Post(ApiApplication.ORDER.GET_BY_MEMBER)
-  @UseGuards(RoleGuard(USERS_ROLE.MEMBER, USERS_ROLE.STAFF))
-  getByMember(
+  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.MEMBER))
+  getAll(
     @Req() req: RequestWithUser,
-    @Body() dto: GetByMemberDto,
-    @Query() query: OrderGetByMemberStatusQueryDto,
-  ): Promise<OrderGetAllRO[]> {
-    if (req.user) {
-      return this.orderService.getByMember(req.user.id, query);
-    } else {
-      return this.orderService.getByMember(dto.memberId, query);
-    }
+    @Query() dto: OrderGetAllDto,
+  ): Promise<OrderGetAllRO> {
+    return this.orderService.getAll(dto, req);
   }
 
   @Post(ApiApplication.ORDER.COUNT_DAILY)

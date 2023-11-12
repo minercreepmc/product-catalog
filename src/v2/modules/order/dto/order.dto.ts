@@ -1,10 +1,7 @@
-import { DATABASE_TABLE } from '@constants';
 import { PaginationParams } from '@common/dto';
-import { isExistDb } from '@youba/nestjs-dbvalidator';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { OrderStatus } from '../constants';
-
-const { NAME, SCHEMA } = DATABASE_TABLE.ORDER_DETAILS;
+import { OrderModel } from '../model';
 
 export class UpdateOrderDto {
   @IsString()
@@ -12,25 +9,16 @@ export class UpdateOrderDto {
   status: string;
 }
 
-export class GetByMemberDto {
-  @IsOptional()
-  @IsString()
-  @isExistDb({
-    table: NAME,
-    column: SCHEMA.MEMBER_ID,
-  })
-  memberId: string;
-}
-
-export class OrderGetByMemberStatusQueryDto {
-  @IsString()
-  @IsEnum(OrderStatus)
-  @IsOptional()
-  status?: OrderStatus;
-}
-
 export class OrderGetAllDto extends PaginationParams {
   @IsString()
   @IsOptional()
   status? = 'PROCESSING';
+
+  @IsString()
+  @IsOptional()
+  orderBy: keyof OrderModel = 'created_at';
+
+  @IsString()
+  @IsOptional()
+  direction: 'asc' | 'desc' = 'desc';
 }

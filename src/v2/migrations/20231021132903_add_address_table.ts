@@ -10,14 +10,15 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
-    .addColumn(SCHEMA.LOCATION, 'varchar(255)', (column) =>
-      column.notNull().unique(),
-    )
+    .addColumn(SCHEMA.LOCATION, 'varchar(255)', (column) => column.notNull())
     .addColumn(SCHEMA.CREATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
+    )
+    .addColumn(SCHEMA.DELETED_AT, 'timestamp', (column) =>
+      column.defaultTo(null),
     )
     .addColumn(SCHEMA.USER_ID, 'varchar(50)', (column) =>
       column

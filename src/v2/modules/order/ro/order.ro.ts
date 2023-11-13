@@ -1,6 +1,8 @@
 import { PaginateRO } from '@common/ro';
 import type { OrderItemRO } from '@v2/order-item/ro';
 import { Expose, Type } from 'class-transformer';
+import { Generated } from 'kysely';
+import { OrderStatus } from '../constants';
 import { OrderModel } from '../model';
 
 export class OrderGetAllDataRO {
@@ -18,6 +20,9 @@ export class OrderGetAllDataRO {
 
   @Expose()
   fee_price: number;
+
+  @Expose()
+  shipping_method: string;
 
   @Expose()
   address_location: string;
@@ -43,7 +48,34 @@ export class OrderGetDetailsRO extends OrderGetAllDataRO {
   items: OrderItemRO[];
 }
 
-export class CreateOrderRO extends OrderModel {
+export class CreateOrderRO implements OrderModel {
+  @Expose()
+  id: Generated<string>;
+
+  @Expose()
+  status: OrderStatus;
+
+  @Expose()
+  address_id: string;
+
+  @Expose()
+  total_price: number;
+
+  @Expose()
+  shipping_fee_id: string;
+
+  @Expose()
+  shipping_method_id: string;
+
+  @Expose()
+  member_id: string;
+
+  @Expose()
+  created_at: Generated<Date>;
+
+  @Expose()
+  updated_at: Generated<Date>;
+
   @Expose()
   itemIds: string[];
 

@@ -11,7 +11,6 @@ export class ShippingDeletedListener {
 
   @OnEvent(GlobalEvents.SHIPPING.DELETED)
   async changeOrderStatus(event: ShippingDeletedEvent) {
-    console.log(event.status);
     if (event.status !== OrderStatus.CANCELED) {
       await this.orderService.update(event.orderId, {
         status: OrderStatus.PROCESSING,

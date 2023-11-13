@@ -5,6 +5,14 @@ import { OrderStatus } from './constants';
 import { KyselyDatabase } from '@config/kysely';
 import { paginate } from '@common/function';
 
+export interface OrderStoreDto {
+  memberId: string;
+  addressId: string;
+  totalPrice: number;
+  shippingFeeId: string;
+  shippingMethodId: string;
+}
+
 @Injectable()
 export class OrderRepository {
   constructor(
@@ -12,21 +20,22 @@ export class OrderRepository {
     private readonly database: KyselyDatabase,
   ) {}
 
-  async create(
-    memberId: string,
-    cartId: string,
-    totalPrice: number,
-    shippingMethodId: string,
-  ) {
-    const res = await this.databaseService.runQuery(
-      `
-      INSERT INTO order_details (status, member_id, address_id, total_price, shipping_fee_id, shipping_method_id) 
-        VALUES ($1, $2, (SELECT address_id FROM cart WHERE id = $3), $4, (SELECT shipping_fee_id FROM cart WHERE id = $3), $5)
-      RETURNING *; 
-    `,
-      [OrderStatus.PROCESSING, memberId, cartId, totalPrice, shippingMethodId],
-    );
-    return res.rows[0];
+  store(dto: OrderStoreDto) {
+    const { memberId, addressId, totalPrice, shippingFeeId, shippingMethodId } =
+      dto;
+
+    return this.database
+      .insertInto('order_details')
+      .values({
+        address_id: addressId,
+        status: OrderStatus.PROCESSING,
+        member_id: memberId,
+        total_price: totalPrice,
+        shipping_fee_id: shippingFeeId,
+        shipping_method_id: shippingMethodId,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
   }
 
   async update(id: string, dto: UpdateOrderDto) {
@@ -75,21 +84,27 @@ export class OrderRepository {
     return res.rows[0].count;
   }
 
-  async findOneById(orderId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT o.updated_at, o.id, o.total_price, o.status, 
-        a.location as address_location, f.name as fee_name,
-        f.fee as fee_price, u.full_name as member_name, u.phone as member_phone
-        FROM order_details o
-        INNER JOIN address a ON a.id = o.address_id
-        INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id
-        INNER JOIN users u ON u.id = o.member_id
-        WHERE o.id = $1;
-      `,
-      [orderId],
-    );
-    return res.rows[0];
+  getOne(orderId: string) {
+    return this.database
+      .selectFrom('order_details as o')
+      .innerJoin('address as a', 'a.id', 'o.address_id')
+      .innerJoin('shipping_fee as sf', 'sf.id', 'o.shipping_fee_id')
+      .innerJoin('shipping_method as sm', 'sm.id', 'o.shipping_method_id')
+      .innerJoin('users as u', 'u.id', 'o.member_id')
+      .where('id', '=', orderId)
+      .select([
+        'o.id',
+        'o.total_price',
+        'o.status',
+        'o.created_at',
+        'a.location as address_location',
+        'sf.name as fee_name',
+        'sf.fee as fee_price',
+        'sm.name as shipping_method',
+        'u.full_name as member_name',
+        'u.phone as member_phone',
+      ])
+      .executeTakeFirst();
   }
 
   async findAll(dto: OrderGetAllDto, userId?: string) {
@@ -97,9 +112,10 @@ export class OrderRepository {
 
     let query = this.database
       .selectFrom('order_details as o')
-      .innerJoin('address as a', 'a.id', 'o.address_id')
       .innerJoin('shipping_fee as f', 'f.id', 'o.shipping_fee_id')
+      .innerJoin('address as a', 'a.id', 'o.address_id')
       .innerJoin('users as u', 'u.id', 'o.member_id')
+      .innerJoin('shipping_method as sm', 'sm.id', 'o.shipping_method_id')
       .orderBy(`o.${orderBy}`, direction)
       .select([
         'o.id',
@@ -111,6 +127,7 @@ export class OrderRepository {
         'f.fee as fee_price',
         'u.full_name as member_name',
         'u.phone as member_phone',
+        'sm.name as shipping_method',
       ]);
 
     if (status) {

@@ -5,6 +5,7 @@ import { IsDateString, IsOptional, IsString } from 'class-validator';
 const { NAME: ORDER_DETAILS_NAME, SCHEMA: ORDER_DETAILS_SCHEMA } =
   DATABASE_TABLE.ORDER_DETAILS;
 const { NAME: USER_NAME, SCHEMA: USER_SCHEMA } = DATABASE_TABLE.USERS;
+const { NAME, SCHEMA } = DATABASE_TABLE.SHIPPING;
 
 export class CreateShippingDto {
   @IsString()
@@ -38,22 +39,28 @@ export class UpdateShippingDto {
   dueDate: Date;
 }
 
-export class GetShippingByShipperDto {
-  @IsOptional()
-  @IsString()
+export class ShippingGetDetailDto {
   @isExistDb({
-    table: USER_NAME,
-    column: USER_SCHEMA.ID,
+    table: NAME,
+    column: SCHEMA.ID,
   })
-  shipperId: string;
-}
-
-export class GetShippingByOrderDto {
-  @IsOptional()
   @IsString()
+  @IsOptional()
+  id: string;
+
   @isExistDb({
     table: ORDER_DETAILS_NAME,
     column: ORDER_DETAILS_SCHEMA.ID,
   })
+  @IsString()
+  @IsOptional()
   orderId: string;
+
+  @isExistDb({
+    table: USER_NAME,
+    column: USER_SCHEMA.ID,
+  })
+  @IsString()
+  @IsOptional()
+  shipperId: string;
 }

@@ -3,11 +3,11 @@ import { DATABASE_TABLE } from '@constants';
 
 const { NAME, SCHEMA } = DATABASE_TABLE.ORDER_DETAILS;
 const { NAME: USERS_NAME, SCHEMA: USERS_SCHEMA } = DATABASE_TABLE.USERS;
-const { NAME: ADDRESS_NAME, SCHEMA: ADDRESS_SCHEMA } = DATABASE_TABLE.ADDRESS;
 const { NAME: SHIPPING_FEE_NAME, SCHEMA: SHIPPING_FEE_SCHEMA } =
   DATABASE_TABLE.SHIPPING_FEE;
 const { NAME: SHIPPING_METHOD_NAME, SCHEMA: SHIPPING_METHOD_SCHEMA } =
   DATABASE_TABLE.SHIPPING_METHOD;
+const { NAME: ADDRESS_NAME, SCHEMA: ADDRESS_SCHEMA } = DATABASE_TABLE.ADDRESS;
 
 export async function up(database: Kysely<unknown>): Promise<void> {
   await database.schema
@@ -23,32 +23,21 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
-    .addColumn(SCHEMA.MEMBER_ID, 'varchar(50)', (column) =>
-      column
-        .references(`${USERS_NAME}.${USERS_SCHEMA.ID}`)
-        .onDelete('cascade')
-        .notNull(),
-    )
     .addColumn(SCHEMA.ADDRESS_ID, 'varchar(50)', (column) =>
-      column
-        .references(`${ADDRESS_NAME}.${ADDRESS_SCHEMA.ID}`)
-        .onDelete('set null')
-        .notNull(),
+      column.references(`${ADDRESS_NAME}.${ADDRESS_SCHEMA.ID}`).notNull(),
+    )
+    .addColumn(SCHEMA.MEMBER_ID, 'varchar(50)', (column) =>
+      column.references(`${USERS_NAME}.${USERS_SCHEMA.ID}`).notNull(),
     )
     .addColumn(SCHEMA.SHIPPING_FEE_ID, 'varchar(50)', (column) =>
       column
         .references(`${SHIPPING_FEE_NAME}.${SHIPPING_FEE_SCHEMA.ID}`)
-        .onDelete('set null')
         .notNull(),
     )
-    .addColumn(
-      SCHEMA.SHIPPING_METHOD_ID,
-      'varchar(50)',
-      (column) =>
-        column
-          .references(`${SHIPPING_METHOD_NAME}.${SHIPPING_METHOD_SCHEMA.ID}`)
-          .onDelete('set null'),
-      // TODO: Not null
+    .addColumn(SCHEMA.SHIPPING_METHOD_ID, 'varchar(50)', (column) =>
+      column
+        .references(`${SHIPPING_METHOD_NAME}.${SHIPPING_METHOD_SCHEMA.ID}`)
+        .notNull(),
     )
     .execute();
 }

@@ -2,8 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { GlobalEvents } from '@constants';
 import { ShippingCreatedEvent, ShippingDeletedEvent } from './event';
-import type { CreateShippingDto, UpdateShippingDto } from './dto';
+import type {
+  CreateShippingDto,
+  ShippingGetDetailDto,
+  UpdateShippingDto,
+} from './dto';
 import { ShippingRepository } from './shipping.repository';
+import { plainToInstance } from 'class-transformer';
+import { ShippingGetAllRO, ShippingGetDetailRO } from './ro';
 
 @Injectable()
 export class ShippingService {
@@ -43,19 +49,21 @@ export class ShippingService {
     return this.shippingRepository.update(id, dto);
   }
 
-  async getOne(id: string) {
-    return this.shippingRepository.findOne(id);
-  }
-
-  async getOneByOrderId(orderId: string) {
-    return this.shippingRepository.findOneByOrderId(orderId);
-  }
-
   async getAll() {
-    return this.shippingRepository.findAll();
+    const response = await this.shippingRepository.getAll();
+    return plainToInstance(
+      ShippingGetAllRO,
+      { data: response },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 
-  async getByShipper(shipperId: string) {
-    return this.shippingRepository.findByShipper(shipperId);
+  async getDetail(dto: ShippingGetDetailDto) {
+    const response = await this.shippingRepository.getDetail(dto);
+    return plainToInstance(ShippingGetDetailRO, response, {
+      excludeExtraneousValues: true,
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { BaseService } from '@base';
 import { GlobalErrors } from '@constants';
@@ -15,18 +15,19 @@ export class ShippingMethodService extends BaseService {
   }
 
   async getAll() {
-    let shippingMethods: ShippingMethodGetAllRO[] = [];
+    let shippingMethods: ShippingMethodGetAllRO = { data: [] };
     try {
       const response = await this.shippingMethodRepository.findAll();
-      shippingMethods = plainToInstance(ShippingMethodGetAllRO, response, {
-        excludeExtraneousValues: true,
-      });
+      shippingMethods = { data: response };
     } catch (error) {
       this.logger.error(error);
       const { status, code, message } =
         GlobalErrors.SHIPPING_METHOD.GET_ALL_FAILED;
       this.formatError(status, code, message);
     }
-    return this.formatData(HttpStatus.OK, shippingMethods);
+
+    return plainToInstance(ShippingMethodGetAllRO, shippingMethods, {
+      excludeExtraneousValues: true,
+    });
   }
 }

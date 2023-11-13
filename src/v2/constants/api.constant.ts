@@ -39,9 +39,7 @@ export const ApiApplication = {
     UPDATE_STATUS: 'update-status/:id',
     DELETE_BY_ORDER: ':orderId',
     GET_ALL: '',
-    GET_ONE: ':id',
-    GET_BY_ORDER_ID: 'get-by-order',
-    GET_BY_SHIPPER_ID: 'get-by-shipper',
+    GET_DETAIL: 'get-detail',
   },
   SHIPPING_FEE: {
     CONTROLLER: ApiBaseUrl + '/shipping-fee',

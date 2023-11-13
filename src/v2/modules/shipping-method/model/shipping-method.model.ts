@@ -1,9 +1,8 @@
 import { Generated } from 'kysely';
 
-export class AddressModel {
+export class ShippingMethodModel {
   id: Generated<string>;
-  location: string;
-  user_id: string;
+  name: string;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
   deleted_at: Generated<Date>;

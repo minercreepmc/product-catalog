@@ -1,5 +1,6 @@
 import type { CategoryModel } from '@v2/category/model';
 import type { DiscountModel } from '@v2/discount/model';
+import { Expose } from 'class-transformer';
 
 export class ProductIncludeDiscountRO {
   id: string;
@@ -34,11 +35,22 @@ export class CreateProductRO {
 }
 
 export class UpdateProductRO {
+  @Expose()
   id: string;
+
+  @Expose()
   name: string;
+
+  @Expose()
   description: string;
+
+  @Expose()
   price: number;
+
+  @Expose()
   discount_id: string;
+
+  @Expose()
   category_ids: string[];
 }
 

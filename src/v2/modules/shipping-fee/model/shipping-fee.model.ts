@@ -1,7 +1,10 @@
+import { Generated } from 'kysely';
+
 export class ShippingFeeModel {
-  id: string;
+  id: Generated<string>;
   name: string;
   fee: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+  deleted_at: Generated<Date>;
 }

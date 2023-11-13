@@ -12,7 +12,7 @@ export class UpdateOrderDto {
 export class OrderGetAllDto extends PaginationParams {
   @IsString()
   @IsOptional()
-  status? = 'PROCESSING';
+  status?: OrderStatus = OrderStatus.PROCESSING;
 
   @IsString()
   @IsOptional()

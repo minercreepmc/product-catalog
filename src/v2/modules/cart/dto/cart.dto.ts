@@ -12,7 +12,11 @@ export class UpdateCartDto {
 
   @IsString()
   @IsOptional()
-  addressId: string;
+  addressId?: string;
+
+  @IsString()
+  @IsOptional()
+  shippingMethodId?: string;
 }
 
 export class GetCartItemsDto {

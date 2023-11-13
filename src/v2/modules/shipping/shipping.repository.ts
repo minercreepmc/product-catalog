@@ -2,10 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@config/database';
 import type { CreateShippingDto, UpdateShippingDto } from './dto';
 import type { ShippingModel } from './model';
+import { KyselyDatabase } from '@config/kysely';
+import { OrderStatus } from '@v2/order/constants';
+
+export interface ShippingGetDetailDto {
+  id?: string;
+  orderId?: string;
+  shipperId?: string;
+}
 
 @Injectable()
 export class ShippingRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly database: KyselyDatabase,
+  ) {}
 
   async create(dto: CreateShippingDto): Promise<ShippingModel> {
     const { shipperId, orderId, dueDate } = dto;
@@ -47,81 +58,90 @@ export class ShippingRepository {
     return res.rows[0];
   }
 
-  async findOne(id: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date, u2.full_name as member_name, u2.phone as member_phone, o.total_price, o.status,
-      f.fee as fee_price, f.name as fee_name,
-      a.location as address, u1.full_name as shipper
-      FROM shipping s
-      INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
-      INNER JOIN address a ON a.id = o.address_id
-      INNER JOIN users u1 ON u1.id = s.shipper_id
-      INNER JOIN users u2 ON u2.id = o.member_id
-      WHERE s.id = $1
-      
-    `,
-      [id],
-    );
-
-    return res.rows[0];
+  getAll() {
+    return this.database
+      .selectFrom('shipping')
+      .innerJoin('order_details', 'order_details.id', 'shipping.order_id')
+      .innerJoin(
+        'shipping_fee',
+        'shipping_fee.id',
+        'order_details.shipping_fee_id',
+      )
+      .innerJoin(
+        'shipping_method',
+        'shipping_method.id',
+        'order_details.shipping_method_id',
+      )
+      .innerJoin('users as shipper', 'shipper.id', 'shipping.shipper_id')
+      .innerJoin('users as member', 'member.id', 'order_details.member_id')
+      .select([
+        'shipping.id',
+        'shipping.created_at',
+        'shipping.updated_at',
+        'shipping.order_id',
+        'shipping.due_date',
+        'member.full_name as member_name',
+        'member.phone as member_phone',
+        'order_details.total_price',
+        'order_details.status',
+        'shipping_fee.name as fee_name',
+        'shipping_fee.fee as fee_price',
+        'shipping_method.name as shipping_method',
+        'shipper.full_name as shipper_name',
+      ])
+      .execute();
   }
 
-  async findOneByOrderId(orderId: string) {
-    const res = await this.databaseService.runQuery(
-      `
+  async getDetail(dto: ShippingGetDetailDto) {
+    const { id, shipperId, orderId } = dto;
 
-      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date, u.full_name as member_name, u.phone as member_phone, o.total_price,
-      f.fee as fee_price, f.name as fee_name,
-      a.location as address, u.full_name as shipper
-      FROM shipping s
-      INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
-      INNER JOIN address a ON a.id = o.address_id
-      INNER JOIN users u ON u.id = s.shipper_id
-      WHERE s.order_id = $1
-     `,
-      [orderId],
-    );
+    let query = this.database
+      .selectFrom('shipping')
+      .innerJoin('order_details', 'order_details.id', 'shipping.order_id')
+      .innerJoin(
+        'shipping_fee',
+        'shipping_fee.id',
+        'order_details.shipping_fee_id',
+      )
+      .innerJoin(
+        'shipping_method',
+        'shipping_method.id',
+        'order_details.shipping_method_id',
+      )
+      .innerJoin('users as shipper', 'shipper.id', 'shipping.shipper_id')
+      .innerJoin('users as member', 'member.id', 'order_details.member_id')
+      .innerJoin('address', 'address.id', 'order_details.address_id')
+      .select([
+        'shipping.id',
+        'shipping.created_at',
+        'shipping.updated_at',
+        'shipping.order_id',
+        'shipping.due_date',
+        'member.full_name as member_name',
+        'member.phone as member_phone',
+        'order_details.total_price',
+        'shipping_fee.name as fee_name',
+        'shipping_fee.fee as fee_price',
+        'shipping_method.name as shipping_method',
+        'address.location as address',
+        'shipper.full_name as shipper_name',
+        'shipper.phone as shipper_phone',
+      ]);
 
-    return res.rows[0];
-  }
+    if (id) {
+      query = query.where('shipping.id', '=', id);
+    }
 
-  async findAll() {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date, u.full_name as member_name, u.phone as member_phone, o.total_price,
-      f.fee as fee_price, f.name as fee_name,
-      a.location as address, u.full_name as shipper
-      FROM shipping s
-      INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
-      INNER JOIN address a ON a.id = o.address_id
-      INNER JOIN users u ON u.id = s.shipper_id
-    `,
-    );
+    if (shipperId) {
+      query = query
+        .where('shipping.shipper_id', '=', shipperId)
+        .where('order_details.status', '!=', OrderStatus.CANCELED);
+    }
 
-    return res.rows;
-  }
+    if (orderId) {
+      query = query.where('shipping.order_id', '=', orderId);
+    }
 
-  async findByShipper(shipperId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT s.id, s.created_at, s.updated_at, s.order_id, s.due_date, s.due_date, u2.full_name as member_name, u2.phone as member_phone, o.total_price, o.id as order_id, o.status,
-      f.fee as fee_price, f.name as fee_name,
-      a.location as address, u.full_name as shipper
-      FROM shipping s
-      INNER JOIN order_details o ON s.order_id = o.id
-      INNER JOIN shipping_fee f ON f.id = o.shipping_fee_id 
-      INNER JOIN address a ON a.id = o.address_id
-      INNER JOIN users u ON u.id = s.shipper_id
-      INNER JOIN users u2 ON u2.id = o.member_id
-      WHERE s.shipper_id = $1 AND o.status != 'CANCELED'
-      `,
-      [shipperId],
-    );
-
-    return res.rows;
+    return query.executeTakeFirst();
   }
 }

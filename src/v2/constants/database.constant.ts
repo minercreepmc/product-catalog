@@ -18,6 +18,7 @@ export const DATABASE_TABLE = {
       FEE: 'fee',
       CREATED_AT: 'created_at',
       UPDATED_AT: 'updated_at',
+      DELETED_AT: 'deleted_at',
     },
   },
   SHIPPING_STATUS: {
@@ -37,6 +38,7 @@ export const DATABASE_TABLE = {
       NAME: 'name',
       CREATED_AT: 'created_at',
       UPDATED_AT: 'updated_at',
+      DELETED_AT: 'deleted_at',
     },
   },
   USERS: {
@@ -52,6 +54,7 @@ export const DATABASE_TABLE = {
       EMAIL: 'email',
       CREATED_AT: 'created_at',
       UPDATED_AT: 'updated_at',
+      DELETED_AT: 'deleted_at',
     },
   },
   ADDRESS: {
@@ -62,6 +65,7 @@ export const DATABASE_TABLE = {
       USER_ID: 'user_id',
       CREATED_AT: 'created_at',
       UPDATED_AT: 'updated_at',
+      DELETED_AT: 'deleted_at',
     },
   },
   PRODUCT: {
@@ -146,9 +150,9 @@ export const DATABASE_TABLE = {
     NAME: 'order_details',
     SCHEMA: {
       ID: 'id',
-      MEMBER_ID: 'member_id',
       TOTAL_PRICE: 'total_price',
       STATUS: 'status',
+      MEMBER_ID: 'member_id',
       ADDRESS_ID: 'address_id',
       SHIPPING_FEE_ID: 'shipping_fee_id',
       SHIPPING_METHOD_ID: 'shipping_method_id',

@@ -1,4 +1,5 @@
 import { DatabaseService } from '@config/database';
+import { KyselyDatabase } from '@config/kysely';
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import type {
@@ -10,7 +11,10 @@ import { CartItemRO } from './ro';
 
 @Injectable()
 export class CartItemRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly database: KyselyDatabase,
+  ) {}
 
   async create(userId: string, dto: CreateCartItemDto) {
     const { productId, amount } = dto;
@@ -136,5 +140,18 @@ export class CartItemRepository {
     return plainToInstance(CartItemRO, res.rows[0], {
       excludeExtraneousValues: true,
     });
+  }
+
+  getByCartId(cartId: string) {
+    return this.database
+      .selectFrom('cart_item as item')
+      .innerJoin('product', 'product.id', 'item.product_id')
+      .leftJoin('discount', 'discount.id', 'product.discount_id')
+      .leftJoin('discount as discount', 'discount.id', 'product.discount_id')
+      .where('item.cart_id', '=', cartId)
+      .select(['item.id', 'item.amount'])
+      .select(['product.id', 'product.name', 'product.price'])
+      .select(['discount.id', 'discount.name', 'discount.percentage'])
+      .execute();
   }
 }

@@ -1,94 +1,71 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '@config/database';
 import type { UpdateCartDto } from './dto';
+import { KyselyDatabase } from '@config/kysely';
 
 @Injectable()
 export class CartRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
   logger = new Logger(CartRepository.name);
 
-  async create(userId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-        INSERT INTO cart (user_id)
-        VALUES ($1) 
-        RETURNING *;
-      `,
-      [userId],
-    );
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly database: KyselyDatabase,
+  ) {}
 
-    return res.rows[0];
+  create(userId: string) {
+    return this.database
+      .insertInto('cart')
+      .values({ user_id: userId })
+      .execute();
   }
 
   async update(userId: string, dto: UpdateCartDto) {
-    const res = await this.databaseService.runQuery(
-      `
-        UPDATE cart
-        SET 
-          shipping_fee_id = COALESCE($2, shipping_fee_id),
-          address_id = COALESCE($3, address_id)
-        WHERE user_id = $1
-        RETURNING *;
-      `,
-      [userId, dto.shippingFeeId, dto.addressId],
-    );
+    const { addressId, shippingFeeId, shippingMethodId } = dto;
+    let query = this.database
+      .updateTable('cart')
+      .where('user_id', '=', userId)
+      .returningAll();
 
-    return res.rows[0];
+    if (addressId) {
+      query = query.set({ address_id: addressId });
+    }
+
+    if (shippingFeeId) {
+      query = query.set({ shipping_fee_id: shippingFeeId });
+    }
+
+    if (shippingMethodId) {
+      query = query.set({ shipping_method_id: shippingMethodId });
+    }
+
+    return query.execute();
   }
 
-  async getByUserId(userId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT c.*, f.fee as shipping_fee
-        FROM cart c 
-        LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id
-        WHERE c.user_id=$1
-      `,
-      [userId],
-    );
-
-    return res.rows[0];
-  }
-
-  async getItems(cartId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT item.id as item_id, 
-               item.amount, 
-               product.id as product_id, 
-               product.name as product_name, 
-               product.price as product_price,
-               discount.id as discount_id, 
-               discount.name as discount_name, 
-               discount.percentage as discount_percentage
-        FROM cart_item item 
-        INNER JOIN product product ON product.id = item.product_id
-        LEFT JOIN discount discount ON discount.id = product.discount_id
-        WHERE item.cart_id = $1;
-      `,
-      [cartId],
-    );
-
-    return res.rows;
+  getByUserId(userId: string) {
+    return this.database
+      .selectFrom('cart')
+      .leftJoin('shipping_fee', 'shipping_fee.id', 'cart.shipping_fee_id')
+      .selectAll('cart')
+      .select('shipping_fee.fee as shipping_fee')
+      .where('user_id', '=', userId)
+      .where('shipping_fee.deleted_at', '=', null)
+      .executeTakeFirst();
   }
 
   async clearCart(cartId: string) {
-    await this.databaseService.runQuery(
-      `
-        DELETE FROM cart_item 
-        WHERE cart_id = $1;
-      `,
-      [cartId],
-    );
-
-    await this.databaseService.runQuery(
-      `
-        UPDATE cart
-        SET shipping_fee_id = null
-        WHERE id = $1;
-      `,
-      [cartId],
-    );
+    await this.database
+      .deleteFrom('cart_item')
+      .where('cart_id', '=', cartId)
+      .execute();
+    await this.database
+      .updateTable('cart')
+      .set({
+        shipping_fee_id: null,
+        shipping_method_id: null,
+        address_id: null,
+      })
+      .where('id', '=', cartId)
+      .execute();
   }
 
   async getTotalPrice(cartId: string) {
@@ -96,35 +73,64 @@ export class CartRepository {
       `
       SELECT SUM(COALESCE(f.fee, 0) + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
       FROM cart_item i
-      LEFT JOIN cart c ON c.id = $1 
-      LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id 
+      LEFT JOIN cart c ON c.id = i.cart_id
+      LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id
       INNER JOIN product p ON p.id = i.product_id
       LEFT JOIN discount d ON d.id = p.discount_id
-      WHERE i.cart_id = $1;
+      WHERE c.id = $1
     `,
       [cartId],
     );
     return res.rows[0].sum ? res.rows[0].sum : 0;
   }
 
-  async getIdByUserId(userId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT id FROM cart WHERE user_id = $1;
-      `,
-      [userId],
-    );
-    return res.rows[0].id;
+  async getShippingFeeId(cartId: string) {
+    const res = await this.database
+      .selectFrom('cart')
+      .leftJoin('shipping_fee', 'shipping_fee.id', 'cart.shipping_fee_id')
+      .select('shipping_fee_id')
+      .where('id', '=', cartId)
+      .where('shipping_fee.deleted_at', '=', null)
+      .executeTakeFirst();
+
+    return res?.shipping_fee_id || null;
+  }
+
+  async getAddressId(cartId: string) {
+    const res = await this.database
+      .selectFrom('cart')
+      .leftJoin('address', 'address.id', 'cart.address_id')
+      .select('address_id')
+      .where('cart.id', '=', cartId)
+      .where('address.deleted_at', '=', null)
+      .executeTakeFirst();
+
+    return res?.address_id || null;
   }
 
   async getShippingMethodId(cartId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-        SELECT shipping_method_id FROM cart WHERE id = $1;
-      `,
-      [cartId],
-    );
+    const res = await this.database
+      .selectFrom('cart')
+      .leftJoin(
+        'shipping_method',
+        'shipping_method.id',
+        'cart.shipping_method_id',
+      )
+      .select('shipping_method_id')
+      .where('cart.id', '=', cartId)
+      .where('shipping_method.deleted_at', '=', null)
+      .executeTakeFirst();
 
-    return res.rows[0].shipping_method_id;
+    return res?.shipping_method_id || null;
+  }
+
+  async getIdByUserId(userId: string) {
+    const res = await this.database
+      .selectFrom('cart')
+      .select('id')
+      .where('cart.user_id', '=', userId)
+      .executeTakeFirst();
+
+    return res?.id || null;
   }
 }

@@ -1,52 +1,74 @@
-import { DatabaseService } from '@config/database';
+import { KyselyDatabase } from '@config/kysely';
 import { Injectable } from '@nestjs/common';
 import type { CreateAddressDto, UpdateAddressDto } from './dto';
 
 @Injectable()
 export class AddressRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly database: KyselyDatabase) {}
 
-  async create(userId: string, dto: CreateAddressDto) {
-    const res = await this.databaseService.runQuery(
-      `
-      INSERT INTO address (location, user_id) VALUES ($1, $2) RETURNING *;
-    `,
-      [dto.location, userId],
-    );
-
-    return res.rows[0];
+  store(userId: string, dto: CreateAddressDto) {
+    const { location } = dto;
+    return this.database
+      .insertInto('address')
+      .values({
+        location,
+        user_id: userId,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
   }
 
-  async delete(id: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      DELETE FROM address WHERE id = $1 RETURNING *;
-    `,
-      [id],
-    );
-
-    return res.rows[0];
+  delete(id: string) {
+    return this.database
+      .updateTable('address')
+      .set({ deleted_at: new Date() })
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
   }
 
-  async getAll(userId: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT * FROM address WHERE user_id = $1;
-    `,
-      [userId],
-    );
-
-    return res.rows;
+  getAll(userId: string) {
+    return this.database
+      .selectFrom('address')
+      .selectAll()
+      .where('user_id', '=', userId)
+      .where('deleted_at', 'is', null)
+      .execute();
   }
 
-  async update(id: string, dto: UpdateAddressDto) {
-    const res = await this.databaseService.runQuery(
-      `
-      UPDATE address SET location = $1 WHERE id = $2 RETURNING *;
-    `,
-      [dto.location, id],
-    );
+  findOne(id: string) {
+    return this.database
+      .selectFrom('address')
+      .selectAll()
+      .where('id', '=', id)
+      .where('deleted_at', 'is', null)
+      .executeTakeFirst();
+  }
 
-    return res.rows[0];
+  findByLocation(location: string) {
+    return this.database
+      .selectFrom('address')
+      .selectAll()
+      .where('location', '=', location)
+      .where('deleted_at', 'is', null)
+      .executeTakeFirst();
+  }
+
+  update(id: string, dto: UpdateAddressDto) {
+    return this.database
+      .updateTable('address')
+      .set(dto)
+      .where('id', '=', id)
+      .where('deleted_at', 'is', null)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+  }
+
+  async getAddressLocation(id: string) {
+    const res = await this.database
+      .selectFrom('address')
+      .select('location')
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
+    return res?.location;
   }
 }

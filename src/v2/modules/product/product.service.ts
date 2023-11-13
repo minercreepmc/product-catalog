@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import type { PaginationParams } from '@constants';
 import { ProductRepository } from './product.repository';
 import type { CreateProductDto, UpdateProductDto } from './dto';
-import type { UpdateProductRO } from './ro';
+import { UpdateProductRO } from './ro';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ProductService {
@@ -14,26 +15,32 @@ export class ProductService {
   async update(id: string, dto: UpdateProductDto) {
     const { categoryIds, discountId } = dto;
     const updated = await this.productRepo.updateOneById(id, dto);
-    const updateRO: UpdateProductRO = {
-      ...updated,
-      category_ids: [],
-      discount_id: '',
-    };
+    let category_ids: string[] = [];
+    let discount_id = null;
+
     if (categoryIds && categoryIds.length >= 0) {
-      updateRO.category_ids = await this.productRepo.updateCategoryIds({
+      category_ids = await this.productRepo.updateCategoryIds({
         id,
         categoryIds,
       });
     }
 
     if (discountId || discountId === null) {
-      updateRO.discount_id = await this.productRepo.updateDiscount({
+      discount_id = await this.productRepo.updateDiscount({
         id,
         discountId,
       });
     }
 
-    return updateRO;
+    return plainToInstance(
+      UpdateProductRO,
+      {
+        ...updated,
+        category_ids,
+        discount_id,
+      },
+      { excludeExtraneousValues: true },
+    );
   }
 
   getOne(id: string) {

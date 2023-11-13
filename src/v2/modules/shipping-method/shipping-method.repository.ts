@@ -1,15 +1,15 @@
-import { DatabaseService } from '@config/database';
+import { KyselyDatabase } from '@config/kysely';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ShippingMethodRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly database: KyselyDatabase) {}
 
-  async findAll() {
-    const res = await this.databaseService.runQuery(`
-      SELECT id, name FROM shipping_method;
-      `);
-
-    return res.rows;
+  findAll() {
+    return this.database
+      .selectFrom('shipping_method')
+      .select(['id', 'name'])
+      .where('deleted_at', 'is', null)
+      .execute();
   }
 }

@@ -32,10 +32,10 @@ export async function up(database: Kysely<unknown>): Promise<void> {
         .onDelete('cascade')
         .notNull(),
     )
-    .addUniqueConstraint(
-      `${NAME}_${SCHEMA.CART_ID}_${SCHEMA.PRODUCT_ID}`,
-      [SCHEMA.CART_ID, SCHEMA.PRODUCT_ID],
-    )
+    .addUniqueConstraint(`${NAME}_${SCHEMA.CART_ID}_${SCHEMA.PRODUCT_ID}`, [
+      SCHEMA.CART_ID,
+      SCHEMA.PRODUCT_ID,
+    ])
     .execute();
 }
 

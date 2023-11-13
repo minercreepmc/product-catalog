@@ -1,9 +1,15 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
-export class ShippingMethodGetAllRO {
+export class ShippingMethodDataRO {
   @Expose()
   id: string;
 
   @Expose()
   name: string;
+}
+
+export class ShippingMethodGetAllRO {
+  @Expose()
+  @Type(() => ShippingMethodDataRO)
+  data: ShippingMethodDataRO[];
 }

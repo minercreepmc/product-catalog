@@ -1,65 +1,73 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@config/database';
-import type { CreateShippingFeeDto } from './dto';
+import { CreateShippingFeeDto } from './dto';
+import { KyselyDatabase } from '@config/kysely';
 
 @Injectable()
 export class ShippingFeeRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly database: KyselyDatabase) {}
 
-  async create(dto: CreateShippingFeeDto) {
-    const res = await this.databaseService.runQuery(
-      `
-      INSERT INTO shipping_fee (name, fee) VALUES ($1, $2) RETURNING *;
-    `,
-      [dto.name, dto.fee],
-    );
-
-    return res.rows[0];
+  store(dto: CreateShippingFeeDto) {
+    const { name, fee } = dto;
+    return this.database
+      .insertInto('shipping_fee')
+      .values({
+        name,
+        fee,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
   }
 
-  async update(id: string, dto: CreateShippingFeeDto) {
-    const res = await this.databaseService.runQuery(
-      `
-      UPDATE shipping_fee 
-      SET fee = COALESCE($2, fee),
-          name = COALESCE($3, name)
-      WHERE id = $1 RETURNING *;
-    `,
-      [id, dto.fee, dto.name],
-    );
+  update(id: string, dto: CreateShippingFeeDto) {
+    const { name, fee } = dto;
+    let query = this.database
+      .updateTable('shipping_fee')
+      .where('id', '=', id)
+      .where('deleted_at', 'is', null)
+      .returningAll();
 
-    return res.rows[0];
+    if (name) {
+      query = query.set({ name });
+    }
+
+    if (fee) {
+      query = query.set({ fee });
+    }
+
+    return query.executeTakeFirstOrThrow();
   }
 
-  async delete(id: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      DELETE FROM shipping_fee WHERE id = $1 RETURNING *;
-    `,
-      [id],
-    );
-
-    return res.rows[0];
+  delete(id: string) {
+    return this.database
+      .updateTable('shipping_fee')
+      .set({ deleted_at: new Date() })
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
   }
 
-  async findAll() {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT * FROM shipping_fee;
-    `,
-    );
-
-    return res.rows;
+  findAll() {
+    return this.database
+      .selectFrom('shipping_fee')
+      .selectAll()
+      .where('deleted_at', 'is', null)
+      .execute();
   }
 
-  async findOne(id: string) {
-    const res = await this.databaseService.runQuery(
-      `
-      SELECT * FROM shipping_fee WHERE id = $1;
-    `,
-      [id],
-    );
+  findOne(id: string) {
+    return this.database
+      .selectFrom('shipping_fee')
+      .selectAll()
+      .where('id', '=', id)
+      .where('deleted_at', 'is', null)
+      .executeTakeFirst();
+  }
 
-    return res.rows[0];
+  findOneByName(name: string) {
+    return this.database
+      .selectFrom('shipping_fee')
+      .selectAll()
+      .where('name', '=', name)
+      .where('deleted_at', 'is', null)
+      .executeTakeFirst();
   }
 }

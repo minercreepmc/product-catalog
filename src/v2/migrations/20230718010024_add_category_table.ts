@@ -9,9 +9,7 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.ID, 'varchar(50)', (column) =>
       column.primaryKey().defaultTo(sql`uuid_generate_v4()`),
     )
-    .addColumn(SCHEMA.NAME, 'varchar(255)', (column) =>
-      column.notNull().unique(),
-    )
+    .addColumn(SCHEMA.NAME, 'varchar(255)', (column) => column.notNull())
     .addColumn(SCHEMA.DESCRIPTION, 'varchar(500)')
     .addColumn(SCHEMA.CREATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),

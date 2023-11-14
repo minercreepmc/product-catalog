@@ -26,15 +26,15 @@ export class CartRepository {
       .where('user_id', '=', userId)
       .returningAll();
 
-    if (addressId) {
+    if (dto.hasOwnProperty('addressId')) {
       query = query.set({ address_id: addressId });
     }
 
-    if (shippingFeeId) {
+    if (dto.hasOwnProperty('shippingFeeId')) {
       query = query.set({ shipping_fee_id: shippingFeeId });
     }
 
-    if (shippingMethodId) {
+    if (dto.hasOwnProperty('shippingMethodId')) {
       query = query.set({ shipping_method_id: shippingMethodId });
     }
 
@@ -45,10 +45,11 @@ export class CartRepository {
     return this.database
       .selectFrom('cart')
       .leftJoin('shipping_fee', 'shipping_fee.id', 'cart.shipping_fee_id')
+      .leftJoin('address', 'address.id', 'cart.address_id')
       .selectAll('cart')
       .select('shipping_fee.fee as shipping_fee')
-      .where('user_id', '=', userId)
-      .where('shipping_fee.deleted_at', '=', null)
+      .where('cart.user_id', '=', userId)
+      .where('shipping_fee.deleted_at', 'is', null)
       .executeTakeFirst();
   }
 
@@ -89,8 +90,8 @@ export class CartRepository {
       .selectFrom('cart')
       .leftJoin('shipping_fee', 'shipping_fee.id', 'cart.shipping_fee_id')
       .select('shipping_fee_id')
-      .where('id', '=', cartId)
-      .where('shipping_fee.deleted_at', '=', null)
+      .where('cart.id', '=', cartId)
+      .where('shipping_fee.deleted_at', 'is', null)
       .executeTakeFirst();
 
     return res?.shipping_fee_id || null;
@@ -102,7 +103,7 @@ export class CartRepository {
       .leftJoin('address', 'address.id', 'cart.address_id')
       .select('address_id')
       .where('cart.id', '=', cartId)
-      .where('address.deleted_at', '=', null)
+      .where('address.deleted_at', 'is', null)
       .executeTakeFirst();
 
     return res?.address_id || null;
@@ -118,7 +119,7 @@ export class CartRepository {
       )
       .select('shipping_method_id')
       .where('cart.id', '=', cartId)
-      .where('shipping_method.deleted_at', '=', null)
+      .where('shipping_method.deleted_at', 'is', null)
       .executeTakeFirst();
 
     return res?.shipping_method_id || null;

@@ -15,13 +15,16 @@ export class CartGetByUserIdRO {
   id: string;
 
   @Expose()
-  shippingFee?: number;
+  shipping_fee?: number;
 
   @Expose()
-  total_price: number;
+  total_price: bigint;
 
   @Expose()
-  address: AddressModel;
+  address_id?: string;
+
+  @Expose()
+  shipping_method_id?: string;
 
   @Expose()
   items: CartItemRO[];

@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class ShippingMethodDataRO {
   @Expose()
@@ -10,5 +10,6 @@ export class ShippingMethodDataRO {
 
 export class ShippingMethodGetAllRO {
   @Expose()
+  @Type(() => ShippingMethodDataRO)
   data: ShippingMethodDataRO[];
 }

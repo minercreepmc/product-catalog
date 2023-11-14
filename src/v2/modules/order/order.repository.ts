@@ -91,7 +91,7 @@ export class OrderRepository {
       .innerJoin('shipping_fee as sf', 'sf.id', 'o.shipping_fee_id')
       .innerJoin('shipping_method as sm', 'sm.id', 'o.shipping_method_id')
       .innerJoin('users as u', 'u.id', 'o.member_id')
-      .where('id', '=', orderId)
+      .where('o.id', '=', orderId)
       .select([
         'o.id',
         'o.total_price',

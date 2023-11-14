@@ -9,7 +9,7 @@ export class ShippingMethodRepository {
     return this.database
       .selectFrom('shipping_method')
       .select(['id', 'name'])
-      .where('deleted_at', '=', null)
+      .where('deleted_at', 'is', null)
       .execute();
   }
 }

@@ -32,7 +32,7 @@ export class CartService extends BaseService {
     }
 
     const items = await this.cartItemRepository.findByUserId(userId);
-    const totalPrice = await this.cartRepository.getTotalPrice(userId);
+    const totalPrice = await this.cartRepository.getTotalPrice(cart!.id);
     return plainToInstance(
       CartGetByUserIdRO,
       {

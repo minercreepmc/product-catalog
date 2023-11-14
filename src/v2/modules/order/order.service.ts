@@ -44,13 +44,12 @@ export class OrderService {
       throw new NotFoundException('Shipping method not found');
     }
 
-    const location = await this.addressRepository.getAddressLocation(addressId);
     const totalPrice = await this.cartRepository.getTotalPrice(cartId);
 
     const created = await this.orderRepository.store({
       totalPrice,
       memberId,
-      addressId: location,
+      addressId,
       shippingFeeId,
       shippingMethodId,
     });
@@ -99,6 +98,7 @@ export class OrderService {
     return updated;
   }
 
+  // TODO Get one should not expose other people order
   async getOne(orderId: string) {
     const orderDetails = await this.orderRepository.getOne(orderId);
 

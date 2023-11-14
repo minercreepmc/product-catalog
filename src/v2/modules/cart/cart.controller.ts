@@ -13,7 +13,7 @@ import {
 import { USERS_ROLE } from '@v2/users/constants';
 import { CartService } from './cart.service';
 import { UpdateCartDto } from './dto';
-import { CartRO, CartUpdateRO } from './ro';
+import { CartGetByUserIdRO, CartUpdateRO } from './ro';
 import { ResultRO } from '@common/ro';
 
 @Controller(ApiApplication.CART.CONTROLLER)
@@ -36,7 +36,7 @@ export class CartController {
 
   @Get(ApiApplication.CART.GET)
   @UseGuards(RoleGuard(USERS_ROLE.MEMBER))
-  getByUserId(@Req() req: RequestWithUser): Promise<CartRO> {
+  getByUserId(@Req() req: RequestWithUser): Promise<CartGetByUserIdRO> {
     return this.cartService.getByUserId(req.user.id);
   }
 }

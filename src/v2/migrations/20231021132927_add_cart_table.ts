@@ -33,12 +33,12 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.ADDRESS_ID, 'varchar(50)', (column) =>
       column
         .references(`${ADDRESS_NAME}.${ADDRESS_SCHEMA.ID}`)
-        .onDelete('set null'),
+        .onUpdate('set null'),
     )
     .addColumn(SCHEMA.SHIPPING_FEE_ID, 'varchar(50)', (column) =>
       column
         .references(`${SHIPPING_FEE_NAME}.${SHIPPING_FEE_SCHEMA.ID}`)
-        .onDelete('set null'),
+        .onUpdate('set null'),
     )
     .addColumn(SCHEMA.SHIPPING_METHOD_ID, 'varchar(50)', (column) =>
       column

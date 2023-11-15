@@ -8,15 +8,15 @@ export class CreateCartDto {}
 export class UpdateCartDto {
   @IsString()
   @IsOptional()
-  shippingFeeId?: string;
+  shippingFeeId?: string | null;
 
   @IsString()
   @IsOptional()
-  addressId?: string;
+  addressId?: string | null;
 
   @IsString()
   @IsOptional()
-  shippingMethodId?: string;
+  shippingMethodId?: string | null;
 }
 
 export class GetCartItemsDto {

@@ -1,15 +1,20 @@
 import { BaseService } from '@base';
 import { ResultRO } from '@common/ro';
-import { GlobalErrors } from '@constants';
+import { GlobalErrors, GlobalEvents, RequestWithUser } from '@constants';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
 import { AddressRepository } from './address.repository';
 import type { CreateAddressDto, UpdateAddressDto } from './dto';
+import { AddressDeletedEvent } from './event';
 import { AddressCreateRO, AddressGetAllRO, AddressUpdateRO } from './ro';
 
 @Injectable()
 export class AddressService extends BaseService {
-  constructor(private readonly addressRepository: AddressRepository) {
+  constructor(
+    private readonly addressRepository: AddressRepository,
+    private readonly eventEmitter: EventEmitter2,
+  ) {
     super();
   }
 
@@ -32,8 +37,16 @@ export class AddressService extends BaseService {
     );
   }
 
-  async delete(id: string) {
+  async delete(id: string, req: RequestWithUser) {
     await this.addressRepository.delete(id);
+
+    this.eventEmitter.emit(
+      GlobalEvents.ADDRESS.DELETED,
+      new AddressDeletedEvent({
+        userId: req.user.id,
+      }),
+    );
+
     return plainToInstance(ResultRO, { result: true });
   }
 

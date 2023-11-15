@@ -14,9 +14,12 @@ import { DiscountModule } from '@v2/discount';
 import { CartModule } from '@v2/cart';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import {
+  AddressDeletedModule,
   OrderCreatedModule,
+  OrderUpdatedModule,
   ShippingCreatedModule,
   ShippingDeletedModule,
+  ShippingFeeDeletedModule,
   UserCreatedModule,
 } from './v2/listeners';
 import { CartItemModule } from '@v2/cart-item';
@@ -25,7 +28,6 @@ import { ProductImageModule } from '@v2/product-image';
 import { OrderModule } from '@v2/order';
 import { IncomeModule } from '@v2/income';
 import { ShippingStatusModule } from '@v2/shipping-status';
-import { OrderUpdatedModule } from './v2/listeners/order-updated';
 import { OrderItemModule } from '@v2/order-item';
 import { ProductCategoryModule } from '@v2/product-category';
 import { ShippingMethodModule } from '@v2/shipping-method';
@@ -58,6 +60,8 @@ const listeners = [
   ShippingCreatedModule,
   ShippingDeletedModule,
   OrderUpdatedModule,
+  AddressDeletedModule,
+  ShippingFeeDeletedModule,
 ];
 
 @Module({

@@ -40,6 +40,7 @@ export class ShippingFeeService extends BaseService {
 
   async delete(id: string) {
     await this.shippingFeeRepository.delete(id);
+
     return plainToInstance(ResultRO, {
       result: true,
     });

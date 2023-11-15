@@ -3,6 +3,7 @@ import { ResultRO } from '@common/ro';
 import { GlobalErrors } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { CartItemRepository } from '@v2/cart-item';
+import { ShippingFeeRepository } from '@v2/shipping-fee';
 import { plainToInstance } from 'class-transformer';
 import { CartRepository } from './cart.repository';
 import type { UpdateCartDto } from './dto';
@@ -13,6 +14,7 @@ export class CartService extends BaseService {
   constructor(
     private readonly cartRepository: CartRepository,
     private readonly cartItemRepository: CartItemRepository,
+    private readonly shippingFeeRepository: ShippingFeeRepository,
   ) {
     super();
   }
@@ -31,12 +33,24 @@ export class CartService extends BaseService {
       );
     }
 
+    const addressId = await this.cartRepository.getAddressId(cart!.id);
+
+    const shippingFeeId = await this.cartRepository.getShippingFeeId(cart!.id);
+
+    let shippingFee: any;
+
+    if (shippingFeeId) {
+      shippingFee = await this.shippingFeeRepository.findOne(shippingFeeId);
+    }
+
     const items = await this.cartItemRepository.findByUserId(userId);
     const totalPrice = await this.cartRepository.getTotalPrice(cart!.id);
     return plainToInstance(
       CartGetByUserIdRO,
       {
         ...cart,
+        address_id: addressId,
+        shipping_fee: shippingFee?.fee || 0,
         items,
         total_price: totalPrice,
       },
@@ -45,7 +59,7 @@ export class CartService extends BaseService {
   }
 
   async update(userId: string, dto: UpdateCartDto) {
-    const response = this.cartRepository.update(userId, dto);
+    const response = this.cartRepository.updateByUserId(userId, dto);
     return plainToInstance(CartUpdateRO, response, {
       excludeExtraneousValues: true,
     });

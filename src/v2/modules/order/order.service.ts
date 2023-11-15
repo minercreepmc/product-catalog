@@ -5,7 +5,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CartRepository } from '@v2/cart';
 import { OrderItemRepository } from '@v2/order-item/order-item.repository';
 import { OrderRepository } from './order.repository';
-import { AddressRepository } from '@v2/address';
 import { OrderCreatedEvent, OrderUpdatedEvent } from './event';
 import type { OrderGetAllDto, UpdateOrderDto } from './dto';
 import { CreateOrderRO, OrderGetDetailsRO, OrderGetAllRO } from './ro';
@@ -17,7 +16,6 @@ export class OrderService {
     private readonly orderRepository: OrderRepository,
     private readonly cartRepository: CartRepository,
     private readonly orderItemRepository: OrderItemRepository,
-    private readonly addressRepository: AddressRepository,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 

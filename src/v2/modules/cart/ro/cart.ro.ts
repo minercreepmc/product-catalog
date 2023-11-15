@@ -18,6 +18,9 @@ export class CartGetByUserIdRO {
   shipping_fee?: number;
 
   @Expose()
+  shipping_fee_id?: string;
+
+  @Expose()
   total_price: bigint;
 
   @Expose()

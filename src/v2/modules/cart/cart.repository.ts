@@ -19,7 +19,7 @@ export class CartRepository {
       .execute();
   }
 
-  async update(userId: string, dto: UpdateCartDto) {
+  async updateByUserId(userId: string, dto: UpdateCartDto) {
     const { addressId, shippingFeeId, shippingMethodId } = dto;
     let query = this.database
       .updateTable('cart')
@@ -44,12 +44,8 @@ export class CartRepository {
   getByUserId(userId: string) {
     return this.database
       .selectFrom('cart')
-      .leftJoin('shipping_fee', 'shipping_fee.id', 'cart.shipping_fee_id')
-      .leftJoin('address', 'address.id', 'cart.address_id')
       .selectAll('cart')
-      .select('shipping_fee.fee as shipping_fee')
       .where('cart.user_id', '=', userId)
-      .where('shipping_fee.deleted_at', 'is', null)
       .executeTakeFirst();
   }
 
@@ -75,9 +71,9 @@ export class CartRepository {
       SELECT SUM(COALESCE(f.fee, 0) + (p.price - (p.price * COALESCE(d.percentage, 0) / 100)) * i.amount)
       FROM cart_item i
       LEFT JOIN cart c ON c.id = i.cart_id
-      LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id
       INNER JOIN product p ON p.id = i.product_id
       LEFT JOIN discount d ON d.id = p.discount_id
+      LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id AND f.deleted_at IS NULL
       WHERE c.id = $1
     `,
       [cartId],
@@ -132,6 +128,6 @@ export class CartRepository {
       .where('cart.user_id', '=', userId)
       .executeTakeFirst();
 
-    return res?.id || null;
+    return res?.id;
   }
 }

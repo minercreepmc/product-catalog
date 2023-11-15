@@ -25,7 +25,7 @@ export class OrderController {
   @Post(ApiApplication.ORDER.CREATE)
   @UseGuards(RoleGuard(USERS_ROLE.MEMBER))
   create(@Req() req: RequestWithUser): Promise<CreateOrderRO> {
-    return this.orderService.create(req.user.id);
+    return this.orderService.store(req.user.id);
   }
 
   @Put(ApiApplication.ORDER.UPDATE)

@@ -148,7 +148,7 @@ export class ProductRepository {
             name = COALESCE($2, name),
             price = COALESCE($3, price),
             description = COALESCE($4, description),
-            discount_id = COALESCE($5, discount_id),
+            discount_id = COALESCE($5, discount_id)
         WHERE
             id = $1
         RETURNING *;

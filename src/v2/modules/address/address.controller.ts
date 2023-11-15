@@ -36,8 +36,11 @@ export class AddressController {
   }
 
   @Delete(ApiApplication.ADDRESS.DELETE)
-  delete(@Param('id') id: string): Promise<ResultRO> {
-    return this.addressService.delete(id);
+  delete(
+    @Param('id') id: string,
+    @Req() req: RequestWithUser,
+  ): Promise<ResultRO> {
+    return this.addressService.delete(id, req);
   }
 
   @Put(ApiApplication.ADDRESS.UPDATE)

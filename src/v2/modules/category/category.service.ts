@@ -45,19 +45,4 @@ export class CategoryService {
   deleteOne(id: string) {
     return this.categoryRepo.deleteOneById(id);
   }
-
-  async deleteMany(ids: string[]) {
-    const deleteds: string[] = [];
-
-    for (const id of ids) {
-      const deleted = await this.categoryRepo.deleteOneById(id);
-      if (deleted) {
-        deleteds.push(deleted);
-      } else {
-        break;
-      }
-    }
-
-    return deleteds ? deleteds : [];
-  }
 }

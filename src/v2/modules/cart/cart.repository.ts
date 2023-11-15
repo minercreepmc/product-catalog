@@ -128,6 +128,6 @@ export class CartRepository {
       .where('cart.user_id', '=', userId)
       .executeTakeFirst();
 
-    return res?.id || null;
+    return res?.id;
   }
 }

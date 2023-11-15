@@ -20,6 +20,7 @@ export class CategoryRepository {
     return res.rows[0];
   }
   async deleteOneById(id: string) {
+    console.log(id);
     const res = await this.databaseService.runQuery(
       `DELETE FROM category WHERE id=$1 RETURNING *`,
       [id],

@@ -30,6 +30,10 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
+    .addUniqueConstraint(`${NAME}_${SCHEMA.CATEGORY_ID}_${SCHEMA.PRODUCT_ID}`, [
+      SCHEMA.CATEGORY_ID,
+      SCHEMA.PRODUCT_ID,
+    ])
     .execute();
 }
 

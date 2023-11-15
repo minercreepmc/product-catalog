@@ -50,6 +50,7 @@ export class CartService extends BaseService {
       {
         ...cart,
         address_id: addressId,
+        shipping_fee_id: shippingFeeId,
         shipping_fee: shippingFee?.fee || 0,
         items,
         total_price: totalPrice,

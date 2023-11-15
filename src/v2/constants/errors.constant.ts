@@ -26,10 +26,30 @@ export const GlobalErrors = {
     },
   },
   ORDER: {
+    CART_IS_NOT_EXISTS: {
+      code: 'ORDER.CART_IS_NOT_EXISTS',
+      message: 'Giỏ hàng không tồn tại',
+      status: HttpStatus.BAD_REQUEST,
+    },
     NOT_FOUND: {
       code: 'ORDER.NOT_FOUND',
       message: 'Không tìm thấy đơn hàng',
       status: HttpStatus.NOT_FOUND,
+    },
+    SHIPPING_METHOD_NOT_PROVIDED: {
+      code: 'ORDER.SHIPPING_METHOD_NOT_PROVIDED',
+      message: 'Phương thức thanh toán không được cung cấp',
+      status: HttpStatus.BAD_REQUEST,
+    },
+    SHIPPING_FEE_NOT_PROVIDED: {
+      code: 'ORDER.SHIPPING_FEE_NOT_PROVIDED',
+      message: 'Phí đơn hàng không được cung cấp',
+      status: HttpStatus.BAD_REQUEST,
+    },
+    ADDRESS_NOT_PROVIDED: {
+      code: 'ORDER.ADDRESS_NOT_PROVIDED',
+      message: 'Địa chỉ không được cung cấp',
+      status: HttpStatus.BAD_REQUEST,
     },
   },
   SHIPPING_METHOD: {

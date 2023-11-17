@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@config/database';
 import type { PaginationParams } from '@constants';
 import { USERS_ROLE } from './constants';
-import type { CreateUserDto, UpdateUserDto } from './dto';
+import type { CreateUserDto, ShipperGetAllDto, UpdateUserDto } from './dto';
+import { KyselyDatabase } from '@config/kysely';
+import { paginate } from '@common/function';
 
 @Injectable()
 export class UserRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly database: KyselyDatabase,
+  ) {}
 
   async create(dto: CreateUserDto) {
     const { username, password, fullName, role, email, phone } = dto;
@@ -159,5 +164,30 @@ export class UserRepository {
       [USERS_ROLE.MEMBER],
     );
     return res.rows[0].count;
+  }
+
+  async getShippers(dto: ShipperGetAllDto) {
+    const { limit, page } = dto;
+    const query = this.database
+      .selectFrom('users')
+      .leftJoin('shipping', 'shipping.shipper_id', 'users.id')
+      .select(({ fn }) => [
+        'users.id',
+        'users.username',
+        'users.full_name',
+        'users.email',
+        'users.phone',
+        'users.role',
+        fn.count('shipping.id').as('shipping_count'),
+      ])
+      .where('role', '=', USERS_ROLE.SHIPPER)
+      .groupBy('users.id');
+
+    return paginate(query, this.database, {
+      limit,
+      page,
+      tableName: 'users',
+      getOriginalTotalItems: true,
+    });
   }
 }

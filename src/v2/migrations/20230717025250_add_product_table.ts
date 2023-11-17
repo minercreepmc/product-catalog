@@ -21,7 +21,9 @@ export async function up(database: Kysely<unknown>): Promise<void> {
       column.defaultTo(sql`now()`),
     )
     .addColumn(SCHEMA.DISCOUNT_ID, 'varchar(50)', (column) =>
-      column.references(`${DISCOUNT_NAME}.${DISCOUNT_SCHEMA.ID}`),
+      column
+        .references(`${DISCOUNT_NAME}.${DISCOUNT_SCHEMA.ID}`)
+        .onDelete('set null'),
     )
     .execute();
 }

@@ -9,9 +9,12 @@ import type {
   CreateMemberDto,
   CreateShipperDto,
   CreateStaffDto,
+  ShipperGetAllDto,
   UpdateUserDto,
 } from './dto';
 import { UserRepository } from './user.repository';
+import { plainToInstance } from 'class-transformer';
+import { ShipperGetAllRO } from './ro';
 
 @Injectable()
 export class UserService {
@@ -60,8 +63,16 @@ export class UserService {
     });
   }
 
-  getAllShippers() {
-    return this.userRepository.findAllByRole(USERS_ROLE.SHIPPER);
+  async getAllShippers(dto: ShipperGetAllDto) {
+    const response = await this.userRepository.getShippers(dto);
+
+    return plainToInstance(
+      ShipperGetAllRO,
+      response,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 
   getOne(id: string) {

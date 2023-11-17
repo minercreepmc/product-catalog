@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -20,8 +21,9 @@ import {
   CreateStaffDto,
   CreateAdminDto,
   UpdateUserDto,
+  ShipperGetAllDto,
 } from './dto';
-import { UserRO } from './ro';
+import { ShipperGetAllRO, UserDataRO } from './ro';
 import { USERS_ROLE } from './constants';
 
 @Controller(ApiApplication.USER.CONTROLLER)
@@ -36,7 +38,7 @@ export class UserController {
 
   @Post(ApiApplication.USER.GET_ALL_STAFF)
   @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.ADMIN))
-  async getAllStaff(): Promise<UserRO[]> {
+  async getAllStaff(): Promise<UserDataRO[]> {
     return this.userService.getAllStaff();
   }
 
@@ -65,13 +67,13 @@ export class UserController {
 
   @Get(ApiApplication.USER.GET_ALL_SHIPPER)
   @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
-  getAllShippers(): Promise<UserModel[]> {
-    return this.userService.getAllShippers();
+  getAllShippers(@Query() dto: ShipperGetAllDto): Promise<ShipperGetAllRO> {
+    return this.userService.getAllShippers(dto);
   }
 
   @Get(ApiApplication.USER.GET_ONE)
   @UseGuards(JwtGuard, RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
-  getOne(@Param('id') id: string): Promise<UserRO> {
+  getOne(@Param('id') id: string): Promise<UserDataRO> {
     return this.userService.getOne(id);
   }
 

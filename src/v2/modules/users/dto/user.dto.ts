@@ -1,3 +1,4 @@
+import { PaginationParams } from '@common/dto';
 import { DATABASE_TABLE } from '@constants';
 import { isUniqueDb } from '@youba/nestjs-dbvalidator';
 import {
@@ -207,3 +208,5 @@ export class CreateAdminDto {
   @IsOptional()
   phone?: string;
 }
+
+export class ShipperGetAllDto extends PaginationParams {}

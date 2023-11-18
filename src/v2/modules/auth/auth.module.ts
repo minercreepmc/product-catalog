@@ -5,6 +5,7 @@ import { Global, Module, Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { ShippingRepository } from '@v2/shipping';
 import { UserRepository } from '@v2/users';
 import { UserService } from '@v2/users/user.service';
 import { AuthController } from './auth.controller';
@@ -18,7 +19,7 @@ const strategies: Provider[] = [
   JwtStrategy,
   HeaderApiKeyStrategy,
 ];
-const repositories: Provider[] = [UserRepository];
+const repositories: Provider[] = [UserRepository, ShippingRepository];
 const controllers = [AuthController];
 
 @Global()

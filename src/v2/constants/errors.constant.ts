@@ -93,4 +93,11 @@ export const GlobalErrors = {
       status: HttpStatus.BAD_REQUEST,
     },
   },
+  SHIPPING: {
+    SHIPPER_ALREADY_HAVE_ORDER: {
+      code: 'SHIPPING.SHIPPER_ALREADY_IN_PROGRESS',
+      message: 'Shipper đã nhận một đơn',
+      status: HttpStatus.BAD_REQUEST,
+    },
+  },
 };

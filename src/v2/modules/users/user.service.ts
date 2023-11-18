@@ -66,13 +66,9 @@ export class UserService {
   async getAllShippers(dto: ShipperGetAllDto) {
     const response = await this.userRepository.getShippers(dto);
 
-    return plainToInstance(
-      ShipperGetAllRO,
-      response,
-      {
-        excludeExtraneousValues: true,
-      },
-    );
+    return plainToInstance(ShipperGetAllRO, response, {
+      excludeExtraneousValues: true,
+    });
   }
 
   getOne(id: string) {

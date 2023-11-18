@@ -1,6 +1,8 @@
+import { PaginationParams } from '@common/dto';
 import { DATABASE_TABLE } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsDateString, IsOptional, IsString } from 'class-validator';
 
 const { NAME: ORDER_DETAILS_NAME, SCHEMA: ORDER_DETAILS_SCHEMA } =
   DATABASE_TABLE.ORDER_DETAILS;
@@ -21,7 +23,8 @@ export class CreateShippingDto {
   })
   shipperId: string;
 
-  @IsDateString()
+  @IsDate()
+  @Type(() => Date)
   dueDate: Date;
 }
 export class UpdateShippingDto {
@@ -46,7 +49,7 @@ export class ShippingGetDetailDto {
   })
   @IsString()
   @IsOptional()
-  id: string;
+  id?: string;
 
   @isExistDb({
     table: ORDER_DETAILS_NAME,
@@ -54,13 +57,7 @@ export class ShippingGetDetailDto {
   })
   @IsString()
   @IsOptional()
-  orderId: string;
-
-  @isExistDb({
-    table: USER_NAME,
-    column: USER_SCHEMA.ID,
-  })
-  @IsString()
-  @IsOptional()
-  shipperId: string;
+  orderId?: string;
 }
+
+export class ShippingGetAllDto extends PaginationParams {}

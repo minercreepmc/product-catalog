@@ -5,6 +5,7 @@ import { USERS_ROLE } from './constants';
 import type { CreateUserDto, ShipperGetAllDto, UpdateUserDto } from './dto';
 import { KyselyDatabase } from '@config/kysely';
 import { paginate } from '@common/function';
+import { OrderStatus } from '@v2/order/constants';
 
 @Injectable()
 export class UserRepository {
@@ -171,6 +172,14 @@ export class UserRepository {
     const query = this.database
       .selectFrom('users')
       .leftJoin('shipping', 'shipping.shipper_id', 'users.id')
+      .leftJoin('order_details', (join) =>
+        join
+          .onRef('order_details.id', '=', 'shipping.order_id')
+          .on('order_details.status', '=', OrderStatus.ASSIGNED)
+          .on('order_details.status', '=', OrderStatus.ACCEPTED)
+          .on('order_details.status', '=', OrderStatus.DELIVERING),
+      )
+
       .select(({ fn }) => [
         'users.id',
         'users.username',
@@ -181,6 +190,7 @@ export class UserRepository {
         fn.count('shipping.id').as('shipping_count'),
       ])
       .where('role', '=', USERS_ROLE.SHIPPER)
+      .orderBy('shipping_count')
       .groupBy('users.id');
 
     return paginate(query, this.database, {

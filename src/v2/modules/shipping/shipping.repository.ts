@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@config/database';
-import type { CreateShippingDto, UpdateShippingDto } from './dto';
+import type {
+  CreateShippingDto,
+  ShippingGetAllDto,
+  UpdateShippingDto,
+} from './dto';
 import type { ShippingModel } from './model';
 import { KyselyDatabase } from '@config/kysely';
 import { OrderStatus } from '@v2/order/constants';
+import { paginate } from '@common/function';
 
 export interface ShippingGetDetailDto {
   id?: string;
@@ -58,8 +63,9 @@ export class ShippingRepository {
     return res.rows[0];
   }
 
-  getAll() {
-    return this.database
+  async getAll(dto: ShippingGetAllDto, shipperId?: string) {
+    const { page, limit } = dto;
+    const query = this.database
       .selectFrom('shipping')
       .innerJoin('order_details', 'order_details.id', 'shipping.order_id')
       .innerJoin(
@@ -74,6 +80,7 @@ export class ShippingRepository {
       )
       .innerJoin('users as shipper', 'shipper.id', 'shipping.shipper_id')
       .innerJoin('users as member', 'member.id', 'order_details.member_id')
+      .innerJoin('address', 'address.id', 'order_details.address_id')
       .select([
         'shipping.id',
         'shipping.created_at',
@@ -84,16 +91,27 @@ export class ShippingRepository {
         'member.phone as member_phone',
         'order_details.total_price',
         'order_details.status',
+        'address.location as address',
         'shipping_fee.name as fee_name',
         'shipping_fee.fee as fee_price',
         'shipping_method.name as shipping_method',
         'shipper.full_name as shipper_name',
-      ])
-      .execute();
+      ]);
+
+    if (shipperId) {
+      query.where('shipping.shipper_id', '=', shipperId);
+    }
+
+    return paginate(query, this.database, {
+      limit,
+      page,
+      tableName: 'shipping',
+      getOriginalTotalItems: true,
+    });
   }
 
-  async getDetail(dto: ShippingGetDetailDto) {
-    const { id, shipperId, orderId } = dto;
+  async getDetail(dto: ShippingGetDetailDto, shipperId?: string) {
+    const { id, orderId } = dto;
 
     let query = this.database
       .selectFrom('shipping')
@@ -143,5 +161,20 @@ export class ShippingRepository {
     }
 
     return query.executeTakeFirst();
+  }
+
+  async countActiveByShipper(shipperId: string): Promise<number> {
+    const res = await this.database
+      .selectFrom('shipping')
+      .innerJoin('users as shipper', 'shipper.id', 'shipping.shipper_id')
+      .innerJoin('order_details', 'order_details.id', 'shipping.order_id')
+      .where('shipping.shipper_id', '=', shipperId)
+      .where('order_details.status', '=', OrderStatus.ACCEPTED)
+      .where('order_details.status', '=', OrderStatus.DELIVERING)
+      .select(({ fn }) => [fn.count('shipping.id').as('count')])
+      .$narrowType<{ count: number }>()
+      .executeTakeFirst();
+
+    return res?.count || 0;
   }
 }

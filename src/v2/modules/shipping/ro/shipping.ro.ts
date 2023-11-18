@@ -1,3 +1,4 @@
+import { PaginateRO } from '@common/ro';
 import { Expose } from 'class-transformer';
 
 export class ShippingRO {
@@ -45,7 +46,7 @@ export class ShippingRO {
 }
 
 export class ShippingGetDetailRO extends ShippingRO {}
-export class ShippingGetAllRO {
+export class ShippingGetAllRO extends PaginateRO<ShippingRO> {
   @Expose()
   data: ShippingRO[];
 }

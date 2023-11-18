@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { ShippingService } from './shipping.service';
 import { ShippingModel } from './model';
 import {
   CreateShippingDto,
+  ShippingGetAllDto,
   ShippingGetDetailDto,
   UpdateShippingDto,
 } from './dto';
@@ -30,7 +32,7 @@ export class ShippingController {
   @Post(ApiApplication.SHIPPING.CREATE)
   @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
   async create(@Body() dto: CreateShippingDto): Promise<ShippingModel> {
-    return this.shippingService.create(dto);
+    return this.shippingService.store(dto);
   }
 
   @Put(ApiApplication.SHIPPING.UPDATE)
@@ -43,21 +45,21 @@ export class ShippingController {
   }
 
   @Get(ApiApplication.SHIPPING.GET_ALL)
-  @UseGuards(RoleGuard(USERS_ROLE.STAFF, USERS_ROLE.ADMIN))
-  async getAll(): Promise<ShippingGetAllRO> {
-    return this.shippingService.getAll();
+  @UseGuards(RoleGuard(USERS_ROLE.SHIPPER, USERS_ROLE.STAFF))
+  async getAll(
+    @Query() dto: ShippingGetAllDto,
+    @Req() req: RequestWithUser,
+  ): Promise<ShippingGetAllRO> {
+    return this.shippingService.getAll(dto, req);
   }
 
   @Post(ApiApplication.SHIPPING.GET_DETAIL)
-  @UseGuards(RoleGuard(USERS_ROLE.SHIPPER))
+  @UseGuards(RoleGuard(USERS_ROLE.SHIPPER, USERS_ROLE.STAFF))
   async getDetail(
     @Req() req: RequestWithUser,
     @Body() dto: ShippingGetDetailDto,
   ): Promise<ShippingGetDetailRO> {
-    return this.shippingService.getDetail({
-      ...dto,
-      shipperId: req.user.id,
-    });
+    return this.shippingService.getDetail(dto, req);
   }
 
   @Delete(ApiApplication.SHIPPING.DELETE_BY_ORDER)

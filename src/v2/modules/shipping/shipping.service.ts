@@ -1,24 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { GlobalEvents } from '@constants';
+import { GlobalEvents, RequestWithUser } from '@constants';
 import { ShippingCreatedEvent, ShippingDeletedEvent } from './event';
 import type {
   CreateShippingDto,
+  ShippingGetAllDto,
   ShippingGetDetailDto,
   UpdateShippingDto,
 } from './dto';
 import { ShippingRepository } from './shipping.repository';
 import { plainToInstance } from 'class-transformer';
-import { ShippingGetAllRO, ShippingGetDetailRO } from './ro';
+import { ShippingGetAllRO, ShippingRO } from './ro';
+import { BaseService } from '@base';
+import { USERS_ROLE } from '@v2/users/constants';
 
 @Injectable()
-export class ShippingService {
+export class ShippingService extends BaseService {
   constructor(
     private shippingRepository: ShippingRepository,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    super();
+  }
 
-  async create(dto: CreateShippingDto) {
+  async store(dto: CreateShippingDto) {
     const created = await this.shippingRepository.create(dto);
 
     this.eventEmitter.emit(
@@ -49,20 +54,18 @@ export class ShippingService {
     return this.shippingRepository.update(id, dto);
   }
 
-  async getAll() {
-    const response = await this.shippingRepository.getAll();
-    return plainToInstance(
-      ShippingGetAllRO,
-      { data: response },
-      {
-        excludeExtraneousValues: true,
-      },
-    );
+  async getAll(dto: ShippingGetAllDto, req: RequestWithUser) {
+    const response = await this.shippingRepository.getAll(dto, req.user.id);
+    return plainToInstance(ShippingGetAllRO, response, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async getDetail(dto: ShippingGetDetailDto) {
-    const response = await this.shippingRepository.getDetail(dto);
-    return plainToInstance(ShippingGetDetailRO, response, {
+  async getDetail(dto: ShippingGetDetailDto, req: RequestWithUser) {
+    const shipperId =
+      req.user.role === USERS_ROLE.SHIPPER ? req.user.id : undefined;
+    const response = await this.shippingRepository.getDetail(dto, shipperId);
+    return plainToInstance(ShippingRO, response, {
       excludeExtraneousValues: true,
     });
   }

@@ -1,6 +1,6 @@
 import { PaginateRO, PaginiateMetaRO } from '@common/ro';
 import type { AddressModel } from '@v2/address/model';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class UserDataRO {
   @Expose()
@@ -32,6 +32,7 @@ export class ShipperGetAllDataRO extends UserDataRO {
 
 export class ShipperGetAllRO implements PaginateRO<ShipperGetAllDataRO> {
   @Expose()
+  @Type(() => ShipperGetAllDataRO)
   data: ShipperGetAllDataRO[];
 
   @Expose()

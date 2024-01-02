@@ -30,11 +30,11 @@ export class AuthController {
   @UseGuards(LocalAuthenticationGuard)
   @Post(ApiApplication.AUTH.LOGIN)
   async logIn(@Req() req: RequestWithUser, @Res() res: ExpressResponse) {
-    const { cookie } = await this.authService.logIn({
+    const { cookie, user } = await this.authService.logIn({
       username: req.user.username,
     });
     res.setHeader('Set-Cookie', cookie);
-    return res.json(cookie);
+    return res.json(user);
   }
 
   @Post(ApiApplication.AUTH.LOGIN_DASHBOARD)
@@ -46,11 +46,11 @@ export class AuthController {
     @Req() req: RequestWithUser,
     @Res() res: ExpressResponse,
   ) {
-    const { cookie } = await this.authService.logIn({
+    const { cookie, user } = await this.authService.logIn({
       username: req.user.username,
     });
     res.setHeader('Set-Cookie', cookie);
-    return res.json(cookie);
+    return res.json(user);
   }
 
   @UseGuards(JwtGuard)

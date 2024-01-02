@@ -1,5 +1,5 @@
 import { isExistDb, isUniqueDb } from '@youba/nestjs-dbvalidator';
-import {  Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -15,11 +15,6 @@ const { NAME: DISCOUNT_NAME, SCHEMA: DISCOUNT_SCHEMA } =
   DATABASE_TABLE.DISCOUNT;
 
 export class CreateProductDto {
-  @isUniqueDb({
-    table: NAME,
-    column: SCHEMA.NAME,
-    message: 'Tên hàng đã tồn tại',
-  })
   @IsString()
   @IsNotEmpty({
     message: 'Tên không được để trống',

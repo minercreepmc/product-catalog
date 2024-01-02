@@ -45,7 +45,7 @@ export class DiscountRepository {
           )) FILTER (WHERE p.id IS NOT NULL), '[]'::json) AS products
       FROM discount d
       LEFT JOIN product p ON d.id=p.discount_id
-      WHERE d.id=$1
+      WHERE d.id=$1 and p.deleted_at IS NULL
       GROUP BY d.id;
       `,
       [id],
@@ -102,6 +102,7 @@ export class DiscountRepository {
         SELECT d.*, COUNT(p.id) as product_count
         FROM discount d
         LEFT JOIN product p ON d.id=p.discount_id
+        WHERE p.deleted_at IS NULL
         GROUP BY d.id
       `,
     );

@@ -79,6 +79,7 @@ export const DATABASE_TABLE = {
       DISCOUNT_ID: 'discount_id',
       CREATED_AT: 'created_at',
       UPDATED_AT: 'updated_at',
+      DELETED_AT: 'deleted_at',
     },
   },
   DISCOUNT: {

@@ -68,11 +68,6 @@ export class UpdateUserDto {
   phone?: string | undefined;
 
   @IsString()
-  @isUniqueDb({
-    table: NAME,
-    column: SCHEMA.EMAIL,
-    message: 'Email đã tồn tại',
-  })
   @IsOptional()
   email?: string | undefined;
 }

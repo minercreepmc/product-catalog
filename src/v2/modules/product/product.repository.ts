@@ -71,7 +71,7 @@ export class ProductRepository {
       -- First, remove existing associations except for the ones in the new list
       DELETE FROM product_category
       WHERE product_id = $1
-        AND category_id NOT IN (SELECT unnest($2::varchar[]));
+        AND category_id NOT IN (SELECT unnest($2::varchar[])) 
     `,
       [dto.id, dto.categoryIds],
     );
@@ -93,8 +93,15 @@ export class ProductRepository {
   async deleteOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      DELETE FROM product WHERE id=$1 RETURNING *
+      UPDATE product SET deleted_at=now(), discount_id=null WHERE id=$1 RETURNING *;
     `,
+      [id],
+    );
+
+    await this.databaseService.runQuery(
+      `
+        DELETE FROM product_category WHERE product_id = $1
+      `,
       [id],
     );
 
@@ -119,7 +126,7 @@ export class ProductRepository {
   async findOneById(id: string) {
     const res = await this.databaseService.runQuery(
       `
-      SELECT * from product WHERE id=$1;
+      SELECT * from product WHERE id=$1 AND deleted_at IS NULL;
     `,
       [id],
     );
@@ -129,7 +136,7 @@ export class ProductRepository {
 
   async findOneByName(name: string) {
     const res = await this.databaseService.runQuery(
-      `SELECT * from product WHERE name=$1`,
+      `SELECT * from product WHERE name=$1 AND deleted_at IS NULL;`,
       [name],
     );
 
@@ -150,7 +157,7 @@ export class ProductRepository {
             description = COALESCE($4, description),
             discount_id = COALESCE($5, discount_id)
         WHERE
-            id = $1
+            id = $1 AND deleted_at IS NULL
         RETURNING *;
       `,
       [id, name, price, description, discountId],
@@ -249,7 +256,7 @@ export class ProductRepository {
         LEFT JOIN product_category ON product.id = product_category.product_id
         LEFT JOIN category ON category.id = product_category.category_id
         LEFT JOIN product_image ON product.id = product_image.product_id
-        WHERE product.id = $1
+        WHERE product.id = $1 AND product.deleted_at IS NULL
         GROUP BY product.id, discount.id;
       `,
       [id],
@@ -285,6 +292,7 @@ export class ProductRepository {
         LEFT JOIN product_image ON product_image.product_id = product.id
         LEFT JOIN product_category ON product_category.product_id = product.id
         LEFT JOIN category ON category.id = product_category.category_id
+        WHERE product.deleted_at IS NULL
         GROUP BY product.id, discount.id
         ORDER BY product.updated_at ASC
         OFFSET $1 LIMIT $2
@@ -304,6 +312,7 @@ export class ProductRepository {
           COALESCE(json_agg(p_image.url) FILTER (WHERE p_image.id IS NOT NULL), '[]'::json) AS image_urls
         FROM product p
         LEFT JOIN product_image p_image ON p_image.product_id = p.id
+        WHERE p.deleted_at IS NULL
         GROUP BY p.id
         ORDER BY p.updated_at ASC
         OFFSET $1 LIMIT $2

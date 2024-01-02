@@ -74,7 +74,7 @@ export class CartRepository {
       INNER JOIN product p ON p.id = i.product_id
       LEFT JOIN discount d ON d.id = p.discount_id
       LEFT JOIN shipping_fee f ON f.id = c.shipping_fee_id AND f.deleted_at IS NULL
-      WHERE c.id = $1
+      WHERE c.id = $1 AND p.deleted_at IS NULL
     `,
       [cartId],
     );

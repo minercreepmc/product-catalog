@@ -20,7 +20,6 @@ export class CategoryRepository {
     return res.rows[0];
   }
   async deleteOneById(id: string) {
-    console.log(id);
     const res = await this.databaseService.runQuery(
       `DELETE FROM category WHERE id=$1 RETURNING *`,
       [id],
@@ -46,7 +45,7 @@ export class CategoryRepository {
        FROM category c
       LEFT JOIN product_category pc ON c.id = pc.category_id
       LEFT JOIN product p ON pc.product_id = p.id
-      WHERE c.id=$1
+      WHERE c.id=$1 AND p.deleted_at IS NULL
       GROUP BY c.id;`,
       [id],
     );

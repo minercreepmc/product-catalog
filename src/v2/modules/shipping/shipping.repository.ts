@@ -110,7 +110,7 @@ export class ShippingRepository {
     });
   }
 
-  async getDetail(dto: ShippingGetDetailDto, shipperId?: string) {
+  async getDetail(dto: ShippingGetDetailDto) {
     const { id, orderId } = dto;
 
     let query = this.database
@@ -138,6 +138,7 @@ export class ShippingRepository {
         'member.full_name as member_name',
         'member.phone as member_phone',
         'order_details.total_price',
+        'order_details.status',
         'shipping_fee.name as fee_name',
         'shipping_fee.fee as fee_price',
         'shipping_method.name as shipping_method',
@@ -148,12 +149,6 @@ export class ShippingRepository {
 
     if (id) {
       query = query.where('shipping.id', '=', id);
-    }
-
-    if (shipperId) {
-      query = query
-        .where('shipping.shipper_id', '=', shipperId)
-        .where('order_details.status', '!=', OrderStatus.CANCELED);
     }
 
     if (orderId) {

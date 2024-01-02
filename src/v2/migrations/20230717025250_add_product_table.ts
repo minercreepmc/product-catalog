@@ -20,6 +20,7 @@ export async function up(database: Kysely<unknown>): Promise<void> {
     .addColumn(SCHEMA.UPDATED_AT, 'timestamp', (column) =>
       column.defaultTo(sql`now()`),
     )
+    .addColumn(SCHEMA.DELETED_AT, 'timestamp')
     .addColumn(SCHEMA.DISCOUNT_ID, 'varchar(50)', (column) =>
       column
         .references(`${DISCOUNT_NAME}.${DISCOUNT_SCHEMA.ID}`)

@@ -56,10 +56,9 @@ export class ShippingController {
   @Post(ApiApplication.SHIPPING.GET_DETAIL)
   @UseGuards(RoleGuard(USERS_ROLE.SHIPPER, USERS_ROLE.STAFF))
   async getDetail(
-    @Req() req: RequestWithUser,
     @Body() dto: ShippingGetDetailDto,
   ): Promise<ShippingGetDetailRO> {
-    return this.shippingService.getDetail(dto, req);
+    return this.shippingService.getDetail(dto);
   }
 
   @Delete(ApiApplication.SHIPPING.DELETE_BY_ORDER)

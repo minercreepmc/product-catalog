@@ -12,7 +12,6 @@ import { ShippingRepository } from './shipping.repository';
 import { plainToInstance } from 'class-transformer';
 import { ShippingGetAllRO, ShippingRO } from './ro';
 import { BaseService } from '@base';
-import { USERS_ROLE } from '@v2/users/constants';
 
 @Injectable()
 export class ShippingService extends BaseService {
@@ -61,10 +60,9 @@ export class ShippingService extends BaseService {
     });
   }
 
-  async getDetail(dto: ShippingGetDetailDto, req: RequestWithUser) {
-    const shipperId =
-      req.user.role === USERS_ROLE.SHIPPER ? req.user.id : undefined;
-    const response = await this.shippingRepository.getDetail(dto, shipperId);
+  async getDetail(dto: ShippingGetDetailDto) {
+    const response = await this.shippingRepository.getDetail(dto);
+    console.log(response);
     return plainToInstance(ShippingRO, response, {
       excludeExtraneousValues: true,
     });

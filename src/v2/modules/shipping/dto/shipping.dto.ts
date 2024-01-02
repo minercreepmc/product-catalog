@@ -2,7 +2,13 @@ import { PaginationParams } from '@common/dto';
 import { DATABASE_TABLE } from '@constants';
 import { isExistDb } from '@youba/nestjs-dbvalidator';
 import { Type } from 'class-transformer';
-import { IsDate, IsDateString, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 const { NAME: ORDER_DETAILS_NAME, SCHEMA: ORDER_DETAILS_SCHEMA } =
   DATABASE_TABLE.ORDER_DETAILS;
@@ -15,16 +21,24 @@ export class CreateShippingDto {
     table: ORDER_DETAILS_NAME,
     column: ORDER_DETAILS_SCHEMA.ID,
   })
+  @IsNotEmpty()
   orderId: string;
+
   @IsString()
   @isExistDb({
     table: USER_NAME,
     column: USER_SCHEMA.ID,
   })
+  @IsNotEmpty({
+    message: 'Shipper không được để trống',
+  })
   shipperId: string;
 
   @IsDate()
   @Type(() => Date)
+  @IsNotEmpty({
+    message: 'Ngày không được để trống',
+  })
   dueDate: Date;
 }
 export class UpdateShippingDto {

@@ -36,7 +36,9 @@ export class CartItemRepository {
 
     await this.databaseService.runQuery(
       `
-        UPDATE cart_item SET amount=$1 WHERE id=$2;
+        UPDATE cart_item 
+        SET amount=$1 
+        WHERE id=$2;
       `,
       [amount, cartItemId],
     );
@@ -83,7 +85,7 @@ export class CartItemRepository {
         LEFT JOIN discount d ON d.id = p.discount_id
         WHERE cart_id = (
           SELECT id FROM cart WHERE user_id = $1
-        )
+        ) AND p.deleted_at IS NULL
         GROUP BY i.id, p.id, d.id
       `,
       [userId],
@@ -107,7 +109,7 @@ export class CartItemRepository {
         LEFT JOIN discount d ON d.id = p.discount_id
         WHERE cart_id = (
           SELECT id FROM cart WHERE user_id = $1
-        ) AND i.product_id = $2 
+        ) AND i.product_id = $2 AND p.deleted_at IS NULL
         GROUP BY i.id, p.id, d.id
     `,
       [userId, productId],
@@ -131,7 +133,7 @@ export class CartItemRepository {
         INNER JOIN product p ON p.id = i.product_id
         LEFT JOIN product_image pi ON pi.product_id = p.id
         LEFT JOIN discount d ON d.id = p.discount_id
-        WHERE i.id = $1
+        WHERE i.id = $1 AND p.deleted_at IS NULL
         GROUP BY i.id, p.id, d.id
     `,
       [cartItemId],
@@ -149,6 +151,7 @@ export class CartItemRepository {
       .leftJoin('discount', 'discount.id', 'product.discount_id')
       .leftJoin('discount as discount', 'discount.id', 'product.discount_id')
       .where('item.cart_id', '=', cartId)
+      .where('product.deleted_at', 'is', null)
       .select(['item.id', 'item.amount'])
       .select(['product.id', 'product.name', 'product.price'])
       .select(['discount.id', 'discount.name', 'discount.percentage'])

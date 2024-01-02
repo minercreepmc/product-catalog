@@ -15,7 +15,6 @@ export class ProductCategoryRepository {
           product.name, 
           product.price, 
           product.description,  
-          product.sold, 
           to_json(discount) as discount,
           COALESCE(json_agg(product_image.url) FILTER (WHERE product_image.id IS NOT NULL), '[]'::json) AS image_urls, 
           COALESCE(json_agg(category) FILTER (WHERE category.id IS NOT NULL), '[]'::json) AS categories,

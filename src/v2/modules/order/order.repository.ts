@@ -108,7 +108,7 @@ export class OrderRepository {
   }
 
   async findAll(dto: OrderGetAllDto, userId?: string) {
-    const { limit, page, status, orderBy, direction } = dto;
+    const { limit, page, status, orderBy } = dto;
 
     let query = this.database
       .selectFrom('order_details as o')
@@ -116,7 +116,7 @@ export class OrderRepository {
       .innerJoin('address as a', 'a.id', 'o.address_id')
       .innerJoin('users as u', 'u.id', 'o.member_id')
       .innerJoin('shipping_method as sm', 'sm.id', 'o.shipping_method_id')
-      .orderBy(`o.${orderBy}`, direction)
+      .orderBy(`o.${orderBy}`, 'asc')
       .select([
         'o.id',
         'o.total_price',

@@ -9,7 +9,11 @@ const { NAME: SHIPPING_NAME, SCHEMA: SHIPPING_SCHEMA } =
 
 export class CreateShippingStatusDto {
   @IsString()
+  @IsNotEmpty({
+    message: 'Tình trạng đơn không được để trống'
+  })
   status: string;
+
   @isExistDb({
     table: SHIPPING_NAME,
     column: SHIPPING_SCHEMA.ID,
